@@ -1,8 +1,9 @@
-package com.quantchi.search.controller;
+package com.quantchi.transport.controller;
 
 
 import com.quantchi.common.util;
-import com.quantchi.search.service.SearchApiService;
+import com.quantchi.transport.service.ExecSqlApiService;
+import com.quantchi.transport.service.SearchApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,13 +16,13 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "api")
-public class SearchApiController {
+public class ExecSqlApiController {
     @Autowired
-    private SearchApiService pdfManagerService;
+    private ExecSqlApiService execSqlApiService;
 
-    @RequestMapping(value = "/query", method = { RequestMethod.POST })
+    @RequestMapping(value = "/execsql", method = { RequestMethod.POST })
     public @ResponseBody
-    Map<String, Object> query (@RequestBody String bodyString) throws Exception {
+    Map<String, Object> execsql (@RequestBody String bodyString) throws Exception {
 
         return util.genRet(200,"test","ok",1);
     }

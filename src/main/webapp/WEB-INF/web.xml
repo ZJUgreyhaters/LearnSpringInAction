@@ -3,7 +3,7 @@
 <web-app id="WebApp_ID" version="2.4"
          xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-  <display-name>xuetao</display-name>
+  <display-name>dataapi</display-name>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>index.html</welcome-file>
@@ -49,31 +49,8 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <!--<filter>-->
-    <!--<filter-name>authorityFilter</filter-name>-->
-    <!--<filter-class>cn.xuetao.core.AuthorityFilter</filter-class>-->
-  <!--</filter>-->
-  <!--<filter-mapping>-->
-    <!--<filter-name>authorityFilter</filter-name>-->
-    <!--<url-pattern>/*</url-pattern>-->
-  <!--</filter-mapping>-->
-  <!--<filter>-->
-    <!--<filter-name>authorityApiFilter</filter-name>-->
-    <!--<filter-class>cn.xuetao.core.AuthorityApiFilter</filter-class>-->
-  <!--</filter>-->
-  <!--<filter-mapping>-->
-    <!--<filter-name>authorityApiFilter</filter-name>-->
-    <!--<url-pattern>/api/*</url-pattern>-->
-  <!--</filter-mapping>-->
 
-  <filter>
-    <filter-name>tokenAuthenticationFilter</filter-name>
-    <filter-class>cn.xuetao.filter.TokenLoginFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>tokenAuthenticationFilter</filter-name>
-    <url-pattern>/api/*</url-pattern>
-  </filter-mapping>
+
   <!-- WEB编码统一使用UTF-8 -->
   <filter>
     <filter-name>encodingFilter</filter-name>
@@ -111,7 +88,7 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
-    <servlet-name>xuetao</servlet-name>
+    <servlet-name>dataApi</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
 </web-app>
