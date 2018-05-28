@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC
+  "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!-- 
+********************************************************************************
+根据运行环境进行适当的配置
+********************************************************************************
+ -->
+<beans>
+    <!-- dataSource -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <property name="jdbcUrl" value="${datasource.url}" />
+        <property name="user" value="${datasource.username}" />
+        <property name="password" value="${datasource.password}" />
+        <property name="initialPoolSize" value="1" />
+        <property name="minPoolSize" value="0" />
+        <property name="maxPoolSize" value="1000" />
+        <property name="acquireIncrement" value="5" />
+        <property name="maxIdleTime" value="10" />
+        <property name="maxStatements" value="0" />
+        <!--每60秒检查所有连接池中的空闲连接。Default: 0 -->
+        <property name="idleConnectionTestPeriod" value="60" />
+    </bean>
+
+    <!--编号表专用-->
+    <bean id="dataSource2" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <property name="jdbcUrl" value="${datasource.url}" />
+        <property name="user" value="${datasource.username}" />
+        <property name="password" value="${datasource.password}" />
+        <property name="initialPoolSize" value="1" />
+        <property name="minPoolSize" value="0" />
+        <property name="maxPoolSize" value="1000" />
+        <property name="acquireIncrement" value="5" />
+        <property name="maxIdleTime" value="10" />
+        <property name="maxStatements" value="0" />
+        <!--每60秒检查所有连接池中的空闲连接。Default: 0 -->
+        <property name="idleConnectionTestPeriod" value="60" />
+    </bean>
+
+</beans>
+

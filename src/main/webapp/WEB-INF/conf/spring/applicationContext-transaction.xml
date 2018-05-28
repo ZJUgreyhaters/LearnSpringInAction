@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC
+  "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	    <property name="dataSource"><ref bean="dataSource"/></property>
+	</bean>
+
+	<bean id="transactionAttributeSource" class="org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource">
+		<property name="properties">
+			<props>
+				<prop key="insert*">PROPAGATION_REQUIRED,-Throwable</prop>				
+				<prop key="create*">PROPAGATION_REQUIRED,-Throwable,+EasemobApiException</prop>
+				<prop key="update*">PROPAGATION_REQUIRED,-Throwable</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED,-Throwable</prop>
+				<prop key="find*">PROPAGATION_REQUIRED,-Throwable</prop>				
+				<prop key="login*">PROPAGATION_REQUIRED,-Throwable</prop>
+				<prop key="*">PROPAGATION_REQUIRED,-Throwable</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager"><ref bean="transactionManager" /></property>
+		<property name="transactionAttributeSource"><ref bean="transactionAttributeSource" /></property>
+	</bean>
+
+	<bean id="traceProxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="interceptorNames">
+			<list><value>transactionInterceptor</value></list>
+		</property>
+		<property name="beanNames">
+			<list>
+				<value>*Service</value>
+			</list>
+		</property>
+	</bean>
+
+</beans>
+
