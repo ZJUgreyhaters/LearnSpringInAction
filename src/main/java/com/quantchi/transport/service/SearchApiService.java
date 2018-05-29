@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 public class SearchApiService {
 	private static final Logger logger = LoggerFactory.getLogger(SearchApiService.class);
 
-	@Autowired
-	private HttpSolrClient server;
+	/*@Autowired
+	private HttpSolrClient server;*/
 
 	public void search(){
 		/*SolrQuery query = new SolrQuery();

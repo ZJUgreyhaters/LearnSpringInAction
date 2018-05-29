@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC
+        "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+<bean id="hiveJdbcPool" class="com.quantchi.tianshu.common.JdbcPool" destroy-method="close">
+    <constructor-arg index="0" value="jdbc:hive2://192.168.2.59:10000" type="java.lang.String"/>
+    <constructor-arg index="1" value="hive" type="java.lang.String"/>
+    <constructor-arg index="2" value="hive" type="java.lang.String"/>
+    <constructor-arg index="3" value="org.apache.hive.jdbc.HiveDriver" type="java.lang.String"/>
+</bean>
+</beans>
