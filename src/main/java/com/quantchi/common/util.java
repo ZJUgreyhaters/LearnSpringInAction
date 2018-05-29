@@ -1,8 +1,11 @@
 package com.quantchi.common;
 
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+/*import org.json.JSONArray;
+import org.json.JSONObject;*/
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,12 +33,12 @@ public class util {
                     columnValue = "null";
                 }
 
-                if (obj.has(columnName)){
+                if (obj.containsKey(columnName)){
                     columnName += "1";
                 }
                 obj.put(columnName, columnValue);
             }
-            jsonArray.put(obj);
+            jsonArray.add(obj);
         }
         return jsonArray;
     }

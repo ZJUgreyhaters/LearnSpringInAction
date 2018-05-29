@@ -34,6 +34,22 @@
 		</property>
 	</bean>
 
+	<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>application/json; charset=UTF-8</value>
+				<value>application/x-www-form-urlencoded; charset=UTF-8</value>
+			</list>
+		</property>
+		<property name="objectMapper">
+			<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+				<property name="serializationInclusion">
+					<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
 	<bean id="httpSolr" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
 		<constructor-arg index="0" value="${solr.url}"/>
 		<property name="parser">
@@ -54,7 +70,8 @@
 	</bean>-->
 
 
-	<!-- production环境  新加入redis的配置 -->
+
+    <!-- production环境  新加入redis的配置 -->
 	<beans profile="production">
 		<context:property-placeholder location="classpath:app.properties" />
 	</beans>

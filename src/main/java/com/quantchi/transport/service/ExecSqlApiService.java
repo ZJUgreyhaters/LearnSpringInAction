@@ -1,8 +1,8 @@
 package com.quantchi.transport.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.quantchi.common.util;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class ExecSqlApiService {
 			rs = stmt.executeQuery(sql);
 			JSONArray _res = util.convertResultSetIntoJSON(rs);
 			_ret.put("data", _res);
-			_ret.put("total", _res.length());
+			_ret.put("total", _res.size());
 		} catch (Exception e) {
 			logger.error("Failed to exec  sql, " + sql, e);
 //			throw new SQLException("Failed to exec  sql:" + sql);
