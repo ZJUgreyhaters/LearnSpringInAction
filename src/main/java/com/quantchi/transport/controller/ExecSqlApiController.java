@@ -1,9 +1,12 @@
 package com.quantchi.transport.controller;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.quantchi.common.util;
 import com.quantchi.transport.service.ExecSqlApiService;
 import com.quantchi.transport.service.SearchApiService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +27,15 @@ public class ExecSqlApiController {
     public @ResponseBody
     Map<String, Object> execsql (@RequestBody String bodyString) throws Exception {
 
-        return util.genRet(200,"test","ok",1);
+        JSONObject paramObj = JSON.parseObject(bodyString) ;
+        String sql = paramObj.getString("sql");
+        if(!sql.equals("")){
+            Map<String, Object> _sqlRet = execSqlApiService.execsql(sql);
+            return util.genRet(200,_sqlRet.get("data"),"ok",Integer.parseInt(_sqlRet.get("total").toString()));
+        }else{
+            return util.genRet(500,null,"miss sql param",0);
+        }
+
     }
 
 }
