@@ -19,10 +19,10 @@ public class SearchApiController {
     @Autowired
     private SearchApiService searchApiService;
 
-    @RequestMapping(value = "/query", method = { RequestMethod.POST })
+    @RequestMapping(value = "/query", method = { RequestMethod.GET })
     public @ResponseBody
     Map<String, Object> query (@RequestBody String bodyString) throws Exception {
-
+        searchApiService.search();
         return util.genRet(200,"test","ok",1);
     }
 

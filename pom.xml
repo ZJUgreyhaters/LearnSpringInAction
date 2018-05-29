@@ -16,6 +16,7 @@
   <dependencies>
 
 
+
     <!-- dayread相关包 -->
 
     <!--以下两个jar包用于解决tomcat跨域-->
@@ -229,7 +230,13 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.3.6</version>
+      <version>4.5.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.quantchi</groupId>
+      <artifactId>intelquery</artifactId>
+      <version>0.6.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
