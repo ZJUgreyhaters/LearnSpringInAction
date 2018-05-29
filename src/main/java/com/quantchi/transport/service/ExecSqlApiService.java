@@ -21,28 +21,23 @@ import java.util.Map;
 public class ExecSqlApiService {
 	private static final Logger logger = LoggerFactory.getLogger(ExecSqlApiService.class);
 
-	@Autowired
-	@Qualifier("hiveJdbcPool")
-	private JdbcPool jdbcPool;
 
-	public Map<String, Object> execsql(String sql) throws SQLException,Exception{
+
+	public Map<String, Object> execsql(JdbcPool jdbcPool, String sql) {
 		Map<String, Object> _ret = new HashMap<String, Object>();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
-		try (Connection connection = jdbcPool.getConnection()) {
+		try {
+			Connection connection = jdbcPool.getConnection();
 			stmt = connection.prepareStatement(sql);
 			rs = stmt.executeQuery(sql);
 			JSONArray _res = util.convertResultSetIntoJSON(rs);
-			_ret.put("data",_res);
-			_ret.put("total",_res.length());
-		} catch (SQLException e) {
+			_ret.put("data", _res);
+			_ret.put("total", _res.length());
+		} catch (Exception e) {
 			logger.error("Failed to exec  sql, " + sql, e);
-			throw new SQLException("Failed to exec  sql:"+sql);
-		}finally {
-			rs.close();
-			stmt.close();
-			return  _ret;
+//			throw new SQLException("Failed to exec  sql:" + sql);
 		}
+		return _ret;
 	}
-
 }
