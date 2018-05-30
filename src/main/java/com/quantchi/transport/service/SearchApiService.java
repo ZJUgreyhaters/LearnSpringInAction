@@ -24,7 +24,7 @@ import java.util.Map;
 public class SearchApiService {
 	private static final Logger logger = LoggerFactory.getLogger(SearchApiService.class);
 	private static final String leftTag = "<em>";
-	private static final String rightTag = "<em>";
+	private static final String rightTag = "</em>";
 
 	@Autowired
 	private HttpSolrClient httpSolr;
@@ -114,17 +114,16 @@ public class SearchApiService {
 	    return list;
     }
 
-	public SolrDocumentList handleInst(String query, QueryResponse qRes){
-
-		SolrDocumentList docs = setReplaceOrigin(query,qRes);
-		return docs;
+	public SolrDocumentList handleInst(String query, QueryResponse qRes) throws Exception {
+		SolrDocumentList docs = handle(query,qRes.getResults());
+		SolrDocumentList docsAfterHandleReplaceOrigin = setReplaceOrigin(query,docs,qRes.getHighlighting());
+		return docsAfterHandleReplaceOrigin;
 	}
 
-	private SolrDocumentList setReplaceOrigin(String query,QueryResponse qRes){
-		Map<String, Map<String, List<String>>> _map = qRes.getHighlighting();
+	private SolrDocumentList setReplaceOrigin(String query,SolrDocumentList docs,Map<String, Map<String, List<String>>> highlight){
 		SolrDocumentList solrDocs = new SolrDocumentList();
-		for(SolrDocument doc:qRes.getResults()){
-			List<String> hl = _map.get(doc.getFieldValue("id").toString()).get("cn_name");
+		for(SolrDocument doc:docs){
+			List<String> hl = highlight.get(doc.getFieldValue("id").toString()).get("cn_name");
 			doc.addField("replace_origin",getMaxLengthSubWord(query,getHitWords(hl)));
 			solrDocs.add(doc);
 		}
