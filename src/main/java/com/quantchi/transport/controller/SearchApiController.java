@@ -31,7 +31,8 @@ public class SearchApiController {
         //处理后的结果集
         SolrDocumentList afterHandle = searchApiService.handle(q,rets);
 
-        return util.genRet(200,rets,"ok",rets.size());
+//        return util.genRet(200,rets,"ok",rets.size());
+        return util.genRet(200,afterHandle,"ok",rets.size());
     }
 
     @RequestMapping(value = "/queryInstance", method = { RequestMethod.GET })
