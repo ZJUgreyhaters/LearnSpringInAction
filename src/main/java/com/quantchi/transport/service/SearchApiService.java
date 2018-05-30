@@ -121,23 +121,50 @@ public class SearchApiService {
 
 	public SolrDocumentList handleInst(String query, QueryResponse qRes){
 
-		SolrDocumentList docs = setHighlightInDoc(qRes);
+		SolrDocumentList docs = setHighlightInDoc(query,qRes);
 		return qRes.getResults();
 	}
 
-	private SolrDocumentList setHighlightInDoc(QueryResponse qRes){
+	private SolrDocumentList setHighlightInDoc(String query,QueryResponse qRes){
 		Map<String, Map<String, List<String>>> _map = qRes.getHighlighting();
 		SolrDocumentList solrDocs = new SolrDocumentList();
 		for(SolrDocument doc:qRes.getResults()){
 			List<String> hl = _map.get(doc.getFieldValue("id").toString()).get("cn_name");
-			doc.addField("hit_word","");
+			doc.addField("hit_word",getMaxLengthSubWord(query,getHitWords(hl)));
 			solrDocs.add(doc);
 		}
 		return solrDocs;
 	}
 
-	private String getHitWords(List<String> highlights){
-		return  "";
+	private List<String> getHitWords(List<String> highlights){
+
+		List<String> hits = new ArrayList<>();
+		String _hl = highlights.get(0).toString();
+		String _hit = "";
+		int _start = _hl.indexOf("<em>");
+		int _end = _hl.indexOf("</em>");
+
+		while (_start != -1 && _end != -1){
+			_hit = _hl.substring(_start+4,_end);
+			hits.add(_hit);
+			_hl = _hl.substring(_end+1);
+			_start = _hl.indexOf("<em>");
+			_end = _hl.indexOf("</em>");
+		}
+
+		return  hits;
+	}
+
+	private String getMaxLengthSubWord(String query,List<String> hitWords){
+		String _firstWord = hitWords.get(0);
+		String _ret = _firstWord;
+		if(hitWords.size() > 1){
+			String _lastWord = hitWords.get(hitWords.size()-1);
+			int _st = query.indexOf(_firstWord);
+			int _end = query.lastIndexOf(_lastWord);
+			_ret = query.substring(_st,_end+_lastWord.length());
+		}
+		return _ret;
 	}
 }
 
