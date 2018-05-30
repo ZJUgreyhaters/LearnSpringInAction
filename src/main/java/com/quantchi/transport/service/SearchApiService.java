@@ -81,7 +81,8 @@ public class SearchApiService {
 	    for(SolrDocument doc : docs){
 	        String cn_name = (String) doc.get("cn_name");
 	        List<String> queryWords= segment(query);
-	        List<String> nameWords = segment(cn_name);
+	        //List<String> nameWords = segment(cn_name);
+            List<String> nameWords =  java.util.Arrays.asList(cn_name.split(" "));
 
 	        double nameWordNum = nameWords.size(); //中文名的单词数
             double matchNum = 0; //匹配到的数量
