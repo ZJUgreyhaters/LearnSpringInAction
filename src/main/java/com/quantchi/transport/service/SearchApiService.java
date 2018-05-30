@@ -18,6 +18,7 @@ import com.quantchi.intelquery.tokenize.LtpTokenizer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SearchApiService {
@@ -26,7 +27,7 @@ public class SearchApiService {
 	@Autowired
 	private HttpSolrClient httpSolr;
 
-	public SolrDocumentList search(String str) throws Exception{
+	public QueryResponse search(String str) throws Exception{
 		//匹配率
 		String mm = AppProperties.get("solr.mm");
 		if(mm == null)
@@ -34,29 +35,33 @@ public class SearchApiService {
 		return searchSolr(str,mm);
 	}
 
-	public SolrDocumentList searchInstance(String str) throws Exception{
+	public QueryResponse searchInstance(String str) throws Exception{
 		return searchSolr(str,null);
 	}
 
-	public SolrDocumentList searchSolr(String str,String mm) throws Exception{
+	public QueryResponse searchSolr(String str,String mm) throws Exception{
 
 		SolrQuery query = new SolrQuery();
+		String rows = AppProperties.get("solr.rows");
+		if(rows == null )
+			rows = "20";
 		query.setQuery("cn_name:"+str);
 		if(mm != null){
 			query.set("defType", "edismax");
 			query.set("mm", mm);
 		}
+		query.setHighlight(true);
+		query.setParam("hl.fl", "cn_name");
 		query.setStart(0);
-		query.setRows(20);
-		SolrDocumentList docs = new SolrDocumentList();
+		query.setRows(Integer.parseInt(rows));
 		QueryResponse response = new QueryResponse();
 		try {
 			response = httpSolr.query(query);
-			docs = response.getResults();
+			//docs = response.getResults();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return docs;
+		return response;
 	}
 
 	//处理函数
@@ -114,8 +119,28 @@ public class SearchApiService {
 
 		return false;
 	}
-}
 
+	public SolrDocumentList handleInst(String query, QueryResponse qRes){
+
+		SolrDocumentList docs = setHighlightInDoc(qRes);
+		return qRes.getResults();
+	}
+
+	private SolrDocumentList setHighlightInDoc(QueryResponse qRes){
+		Map<String, Map<String, List<String>>> _map = qRes.getHighlighting();
+		SolrDocumentList solrDocs = new SolrDocumentList();
+		for(SolrDocument doc:qRes.getResults()){
+			List<String> hl = _map.get(doc.getFieldValue("id").toString()).get("cn_name");
+			doc.addField("hit_word","");
+			solrDocs.add(doc);
+		}
+		return solrDocs;
+	}
+
+	private String getHitWords(List<String> highlights){
+		return  "";
+	}
+}
 
 
 
