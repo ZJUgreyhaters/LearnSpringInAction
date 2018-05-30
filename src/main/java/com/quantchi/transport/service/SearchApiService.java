@@ -57,7 +57,7 @@ public class SearchApiService {
 		query.setHighlight(true);
 		query.setParam("hl.fl", "cn_name");
 		query.setStart(0);
-		query.setRows(Integer.parseInt(rows));
+		query.setParam("rows",rows);
 		QueryResponse response = new QueryResponse();
 		try {
 			response = httpSolr.query(query);
