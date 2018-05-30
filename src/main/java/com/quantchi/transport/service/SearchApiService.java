@@ -1,5 +1,6 @@
 package com.quantchi.transport.service;
 
+import com.quantchi.common.AppProperties;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -19,11 +20,17 @@ public class SearchApiService {
 	@Autowired
 	private HttpSolrClient httpSolr;
 
-	public SolrDocumentList search(String str){
+	public SolrDocumentList search(String str) throws Exception{
+
+		//匹配率
+		String mm = AppProperties.get("solr.mm");
+		if(mm == null)
+			mm = "50%";
+
 		SolrQuery query = new SolrQuery();
 		query.setQuery("cn_name:"+str);
 		query.set("defType", "edismax");
-		query.set("mm", "50%");
+		query.set("mm", mm);
 		query.setStart(0);
 		query.setRows(20);
 		SolrDocumentList docs = null;
