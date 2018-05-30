@@ -21,7 +21,9 @@ public class SearchApiService {
 
 	public SolrDocumentList search(String str){
 		SolrQuery query = new SolrQuery();
-		query.setQuery("cn_name:"+str+"&defType=edismax&mm=50%25");
+		query.setQuery("cn_name:"+str);
+		query.set("defType", "edismax");
+		query.set("mm", "50%");
 		query.setStart(0);
 		query.setRows(20);
 		SolrDocumentList docs = null;
