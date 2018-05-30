@@ -5,6 +5,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SearchApiService {
@@ -53,6 +56,47 @@ public class SearchApiService {
 		return docs;
 	}
 
+
+	//处理函数
+	public SolrDocumentList handle(String query, SolrDocumentList docs){
+
+	    SolrDocumentList result = null;
+
+	    double threshold = 0.8;   //阈值
+
+	    //对每个doc做处理
+	    for(SolrDocument doc : docs){
+	        String cn_name = (String) doc.get("cn_name");
+	        List<String> queryWords= segment(query);
+	        List<String> nameWords = segment(cn_name);
+
+	        int nameWordNum = nameWords.size(); //中文名的单词数
+            int matchNum = 0; //匹配到的数量
+
+	        for(String word : queryWords){
+                if(nameWords.contains(word))
+                    matchNum ++;
+            }
+
+            double ratio = matchNum / nameWordNum;
+
+	        //如果比例大于阈值，添加到结果集合中
+	        if(ratio > threshold)
+	            result.add(doc);
+        }
+
+
+	    return result;
+    }
+
+
+    //分词函数
+    public List<String> segment(String str){
+	    List<String> list = new ArrayList<>();
+
+	    return list;
+    }
+
 	public Boolean isIndex(String str){
 
 		//TODO
@@ -63,3 +107,5 @@ public class SearchApiService {
 		return false;
 	}
 }
+
+
