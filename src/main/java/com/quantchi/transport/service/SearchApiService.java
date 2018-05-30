@@ -1,6 +1,9 @@
 package com.quantchi.transport.service;
 
 import com.quantchi.common.AppProperties;
+import com.quantchi.intelquery.QueryNodes;
+import com.quantchi.intelquery.exception.QPException;
+import com.quantchi.intelquery.node.SemanticNode;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -11,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.quantchi.intelquery.tokenize.LtpTokenizer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +59,6 @@ public class SearchApiService {
 		return docs;
 	}
 
-
 	//处理函数
 	public SolrDocumentList handle(String query, SolrDocumentList docs) throws  Exception{
 
@@ -93,9 +95,12 @@ public class SearchApiService {
 
 
     //分词函数
-    public List<String> segment(String str){
+    public List<String> segment(String str) throws QPException {
 	    List<String> list = new ArrayList<>();
-
+        QueryNodes _nodes = LtpTokenizer.tokenize(str);
+        for(SemanticNode node : _nodes){
+            list.add(node.getText());
+        }
 	    return list;
     }
 
