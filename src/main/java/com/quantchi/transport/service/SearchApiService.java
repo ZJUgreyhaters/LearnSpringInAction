@@ -23,9 +23,13 @@ import java.util.Map;
 @Service
 public class SearchApiService {
 	private static final Logger logger = LoggerFactory.getLogger(SearchApiService.class);
+	private static final String leftTag = "<em>";
+	private static final String rightTag = "<em>";
 
 	@Autowired
 	private HttpSolrClient httpSolr;
+
+
 
 	public QueryResponse search(String str) throws Exception{
 		//匹配率
@@ -110,28 +114,18 @@ public class SearchApiService {
 	    return list;
     }
 
-	public Boolean isIndex(String str){
-
-		//TODO
-		//1.查solr
-		//2.匹配计算
-		//3.高于 匹配值的 返回
-
-		return false;
-	}
-
 	public SolrDocumentList handleInst(String query, QueryResponse qRes){
 
-		SolrDocumentList docs = setHighlightInDoc(query,qRes);
-		return qRes.getResults();
+		SolrDocumentList docs = setReplaceOrigin(query,qRes);
+		return docs;
 	}
 
-	private SolrDocumentList setHighlightInDoc(String query,QueryResponse qRes){
+	private SolrDocumentList setReplaceOrigin(String query,QueryResponse qRes){
 		Map<String, Map<String, List<String>>> _map = qRes.getHighlighting();
 		SolrDocumentList solrDocs = new SolrDocumentList();
 		for(SolrDocument doc:qRes.getResults()){
 			List<String> hl = _map.get(doc.getFieldValue("id").toString()).get("cn_name");
-			doc.addField("hit_word",getMaxLengthSubWord(query,getHitWords(hl)));
+			doc.addField("replace_origin",getMaxLengthSubWord(query,getHitWords(hl)));
 			solrDocs.add(doc);
 		}
 		return solrDocs;
@@ -142,15 +136,15 @@ public class SearchApiService {
 		List<String> hits = new ArrayList<>();
 		String _hl = highlights.get(0).toString();
 		String _hit = "";
-		int _start = _hl.indexOf("<em>");
-		int _end = _hl.indexOf("</em>");
+		int _start = _hl.indexOf(leftTag);
+		int _end = _hl.indexOf(rightTag);
 
 		while (_start != -1 && _end != -1){
 			_hit = _hl.substring(_start+4,_end);
 			hits.add(_hit);
 			_hl = _hl.substring(_end+1);
-			_start = _hl.indexOf("<em>");
-			_end = _hl.indexOf("</em>");
+			_start = _hl.indexOf(leftTag);
+			_end = _hl.indexOf(rightTag);
 		}
 
 		return  hits;

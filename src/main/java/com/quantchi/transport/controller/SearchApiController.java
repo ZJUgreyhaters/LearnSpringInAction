@@ -2,6 +2,8 @@ package com.quantchi.transport.controller;
 
 
 import com.quantchi.common.util;
+import com.quantchi.intelquery.intelQuery;
+import com.quantchi.tianshu.common.web.Status;
 import com.quantchi.transport.service.SearchApiService;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
@@ -18,20 +20,31 @@ public class SearchApiController {
     @Autowired
     private SearchApiService searchApiService;
 
+    @Autowired
+    private intelQuery intelquery;
+
     @RequestMapping(value = "/query", method = { RequestMethod.GET })
     public @ResponseBody
     Map<String, Object> query (@RequestParam("q") String q) throws Exception {
 
-        //
-        searchApiService.isIndex(q);
-
 
         QueryResponse rets = searchApiService.search(q);
-
         //处理后的结果集
         SolrDocumentList afterHandle = searchApiService.handle(q,rets.getResults());
+        if(afterHandle.size() > 0){
+            Map<String, Object> _retRes =  util.genRet(200,afterHandle,"ok",rets.getResults().size());
+            _retRes.put("type","entity");
+            return _retRes;
+        }
+        else{
 
-        return util.genRet(200,rets,"ok",rets.getResults().size());
+            Map<String, Object> _intelRet = intelquery.query(q);
+            if(_intelRet.containsKey(Status.INTERNAL_SERVER_ERROR.getStatus())){
+                return util.genRet(500,null,_intelRet.get(Status.INTERNAL_SERVER_ERROR.getStatus()).toString(),0);
+            }else{
+                return util.genRet(200,_intelRet.get("data"),"ok",0);
+            }
+        }
     }
 
     @RequestMapping(value = "/queryInstance", method = { RequestMethod.GET })
@@ -39,7 +52,7 @@ public class SearchApiController {
     Map<String, Object> queryInstance (@RequestParam("q") String q) throws Exception {
         QueryResponse rets = searchApiService.searchInstance(q);
         SolrDocumentList data =  searchApiService.handleInst(q,rets);
-        return util.genRet(200,rets,"ok",rets.getResults().size());
+        return util.genRet(200,data,"ok",data.size());
     }
 
 

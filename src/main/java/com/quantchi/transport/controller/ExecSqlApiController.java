@@ -26,9 +26,7 @@ public class ExecSqlApiController {
     @Autowired
     private ExecSqlApiService execSqlApiService;
 
-    @Autowired
-    @Qualifier("hiveJdbcPool")
-    private JdbcPool jdbcPool;
+
 
     @RequestMapping(value = "/execsql", method = { RequestMethod.POST })
     public @ResponseBody
@@ -37,7 +35,7 @@ public class ExecSqlApiController {
         JSONObject paramObj =  JSON.parseObject(bodyString);
         String sql = paramObj.getString("sql");
         if(!sql.equals("")){
-            Map<String, Object> _sqlRet = execSqlApiService.execsql(jdbcPool, sql);
+            Map<String, Object> _sqlRet = execSqlApiService.execsql(sql);
             return util.genRet(200,_sqlRet.get("data"),"ok",Integer.parseInt(_sqlRet.get("total").toString()));
             //return util.genRet(500,paramObj,"miss sql param",0);
         }else{

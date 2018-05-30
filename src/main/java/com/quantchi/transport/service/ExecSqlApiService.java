@@ -21,9 +21,12 @@ import java.util.Map;
 public class ExecSqlApiService {
 	private static final Logger logger = LoggerFactory.getLogger(ExecSqlApiService.class);
 
+	@Autowired
+	@Qualifier("hiveJdbcPool")
+	private JdbcPool jdbcPool;
 
-
-	public Map<String, Object> execsql(JdbcPool jdbcPool, String sql) {
+	//public Map<String, Object> execsql(JdbcPool jdbcPool, String sql) {
+	public Map<String, Object> execsql(String sql) {
 		Map<String, Object> _ret = new HashMap<String, Object>();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
