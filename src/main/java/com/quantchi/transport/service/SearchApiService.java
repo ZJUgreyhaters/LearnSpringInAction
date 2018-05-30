@@ -58,11 +58,13 @@ public class SearchApiService {
 
 
 	//处理函数
-	public SolrDocumentList handle(String query, SolrDocumentList docs){
+	public SolrDocumentList handle(String query, SolrDocumentList docs) throws  Exception{
 
 	    SolrDocumentList result = null;
-
-	    double threshold = 0.8;   //阈值
+        String t = AppProperties.get("solr.threshold");
+        if(t == null)
+            t = "0.5";
+	    double threshold =Double.parseDouble(t);   //阈值
 
 	    //对每个doc做处理
 	    for(SolrDocument doc : docs){
