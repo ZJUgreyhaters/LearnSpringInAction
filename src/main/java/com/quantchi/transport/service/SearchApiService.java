@@ -84,15 +84,16 @@ public class SearchApiService {
 
             double ratio = matchNum / nameWordNum;
 
-	        //如果比例大于阈值，添加到结果集合中
-	        if(ratio >= threshold)
-	            result.add(doc);
-        }
+	        //如果比例大于等于阈值，添加到结果集合中
+	        if(ratio >= threshold){
+	        	doc.addField("hit_ratio",ratio);
+				result.add(doc);
+			}
 
+        }
 
 	    return result;
     }
-
 
     //分词函数
     public List<String> segment(String str) throws QPException {
@@ -114,6 +115,7 @@ public class SearchApiService {
 		return false;
 	}
 }
+
 
 
 
