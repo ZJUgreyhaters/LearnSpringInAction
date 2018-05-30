@@ -21,16 +21,25 @@ public class SearchApiService {
 	private HttpSolrClient httpSolr;
 
 	public SolrDocumentList search(String str) throws Exception{
-
 		//匹配率
 		String mm = AppProperties.get("solr.mm");
 		if(mm == null)
 			mm = "50%";
+		return searchSolr(str,mm);
+	}
+
+	public SolrDocumentList searchInstance(String str) throws Exception{
+		return searchSolr(str,null);
+	}
+
+	public SolrDocumentList searchSolr(String str,String mm) throws Exception{
 
 		SolrQuery query = new SolrQuery();
 		query.setQuery("cn_name:"+str);
-		query.set("defType", "edismax");
-		query.set("mm", mm);
+		if(mm != null){
+			query.set("defType", "edismax");
+			query.set("mm", mm);
+		}
 		query.setStart(0);
 		query.setRows(20);
 		SolrDocumentList docs = null;
@@ -42,5 +51,15 @@ public class SearchApiService {
 			e.printStackTrace();
 		}
 		return docs;
+	}
+
+	public Boolean isIndex(String str){
+
+		//TODO
+		//1.查solr
+		//2.匹配计算
+		//3.高于 匹配值的 返回
+
+		return false;
 	}
 }

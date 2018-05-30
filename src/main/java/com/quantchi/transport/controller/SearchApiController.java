@@ -20,8 +20,22 @@ public class SearchApiController {
     @RequestMapping(value = "/query", method = { RequestMethod.GET })
     public @ResponseBody
     Map<String, Object> query (@RequestParam("q") String q) throws Exception {
+
+        //
+        searchApiService.isIndex(q);
+
+
+
         SolrDocumentList rets = searchApiService.search(q);
         return util.genRet(200,rets,"ok",rets.size());
     }
+
+    @RequestMapping(value = "/queryInstance", method = { RequestMethod.GET })
+    public @ResponseBody
+    Map<String, Object> queryInstance (@RequestParam("q") String q) throws Exception {
+        SolrDocumentList rets = searchApiService.searchInstance(q);
+        return util.genRet(200,rets,"ok",rets.size());
+    }
+
 
 }
