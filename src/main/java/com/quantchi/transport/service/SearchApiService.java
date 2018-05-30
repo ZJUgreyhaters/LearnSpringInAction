@@ -65,9 +65,9 @@ public class SearchApiService {
 	}
 
 	//处理函数
-	public SolrDocumentList handle(String query, SolrDocumentList docs) throws  Exception{
+	public SolrDocumentList handle(String query, SolrDocumentList docs) throws Exception{
 
-	    SolrDocumentList result = null;
+	    SolrDocumentList result = new SolrDocumentList();
         String t = AppProperties.get("solr.threshold");
         if(t == null)
             t = "0.5";
@@ -79,8 +79,8 @@ public class SearchApiService {
 	        List<String> queryWords= segment(query);
 	        List<String> nameWords = segment(cn_name);
 
-	        int nameWordNum = nameWords.size(); //中文名的单词数
-            int matchNum = 0; //匹配到的数量
+	        double nameWordNum = nameWords.size(); //中文名的单词数
+            double matchNum = 0; //匹配到的数量
 
 	        for(String word : queryWords){
                 if(nameWords.contains(word))
@@ -90,13 +90,14 @@ public class SearchApiService {
             double ratio = matchNum / nameWordNum;
 
 	        //如果比例大于阈值，添加到结果集合中
-	        if(ratio > threshold)
+	        if(ratio >= threshold)
 	            result.add(doc);
         }
 
 
 	    return result;
     }
+
 
     //分词函数
     public List<String> segment(String str) throws QPException {
