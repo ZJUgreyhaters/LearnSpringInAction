@@ -93,6 +93,9 @@ public class intelQuery{
             logger.error("Failed to generate SQL", e);
             totalRet.put(Status.INTERNAL_SERVER_ERROR.getStatus(),"Failed to generate SQL.");
             //return ErrorResponse.create(Status.INTERNAL_SERVER_ERROR, "Failed to generate SQL. " + e.getMessage());
+        }catch (Exception e){
+            logger.error("internal server error happened", e.getMessage());
+            totalRet.put(Status.INTERNAL_SERVER_ERROR.getStatus(),e.getMessage());
         }
         finally {
             return  totalRet;

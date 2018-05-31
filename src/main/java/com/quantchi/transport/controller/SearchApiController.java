@@ -1,6 +1,7 @@
 package com.quantchi.transport.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.quantchi.common.util;
 import com.quantchi.intelquery.Query;
 import com.quantchi.intelquery.QueryParser;
@@ -21,7 +22,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 
 @Controller
@@ -72,14 +75,18 @@ public class SearchApiController {
         return util.genRet(200,data,"ok",data.size());
     }
 
-    @RequestMapping(value = "/queryFromSearch", method = { RequestMethod.GET })
-    public Map<String, Object> queryFromSearch(@RequestBody String serialization) {
+    @RequestMapping(value = "/queryFromSearchToData", method = { RequestMethod.POST })
+    public @ResponseBody
+    Map<String, Object> queryFromSearchToData(@RequestBody String bodyString) {
+        JSONObject json = JSONObject.parseObject(bodyString);
+        String serialization = json.get("serial").toString();
         Map<String, Object> _intelRet = intelquery.queryFromSearch(serialization);
         if(_intelRet.containsKey("data")){
             return util.genRet(200,_intelRet.get("data"),"ok",0);
         }else{
-            Map.Entry<String, Object> _entry = (Map.Entry<String, Object>) _intelRet.entrySet();
-            return util.genRet(500,null,_entry.getValue().toString(),0);
+            Iterator<Map.Entry<String,Object>> iter = _intelRet.entrySet().iterator();
+            Map.Entry<String, Object> entry = iter.next();
+            return util.genRet(500,null,entry.getValue().toString(),0);
         }
 
 
