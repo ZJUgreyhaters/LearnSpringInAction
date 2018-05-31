@@ -1,5 +1,6 @@
 package com.quantchi.intelquery;
 
+import com.quantchi.intelquery.date.formatter.NormalFormatter;
 import com.quantchi.intelquery.date.formatter.SparkSqlBasicIsoFormatter;
 import com.quantchi.intelquery.define.EnumDef;
 import com.quantchi.intelquery.exception.InterpreterException;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +63,9 @@ public class intelQuery{
         } catch (QPException e) {
             logger.error("LtpTokenizer error", e);
             totalRet.put(Status.INTERNAL_SERVER_ERROR.getStatus(),"LtpTokenizer error");
+        }catch (Exception e){
+            logger.error("LtpTokenizer error", e);
+            totalRet.put(Status.INTERNAL_SERVER_ERROR.getStatus(),e.getMessage());
         }
         finally {
             return totalRet;
@@ -97,19 +102,10 @@ public class intelQuery{
     private  Map<String, Object>  getResponseFromQueryResult(QueryResult queryResult)
             throws InterpreterException {
         Map<String, Object> response = new HashMap<>();
-        /*response.put("originNodeList", null);
-        response.put("nodeList", null);
-        response.put("keyFields", null);
         SqlFormatter formatter = new SqlFormatter.Builder()
-                .dateFormatter(new SparkSqlBasicIsoFormatter())
-                .selectRelated(false)
-                .selectKey(false)
-                .selectName(false)
+                .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
                 .build();
-        response.put("jobSql", queryResult.getSql(formatter));
-        response.put("sql", queryResult.getSql());*/
-
-        response = execSqlApiService.execsql(queryResult.getSql());
+        response = execSqlApiService.execsql(queryResult.getSql(formatter));
         return response;
     }
 }

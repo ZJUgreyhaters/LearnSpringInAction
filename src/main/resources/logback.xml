@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration>
 <configuration>
-	<property name="LOG_HOME" value="/var/logs/dayread/web" />  
+	<property name="LOG_HOME" value="/var/logs/web" />
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] %C{0}.%M %m%n</Pattern>

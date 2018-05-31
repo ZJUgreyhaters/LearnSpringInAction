@@ -76,11 +76,11 @@
 
 
     <!--mysql驱动包-->
-    <dependency>
+    <!--<dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.34</version>
-    </dependency>
+    </dependency>-->
 
     <!--spring相关包-->
     <dependency>
@@ -228,7 +228,7 @@
     <dependency>
       <groupId>com.quantchi</groupId>
       <artifactId>intelquery</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.3-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -269,13 +269,6 @@
               </exclusion>
           </exclusions>
       </dependency>
-
-    <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-      <version>20140107</version>
-    </dependency>
-
 
   </dependencies>
 
