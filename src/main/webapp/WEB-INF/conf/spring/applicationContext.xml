@@ -25,14 +25,14 @@
 		</property>
 	</bean>
 
-	<bean name="jacksonMessageConverter"
+	<!--<bean name="jacksonMessageConverter"
 		  class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
 		<property name="supportedMediaTypes">
 			<list>
 				<value>text/html;charset=UTF-8</value>
 			</list>
 		</property>
-	</bean>
+	</bean>-->
 
 	<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 		<property name="supportedMediaTypes">
@@ -56,6 +56,9 @@
 			<bean class="org.apache.solr.client.solrj.impl.XMLResponseParser"/>
 		</property>
 		<property name="connectionTimeout" value="500"/>
+	</bean>
+
+	<bean id="intelquery" class="com.quantchi.intelquery.intelQuery">
 	</bean>
 
 	<!-- define the SqlSessionFactory -->
