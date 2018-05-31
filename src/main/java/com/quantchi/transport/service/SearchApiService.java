@@ -39,6 +39,7 @@ public class SearchApiService {
 			mm = "50%";
 
 		Map<String,String> param = new HashMap<>();
+        param.put("defType","edismax");
 		param.put("mm",mm);
 		param.put("fq","type:entity");
 		return searchSolr(str,param);
