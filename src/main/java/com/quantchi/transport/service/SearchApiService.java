@@ -87,6 +87,11 @@ public class SearchApiService {
 
 	    //对每个doc做处理
 	    for(SolrDocument doc : docs){
+
+	    	//如果查询的内容和seg_name一样，略过
+	    	if(query.equals((String)doc.get("seg_name")))
+	    		continue;
+
 			String seg_name = (String) doc.get(searchField);
 	        List<String> queryWords= segment(query);
             List<String> nameWords =  java.util.Arrays.asList(seg_name.split(" "));
@@ -128,12 +133,27 @@ public class SearchApiService {
 		return docsAfterHandleReplaceOrigin;
 	}
 
-	private SolrDocumentList setReplaceOrigin(String query,SolrDocumentList docs,Map<String, Map<String, List<String>>> highlight){
+	private SolrDocumentList setReplaceOrigin(String query,SolrDocumentList docs,Map<String, Map<String, List<String>>> highlight)
+	throws IOException{
 		SolrDocumentList solrDocs = new SolrDocumentList();
 		for(SolrDocument doc:docs){
 			List<String> hl = highlight.get(doc.getFieldValue("id").toString()).get(highlightField);
-			doc.addField("replace_origin",getMaxLengthSubWord(query,getHitWords(hl)));
-			solrDocs.add(doc);
+			String replace_origin = getMaxLengthSubWord(query,getHitWords(hl));
+
+			double hit_ratio = (double)doc.get("hit_ratio");
+			double score_proirity = Double.parseDouble(AppProperties.get("solr.score.proirity"));
+
+			double len_ratio = (double)replace_origin.length() / (double)query.length();
+			double len_proirity = Double.parseDouble(AppProperties.get("solr.length.proirity"));
+
+			double weight = hit_ratio * score_proirity + len_ratio * len_proirity;
+
+			double standard = Double.parseDouble(AppProperties.get("solr.standard"));
+			if(weight >= standard){
+				doc.addField("replace_origin",replace_origin);
+				solrDocs.add(doc);
+			}
+
 		}
 		return solrDocs;
 	}
