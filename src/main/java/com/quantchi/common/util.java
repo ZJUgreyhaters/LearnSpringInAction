@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,10 @@ public class util {
     public static Map<String, Object> genRet(int code,Object data,String retMsg,int total){
         Map<String, Object> _ret = new HashMap<String, Object>();
         _ret.put("code",code);
-        _ret.put("data",data);
+        if(data == null)
+            _ret.put("data",new ArrayList<>());
+        else
+            _ret.put("data",data);
         _ret.put("msg",retMsg);
         _ret.put("total",total);
         return _ret;

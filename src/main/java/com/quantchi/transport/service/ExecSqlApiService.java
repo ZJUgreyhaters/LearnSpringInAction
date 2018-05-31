@@ -26,7 +26,7 @@ public class ExecSqlApiService {
 	private JdbcPool jdbcPool;
 
 	//public Map<String, Object> execsql(JdbcPool jdbcPool, String sql) {
-	public Map<String, Object> execsql(String sql) {
+	public Map<String, Object> execsql(String sql) throws Exception {
 		Map<String, Object> _ret = new HashMap<String, Object>();
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
@@ -39,7 +39,8 @@ public class ExecSqlApiService {
 			_ret.put("total", _res.size());
 		} catch (Exception e) {
 			logger.error("Failed to exec  sql, " + sql, e);
-//			throw new SQLException("Failed to exec  sql:" + sql);
+			//_ret.put("error",e.getMessage());
+			throw new Exception(e.getMessage());
 		}
 		return _ret;
 	}

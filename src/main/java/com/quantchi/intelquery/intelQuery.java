@@ -103,10 +103,13 @@ public class intelQuery{
     }
 
     private  Map<String, Object>  getResponseFromQueryResult(QueryResult queryResult)
-            throws InterpreterException {
+            throws InterpreterException ,Exception{
         Map<String, Object> response = new HashMap<>();
         SqlFormatter formatter = new SqlFormatter.Builder()
                 .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+                .selectKey(false)
+                .selectName(false)
+                .selectRelated(false)
                 .build();
         response = execSqlApiService.execsql(queryResult.getSql(formatter));
         return response;
