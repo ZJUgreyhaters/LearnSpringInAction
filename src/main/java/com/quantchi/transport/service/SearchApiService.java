@@ -54,7 +54,7 @@ public class SearchApiService {
 		String rows = AppProperties.get("solr.rows");
 		if(rows == null )
 			rows = "20";
-		query.setQuery(searchField+":"+str);
+		query.setQuery(searchField+":("+str+")");
 
 		if(param != null){
 			for(Map.Entry<String, String> entry:param.entrySet()){
