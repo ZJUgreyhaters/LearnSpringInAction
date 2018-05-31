@@ -27,7 +27,7 @@ public class SearchApiService {
 	private static final String leftTag = "<em>";
 	private static final String rightTag = "</em>";
 	private static final String searchField = "seg_name";
-	private static final String highlightField = "cn_name";
+	private static final String highlightField = "seg_name";
 
 	@Autowired
 	private HttpSolrClient httpSolr;
@@ -118,9 +118,11 @@ public class SearchApiService {
     }
 
     //分词函数
-    public List<String> segment(String str) throws QPException {
+    public List<String> segment(String str) throws QPException, IOException {
 	    List<String> list = new ArrayList<>();
-        QueryNodes _nodes = LtpTokenizer.tokenize(str);
+		String ltp = AppProperties.get("ltp.addr");
+        QueryNodes _nodes = LtpTokenizer.tokenize(str,ltp);
+		//QueryNodes _nodes = LtpTokenizer.tokenize(str);
         for(SemanticNode node : _nodes){
             list.add(node.getText());
         }
@@ -138,6 +140,8 @@ public class SearchApiService {
 		SolrDocumentList solrDocs = new SolrDocumentList();
 		for(SolrDocument doc:docs){
 			List<String> hl = highlight.get(doc.getFieldValue("id").toString()).get(highlightField);
+			if(hl == null)
+				continue;
 			String replace_origin = getMaxLengthSubWord(query,getHitWords(hl));
 
 			double hit_ratio = (double)doc.get("hit_ratio");

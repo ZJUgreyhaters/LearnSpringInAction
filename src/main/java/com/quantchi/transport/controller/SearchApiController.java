@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -86,7 +87,7 @@ public class SearchApiController {
         }else{
             Iterator<Map.Entry<String,Object>> iter = _intelRet.entrySet().iterator();
             Map.Entry<String, Object> entry = iter.next();
-            return util.genRet(500,null,entry.getValue().toString(),0);
+            return util.genRet(500,new ArrayList(),entry.getValue().toString(),0);
         }
 
 
