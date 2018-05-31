@@ -1,5 +1,6 @@
 package com.quantchi.intelquery;
 
+import com.quantchi.common.AppProperties;
 import com.quantchi.intelquery.date.formatter.NormalFormatter;
 import com.quantchi.intelquery.date.formatter.SparkSqlBasicIsoFormatter;
 import com.quantchi.intelquery.define.EnumDef;
@@ -105,13 +106,17 @@ public class intelQuery{
     private  Map<String, Object>  getResponseFromQueryResult(QueryResult queryResult)
             throws InterpreterException ,Exception{
         Map<String, Object> response = new HashMap<>();
+        String limitNum = AppProperties.get("sql.limit");
+        if(limitNum == null )
+            limitNum = "10";
+        int num = Integer.parseInt(limitNum);
         SqlFormatter formatter = new SqlFormatter.Builder()
                 .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
                 .selectKey(false)
                 .selectName(false)
                 .selectRelated(false)
                 .build();
-        response = execSqlApiService.execsql(queryResult.getSql(formatter));
+        response = execSqlApiService.execsql(queryResult.getSql(formatter) + " limit "+num);
         return response;
     }
 }

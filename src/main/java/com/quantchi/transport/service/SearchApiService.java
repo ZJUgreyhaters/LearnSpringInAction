@@ -142,7 +142,9 @@ public class SearchApiService {
 			List<String> hl = highlight.get(doc.getFieldValue("id").toString()).get(highlightField);
 			if(hl == null)
 				continue;
-			String replace_origin = getMaxLengthSubWord(query,getHitWords(hl));
+
+			String _query_with_no_seg = query.replace(" ","");
+			String replace_origin = getMaxLengthSubWord(_query_with_no_seg,getHitWords(hl));
 
 			double hit_ratio = (double)doc.get("hit_ratio");
 			double score_proirity = Double.parseDouble(AppProperties.get("solr.score.proirity"));

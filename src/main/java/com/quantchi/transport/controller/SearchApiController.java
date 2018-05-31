@@ -60,9 +60,15 @@ public class SearchApiController {
             if(_intelRet.containsKey(Status.INTERNAL_SERVER_ERROR.getStatus())){
                 return util.genRet(500,null,_intelRet.get(Status.INTERNAL_SERVER_ERROR.getStatus()).toString(),0);
             }else{
-                return util.genRet(200,_intelRet.get("data"),"ok",0);
+                Map<String, Object> _intelRetData = (Map<String, Object>)_intelRet.get("data");
+                if(_intelRetData.get("phase").toString().equals("afterSearch")){
+                    return util.genRet(200,_intelRet.get("data"),"ok",0);
+                }else{
+                    Map<String, Object> _searchData = (Map<String, Object>)_intelRetData.get("searchResults");
+                    return util.genRet(200,_searchData.get("data"),"ok",Integer.parseInt(_searchData.get("total").toString()));
+                }
+
             }
-            //return util.genRet(200,"","ok",0);
         }
     }
 
@@ -90,6 +96,5 @@ public class SearchApiController {
             return util.genRet(500,null,entry.getValue().toString(),0);
         }
 
-
-        }
     }
+}
