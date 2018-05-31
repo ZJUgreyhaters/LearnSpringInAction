@@ -40,7 +40,7 @@ public class SearchApiService {
 
 		Map<String,String> param = new HashMap<>();
 		param.put("mm",mm);
-		param.put("fq","type=entity");
+		param.put("fq","type:entity");
 		return searchSolr(str,param);
 	}
 
