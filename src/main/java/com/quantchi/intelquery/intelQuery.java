@@ -67,6 +67,33 @@ public class intelQuery{
         }
     }
 
+    public Map<String, Object> queryFromSearch(String serialization){
+
+        Map<String, Object> totalRet = new HashMap<>();
+        try {
+            Query query = Query.fromSerializedString(serialization);
+            QueryParser parser = QueryParser.getInstance();
+            QueryResult queryResult = parser.parse(query).getFirstResult();
+            totalRet.put("data",getResponseFromQueryResult(queryResult));
+
+        } catch (IOException e) {
+            logger.error("Failed parsing serialized string.", e);
+            totalRet.put(Status.BAD_REQUEST.getStatus(),"Failed parsing serialized string.");
+            //return ErrorResponse.create(Status.BAD_REQUEST, "Failed parsing serialized string.");
+        } catch (ClassNotFoundException e) {
+            logger.error("Class not found", e);
+            totalRet.put(Status.INTERNAL_SERVER_ERROR.getStatus(),"Fatal Error");
+            //return ErrorResponse.create(Status.INTERNAL_SERVER_ERROR, "Fatal Error");
+        } catch (InterpreterException e) {
+            logger.error("Failed to generate SQL", e);
+            totalRet.put(Status.INTERNAL_SERVER_ERROR.getStatus(),"Failed to generate SQL.");
+            //return ErrorResponse.create(Status.INTERNAL_SERVER_ERROR, "Failed to generate SQL. " + e.getMessage());
+        }
+        finally {
+            return  totalRet;
+        }
+    }
+
     private  Map<String, Object>  getResponseFromQueryResult(QueryResult queryResult)
             throws InterpreterException {
         Map<String, Object> response = new HashMap<>();

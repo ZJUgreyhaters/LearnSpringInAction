@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.quantchi.intelquery.tokenize.LtpTokenizer;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,37 +26,43 @@ public class SearchApiService {
 	private static final Logger logger = LoggerFactory.getLogger(SearchApiService.class);
 	private static final String leftTag = "<em>";
 	private static final String rightTag = "</em>";
+	private static final String searchField = "seg_name";
+	private static final String highlightField = "cn_name";
 
 	@Autowired
 	private HttpSolrClient httpSolr;
-
-
 
 	public QueryResponse search(String str) throws Exception{
 		//匹配率
 		String mm = AppProperties.get("solr.mm");
 		if(mm == null)
 			mm = "50%";
-		return searchSolr(str,mm);
+
+		Map<String,String> param = new HashMap<>();
+		param.put("mm",mm);
+		param.put("fq","type=entity");
+		return searchSolr(str,param);
 	}
 
 	public QueryResponse searchInstance(String str) throws Exception{
 		return searchSolr(str,null);
 	}
 
-	public QueryResponse searchSolr(String str,String mm) throws Exception{
+	public QueryResponse searchSolr(String str,Map<String,String> param) throws Exception{
 
 		SolrQuery query = new SolrQuery();
 		String rows = AppProperties.get("solr.rows");
 		if(rows == null )
 			rows = "20";
-		query.setQuery("cn_name:"+str);
-		if(mm != null){
-			query.set("defType", "edismax");
-			query.set("mm", mm);
+		query.setQuery(searchField+":"+str);
+
+		if(param != null){
+			for(Map.Entry<String, String> entry:param.entrySet()){
+				query.setParam(entry.getKey(),entry.getValue());
+			}
 		}
 		query.setHighlight(true);
-		query.setParam("hl.fl", "cn_name");
+		query.setParam("hl.fl", highlightField);
 		query.setStart(0);
 		query.setParam("rows",rows);
 		QueryResponse response = new QueryResponse();
@@ -79,10 +86,9 @@ public class SearchApiService {
 
 	    //对每个doc做处理
 	    for(SolrDocument doc : docs){
-	        String cn_name = (String) doc.get("cn_name");
+			String seg_name = (String) doc.get(searchField);
 	        List<String> queryWords= segment(query);
-	        //List<String> nameWords = segment(cn_name);
-            List<String> nameWords =  java.util.Arrays.asList(cn_name.split(" "));
+            List<String> nameWords =  java.util.Arrays.asList(seg_name.split(" "));
 
 	        double nameWordNum = nameWords.size(); //中文名的单词数
             double matchNum = 0; //匹配到的数量
@@ -124,7 +130,7 @@ public class SearchApiService {
 	private SolrDocumentList setReplaceOrigin(String query,SolrDocumentList docs,Map<String, Map<String, List<String>>> highlight){
 		SolrDocumentList solrDocs = new SolrDocumentList();
 		for(SolrDocument doc:docs){
-			List<String> hl = highlight.get(doc.getFieldValue("id").toString()).get("cn_name");
+			List<String> hl = highlight.get(doc.getFieldValue("id").toString()).get(highlightField);
 			doc.addField("replace_origin",getMaxLengthSubWord(query,getHitWords(hl)));
 			solrDocs.add(doc);
 		}
