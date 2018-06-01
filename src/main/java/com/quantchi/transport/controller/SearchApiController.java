@@ -89,7 +89,8 @@ public class SearchApiController {
         String serialization = json.get("serial").toString();
         Map<String, Object> _intelRet = intelquery.queryFromSearch(serialization);
         if(_intelRet.containsKey("data")){
-            return util.genRet(200,_intelRet.get("data"),"ok",0);
+            Map<String, Object> _searchData = (Map<String, Object>)_intelRet.get("data");
+            return util.genRet(200,_searchData.get("data"),"ok",Integer.parseInt(_searchData.get("total").toString()));
         }else{
             Iterator<Map.Entry<String,Object>> iter = _intelRet.entrySet().iterator();
             Map.Entry<String, Object> entry = iter.next();
