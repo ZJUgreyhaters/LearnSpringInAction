@@ -77,7 +77,7 @@ public class SearchApiService {
 	}
 
 	//处理函数
-	public SolrDocumentList handle(String query, SolrDocumentList docs) throws Exception{
+	public SolrDocumentList handle(String query, SolrDocumentList docs , boolean filterRepeat) throws Exception{
 
 	    SolrDocumentList result = new SolrDocumentList();
         String t = AppProperties.get("solr.threshold");
@@ -89,7 +89,7 @@ public class SearchApiService {
 	    for(SolrDocument doc : docs){
 
 	    	//如果查询的内容和seg_name一样，略过
-	    	if(query.equals((String)doc.get("seg_name")))
+	    	if(filterRepeat && query.equals((String)doc.get("seg_name")))
 	    		continue;
 
 			String seg_name = (String) doc.get(searchField);
@@ -130,7 +130,7 @@ public class SearchApiService {
     }
 
 	public SolrDocumentList handleInst(String query, QueryResponse qRes) throws Exception {
-		SolrDocumentList docs = handle(query,qRes.getResults());
+		SolrDocumentList docs = handle(query,qRes.getResults(),true);
 		SolrDocumentList docsAfterHandleReplaceOrigin = setReplaceOrigin(query,docs,qRes.getHighlighting());
 		return docsAfterHandleReplaceOrigin;
 	}
