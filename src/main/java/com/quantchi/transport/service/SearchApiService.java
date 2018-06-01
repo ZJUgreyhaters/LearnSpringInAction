@@ -190,7 +190,9 @@ public class SearchApiService {
 			String _lastWord = hitWords.get(hitWords.size()-1);
 			int _st = query.indexOf(_firstWord);
 			int _end = query.lastIndexOf(_lastWord);
-			_ret = query.substring(_st,_end+_lastWord.length());
+			//如果后面的词排在了前面,暂时认为第一个词是最后最先匹配的词
+			if(_st <= _end)
+				_ret = query.substring(_st,_end+_lastWord.length());
 		}
 		return _ret;
 	}
