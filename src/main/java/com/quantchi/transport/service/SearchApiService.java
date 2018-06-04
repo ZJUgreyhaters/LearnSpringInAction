@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.quantchi.intelquery.tokenize.LtpTokenizer;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SearchApiService {
@@ -140,7 +137,9 @@ public class SearchApiService {
 
 	private SolrDocumentList setReplaceOrigin(String query,SolrDocumentList docs,Map<String, Map<String, List<String>>> highlight)
 	throws IOException{
-		SolrDocumentList solrDocs = new SolrDocumentList();
+		SolrDocumentList resultDocs = new SolrDocumentList();
+
+		SolrDocumentList qualifiedDocs = new SolrDocumentList();
 		for(SolrDocument doc:docs){
 			List<String> hl = highlight.get(doc.getFieldValue("id").toString()).get(highlightField);
 			if(hl == null)
@@ -148,6 +147,10 @@ public class SearchApiService {
 
 			String _query_with_no_seg = query.replace(" ","");
 			String replace_origin = getMaxLengthSubWord(_query_with_no_seg,getHitWords(hl));
+
+			if(replace_origin.equals( (String) doc.get("cn_name") ))
+				continue;
+
 
 			double hit_ratio = (double)doc.get("hit_ratio");
 			double score_proirity = Double.parseDouble(AppProperties.get("solr.score.proirity"));
@@ -158,13 +161,62 @@ public class SearchApiService {
 			double weight = hit_ratio * score_proirity + len_ratio * len_proirity;
 
 			double standard = Double.parseDouble(AppProperties.get("solr.standard"));
+
+
+			//筛选符合标准的数据
 			if(weight >= standard){
+
+				doc.addField("weight",weight);
 				doc.addField("replace_origin",replace_origin);
-				solrDocs.add(doc);
+				qualifiedDocs.add(doc);
+
 			}
 
+		}//end for doc : docs
+
+
+
+		//
+		//筛选最高分的组
+		HashMap<String,Double> tmpList = new HashMap<>();
+
+		HashSet<String> replaceStr = new HashSet<>();
+
+		double maxScore = 0;
+		double avgScore = 0;
+
+		//算最高分
+		for(SolrDocument doc : qualifiedDocs){
+			double score = (double) doc.get("weight");
+			if (score > maxScore)
+				maxScore = score;
 		}
-		return solrDocs;
+
+		//算出哪个replace origin的权值是最大的
+		for(SolrDocument doc : qualifiedDocs){
+			if(maxScore == (double)doc.get("weight")){
+				replaceStr.add((String) doc.get("replace_origin"));
+			}
+		}
+
+		//得到最长的replace origin
+		String maxLenStr = "";
+		for(String str : replaceStr){
+			if (str.length() > maxLenStr.length() )
+				maxLenStr = str;
+		}
+
+		//将符合最终要求的同一replace origin的docs加入结果集合
+		for(SolrDocument doc : qualifiedDocs){
+			if(maxLenStr.equals( (String) doc.get("replace_origin") )){
+				resultDocs.add(doc);
+			}
+		}
+
+
+
+
+		return resultDocs;
 	}
 
 	private List<String> getHitWords(List<String> highlights){
