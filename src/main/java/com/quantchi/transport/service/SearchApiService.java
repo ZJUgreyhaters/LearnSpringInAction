@@ -46,7 +46,10 @@ public class SearchApiService {
 	}
 
 	public QueryResponse searchInstance(String str) throws Exception{
-		return searchSolr(str,null);
+
+		Map<String,String> param = new HashMap<>();
+		param.put("fq","!seg_name:\"客户 1\"");
+		return searchSolr(str,param);
 	}
 
 	public QueryResponse searchSolr(String str,Map<String,String> param) throws Exception{
