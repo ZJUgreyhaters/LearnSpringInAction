@@ -37,7 +37,6 @@ public class intelQuery{
             Query query = new BasicQuery(q);
             QueryParser parser = QueryParser.getInstance();
             QueryResult queryResult = parser.parse(query);
-
             Map<String, Object> res = new HashMap<>();
             if (queryResult.getStatus() == EnumDef.QueryStatus.MAPPED_NODES) {
                 List<Map<String, Object>> responseList = new ArrayList<>();
@@ -47,15 +46,17 @@ public class intelQuery{
                     responseItem.put("text", searchResult.getTextForUser());
                     responseList.add(responseItem);
                 }
-                res.put("phase", "afterSearch");
+                totalRet.put("phase", "afterSearch");
                 res.put("searchResults", responseList);
+                totalRet.put("data",res);
+                totalRet.put("total",0);
             } else if (queryResult.getStatus() == EnumDef.QueryStatus.QUERY_TREE) {
-                res.put("phase", "complete");
-                res.put("searchResults", getResponseFromQueryResult(queryResult.getFirstResult()));
+                totalRet.put("phase", "complete");
+                totalRet.put("data", getResponseFromQueryResult(queryResult.getFirstResult()));
+                totalRet.put("total",getResponseFromQueryResult(queryResult.getFirstResult()).get("total").toString());
             } else {
                 totalRet.put(Status.INTERNAL_SERVER_ERROR.getStatus(),queryResult.getTextForUser());
             }
-            totalRet.put("data",res);
             //return totalRet;
         } catch (IOException e) {
             logger.error("Cannot get config file", e);
@@ -80,8 +81,7 @@ public class intelQuery{
             Query query = Query.fromSerializedString(serialization);
             QueryParser parser = QueryParser.getInstance();
             QueryResult queryResult = parser.parse(query).getFirstResult();
-            totalRet.put("data",getResponseFromQueryResult(queryResult));
-
+            totalRet.putAll(getResponseFromQueryResult(queryResult));
         } catch (IOException e) {
             logger.error("Failed parsing serialized string.", e);
             totalRet.put(Status.BAD_REQUEST.getStatus(),"Failed parsing serialized string.");

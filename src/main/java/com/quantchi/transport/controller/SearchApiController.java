@@ -18,6 +18,7 @@ import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
 
 @Controller
 @RequestMapping(value = "api")
@@ -43,9 +43,7 @@ public class SearchApiController {
     @RequestMapping(value = "/query", method = { RequestMethod.GET })
     public @ResponseBody
     Map<String, Object> query (@RequestParam("q") String q) throws Exception {
-
         String _query = String.join(" ",searchApiService.segment(q));
-        //String _query = q;
         QueryResponse rets = searchApiService.search(_query);
         //处理后的结果集
         SolrDocumentList afterHandle = searchApiService.handle(q,rets.getResults());
@@ -54,21 +52,11 @@ public class SearchApiController {
             _retRes.put("type","entity");
             return _retRes;
         }
-        else{
-
-            Map<String, Object> _intelRet = intelquery.query(q);
-            if(_intelRet.containsKey(Status.INTERNAL_SERVER_ERROR.getStatus())){
-                return util.genRet(500,null,_intelRet.get(Status.INTERNAL_SERVER_ERROR.getStatus()).toString(),0);
-            }else{
-                Map<String, Object> _intelRetData = (Map<String, Object>)_intelRet.get("data");
-                if(_intelRetData.get("phase").toString().equals("afterSearch")){
-                    return util.genRet(200,_intelRet.get("data"),"ok",0);
-                }else{
-                    Map<String, Object> _searchData = (Map<String, Object>)_intelRetData.get("searchResults");
-                    return util.genRet(200,_searchData.get("data"),"ok",Integer.parseInt(_searchData.get("total").toString()));
-                }
-
-            }
+        Map<String, Object> _intelRet = intelquery.query(q);
+        if(_intelRet.containsKey(Status.INTERNAL_SERVER_ERROR.getStatus())){
+            return util.genRet(500,null,_intelRet.get(Status.INTERNAL_SERVER_ERROR.getStatus()).toString(),0);
+        }else{
+            return util.genRet(200,_intelRet.get("data"),"ok",Integer.parseInt(_intelRet.get("total").toString()));
         }
     }
 
@@ -85,17 +73,19 @@ public class SearchApiController {
     @RequestMapping(value = "/queryFromSearchToData", method = { RequestMethod.POST })
     public @ResponseBody
     Map<String, Object> queryFromSearchToData(@RequestBody String bodyString) {
-        JSONObject json = JSONObject.parseObject(bodyString);
-        String serialization = json.get("serial").toString();
-        Map<String, Object> _intelRet = intelquery.queryFromSearch(serialization);
-        if(_intelRet.containsKey("data")){
-            Map<String, Object> _searchData = (Map<String, Object>)_intelRet.get("data");
-            return util.genRet(200,_searchData.get("data"),"ok",Integer.parseInt(_searchData.get("total").toString()));
-        }else{
-            Iterator<Map.Entry<String,Object>> iter = _intelRet.entrySet().iterator();
-            Map.Entry<String, Object> entry = iter.next();
-            return util.genRet(500,null,entry.getValue().toString(),0);
+        try {
+            JSONObject json = JSONObject.parseObject(bodyString);
+            String serialization = json.get("serial").toString();
+            Map<String, Object> _intelRet = intelquery.queryFromSearch(serialization);
+            if (_intelRet.containsKey("data")) {
+                return util.genRet(200, _intelRet.get("data"), "ok", Integer.parseInt(_intelRet.get("total").toString()));
+            } else {
+                return util.genRet(500, null, _intelRet.get(Status.INTERNAL_SERVER_ERROR.getStatus()).toString(), 0);
+            }
+        }catch (Exception e){
+            return util.genRet(500, null, e.getMessage(), 0);
         }
 
     }
+
 }
