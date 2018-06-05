@@ -46,7 +46,7 @@ public class SearchApiController {
         String _query = String.join(" ",searchApiService.segment(q));
         QueryResponse rets = searchApiService.search(_query);
         //处理后的结果集
-        SolrDocumentList afterHandle = searchApiService.handle(q,rets.getResults());
+        SolrDocumentList afterHandle = searchApiService.handle(q,rets.getResults(),false);
         if(afterHandle.size() > 0){
             Map<String, Object> _retRes =  util.genRet(200,afterHandle,"ok",afterHandle.size());
             _retRes.put("type","entity");
