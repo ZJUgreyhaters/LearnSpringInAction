@@ -21,8 +21,8 @@ import java.util.*;
 @Service
 public class SearchApiService {
 	private static final Logger logger = LoggerFactory.getLogger(SearchApiService.class);
-	private static final String leftTag = "<em>";
-	private static final String rightTag = "</em>";
+//	private static final String leftTag = "<em>";
+//	private static final String rightTag = "</em>";
 	private static final String searchField = "seg_name";
 	private static final String highlightField = "seg_name";
 
@@ -31,29 +31,22 @@ public class SearchApiService {
 
 	public QueryResponse search(String str) throws Exception{
 
-		Map<String,String> param = new HashMap<>();
-		//获取app.properties文件的solr.param参数，解析参数，封装到param中
-		String solrParam = AppProperties.get("solr.param");
-		String[] solrParams = solrParam.split("&");
-		for(int i=0; i < solrParams.length; i++){
-			String[] entry = solrParams[i].split("=");
-			param.put(entry[0],entry[1]);
-		}
-
+		Map<String,String> param = getPropertiesParams("solr.param");
 		return searchSolr(str,param);
 	}
 
 	public QueryResponse searchInstance(String str) throws Exception{
 
-		Map<String,String> param = new HashMap<>();
-		param.put("fq","!seg_name:\"客户 1\"");
+		Map<String,String> param = getPropertiesParams("solr.instance");
 		return searchSolr(str,param);
 	}
 
 	public QueryResponse searchSolr(String str,Map<String,String> param) throws Exception{
 
 		SolrQuery query = new SolrQuery();
-		String rows = AppProperties.get("solr.rows");
+//		String rows = AppProperties.get("solr.rows");
+		Map<String,String> solrParam = getPropertiesParams("solr.search");
+		String rows = solrParam.get("rows");
 		if(rows == null )
 			rows = "20";
 		query.setQuery(searchField+":("+str+")");
@@ -64,7 +57,7 @@ public class SearchApiService {
 			}
 		}
 		query.setHighlight(true);
-		query.setParam("hl.fl", highlightField);
+		query.setParam("hl.fl", solrParam.get("highlightField"));
 		query.setStart(0);
 		query.setParam("rows",rows);
 		QueryResponse response = new QueryResponse();
@@ -81,7 +74,8 @@ public class SearchApiService {
 	public SolrDocumentList handle(String query, SolrDocumentList docs , boolean filterRepeat) throws Exception{
 
 	    SolrDocumentList result = new SolrDocumentList();
-        String t = AppProperties.get("solr.threshold");
+		Map<String,String> solrParam = getPropertiesParams("solr.handle");
+		String t = solrParam.get("threshold");
         if(t == null)
             t = "0.5";
 	    double threshold =Double.parseDouble(t);   //阈值
@@ -150,16 +144,16 @@ public class SearchApiService {
 			if(replace_origin.equals( (String) doc.get("cn_name") ))
 				continue;
 
-
+			Map<String,String> solrParam = getPropertiesParams("solr.replaceOrigin");
 			double hit_ratio = (double)doc.get("hit_ratio");
-			double score_proirity = Double.parseDouble(AppProperties.get("solr.score.proirity"));
+			double score_proirity = Double.parseDouble(solrParam.get("solr.score.proirity"));
 
 			double len_ratio = (double)replace_origin.length() / (double)query.length();
-			double len_proirity = Double.parseDouble(AppProperties.get("solr.length.proirity"));
+			double len_proirity = Double.parseDouble(solrParam.get("solr.length.proirity"));
 
 			double weight = hit_ratio * score_proirity + len_ratio * len_proirity;
 
-			double standard = Double.parseDouble(AppProperties.get("solr.standard"));
+			double standard = Double.parseDouble(solrParam.get("solr.standard"));
 
 			//筛选符合标准的数据
 			if(weight >= standard){
@@ -207,14 +201,13 @@ public class SearchApiService {
 				resultDocs.add(doc);
 			}
 		}
-
-
-
-
 		return resultDocs;
 	}
 
 	private List<String> getHitWords(List<String> highlights){
+		Map<String,String> solrParam = getPropertiesParams("solr.tag");
+		String leftTag = solrParam.get("leftTag");
+		String rightTag = solrParam.get("rightTag");
 
 		List<String> hits = new ArrayList<>();
 		String _hl = highlights.get(0).toString();
@@ -245,6 +238,26 @@ public class SearchApiService {
 				_ret = query.substring(_st,_end+_lastWord.length());
 		}
 		return _ret;
+	}
+
+	//获取app.properties文件的paramKey参数，解析参数，封装到paramValue中返回
+	private Map<String,String> getPropertiesParams(String paramKey){
+		Map<String,String> paramValue = new HashMap<>();
+		//获取app.properties文件的solr.param参数，解析参数，封装到param中
+		String solrParam = null;
+		try {
+			solrParam = AppProperties.get(paramKey);
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("read app.properties param error",e);
+		}
+		String[] solrParams = solrParam.split("&");
+		for(int i=0; i < solrParams.length; i++){
+			String[] entry = solrParams[i].split("=");
+			paramValue.put(entry[0],entry[1]);
+			System.out.println(paramKey + ":::::" + entry[0] + "=" +entry[1]);
+		}
+		return paramValue;
 	}
 }
 
