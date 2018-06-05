@@ -72,8 +72,6 @@
 		<property name="typeAliasesPackage" value="cn.xuetao.common.data.entities" />
 	</bean>-->
 
-
-
     <!-- production环境  新加入redis的配置 -->
 	<beans profile="production">
 		<context:property-placeholder location="classpath:app.properties" />
@@ -83,4 +81,6 @@
 	<beans profile="development">
 		<context:property-placeholder location="classpath:app.properties" />
 	</beans>
+
+
 </beans>

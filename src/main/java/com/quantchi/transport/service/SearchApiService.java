@@ -30,15 +30,16 @@ public class SearchApiService {
 	private HttpSolrClient httpSolr;
 
 	public QueryResponse search(String str) throws Exception{
-		//匹配率
-		String mm = AppProperties.get("solr.mm");
-		if(mm == null)
-			mm = "50%";
 
 		Map<String,String> param = new HashMap<>();
-        param.put("defType","edismax");
-		param.put("mm",mm);
-		param.put("fq","type:entity");
+		//获取app.properties文件的solr.param参数，解析参数，封装到param中
+		String solrParam = AppProperties.get("solr.param");
+		String[] solrParams = solrParam.split("&");
+		for(int i=0; i < solrParams.length; i++){
+			String[] entry = solrParams[i].split("=");
+			param.put(entry[0],entry[1]);
+		}
+
 		return searchSolr(str,param);
 	}
 
@@ -111,9 +112,7 @@ public class SearchApiService {
 	        	doc.addField("hit_ratio",ratio);
 				result.add(doc);
 			}
-
         }
-
 	    return result;
     }
 
@@ -162,7 +161,6 @@ public class SearchApiService {
 
 			double standard = Double.parseDouble(AppProperties.get("solr.standard"));
 
-
 			//筛选符合标准的数据
 			if(weight >= standard){
 
@@ -174,9 +172,6 @@ public class SearchApiService {
 
 		}//end for doc : docs
 
-
-
-		//
 		//筛选最高分的组
 		HashMap<String,Double> tmpList = new HashMap<>();
 
