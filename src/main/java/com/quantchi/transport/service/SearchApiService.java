@@ -4,6 +4,7 @@ import com.quantchi.common.AppProperties;
 import com.quantchi.intelquery.QueryNodes;
 import com.quantchi.intelquery.exception.QPException;
 import com.quantchi.intelquery.node.SemanticNode;
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -22,28 +23,32 @@ import java.util.*;
 public class SearchApiService {
 	private static final Logger logger = LoggerFactory.getLogger(SearchApiService.class);
 
-	private static final String searchField = "seg_name";
-	private static final String highlightField = "seg_name";
+	private static final String searchField = AppProperties.getWithDefault("searchField","seg_name");
+	private static final String highlightField = AppProperties.getWithDefault("highlightField","seg_name");
+	private static final String colsField = AppProperties.getWithDefault("colsField","cn_name");
+
+	private static final String WEIGHT = "weight";
+	private static final String REPLACE_ORIGIN = "replace_origin";
 
 	@Autowired
 	private HttpSolrClient httpSolr;
 
 	public QueryResponse search(String str) throws Exception{
 
-		Map<String,String> param = getPropertiesParams("solr.param");
+		Map<String,String> param = AppProperties.getPropertiesMap("solr.param");
 		return searchSolr(str,param);
 	}
 
 	public QueryResponse searchInstance(String str) throws Exception{
 
-		Map<String,String> param = getPropertiesParams("solr.instance");
+		Map<String,String> param = AppProperties.getPropertiesMap("solr.instance");
 		return searchSolr(str,param);
 	}
 
 	public QueryResponse searchSolr(String str,Map<String,String> param) throws Exception{
 
 		SolrQuery query = new SolrQuery();
-		Map<String,String> solrParam = getPropertiesParams("solr.search");
+		Map<String,String> solrParam = AppProperties.getPropertiesMap("solr.search");
 		query.setQuery(searchField+":("+str+")");
 
 		if(param != null){
@@ -70,51 +75,51 @@ public class SearchApiService {
 	//处理函数
 	public SolrDocumentList handle(String query, SolrDocumentList docs , boolean filterRepeat) throws Exception{
 
-	    SolrDocumentList result = new SolrDocumentList();
-		Map<String,String> solrParam = getPropertiesParams("solr.handle");
-	    double threshold =Double.parseDouble(solrParam.get("threshold"));   //阈值
+		SolrDocumentList result = new SolrDocumentList();
+		Map<String,String> solrParam = AppProperties.getPropertiesMap("solr.handle");
+		double threshold =Double.parseDouble(solrParam.get("threshold"));   //阈值
 
-	    //对每个doc做处理
-	    for(SolrDocument doc : docs){
+		//对每个doc做处理
+		for(SolrDocument doc : docs){
 
-	    	//如果查询的内容和seg_name一样，略过
-	    	if(filterRepeat && query.equals((String)doc.get("seg_name")))
-	    		continue;
+			//如果查询的内容和seg_name一样，略过
+			if(filterRepeat && query.equals((String)doc.get(searchField)))
+				continue;
 
 			String seg_name = (String) doc.get(searchField);
-	        List<String> queryWords= segment(query);
-            List<String> nameWords =  java.util.Arrays.asList(seg_name.split(" "));
+			List<String> queryWords= segment(query);
+			List<String> nameWords =  java.util.Arrays.asList(seg_name.split(" "));
 
-	        double nameWordNum = nameWords.size(); //中文名的单词数
-            double matchNum = 0; //匹配到的数量
+			double nameWordNum = nameWords.size(); //中文名的单词数
+			double matchNum = 0; //匹配到的数量
 
-	        for(String word : queryWords){
-                if(nameWords.contains(word))
-                    matchNum ++;
-            }
+			for(String word : queryWords){
+				if(nameWords.contains(word))
+					matchNum ++;
+			}
 
-            double ratio = matchNum / nameWordNum;
+			double ratio = matchNum / nameWordNum;
 
-	        //如果比例大于等于阈值，添加到结果集合中
-	        if(ratio >= threshold){
-	        	doc.addField("hit_ratio",ratio);
+			//如果比例大于等于阈值，添加到结果集合中
+			if(ratio >= threshold){
+				doc.addField("hit_ratio",ratio);
 				result.add(doc);
 			}
-        }
-	    return result;
-    }
+		}
+		return result;
+	}
 
-    //分词函数
-    public List<String> segment(String str) throws QPException, IOException {
-	    List<String> list = new ArrayList<>();
+	//分词函数
+	public List<String> segment(String str) throws QPException, IOException {
+		List<String> list = new ArrayList<>();
 		String ltp = AppProperties.get("ltp.addr");
-        QueryNodes _nodes = LtpTokenizer.tokenize(str,ltp);
+		QueryNodes _nodes = LtpTokenizer.tokenize(str,ltp);
 		//QueryNodes _nodes = LtpTokenizer.tokenize(str);
-        for(SemanticNode node : _nodes){
-            list.add(node.getText());
-        }
-	    return list;
-    }
+		for(SemanticNode node : _nodes){
+			list.add(node.getText());
+		}
+		return list;
+	}
 
 	public SolrDocumentList handleInst(String query, QueryResponse qRes) throws Exception {
 		SolrDocumentList docs = handle(query,qRes.getResults(),true);
@@ -123,7 +128,7 @@ public class SearchApiService {
 	}
 
 	private SolrDocumentList setReplaceOrigin(String query,SolrDocumentList docs,Map<String, Map<String, List<String>>> highlight)
-	throws IOException{
+			throws IOException{
 		SolrDocumentList resultDocs = new SolrDocumentList();
 
 		SolrDocumentList qualifiedDocs = new SolrDocumentList();
@@ -135,10 +140,10 @@ public class SearchApiService {
 			String _query_with_no_seg = query.replace(" ","");
 			String replace_origin = getMaxLengthSubWord(_query_with_no_seg,getHitWords(hl));
 
-			if(replace_origin.equals( (String) doc.get("cn_name") ))
+			if(replace_origin.equals( (String) doc.get(colsField) ))
 				continue;
 
-			Map<String,String> solrParam = getPropertiesParams("solr.replaceOrigin");
+			Map<String,String> solrParam = AppProperties.getPropertiesMap("solr.replaceOrigin");
 			double hit_ratio = (double)doc.get("hit_ratio");
 			double score_proirity = Double.parseDouble(solrParam.get("solr.score.proirity"));
 
@@ -151,15 +156,12 @@ public class SearchApiService {
 
 			//筛选符合标准的数据
 			if(weight >= standard){
-
-				doc.addField("weight",weight);
-				doc.addField("replace_origin",replace_origin);
+				doc.addField(WEIGHT,weight);
+				doc.addField(REPLACE_ORIGIN,replace_origin);
 				qualifiedDocs.add(doc);
-
 			}
 
 		}//end for doc : docs
-
 		//筛选最高分的组
 		HashMap<String,Double> tmpList = new HashMap<>();
 
@@ -170,15 +172,15 @@ public class SearchApiService {
 
 		//算最高分
 		for(SolrDocument doc : qualifiedDocs){
-			double score = (double) doc.get("weight");
+			double score = (double) doc.get(WEIGHT);
 			if (score > maxScore)
 				maxScore = score;
 		}
 
 		//算出哪个replace origin的权值是最大的
 		for(SolrDocument doc : qualifiedDocs){
-			if(maxScore == (double)doc.get("weight")){
-				replaceStr.add((String) doc.get("replace_origin"));
+			if(maxScore == (double)doc.get(WEIGHT)){
+				replaceStr.add((String) doc.get(REPLACE_ORIGIN));
 			}
 		}
 
@@ -191,7 +193,7 @@ public class SearchApiService {
 
 		//将符合最终要求的同一replace origin的docs加入结果集合
 		for(SolrDocument doc : qualifiedDocs){
-			if(maxLenStr.equals( (String) doc.get("replace_origin") )){
+			if(maxLenStr.equals( (String) doc.get(REPLACE_ORIGIN) )){
 				resultDocs.add(doc);
 			}
 		}
@@ -199,7 +201,7 @@ public class SearchApiService {
 	}
 
 	private List<String> getHitWords(List<String> highlights){
-		Map<String,String> solrParam = getPropertiesParams("solr.tag");
+		Map<String,String> solrParam = AppProperties.getPropertiesMap("solr.tag");
 		String leftTag = solrParam.get("leftTag");
 		String rightTag = solrParam.get("rightTag");
 
@@ -234,25 +236,4 @@ public class SearchApiService {
 		return _ret;
 	}
 
-	//获取app.properties文件的paramKey参数，解析参数，封装到paramValue中返回
-	private Map<String,String> getPropertiesParams(String paramKey){
-		Map<String,String> paramValue = new HashMap<>();
-		//获取app.properties文件的solr.param参数，解析参数，封装到param中
-		String solrParam = null;
-		try {
-			solrParam = AppProperties.get(paramKey);
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error("read app.properties param error",e);
-		}
-		String[] solrParams = solrParam.split("&");
-		for(int i=0; i < solrParams.length; i++){
-			String[] entry = solrParams[i].split("=");
-			paramValue.put(entry[0],entry[1]);
-		}
-		return paramValue;
-	}
 }
-
-
-
