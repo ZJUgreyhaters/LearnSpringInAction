@@ -1,6 +1,5 @@
 package com.quantchi.transport.controller;
 
-
 import com.alibaba.fastjson.JSONObject;
 import com.quantchi.common.util;
 import com.quantchi.intelquery.Query;

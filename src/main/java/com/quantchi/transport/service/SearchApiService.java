@@ -21,8 +21,7 @@ import java.util.*;
 @Service
 public class SearchApiService {
 	private static final Logger logger = LoggerFactory.getLogger(SearchApiService.class);
-//	private static final String leftTag = "<em>";
-//	private static final String rightTag = "</em>";
+
 	private static final String searchField = "seg_name";
 	private static final String highlightField = "seg_name";
 
@@ -44,11 +43,7 @@ public class SearchApiService {
 	public QueryResponse searchSolr(String str,Map<String,String> param) throws Exception{
 
 		SolrQuery query = new SolrQuery();
-//		String rows = AppProperties.get("solr.rows");
 		Map<String,String> solrParam = getPropertiesParams("solr.search");
-		String rows = solrParam.get("rows");
-		if(rows == null )
-			rows = "20";
 		query.setQuery(searchField+":("+str+")");
 
 		if(param != null){
@@ -56,10 +51,12 @@ public class SearchApiService {
 				query.setParam(entry.getKey(),entry.getValue());
 			}
 		}
+		Set<String> keys = solrParam.keySet();
+		for(String key:keys){
+			query.setParam(key, solrParam.get(key));
+		}
 		query.setHighlight(true);
-		query.setParam("hl.fl", solrParam.get("highlightField"));
 		query.setStart(0);
-		query.setParam("rows",rows);
 		QueryResponse response = new QueryResponse();
 		try {
 			response = httpSolr.query(query);
@@ -75,10 +72,7 @@ public class SearchApiService {
 
 	    SolrDocumentList result = new SolrDocumentList();
 		Map<String,String> solrParam = getPropertiesParams("solr.handle");
-		String t = solrParam.get("threshold");
-        if(t == null)
-            t = "0.5";
-	    double threshold =Double.parseDouble(t);   //阈值
+	    double threshold =Double.parseDouble(solrParam.get("threshold"));   //阈值
 
 	    //对每个doc做处理
 	    for(SolrDocument doc : docs){
@@ -255,7 +249,6 @@ public class SearchApiService {
 		for(int i=0; i < solrParams.length; i++){
 			String[] entry = solrParams[i].split("=");
 			paramValue.put(entry[0],entry[1]);
-			System.out.println(paramKey + ":::::" + entry[0] + "=" +entry[1]);
 		}
 		return paramValue;
 	}
