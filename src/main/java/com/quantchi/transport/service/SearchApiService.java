@@ -60,8 +60,7 @@ public class SearchApiService {
 		for(String key:keys){
 			query.setParam(key, solrParam.get(key));
 		}
-		query.setHighlight(true);
-		query.setStart(0);
+
 		QueryResponse response = new QueryResponse();
 		try {
 			response = httpSolr.query(query);
