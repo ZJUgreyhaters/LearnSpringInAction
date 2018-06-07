@@ -2,6 +2,7 @@ package com.quantchi.common;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -11,18 +12,12 @@ public class AppProperties {
     Properties properties = null;
 
     public AppProperties() throws IOException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("app.properties");
+//        InputStream is = this.getClass().getClassLoader().getResourceAsStream("app.properties");
+        InputStreamReader inputStreamReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("app.properties"),"UTF-8");
         this.properties = new Properties();
-        this.properties.load(is);
-        is.close();
-        is = this.getClass().getClassLoader().getResourceAsStream("app_dev.properties");
-        if (is != null) {
-            Properties devProperties = new Properties();
-            devProperties.load(is);
-            is.close();
-            this.properties.putAll(devProperties);
-        }
-
+//        prop.load(new InputStreamReader(Client.class.getClassLoader().getResourceAsStream(“config.properties”), “UTF-8”));
+        this.properties.load(inputStreamReader);
+        inputStreamReader.close();
     }
 
     public static AppProperties getInstance() throws IOException {
