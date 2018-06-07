@@ -86,7 +86,12 @@ public class SearchApiService {
 				continue;
 
 			String seg_name = (String) doc.get(searchField);
-			List<String> queryWords= segment(query);
+			List<String> queryWord= segment(query);
+			Set<String> queryWords = new HashSet<>();
+
+			for(String word : queryWord){
+				queryWords.add(word);
+			}
 			List<String> nameWords =  java.util.Arrays.asList(seg_name.split(" "));
 
 			double nameWordNum = nameWords.size(); //中文名的单词数
