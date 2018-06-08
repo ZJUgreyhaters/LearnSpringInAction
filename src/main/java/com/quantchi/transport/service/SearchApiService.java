@@ -120,10 +120,14 @@ public class SearchApiService {
 		List<String> list = new ArrayList<>();
 		String ltp = AppProperties.get("ltp.addr");
 		QueryNodes _nodes = LtpTokenizer.tokenize(str,ltp);
-		//QueryNodes _nodes = LtpTokenizer.tokenize(str);
+
 		for(SemanticNode node : _nodes){
 			list.add(node.getText());
 		}
+
+		//添加分词后处理策略
+		removeName_with_seg_xx(list);
+
 		return list;
 	}
 
@@ -271,4 +275,28 @@ public class SearchApiService {
 		}
 		return _ret;
 	}
+
+	//XX 被分词了，所以针对人名去除分词，但是人名xx的提示将不会出来
+	private void removeName_with_seg_xx(List<String> segList){
+		//脱敏后的人名都按 XX 来处理,不存在 X
+		String _needRemoveFlag = "XX";
+		int _idx = -1;
+		for(String word: segList){
+			if(_needRemoveFlag.equals(word)){
+				_idx = segList.indexOf(word);
+			}
+		}
+		if(_idx > -1 && segList.size() > 1){
+			//如果XX是首个词，则连接第二个词
+			if(_idx == 0){
+				String _secondWord = _needRemoveFlag+segList.get(1);
+				segList.set(1,_secondWord);
+			}else{
+				String _prevWord = segList.get(_idx-1)+_needRemoveFlag;
+				segList.set(_idx-1,_prevWord);
+			}
+			segList.remove(_needRemoveFlag);
+		}
+	}
+
 }
