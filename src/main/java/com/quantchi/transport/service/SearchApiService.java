@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.quantchi.intelquery.tokenize.LtpTokenizer;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 @Service
@@ -302,27 +300,6 @@ public class SearchApiService {
 		}
 	}
 
-	//连接测试 成功返回true 失败返回false
-	public boolean connectionTest(String address,String port,String account,String password){
 
-		String driverName = "org.apache.hive.jdbc.HiveDriver";
-
-		try{
-			Class.forName(driverName);
-
-			String url = "jdbc:hive2://" + address + ":" + port;
-			Connection conn = DriverManager.getConnection(url,account,password);
-			if(!conn.isClosed())
-				return true;
-
-		}catch (ClassNotFoundException e){
-			e.printStackTrace();
-		}catch (Exception e){
-			e.printStackTrace();
-			return false;
-		}
-
-		return false;
-	}
 
 }
