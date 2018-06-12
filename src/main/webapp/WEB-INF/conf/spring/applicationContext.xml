@@ -7,13 +7,12 @@
 
 
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
-
-	<!--<import resource="applicationContext-dataSource.xml" />
-	<import resource="applicationContext-transaction.xml" />
+	<context:property-placeholder location="classpath:app.properties"/>
+	<import resource="applicationContext-dataSource.xml" />
+	<!--<import resource="applicationContext-transaction.xml" />
 	<import resource="applicationContext-task.xml" />-->
 	<import resource="applicationContext-hive.xml" />
-	<context:component-scan
-			base-package="com.quantchi.transport.*" />
+	<context:component-scan base-package="com.quantchi.*.*" />
 	<context:annotation-config/>
 
 	<bean name="messageSource"
@@ -81,6 +80,5 @@
 	<beans profile="development">
 		<context:property-placeholder location="classpath:app.properties" />
 	</beans>
-
 
 </beans>

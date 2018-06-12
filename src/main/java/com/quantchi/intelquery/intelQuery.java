@@ -46,12 +46,12 @@ public class intelQuery{
                     responseItem.put("text", searchResult.getTextForUser());
                     responseList.add(responseItem);
                 }
-                totalRet.put("phase", "afterSearch");
+                res.put("phase", "afterSearch");
                 res.put("searchResults", responseList);
                 totalRet.put("data",res);
-                totalRet.put("total",0);
+                totalRet.put("total",responseList.size());
             } else if (queryResult.getStatus() == EnumDef.QueryStatus.QUERY_TREE) {
-                totalRet.put("phase", "complete");
+//                totalRet.put("phase", "complete");
                 totalRet.putAll(getResponseFromQueryResult(queryResult.getFirstResult()));
 //                totalRet.put("total",getResponseFromQueryResult(queryResult.getFirstResult()).get("total").toString());
             } else {
