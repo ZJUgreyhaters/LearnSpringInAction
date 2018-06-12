@@ -9,5 +9,6 @@ import java.util.Map;
 public interface ConditionGroupService {
     List<Object> listCustomerGroupCriterias(Integer page_size, Integer page) throws SQLException;
     void createCustomerGroupCriteria(Map<String, Object> map) throws SQLException;
+    Map<String, Object> findCustomerGroup(String cunstomerGroupId);
 
 }

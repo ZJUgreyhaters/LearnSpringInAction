@@ -39,6 +39,15 @@ public class ConditionGroupController {
         }
     }
 
+    @RequestMapping(value = "/findCustomerGroup", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> findCustomerGroup(@RequestBody Map<String, String> map){
+        Map<String, Object> responseMap = conditionGroupService.findCustomerGroup(map.get("cunstomerGroupId"));
+        responseMap.put("code",200);
+        responseMap.put("msg","查询成功");
+        return  responseMap;
+    }
+
     @RequestMapping(value = "/createCustomerGroupCriteria", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, String> createCustomerGroupCriteria(@RequestBody Map<String, Object> requestMap){

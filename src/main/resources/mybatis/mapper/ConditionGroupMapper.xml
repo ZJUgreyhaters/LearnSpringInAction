@@ -25,6 +25,10 @@
         INSERT INTO cust_group_condition(cust_group_name, create_user_id, condition_desc,condition_desc_id) VALUES(#{CustomerGroupCriteriaName},#{create_user_id},#{condition_desc},#{condition_desc_id})
     </insert>
 
+    <select id="findCustomerGroup" resultMap="BaseResultMap" parameterType="String">
+        SELECT * FROM cust_group_condition WHERE cust_group_id=#{findCustomerGroup}
+    </select>
+
     <select id="listCustomerGroupCriterias" resultMap="listMap">
         SELECT cust_group_id,cust_group_name,condition_desc FROM cust_group_condition
     </select>
