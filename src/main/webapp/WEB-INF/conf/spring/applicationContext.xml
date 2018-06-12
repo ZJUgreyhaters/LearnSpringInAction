@@ -7,13 +7,16 @@
 
 
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	<context:annotation-config/>
+	<!--<context:component-scan base-package="com.quantchi.*.**" />-->
+	<!--<context:component-scan base-package="com.quantchi.customer.*"/>
+	<context:component-scan base-package="com.quantchi.transport.*"/>-->
 	<context:property-placeholder location="classpath:app.properties"/>
 	<import resource="applicationContext-dataSource.xml" />
 	<!--<import resource="applicationContext-transaction.xml" />
 	<import resource="applicationContext-task.xml" />-->
 	<import resource="applicationContext-hive.xml" />
-	<context:component-scan base-package="com.quantchi.*.*" />
-	<context:annotation-config/>
+
 
 	<bean name="messageSource"
 		  class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -57,8 +60,7 @@
 		<property name="connectionTimeout" value="500"/>
 	</bean>
 
-	<bean id="intelquery" class="com.quantchi.intelquery.intelQuery">
-	</bean>
+	<bean id="intelquery" class="com.quantchi.intelquery.intelQuery"></bean>
 
 	<!-- define the SqlSessionFactory -->
 	<!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -71,14 +73,18 @@
 		<property name="typeAliasesPackage" value="cn.xuetao.common.data.entities" />
 	</bean>-->
 
-    <!-- production环境  新加入redis的配置 -->
-	<beans profile="production">
-		<context:property-placeholder location="classpath:app.properties" />
-	</beans>
-
-	<!-- development环境  新加入redis的配置 -->
-	<beans profile="development">
-		<context:property-placeholder location="classpath:app.properties" />
-	</beans>
+	<!-- 配置SessionFactory -->
+	<bean name="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 实例化sqlSessionFactory时需要使用上述配置好的数据源以及SQL映射文件 -->
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
+		<property name="typeAliasesPackage" value="com.quantchi.customer.pojo"></property>
+		<property name="mapperLocations" value="classpath:mybatis/mapper/*.xml"/>
+	</bean>
+	<!--&lt;!&ndash; 扫描mapper配置文件的地址 &ndash;&gt;-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.quantchi.customer.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
 
 </beans>

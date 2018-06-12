@@ -1,45 +1,40 @@
 package com.quantchi.customer.serviceImpl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.quantchi.customer.mapper.CustomerGroupMapper;
+import com.quantchi.customer.pojo.CustomerGroup;
 import com.quantchi.customer.service.CustomerGroupService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by 49537 on 2018/6/11.
  */
-@Service("CustomerGroupService")
+@Service
 public class CustomerGroupServiceImpl implements CustomerGroupService {
 
-    @Autowired
-    @Qualifier("dataSource")
-    private DataSource jdbcPool;
+  @Autowired
+  private CustomerGroupMapper mapper;
 
-    @Override
-    public Map<String, Object> listCustomerGroupCriterias(int pagesize, int pageIndex) {
-        try{
-            String sql = "SELECT * FROM term_logic_temp";
-            Connection connection = jdbcPool.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            resultSet.next();
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String d = df.format(new Date());
+  @Override
+  public Map<String, Object> selectCustomerGroup(CustomerGroup customerGroup, Integer pageIndex,
+      Integer pagesize) {
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-
+    PageHelper.startPage(pageIndex, pagesize);
+    // 执行查询
+    List<CustomerGroup> list = mapper.selectCustomerGroup(customerGroup);
+    // 取分页信息
+    PageInfo<CustomerGroup> pageInfo = new PageInfo<>(list);
+    // 返回处理结果
+    Map<String,Object> result = new HashMap<String,Object>();
+    // 获取总条数
+    result.put("Total",pageInfo.getTotal());
+    // 结果rows数据
+    result.put("Rows",list);
+    return result;
+  }
 }
