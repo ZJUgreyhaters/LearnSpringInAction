@@ -17,6 +17,7 @@
     <result column="history_status" property="history_status" />
     <result column="default_analysis" property="default_analysis" />
   </resultMap>
+
   <select id="selectCustomerGroup" resultMap="BaseResultMap">
     select * from cust_group_header
   </select>
