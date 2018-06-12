@@ -7,31 +7,43 @@ public class DSMetaInfo {
     private String hivePass;
     private HiveMetaInfo hiveMetaInfo;
 
-    public DSMetaInfo(String hiveAddr, String hivePort, String hiveUser, String hivePass, HiveMetaInfo hiveMetaInfo) {
-        this.hiveAddr = hiveAddr;
-        this.hivePort = hivePort;
-        this.hiveUser = hiveUser;
-        this.hivePass = hivePass;
-        this.hiveMetaInfo = hiveMetaInfo;
-    }
-
     public String getHiveAddr() {
         return hiveAddr;
+    }
+
+    public void setHiveAddr(String hiveAddr) {
+        this.hiveAddr = hiveAddr;
     }
 
     public String getHivePort() {
         return hivePort;
     }
 
+    public void setHivePort(String hivePort) {
+        this.hivePort = hivePort;
+    }
+
     public String getHiveUser() {
         return hiveUser;
+    }
+
+    public void setHiveUser(String hiveUser) {
+        this.hiveUser = hiveUser;
     }
 
     public String getHivePass() {
         return hivePass;
     }
 
+    public void setHivePass(String hivePass) {
+        this.hivePass = hivePass;
+    }
+
     public HiveMetaInfo getHiveMetaInfo() {
         return hiveMetaInfo;
+    }
+
+    public void setHiveMetaInfo(HiveMetaInfo hiveMetaInfo) {
+        this.hiveMetaInfo = hiveMetaInfo;
     }
 }
