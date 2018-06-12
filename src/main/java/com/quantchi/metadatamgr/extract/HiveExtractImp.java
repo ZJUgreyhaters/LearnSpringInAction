@@ -1,6 +1,8 @@
 package com.quantchi.metadatamgr.extract;
 
+import com.quantchi.metadatamgr.data.DSMetaInfo;
 import com.quantchi.metadatamgr.data.FieldEntity;
+import com.quantchi.metadatamgr.data.HiveMetaInfo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,8 +10,14 @@ import java.util.List;
 
 public class HiveExtractImp {
 
+    DSMetaInfo dsMetaInfo;
+    public HiveExtractImp(DSMetaInfo ds){
+        this.dsMetaInfo = ds;
+
+    }
+
     //连接测试 成功返回true 失败返回false
-    public boolean connectionTest(String address,String port,String account,String password){
+    public static boolean connectionTest(String address,String port,String account,String password){
 
         String driverName = "org.apache.hive.jdbc.HiveDriver";
 
@@ -18,8 +26,11 @@ public class HiveExtractImp {
 
             String url = "jdbc:hive2://" + address + ":" + port;
             Connection conn = DriverManager.getConnection(url,account,password);
-            if(!conn.isClosed())
+            if(!conn.isClosed()){
+                conn.close();
                 return true;
+            }
+
 
         }catch (ClassNotFoundException e){
             e.printStackTrace();
@@ -31,11 +42,14 @@ public class HiveExtractImp {
         return false;
     }
 
+
     //返回一个mysql连接
     private Connection getMysqlConnection(){
-        String url = "jdbc:mysql://192.168.2.52/hive";
-        String username = "liangzhi";
-        String password = "liangzhi123";
+
+        HiveMetaInfo hiveMetaInfo = dsMetaInfo.getHiveMetaInfo();
+        String url = hiveMetaInfo.getMysqlUrl();
+        String username = hiveMetaInfo.getMysqlUser();
+        String password = hiveMetaInfo.getMysqlPass();
 
         Connection conn = null;
 
@@ -63,10 +77,10 @@ public class HiveExtractImp {
             while(resultSet.next()){
                 dbList.add(resultSet.getString("NAME"));
             }
+            conn.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
-
         return dbList;
     }
 
@@ -84,6 +98,7 @@ public class HiveExtractImp {
             while(resultSet.next()){
                 tblList.add(resultSet.getString("TBL_NAME"));
             }
+            conn.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -106,6 +121,7 @@ public class HiveExtractImp {
                 FieldEntity field = new FieldEntity(resultSet.getString("COLUMN_NAME"),resultSet.getString("TYPE_NAME"));
                 fieldBeanList.add(field);
             }
+            conn.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
