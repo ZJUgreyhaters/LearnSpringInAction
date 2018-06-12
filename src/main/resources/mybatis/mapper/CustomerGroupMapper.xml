@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.quantchi.mapper.CustomerGroupMapper" >
-  <resultMap type="com.quantchi.pojo.CustomerGroup" id="BaseResultMap">
+  <resultMap type="com.quantchi.customer.pojo.CustomerGroup" id="BaseResultMap">
     <id column="id" property="id" ></id>
     <result column="cust_group_id" property="cust_group_id" />
     <result column="cust_group_name" property="cust_group_name" />

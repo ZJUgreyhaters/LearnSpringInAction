@@ -16,6 +16,8 @@
 	<!--<import resource="applicationContext-transaction.xml" />
 	<import resource="applicationContext-task.xml" />-->
 	<import resource="applicationContext-hive.xml" />
+	<context:component-scan base-package="com.quantchi"/>
+
 
 
 	<bean name="messageSource"
