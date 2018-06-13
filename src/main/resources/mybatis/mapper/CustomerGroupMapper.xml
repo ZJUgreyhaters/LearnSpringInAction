@@ -1,23 +1,56 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.quantchi.mapper.CustomerGroupMapper" >
-  <resultMap type="com.quantchi.pojo.CustomerGroup" id="BaseResultMap">
-    <id column="id" property="id" ></id>
-    <result column="cust_group_id" property="cust_group_id" />
-    <result column="cust_group_name" property="cust_group_name" />
-    <result column="condition_nums" property="condition_nums" />
-    <result column="create_time" property="create_time" />
-    <result column="create_user_id" property="create_user_id" />
-    <result column="last_refresh_time" property="last_refresh_time" />
-    <result column="cust_nums" property="cust_nums" />
-    <result column="condition_desc" property="condition_desc" />
-    <result column="condition_statement" property="condition_statement" />
-    <result column="refresh_status" property="refresh_status" />
-    <result column="delete_status" property="delete_status" />
-    <result column="history_status" property="history_status" />
-    <result column="default_analysis" property="default_analysis" />
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.customer.mapper.CustomerGroupMapper">
+  <resultMap type="com.quantchi.customer.pojo.CustomerGroup" id="BaseResultMap">
+    <id column="id" property="id"></id>
+    <result column="cust_group_id" property="cust_group_id"/>
+    <result column="cust_group_name" property="cust_group_name"/>
+    <result column="condition_nums" property="condition_nums"/>
+    <result column="create_time" property="create_time"/>
+    <result column="create_user_id" property="create_user_id"/>
+    <result column="last_refresh_time" property="last_refresh_time"/>
+    <result column="cust_nums" property="cust_nums"/>
+    <result column="condition_desc" property="condition_desc"/>
+    <result column="condition_statement" property="condition_statement"/>
+    <result column="refresh_status" property="refresh_status"/>
+    <result column="delete_status" property="delete_status"/>
+    <result column="history_status" property="history_status"/>
+    <result column="default_analysis" property="default_analysis"/>
   </resultMap>
   <select id="selectCustomerGroup" resultMap="BaseResultMap">
-    select * from cust_group_header
+    select cust_group_id,     -- 客群ID
+       cust_group_name,   -- 客群名称
+       condition_nums,    -- 条件个数
+       create_time,       -- 创建时间
+       ifnull(last_refresh_time,'') as last_refresh_time,  -- 数据最后更新时间
+       cust_nums          -- 客户数
+      from dmp.cust_group_header
+      where create_user_id = #{create_user_id}  -- 当前登录客户ID 参数传入
+      and delete_status = '0'   -- 固定条件：筛选未删除的记录
+      and history_status = '0'  -- 固定条件：筛选当前版本记录
   </select>
+
+  <select id="selectCustGroupId" resultType="String">
+     select concat('CG',lpad(cast(substr(max(cust_group_id),3,6) as SIGNED) + 1,6,'0')) as cust_group_id
+      from dmp.cust_group_header
+  </select>
+
+  <insert id="createCustomerGroup">
+     INSERT INTO dmp.cust_group_header (`cust_group_id`, `cust_group_name`, `condition_nums`, `create_time`, `create_user_id`,
+     `last_refresh_time`, `cust_nums`, `condition_desc`, `condition_statement`, `refresh_status`, `delete_status`, `history_status`)
+     VALUES (#{cust_group_id}, #{cust_group_name},#{condition_nums},SYSDATE(),#{create_user_id},
+              #{last_refresh_time}, #{cust_nums},#{condition_desc},#{condition_statement},#{refresh_status},#{delete_status},#{history_status}
+        );
+   </insert>
+
+  <delete id="deleteCustomerGroup">
+    update dmp.cust_group_header set delete_status = '1'
+      where cust_group_id = #{cust_group_id}  -- 根据所选择的客群ID作相应更新
+  </delete>
+
+  <update id="deleteCustomerGroup">
+    update dmp.cust_group_header set delete_status = SYSDATE(),cust_nums=#{cust_nums}
+    where cust_group_id = #{cust_group_id}  -- 根据所选择的客群ID作相应更新
+  </update>
 </mapper>
