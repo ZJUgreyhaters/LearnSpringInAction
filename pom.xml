@@ -81,6 +81,11 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.34</version>
     </dependency>-->
+    <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper</artifactId>
+      <version>5.0.3</version>
+    </dependency>
 
     <!--spring相关包-->
     <dependency>
@@ -136,6 +141,12 @@
       <groupId>c3p0</groupId>
       <artifactId>c3p0</artifactId>
       <version>0.9.1.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sourceforge.jexcelapi</groupId>
+      <artifactId>jxl</artifactId>
+      <version>2.5.7</version>
     </dependency>
 
     <dependency>
@@ -237,6 +248,12 @@
       <version>0.0.2-SNAPSHOT</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.1.9</version>
+    </dependency>
+
     <!-- hive -->
     <dependency>
           <groupId>org.apache.hive</groupId>
@@ -293,6 +310,7 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 

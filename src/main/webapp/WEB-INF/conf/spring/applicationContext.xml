@@ -78,7 +78,7 @@
 	</bean>
 
 
-	<!-- production环境  新加入redis的配置 -->
+    <!-- production环境  新加入redis的配置 -->
 	<beans profile="production">
 		<context:property-placeholder location="classpath:app.properties" />
 	</beans>
