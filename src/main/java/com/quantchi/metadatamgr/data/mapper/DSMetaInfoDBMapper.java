@@ -15,7 +15,7 @@ public interface DSMetaInfoDBMapper {
 
     int insertSelective(DSMetaInfoDB record);
 
-    List<DSMetaInfoDB> selectByExample(@Param("example")DSMetaInfoDBExample example);
+    //List<DSMetaInfoDB> selectByExample(@Param("example")DSMetaInfoDBExample example);
 
     List<DSMetaInfoDB> selectByExample(@Param("example")DSMetaInfoDBExample example,@Param("start") Integer start, @Param("pagesize") Integer pagesize);
 

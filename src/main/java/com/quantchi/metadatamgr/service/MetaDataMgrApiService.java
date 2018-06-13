@@ -10,12 +10,14 @@ import com.quantchi.metadatamgr.extract.HiveExtractImp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class MetaDataMgrApiService {
 
     private static final Logger logger = LoggerFactory.getLogger(MetaDataMgrApiService.class);
@@ -24,6 +26,9 @@ public class MetaDataMgrApiService {
     private static final String HIVEMYSQLURL = "data_source_mysql_url";
     private static final String HIVEMYSQLUSER = "data_source_mysql_usr";
     private static final String HIVEMYSQLPSWD = "data_source_mysql_pswd";
+
+    private static final int defaultSqlStart = 0;
+    private static final int defaultPageSize = 10;
 
     @Autowired
     private  DSMetaInfoDBMapper dsMetaInfoDBMapper;
@@ -93,7 +98,7 @@ public class MetaDataMgrApiService {
         boolean ret = false;
         DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
         _ex.createCriteria().andDsNameEqualTo(dsName);
-        List<DSMetaInfoDB> _retSql = dsMetaInfoDBMapper.selectByExample(_ex);
+        List<DSMetaInfoDB> _retSql = dsMetaInfoDBMapper.selectByExample(_ex,defaultSqlStart,defaultPageSize);
         if(_retSql.size() > 0 )
             ret = true;
         return ret;
@@ -104,7 +109,7 @@ public class MetaDataMgrApiService {
         List<Map<String,Object>> _dbs_info = new ArrayList<>();
         DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
         _ex.createCriteria().andDsNameEqualTo(dsName);
-        List<DSMetaInfoDB> _sqlRet =  dsMetaInfoDBMapper.selectByExample(_ex,0,10);
+        List<DSMetaInfoDB> _sqlRet =  dsMetaInfoDBMapper.selectByExample(_ex,defaultSqlStart,defaultPageSize);
         if(_sqlRet.size() > 0 ){
             DSMetaInfoDB _info_from_db = _sqlRet.get(0);
 

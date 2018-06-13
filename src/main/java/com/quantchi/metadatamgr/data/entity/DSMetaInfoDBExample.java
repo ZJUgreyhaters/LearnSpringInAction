@@ -10,6 +10,26 @@ public class DSMetaInfoDBExample {
 
     protected List<Criteria> oredCriteria;
 
+    private int start;
+
+    private int pagesize;
+
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public int getPagesize() {
+        return pagesize;
+    }
+
+    public void setPagesize(int pagesize) {
+        this.pagesize = pagesize;
+    }
+
     public DSMetaInfoDBExample() {
         oredCriteria = new ArrayList<Criteria>();
     }

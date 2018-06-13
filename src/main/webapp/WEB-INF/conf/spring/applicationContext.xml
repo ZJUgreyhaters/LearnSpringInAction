@@ -11,9 +11,10 @@
 	<!--<import resource="applicationContext-dataSource.xml" />
 	<import resource="applicationContext-transaction.xml" />
 	<import resource="applicationContext-task.xml" />-->
+	<import resource="applicationContext-dataSource.xml" />
 	<import resource="applicationContext-hive.xml" />
 	<context:component-scan
-			base-package="com.quantchi.transport.*" />
+			base-package="com.quantchi" />
 	<context:annotation-config/>
 
 	<bean name="messageSource"
@@ -62,17 +63,22 @@
 	</bean>
 
 	<!-- define the SqlSessionFactory -->
-	<!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations">
 			<list>
 				<value>classpath*:mappers/**/*.xml</value>
 			</list>
 		</property>
-		<property name="typeAliasesPackage" value="cn.xuetao.common.data.entities" />
-	</bean>-->
+		<property name="typeAliasesPackage" value="com.quantchi.metadatamgr.data.entity" />
+	</bean>
 
-    <!-- production环境  新加入redis的配置 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.quantchi.metadatamgr.data.mapper" />
+	</bean>
+
+
+	<!-- production环境  新加入redis的配置 -->
 	<beans profile="production">
 		<context:property-placeholder location="classpath:app.properties" />
 	</beans>
