@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by 49537 on 2018/6/11.
  */
 @Controller
-@RequestMapping("api/customer")
+@RequestMapping("api")
 public class CustomerGroupController {
 
   @Autowired

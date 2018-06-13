@@ -21,8 +21,9 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
     private ConditionGroupMapper conditionGroupMapper;
 
     @Override
-    public List<Object> listCustomerGroupCriterias(Integer page_size, Integer page) throws SQLException {
+    public Map<String,Object> listCustomerGroupCriterias(Integer page_size, Integer page) throws SQLException {
 
+        ConditionGroup conditionGroup = null;
         PageHelper.startPage(page, page_size);
         // 执行查询
         List<Object> list = conditionGroupMapper.listCustomerGroupCriterias();
@@ -33,9 +34,25 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
         Map<String,Object> result = new HashMap<String,Object>();
         // 获取总条数
         result.put("Total",pageInfo.getTotal());
-        // 结果rows数据
-        result.put("Rows",list);
-        return pageInfo.getList();
+
+        List<Object> pageList = pageInfo.getList();
+        List<Object> resultList = new ArrayList<>();
+
+        for(int i=0; i < pageList.size(); i++){
+            Map<String, Object> conditionGroupMap = new HashMap<>();
+            conditionGroupMap = (Map<String, Object>)pageList.get(i);
+//            conditionGroupMap.put("cust_group_id", conditionGroup.getCust_group_id());
+//            conditionGroupMap.put("cust_group_name", conditionGroup.getCust_group_name());
+//            conditionGroupMap.get("condition_desc", conditionGroup.getCondition_desc().replace("[|]",""));
+            String desc = conditionGroupMap.get("condition_desc").toString().replaceAll("\\[|\\]","");
+            conditionGroupMap.put("condition_desc",desc);
+
+            resultList.add(conditionGroupMap);
+        }
+        result.put("data",resultList);
+//        result.put("data",pageInfo.getList());
+
+        return result;
     }
 
     @Override
@@ -44,11 +61,11 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
     }
 
     @Override
-    public Map<String, Object> findCustomerGroup(String cunstomerGroupId) {
+    public Map<String, Object> findCustomerGroup(String customerGroupId) {
         ConditionGroup conditionGroup = null;
         Map<String, Object> map = new HashMap<>();
         List<Map<String, Object>> list = new ArrayList<>();
-        conditionGroup = conditionGroupMapper.findCustomerGroup(cunstomerGroupId);
+        conditionGroup = conditionGroupMapper.findCustomerGroup(customerGroupId);
         map.put("cust_group_name",conditionGroup.getCust_group_name());
         map.put("create_user_id",conditionGroup.getCreate_user_id());
         String condition_desc = conditionGroup.getCondition_desc();
@@ -59,14 +76,37 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
             Map<String,Object> conditionMap = new HashMap<>();
             String[] desc_id = condition_desc_ids[i].split(":");
             conditionMap.put("id",desc_id[1].split(",")[0]);
-            conditionMap.put("type",desc_id[1].split(",")[1]);
+            conditionMap.put("type",desc_id[2]);
             String[] desc = condition_descs[i].split(":");
-            conditionMap.put("name",desc[0]);
-            conditionMap.put("value",desc[1]);
+            if(!conditionMap.get("type").equals("value")){
+
+                conditionMap.put("name",desc[0]);
+                String[] s = desc[1].split(",");
+                conditionMap.put("value",s);
+            }else{
+                conditionMap.put("name",desc[0]);
+                conditionMap.put("value",desc[1]);
+            }
             list.add(conditionMap);
         }
 
         map.put("CustomerGroupCriteria",list);
         return map;
+    }
+
+    @Override
+    public Map<String, Object> deleteCustomerGroup(String customerGroupId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try{
+            conditionGroupMapper.deleteCustomerGroup(customerGroupId);
+            result.put("code",200);
+            result.put("msg","删除成功");
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            result.put("code",500);
+            result.put("msg",e.getMessage());
+            return result;
+        }
     }
 }

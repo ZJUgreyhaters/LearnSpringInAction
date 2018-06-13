@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface ConditionGroupService {
-    List<Object> listCustomerGroupCriterias(Integer page_size, Integer page) throws SQLException;
+    Map<String,Object> listCustomerGroupCriterias(Integer page_size, Integer page) throws SQLException;
     void createCustomerGroupCriteria(Map<String, Object> map) throws SQLException;
-    Map<String, Object> findCustomerGroup(String cunstomerGroupId);
-
+    Map<String, Object> findCustomerGroup(String customerGroupId);
+    Map<String, Object> deleteCustomerGroup(String customerGroupId);
 }

@@ -26,10 +26,9 @@ public class ConditionGroupController {
         Map<String, Object> map = new HashMap<>();
         List<Object> list = null;
         try {
-            list = conditionGroupService.listCustomerGroupCriterias(page_size,page);
+            map = conditionGroupService.listCustomerGroupCriterias(page_size,page);
             map.put("code",200);
             map.put("msg","查询成功");
-            map.put("data",list);
             return map;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -42,7 +41,13 @@ public class ConditionGroupController {
     @RequestMapping(value = "/findCustomerGroup", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> findCustomerGroup(@RequestBody Map<String, String> map){
-        Map<String, Object> responseMap = conditionGroupService.findCustomerGroup(map.get("cunstomerGroupId"));
+        Map<String, Object> responseMap = new HashMap<>();
+        if(map.get("customerGroupId") == null){
+            responseMap.put("code",400);
+            responseMap.put("msg","请输入条件ID");
+            return  responseMap;
+        }
+        responseMap = conditionGroupService.findCustomerGroup(map.get("customerGroupId"));
         responseMap.put("code",200);
         responseMap.put("msg","查询成功");
         return  responseMap;
@@ -57,7 +62,7 @@ public class ConditionGroupController {
         try {
             List<Map<String, Object>> CustomerGroupCriteriaDef = (List<Map<String, Object>>) requestMap.get("CustomerGroupCriteriaDef");
             for(Map<String, Object> listMap : CustomerGroupCriteriaDef){
-                condition_desc += listMap.get("name") + ":" + listMap.get("value") + "|";
+                condition_desc += listMap.get("name") + ":" + String.join(",",(List)listMap.get("value")) + "|";
                 condition_desc_id += "id:" + listMap.get("id") + ",type:" + listMap.get("type") +"|";
             }
             requestMap.put("condition_desc", condition_desc);
@@ -72,6 +77,11 @@ public class ConditionGroupController {
             responseMap.put("msg",e.getMessage());
             return responseMap;
         }
+    }
 
+    @RequestMapping(value = "/deleteCustomerGroupCondition", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> deleteCustomerGroup(@RequestBody Map<String, String> map){
+        return conditionGroupService.deleteCustomerGroup(map.get("customerGroupId"));
     }
 }
