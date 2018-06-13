@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface DSMetaInfoDBMapper {
-    int deleteByExample(DSMetaInfoDBExample example);
+    int deleteByExample(@Param("example")DSMetaInfoDBExample example);
 
     int deleteByPrimaryKey(Integer id);
 

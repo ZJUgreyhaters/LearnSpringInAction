@@ -78,9 +78,19 @@ public class MetaDataMgrApiService {
 
         DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
         _ex.createCriteria().andDsNameEqualTo(jsonParam.getString("data_source_name"));
-        int _activeRows = dsMetaInfoDBMapper.updateByExample(_record,_ex);
-        if(_activeRows > 0)
-            _ret = true;
+
+        List<DSMetaInfoDB> _ExistItemList =  dsMetaInfoDBMapper.selectByExample(_ex,defaultSqlStart,defaultPageSize);
+        if(_ExistItemList.size() > 0){
+            int _activeRows = dsMetaInfoDBMapper.updateByExample(_record,_ex);
+            if(_activeRows > 0)
+                _ret = true;
+        }else{
+            _record.setDsType(jsonParam.getString("data_source_type"));
+            _record.setDsName(jsonParam.getString("data_source_name"));
+            int _activeRows = dsMetaInfoDBMapper.insert(_record);
+            if(_activeRows > 0)
+                _ret = true;
+        }
         return _ret;
     }
 

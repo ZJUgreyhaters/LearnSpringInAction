@@ -105,7 +105,7 @@
     delete from ds_meta_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample" >
+  <delete id="deleteByExample" parameterType="map" >
     delete from ds_meta_info
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
