@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("api/condition")
+@RequestMapping("api")
 public class ConditionGroupController {
 
     @Autowired
@@ -55,8 +55,8 @@ public class ConditionGroupController {
         String condition_desc = "";
         String condition_desc_id = "";
         try {
-            List<Map<String, String>> CustomerGroupCriteriaDef = (List<Map<String,String>>) requestMap.get("CustomerGroupCriteriaDef");
-            for(Map<String, String> listMap : CustomerGroupCriteriaDef){
+            List<Map<String, Object>> CustomerGroupCriteriaDef = (List<Map<String, Object>>) requestMap.get("CustomerGroupCriteriaDef");
+            for(Map<String, Object> listMap : CustomerGroupCriteriaDef){
                 condition_desc += listMap.get("name") + ":" + listMap.get("value") + "|";
                 condition_desc_id += "id:" + listMap.get("id") + ",type:" + listMap.get("type") +"|";
             }
