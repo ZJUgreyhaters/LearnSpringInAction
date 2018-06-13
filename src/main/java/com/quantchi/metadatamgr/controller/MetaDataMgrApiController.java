@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "metadata")
+@RequestMapping(value = "api/metadata/datasource")
 public class MetaDataMgrApiController {
 
     private static final Logger logger = LoggerFactory.getLogger(MetaDataMgrApiController.class);
@@ -46,7 +46,7 @@ public class MetaDataMgrApiController {
 
     }
 
-    @RequestMapping(value = "/connectTest", method = { RequestMethod.POST })
+    @RequestMapping(value = "/connect", method = { RequestMethod.POST })
     public @ResponseBody
     Map<String, Object> connectTest (@RequestBody String bodyString) {
         try{
@@ -162,7 +162,7 @@ public class MetaDataMgrApiController {
 
     /*table part*/
 
-    @RequestMapping(value = "/extractTables", method = { RequestMethod.POST })
+    @RequestMapping(value = "/getsourcedata", method = { RequestMethod.POST })
     public @ResponseBody
     Map<String, Object> extractTables (@RequestBody String bodyString) {
         try{
