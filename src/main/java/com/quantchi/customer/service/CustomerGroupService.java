@@ -1,6 +1,7 @@
 package com.quantchi.customer.service;
 
 import com.quantchi.customer.pojo.CustomerGroup;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,6 +9,13 @@ import java.util.Map;
  */
 public interface CustomerGroupService {
 
-  Map<String, Object> selectCustomerGroup(CustomerGroup role, Integer pageIndex,
+  public Map<String, Object> selectCustomerGroup(CustomerGroup group, Integer pageIndex,
       Integer pagesize);
+
+  public Map<String, Object> createCustomerGroup(CustomerGroup group,
+      List<Map<String, String>> customerGroupCriteria);
+
+  public Map<String, Object> deleteCustomerGroup(CustomerGroup group);
+
+  public Map<String, Object> updateCustomerGroup(CustomerGroup group);
 }

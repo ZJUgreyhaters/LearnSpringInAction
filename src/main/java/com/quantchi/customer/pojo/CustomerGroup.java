@@ -11,15 +11,18 @@ public class CustomerGroup {
   private String cust_group_id;
   private String cust_group_name;
   private Integer condition_nums;
-  private Date datetime;
+  private Date create_time;
   private String create_user_id;
   private Date last_refresh_time;
   private Integer cust_nums;
   private String condition_desc;
-  private Integer condition_statement;
+  private String condition_statement;
   private String refresh_status;
   private String delete_status;
   private String history_status;
+  private String default_analysis;
+  private Integer pageIndex;
+  private Integer pagesize;
 
   public Integer getId() {
     return id;
@@ -53,12 +56,12 @@ public class CustomerGroup {
     this.condition_nums = condition_nums;
   }
 
-  public Date getDatetime() {
-    return datetime;
+  public Date getCreate_time() {
+    return create_time;
   }
 
-  public void setDatetime(Date datetime) {
-    this.datetime = datetime;
+  public void setCreate_time(Date create_time) {
+    this.create_time = create_time;
   }
 
   public String getCreate_user_id() {
@@ -93,11 +96,11 @@ public class CustomerGroup {
     this.condition_desc = condition_desc;
   }
 
-  public Integer getCondition_statement() {
+  public String getCondition_statement() {
     return condition_statement;
   }
 
-  public void setCondition_statement(Integer condition_statement) {
+  public void setCondition_statement(String condition_statement) {
     this.condition_statement = condition_statement;
   }
 
@@ -123,5 +126,29 @@ public class CustomerGroup {
 
   public void setHistory_status(String history_status) {
     this.history_status = history_status;
+  }
+
+  public String getDefault_analysis() {
+    return default_analysis;
+  }
+
+  public void setDefault_analysis(String default_analysis) {
+    this.default_analysis = default_analysis;
+  }
+
+  public Integer getPageIndex() {
+    return pageIndex;
+  }
+
+  public void setPageIndex(Integer pageIndex) {
+    this.pageIndex = pageIndex;
+  }
+
+  public Integer getPagesize() {
+    return pagesize;
+  }
+
+  public void setPagesize(Integer pagesize) {
+    this.pagesize = pagesize;
   }
 }
