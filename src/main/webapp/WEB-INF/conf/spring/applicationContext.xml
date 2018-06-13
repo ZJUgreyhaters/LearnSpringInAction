@@ -70,11 +70,11 @@
 				<value>classpath*:mappers/**/*.xml</value>
 			</list>
 		</property>
-		<property name="typeAliasesPackage" value="com.quantchi.metadatamgr.data.entity" />
+		<property name="typeAliasesPackage" value="com.quantchi.metadatamgr.data.entity,com.quantchi.customer.pojo" />
 	</bean>
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.quantchi.metadatamgr.data.mapper" />
+		<property name="basePackage" value="com.quantchi.metadatamgr.data.mapper,com.quantchi.customer.mapper" />
 	</bean>
 
 
