@@ -160,8 +160,6 @@ public class MetaDataMgrApiController {
 
     }
 
-    /*table part*/
-
     @RequestMapping(value = "/getsourcedata", method = { RequestMethod.POST })
     public @ResponseBody
     Map<String, Object> extractTables (@RequestBody String bodyString) {
@@ -183,5 +181,28 @@ public class MetaDataMgrApiController {
 
 
     }
+
+    @RequestMapping(value = "/localsave", method = { RequestMethod.POST })
+    public @ResponseBody
+    Map<String, Object> localsave (@RequestBody String bodyString) {
+        try{
+
+            JSONObject json = JSONObject.parseObject(bodyString);
+
+            if(json.getString("data_source_name") == null)
+                throw new Exception("miss data source connection info");
+
+            String dsName = json.getString("data_source_name");
+            Map<String, Object>  _ret = metaDataMgrApiService.extractTables(dsName);
+            return util.genRet(200,_ret.get("data"),"成功",0);
+        }catch (Exception e){
+            logger.error("extractTables func err:",e.getMessage());
+            return util.genRet(500,null,e.getMessage(),0);
+        }
+
+
+
+    }
+
 
 }

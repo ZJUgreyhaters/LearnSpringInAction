@@ -29,6 +29,7 @@ public class MetaDataMgrApiService {
 
     private static final int defaultSqlStart = 0;
     private static final int defaultPageSize = 10;
+    private final Map<String,HiveExtractImp> g_DSInfoMap = new HashMap<>();
 
     @Autowired
     private  DSMetaInfoDBMapper dsMetaInfoDBMapper;
@@ -117,19 +118,9 @@ public class MetaDataMgrApiService {
     public Map<String, Object> extractTables(String dsName){
         Map<String,Object> _ret = new HashMap<>();
         List<Map<String,Object>> _dbs_info = new ArrayList<>();
-        DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
-        _ex.createCriteria().andDsNameEqualTo(dsName);
-        List<DSMetaInfoDB> _sqlRet =  dsMetaInfoDBMapper.selectByExample(_ex,defaultSqlStart,defaultPageSize);
-        if(_sqlRet.size() > 0 ){
-            DSMetaInfoDB _info_from_db = _sqlRet.get(0);
 
-            DSMetaInfo _info = new DSMetaInfo();
-            HiveMetaInfo _meta = new HiveMetaInfo();
-            _meta.setMysqlUrl(_info_from_db.getHiveMetaMysqlUrl());
-            _meta.setMysqlUser(_info_from_db.getHiveMetaUsername());
-            _meta.setMysqlPass(_info_from_db.getHiveMetaPswd());
-            _info.setHiveMetaInfo(_meta);
-            HiveExtractImp _extract = new HiveExtractImp(_info);
+        HiveExtractImp _extract = getExtractObj(dsName);
+        if(_extract != null){
             List<String> dbs = _extract.getDatabases();
             for(String database : dbs){
                 Map<String,Object> _databaseMap = new  HashMap<>();
@@ -150,9 +141,33 @@ public class MetaDataMgrApiService {
                 _databaseMap.put("children",_childs);
                 _dbs_info.add(_databaseMap);
             }
-
         }
+
         _ret.put("data",_dbs_info);
         return _ret;
     }
+
+    private HiveExtractImp getExtractObj(String dsName){
+        HiveExtractImp _extract = null;
+
+        //需要确定当ds信息还没入库时，抽取表的
+
+        DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
+        _ex.createCriteria().andDsNameEqualTo(dsName);
+        List<DSMetaInfoDB> _sqlRet =  dsMetaInfoDBMapper.selectByExample(_ex,defaultSqlStart,defaultPageSize);
+        if(_sqlRet.size() > 0 ) {
+            DSMetaInfoDB _info_from_db = _sqlRet.get(0);
+
+            DSMetaInfo _info = new DSMetaInfo();
+            HiveMetaInfo _meta = new HiveMetaInfo();
+            _meta.setMysqlUrl(_info_from_db.getHiveMetaMysqlUrl());
+            _meta.setMysqlUser(_info_from_db.getHiveMetaUsername());
+            _meta.setMysqlPass(_info_from_db.getHiveMetaPswd());
+            _info.setHiveMetaInfo(_meta);
+            _extract = new HiveExtractImp(_info);
+        }
+        return _extract;
+    }
+
+    /*public boolean localsave*/
 }
