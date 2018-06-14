@@ -26,8 +26,8 @@ public class CustomerGroupController {
   @ResponseBody
   @RequestMapping(value = "/listCustomerGroups", method = {RequestMethod.POST})
   public Map<String, Object> listCustomerGroups(@RequestBody CustomerGroup group) {
-    Integer pageIndex = group.getPageIndex();
-    Integer pagesize = group.getPagesize();
+    Integer pageIndex = group.getPage();
+    Integer pagesize = group.getPage_size();
     return service.selectCustomerGroup(group, pageIndex, pagesize);
   }
 
