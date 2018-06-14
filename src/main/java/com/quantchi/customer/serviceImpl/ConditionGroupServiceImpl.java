@@ -6,9 +6,11 @@ import com.quantchi.customer.mapper.ConditionGroupMapper;
 import com.quantchi.customer.pojo.ConditionGroup;
 import com.quantchi.customer.service.ConditionGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,7 +96,7 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
             map.put("CustomerGroupCriteria",list);
             return map;
 
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
             map.put("code",500);
             map.put("msg",e.getMessage());
