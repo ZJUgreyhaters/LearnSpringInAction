@@ -6,7 +6,9 @@ import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
+import com.quantchi.metadatamgr.data.mapper.DSFieldInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
 import com.quantchi.metadatamgr.extract.HiveExtractImp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,12 @@ public class MetaDataMgrApiService {
 
     @Autowired
     private  DSMetaInfoDBMapper dsMetaInfoDBMapper;
+
+    @Autowired
+    private DSFieldInfoDBMapper dsFieldInfoDBMapper;
+
+    @Autowired
+    private DSTableInfoDBMapper dsTableInfoDBMapper;
 
     public Map<String, Object> getDSMetaInfo(String dsName, int start, int pagesize){
         Map<String,Object> _ret = new HashMap<>();
@@ -171,12 +179,15 @@ public class MetaDataMgrApiService {
     }
 
     public boolean saveTablesAndFields(String dsName,List<String> tables){
-        boolean _ret = false;
-        List<Map<String,String>> mapList = null;
+        boolean _ret = true;
+        List<Map<String,String>> mapList = new ArrayList<>();
+
         HiveExtractImp hiveExtractImp = getExtractObj(dsName);
         //for(tables)
+        //1.save tables in local db
         for(String tableName : tables){
-            List<FieldEntity> fieldList = hiveExtractImp.getFields(dsName, tableName);
+            String[] dbTableName = tableName.split("\\.");
+            List<FieldEntity> fieldList = hiveExtractImp.getFields(dbTableName[0], dbTableName[1]);
             for(FieldEntity fieldEntity : fieldList){
                 Map<String, String> fieldMap = new HashMap<>();
                 fieldMap.put("datasource_id",dsName);
@@ -186,20 +197,28 @@ public class MetaDataMgrApiService {
                 String field = fieldEntity.getType();
                 fieldMap.put("field_type",field);
                 if (field.contains("varchar")){
-                    fieldMap.put("field_length",field.substring(field.indexOf("("),field.indexOf(")")));
+                    fieldMap.put("field_length",field.substring(field.indexOf("(")+1,field.indexOf(")")));
                 }else {
                     fieldMap.put("field_length",null);
                 }
                 mapList.add(fieldMap);
             }
         }
-
-        dsMetaInfoDBMapper.insertFields(mapList);
-
+        if(dsFieldInfoDBMapper.insertFields(mapList) <= 0){
+            _ret = false;
+        }
         //TODO
-        //1.save tables in local db
-
         //2.save fields in local db
+        List<Map<String,String>> tableList = new ArrayList<>();
+        for(String tableName : tables){
+            Map<String,String> tableMap = new HashMap<>();
+            tableMap.put("table_english_name",tableName);
+            tableMap.put("datasource_id",dsName);
+            tableList.add(tableMap);
+        }
+        if(dsTableInfoDBMapper.insertTables(tableList) <= 0){
+            _ret = false;
+        }
 
         return _ret;
     }
