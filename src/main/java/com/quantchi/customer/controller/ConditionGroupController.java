@@ -42,14 +42,12 @@ public class ConditionGroupController {
     @ResponseBody
     public Map<String, Object> findCustomerGroup(@RequestBody Map<String, String> map){
         Map<String, Object> responseMap = new HashMap<>();
-        if(map.get("customerGroupId") == null){
+        if(map.get("customerGroupId") == null || map.get("customerGroupId").equals("")){
             responseMap.put("code",400);
             responseMap.put("msg","请输入条件ID");
             return  responseMap;
         }
         responseMap = conditionGroupService.findCustomerGroup(map.get("customerGroupId"));
-        responseMap.put("code",200);
-        responseMap.put("msg","查询成功");
         return  responseMap;
     }
 
@@ -71,7 +69,7 @@ public class ConditionGroupController {
             responseMap.put("code","200");
             responseMap.put("msg","成功");
             return responseMap;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             responseMap.put("code","500");
             responseMap.put("msg",e.getMessage());
@@ -82,6 +80,12 @@ public class ConditionGroupController {
     @RequestMapping(value = "/deleteCustomerGroupCondition", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> deleteCustomerGroup(@RequestBody Map<String, String> map){
+        Map<String, Object> responseMap = new HashMap<>();
+        if(map.get("customerGroupId") == null || map.get("customerGroupId").equals("")){
+            responseMap.put("code",400);
+            responseMap.put("msg","请输入条件ID");
+            return  responseMap;
+        }
         return conditionGroupService.deleteCustomerGroup(map.get("customerGroupId"));
     }
 }
