@@ -46,7 +46,7 @@ public class MetaDataMgrApiService {
     public Map<String, Object> getDSMetaInfo(String dsName, int start, int pagesize){
         Map<String,Object> _ret = new HashMap<>();
         DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
-        if("".equals(dsName))
+        if(!"".equals(dsName))
             _ex.createCriteria().andDsNameEqualTo(dsName);
 
         List<DSMetaInfoDB> _sqlRet =  dsMetaInfoDBMapper.selectByExample(_ex,(start-1)* pagesize,pagesize);
@@ -91,7 +91,7 @@ public class MetaDataMgrApiService {
 
         List<DSMetaInfoDB> _ExistItemList =  dsMetaInfoDBMapper.selectByExample(_ex,defaultSqlStart,defaultPageSize);
         if(_ExistItemList.size() > 0){
-            int _activeRows = dsMetaInfoDBMapper.updateByExample(_record,_ex);
+            int _activeRows = dsMetaInfoDBMapper.updateByExampleSelective(_record,_ex);
             if(_activeRows > 0)
                 _ret = true;
         }else{

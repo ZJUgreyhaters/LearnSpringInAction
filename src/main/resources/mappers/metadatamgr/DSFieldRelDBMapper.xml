@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.DSFieldRelDBMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.DSFieldRelDB" >
+    <id column="relation_id" property="relationId" jdbcType="INTEGER" />
+    <result column="relation" property="relation" jdbcType="VARCHAR" />
+    <result column="field_id" property="fieldId" jdbcType="VARCHAR" />
+    <result column="table_id" property="tableId" jdbcType="VARCHAR" />
+    <result column="foreign_field_id" property="foreignFieldId" jdbcType="VARCHAR" />
+    <result column="foreign_table_id" property="foreignTableId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    relation_id, relation, field_id, table_id, foreign_field_id, foreign_table_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from ds_field_releation
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ds_field_releation
+    where relation_id = #{relationId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ds_field_releation
+    where relation_id = #{relationId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample" >
+    delete from ds_field_releation
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.DSFieldRelDB" >
+    insert into ds_field_releation (relation_id, relation, field_id, 
+      table_id, foreign_field_id, foreign_table_id
+      )
+    values (#{relationId,jdbcType=INTEGER}, #{relation,jdbcType=VARCHAR}, #{fieldId,jdbcType=VARCHAR}, 
+      #{tableId,jdbcType=VARCHAR}, #{foreignFieldId,jdbcType=VARCHAR}, #{foreignTableId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.DSFieldRelDB" >
+    insert into ds_field_releation
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="relationId != null" >
+        relation_id,
+      </if>
+      <if test="relation != null" >
+        relation,
+      </if>
+      <if test="fieldId != null" >
+        field_id,
+      </if>
+      <if test="tableId != null" >
+        table_id,
+      </if>
+      <if test="foreignFieldId != null" >
+        foreign_field_id,
+      </if>
+      <if test="foreignTableId != null" >
+        foreign_table_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="relationId != null" >
+        #{relationId,jdbcType=INTEGER},
+      </if>
+      <if test="relation != null" >
+        #{relation,jdbcType=VARCHAR},
+      </if>
+      <if test="fieldId != null" >
+        #{fieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="tableId != null" >
+        #{tableId,jdbcType=VARCHAR},
+      </if>
+      <if test="foreignFieldId != null" >
+        #{foreignFieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="foreignTableId != null" >
+        #{foreignTableId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ds_field_releation
+    <set >
+      <if test="record.relationId != null" >
+        relation_id = #{record.relationId,jdbcType=INTEGER},
+      </if>
+      <if test="record.relation != null" >
+        relation = #{record.relation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fieldId != null" >
+        field_id = #{record.fieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tableId != null" >
+        table_id = #{record.tableId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.foreignFieldId != null" >
+        foreign_field_id = #{record.foreignFieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.foreignTableId != null" >
+        foreign_table_id = #{record.foreignTableId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ds_field_releation
+    set relation_id = #{record.relationId,jdbcType=INTEGER},
+      relation = #{record.relation,jdbcType=VARCHAR},
+      field_id = #{record.fieldId,jdbcType=VARCHAR},
+      table_id = #{record.tableId,jdbcType=VARCHAR},
+      foreign_field_id = #{record.foreignFieldId,jdbcType=VARCHAR},
+      foreign_table_id = #{record.foreignTableId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.metadatamgr.data.entity.DSFieldRelDB" >
+    update ds_field_releation
+    <set >
+      <if test="relation != null" >
+        relation = #{relation,jdbcType=VARCHAR},
+      </if>
+      <if test="fieldId != null" >
+        field_id = #{fieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="tableId != null" >
+        table_id = #{tableId,jdbcType=VARCHAR},
+      </if>
+      <if test="foreignFieldId != null" >
+        foreign_field_id = #{foreignFieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="foreignTableId != null" >
+        foreign_table_id = #{foreignTableId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where relation_id = #{relationId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.metadatamgr.data.entity.DSFieldRelDB" >
+    update ds_field_releation
+    set relation = #{relation,jdbcType=VARCHAR},
+      field_id = #{fieldId,jdbcType=VARCHAR},
+      table_id = #{tableId,jdbcType=VARCHAR},
+      foreign_field_id = #{foreignFieldId,jdbcType=VARCHAR},
+      foreign_table_id = #{foreignTableId,jdbcType=VARCHAR}
+    where relation_id = #{relationId,jdbcType=INTEGER}
+  </update>
+</mapper>
