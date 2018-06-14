@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -190,11 +191,18 @@ public class MetaDataMgrApiController {
             JSONObject json = JSONObject.parseObject(bodyString);
 
             if(json.getString("data_source_name") == null)
-                throw new Exception("miss data source connection info");
+                throw new Exception("miss data source name");
+
+            if(json.get("table_names") == null)
+                throw new Exception("miss tables name info");
 
             String dsName = json.getString("data_source_name");
-            Map<String, Object>  _ret = metaDataMgrApiService.extractTables(dsName);
-            return util.genRet(200,_ret.get("data"),"成功",0);
+            List<String> tbs = (List) json.get("table_names");
+            boolean _ret = metaDataMgrApiService.saveTablesAndFields(dsName,tbs);
+            if(_ret)
+                return util.genRet(200,_ret,"成功",0);
+            else
+                return util.genRet(201,_ret,"失败",0);
         }catch (Exception e){
             logger.error("extractTables func err:",e.getMessage());
             return util.genRet(500,null,e.getMessage(),0);

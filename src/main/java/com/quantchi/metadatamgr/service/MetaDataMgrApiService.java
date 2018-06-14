@@ -169,5 +169,16 @@ public class MetaDataMgrApiService {
         return _extract;
     }
 
-    /*public boolean localsave*/
+    public boolean saveTablesAndFields(String dsName,List<String> tables){
+        boolean _ret = false;
+
+        //for(tables)
+
+
+        //TODO
+        //1.save tables in local db
+        //2.save fields in local db
+
+        return _ret;
+    }
 }
