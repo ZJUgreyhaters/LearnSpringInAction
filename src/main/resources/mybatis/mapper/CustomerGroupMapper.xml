@@ -26,7 +26,8 @@
        ifnull(last_refresh_time,'') as last_refresh_time,  -- 数据最后更新时间
        cust_nums          -- 客户数
       from dmp.cust_group_header
-      where create_user_id = #{create_user_id}  -- 当前登录客户ID 参数传入
+      WHERE create_user_id = #{create_user_id}  -- 当前登录客户ID 参数传入
+      <if test="cust_group_name !=null and cust_group_name.toString().length()>0"> AND cust_group_name LIKE CONCAT(CONCAT('%',#{cust_group_name}), '%')</if>
       and delete_status = '0'   -- 固定条件：筛选未删除的记录
       and history_status = '0'  -- 固定条件：筛选当前版本记录
   </select>

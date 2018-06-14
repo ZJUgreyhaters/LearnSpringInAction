@@ -1,7 +1,5 @@
 package com.quantchi.customer.pojo;
 
-import java.util.Date;
-
 /**
  * Created by 49537 on 2018/6/11.
  */
@@ -11,9 +9,9 @@ public class CustomerGroup {
   private String cust_group_id;
   private String cust_group_name;
   private Integer condition_nums;
-  private Date create_time;
+  private String create_time;
   private String create_user_id;
-  private Date last_refresh_time;
+  private String last_refresh_time;
   private Integer cust_nums;
   private String condition_desc;
   private String condition_statement;
@@ -21,8 +19,8 @@ public class CustomerGroup {
   private String delete_status;
   private String history_status;
   private String default_analysis;
-  private Integer pageIndex;
-  private Integer pagesize;
+  private Integer page;
+  private Integer page_size;
 
   public Integer getId() {
     return id;
@@ -56,11 +54,11 @@ public class CustomerGroup {
     this.condition_nums = condition_nums;
   }
 
-  public Date getCreate_time() {
+  public String getCreate_time() {
     return create_time;
   }
 
-  public void setCreate_time(Date create_time) {
+  public void setCreate_time(String create_time) {
     this.create_time = create_time;
   }
 
@@ -72,11 +70,11 @@ public class CustomerGroup {
     this.create_user_id = create_user_id;
   }
 
-  public Date getLast_refresh_time() {
+  public String getLast_refresh_time() {
     return last_refresh_time;
   }
 
-  public void setLast_refresh_time(Date last_refresh_time) {
+  public void setLast_refresh_time(String last_refresh_time) {
     this.last_refresh_time = last_refresh_time;
   }
 
@@ -136,19 +134,19 @@ public class CustomerGroup {
     this.default_analysis = default_analysis;
   }
 
-  public Integer getPageIndex() {
-    return pageIndex;
+  public Integer getPage() {
+    return page;
   }
 
-  public void setPageIndex(Integer pageIndex) {
-    this.pageIndex = pageIndex;
+  public void setPage(Integer page) {
+    this.page = page;
   }
 
-  public Integer getPagesize() {
-    return pagesize;
+  public Integer getPage_size() {
+    return page_size;
   }
 
-  public void setPagesize(Integer pagesize) {
-    this.pagesize = pagesize;
+  public void setPage_size(Integer page_size) {
+    this.page_size = page_size;
   }
 }
