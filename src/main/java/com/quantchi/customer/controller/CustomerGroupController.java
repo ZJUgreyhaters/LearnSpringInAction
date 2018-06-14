@@ -74,13 +74,19 @@ public class CustomerGroupController {
     return service.updateCustomerGroup(group);
   }
 
+  //客群客户检索结果展示
+  @ResponseBody
+  @RequestMapping(value = "/listCustomersWithDim", method = {RequestMethod.POST})
+  public Map<String, Object> listCustomersWithDim(@RequestBody CustomerGroup group) {
+
+    return service.listCustomersWithDim(group);
+  }
+
   //客群客户详情列表展示
   @ResponseBody
   @RequestMapping(value = "/listCustomersByCustomerGroupId", method = {RequestMethod.POST})
   public Map<String, Object> listCustomersByCustomerGroupId(@RequestBody CustomerGroup group) {
 
-    return service.updateCustomerGroup(group);
+    return service.listCustomersByCustomerGroupId(group);
   }
-
-
 }

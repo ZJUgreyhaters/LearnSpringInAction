@@ -18,4 +18,8 @@ public interface CustomerGroupService {
   public Map<String, Object> deleteCustomerGroup(CustomerGroup group);
 
   public Map<String, Object> updateCustomerGroup(CustomerGroup group);
+
+  public Map<String,Object> listCustomersWithDim(CustomerGroup group);
+
+  public Map<String,Object> listCustomersByCustomerGroupId(CustomerGroup group);
 }
