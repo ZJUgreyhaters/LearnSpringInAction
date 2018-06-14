@@ -2,6 +2,7 @@ package com.quantchi.metadatamgr.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.quantchi.metadatamgr.data.DSMetaInfo;
+import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
@@ -171,12 +172,33 @@ public class MetaDataMgrApiService {
 
     public boolean saveTablesAndFields(String dsName,List<String> tables){
         boolean _ret = false;
-
+        List<Map<String,String>> mapList = null;
+        HiveExtractImp hiveExtractImp = getExtractObj(dsName);
         //for(tables)
+        for(String tableName : tables){
+            List<FieldEntity> fieldList = hiveExtractImp.getFields(dsName, tableName);
+            for(FieldEntity fieldEntity : fieldList){
+                Map<String, String> fieldMap = new HashMap<>();
+                fieldMap.put("datasource_id",dsName);
+                fieldMap.put("table_id",tableName);
+                String name = fieldEntity.getName();
+                fieldMap.put("field_english_name",name);
+                String field = fieldEntity.getType();
+                fieldMap.put("field_type",field);
+                if (field.contains("varchar")){
+                    fieldMap.put("field_length",field.substring(field.indexOf("("),field.indexOf(")")));
+                }else {
+                    fieldMap.put("field_length",null);
+                }
+                mapList.add(fieldMap);
+            }
+        }
 
+        dsMetaInfoDBMapper.insertFields(mapList);
 
         //TODO
         //1.save tables in local db
+
         //2.save fields in local db
 
         return _ret;

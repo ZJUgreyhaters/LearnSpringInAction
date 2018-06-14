@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "api/metadata/field")
+@RequestMapping(value = "api/metadata/table")
 public class MetaDataMgrTableApiController {
 
     private static final Logger logger = LoggerFactory.getLogger(MetaDataMgrTableApiController.class);
