@@ -51,7 +51,6 @@ public class intelQuery{
                 totalRet.put("data",res);
                 totalRet.put("total",responseList.size());
             } else if (queryResult.getStatus() == EnumDef.QueryStatus.QUERY_TREE) {
-//                totalRet.put("phase", "complete");
                 totalRet.putAll(getResponseFromQueryResult(queryResult.getFirstResult()));
 //                totalRet.put("total",getResponseFromQueryResult(queryResult.getFirstResult()).get("total").toString());
             } else {

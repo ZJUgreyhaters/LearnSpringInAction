@@ -29,6 +29,8 @@ public class SearchApiService {
 
 	private static final String WEIGHT = "weight";
 	private static final String REPLACE_ORIGIN = "replace_origin";
+	private static final String REPLACE_ORIGIN_WITH_SEG = "replace_origin_seg";
+	private static final String DEFAULT_TRIM_WEIGHT = "0.5";
 
 	@Autowired
 	private HttpSolrClient httpSolr;
@@ -118,10 +120,14 @@ public class SearchApiService {
 		List<String> list = new ArrayList<>();
 		String ltp = AppProperties.get("ltp.addr");
 		QueryNodes _nodes = LtpTokenizer.tokenize(str,ltp);
-		//QueryNodes _nodes = LtpTokenizer.tokenize(str);
+
 		for(SemanticNode node : _nodes){
 			list.add(node.getText());
 		}
+
+		//添加分词后处理策略
+		removeName_with_seg_xx(list);
+
 		return list;
 	}
 
@@ -141,8 +147,10 @@ public class SearchApiService {
 			if(hl == null)
 				continue;
 
-			String _query_with_no_seg = query.replace(" ","");
-			String replace_origin = getMaxLengthSubWord(_query_with_no_seg,getHitWords(hl));
+			//String _query_with_no_seg = query.replace(" ","");
+			//String replace_origin = getMaxLengthSubWord(_query_with_no_seg,getHitWords(hl));
+			String replaceStr = getMaxLengthSubWord(query,getHitWords(hl));
+			String replace_origin = replaceStr.replace(" ","");
 
 			if(replace_origin.equals( (String) doc.get(colsField) ))
 				continue;
@@ -162,6 +170,7 @@ public class SearchApiService {
 			if(weight >= standard){
 				doc.addField(WEIGHT,weight);
 				doc.addField(REPLACE_ORIGIN,replace_origin);
+				doc.addField(REPLACE_ORIGIN_WITH_SEG,replaceStr);
 				qualifiedDocs.add(doc);
 			}
 
@@ -201,6 +210,15 @@ public class SearchApiService {
 				resultDocs.add(doc);
 			}
 		}
+
+		//替换字符串需要到结尾,并设置一个阈值,如果将要替换的词占比较低时则过滤不提示
+		Iterator<SolrDocument> iter = resultDocs.listIterator();
+		while (iter.hasNext()){
+			SolrDocument doc = iter.next();
+			if(!appendRelaceWordToEnd(doc,query))
+				iter.remove();
+		}
+
 		return resultDocs;
 	}
 
@@ -238,6 +256,47 @@ public class SearchApiService {
 				_ret = query.substring(_st,_end+_lastWord.length());
 		}
 		return _ret;
+	}
+
+	private boolean appendRelaceWordToEnd(SolrDocument doc,String query){
+		boolean _ret = false;
+		String replace_with_seg = doc.getFieldValue(REPLACE_ORIGIN_WITH_SEG).toString();
+		int _st = query.indexOf(replace_with_seg);
+		String replaceWordsToEnd = query.substring(_st).replace(" ","");
+		String replaceWordsToEnd_with_seg = "";
+		if((_st+replace_with_seg.length()) != query.length())
+			replaceWordsToEnd_with_seg = query.substring(_st+replace_with_seg.length()+1);
+		String[] _list = replaceWordsToEnd_with_seg.split(" ");
+		double _weight = (double)1/(double)(_list.length+1);
+		double _conf_weight = Double.parseDouble(AppProperties.getWithDefault ("solr.trimWeight",DEFAULT_TRIM_WEIGHT));
+		if(_weight >= _conf_weight){
+			doc.setField(REPLACE_ORIGIN,replaceWordsToEnd);
+			_ret = true;
+		}
+		return _ret;
+	}
+
+	//XX 被分词了，所以针对人名去除分词，但是人名xx的提示将不会出来
+	private void removeName_with_seg_xx(List<String> segList){
+		//脱敏后的人名都按 XX 来处理,不存在 X
+		String _needRemoveFlag = "XX";
+		int _idx = -1;
+		for(String word: segList){
+			if(_needRemoveFlag.equals(word)){
+				_idx = segList.indexOf(word);
+			}
+		}
+		if(_idx > -1 && segList.size() > 1){
+			//如果XX是首个词，则连接第二个词
+			if(_idx == 0){
+				String _secondWord = _needRemoveFlag+segList.get(1);
+				segList.set(1,_secondWord);
+			}else{
+				String _prevWord = segList.get(_idx-1)+_needRemoveFlag;
+				segList.set(_idx-1,_prevWord);
+			}
+			segList.remove(_needRemoveFlag);
+		}
 	}
 
 }
