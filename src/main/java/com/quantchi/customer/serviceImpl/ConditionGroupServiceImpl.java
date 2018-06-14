@@ -6,11 +6,9 @@ import com.quantchi.customer.mapper.ConditionGroupMapper;
 import com.quantchi.customer.pojo.ConditionGroup;
 import com.quantchi.customer.service.ConditionGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +23,6 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
     @Override
     public Map<String,Object> listCustomerGroupCriterias(Integer page_size, Integer page) throws SQLException {
 
-        ConditionGroup conditionGroup = null;
         PageHelper.startPage(page, page_size);
         // 执行查询
         List<Object> list = conditionGroupMapper.listCustomerGroupCriterias();
@@ -41,8 +38,7 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
         List<Object> resultList = new ArrayList<>();
 
         for(int i=0; i < pageList.size(); i++){
-            Map<String, Object> conditionGroupMap = new HashMap<>();
-            conditionGroupMap = (Map<String, Object>)pageList.get(i);
+            Map<String, Object> conditionGroupMap = (Map<String, Object>)pageList.get(i);
 //            conditionGroupMap.put("cust_group_id", conditionGroup.getCust_group_id());
 //            conditionGroupMap.put("cust_group_name", conditionGroup.getCust_group_name());
 //            conditionGroupMap.get("condition_desc", conditionGroup.getCondition_desc().replace("[|]",""));
@@ -69,7 +65,7 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
         List<Map<String, Object>> list = new ArrayList<>();
         try{
             conditionGroup = conditionGroupMapper.findCustomerGroup(customerGroupId);
-            map.put("cust_group_name",conditionGroup.getCust_group_name());
+            map.put("cust_condition_name",conditionGroup.getCust_condition_name());
             map.put("create_user_id",conditionGroup.getCreate_user_id());
             String condition_desc = conditionGroup.getCondition_desc();
             String condition_desc_id = conditionGroup.getCondition_desc_id();

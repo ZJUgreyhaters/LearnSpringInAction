@@ -3,37 +3,35 @@
 <mapper namespace="com.quantchi.customer.mapper.ConditionGroupMapper" >
     <resultMap type="com.quantchi.customer.pojo.ConditionGroup" id="BaseResultMap">
         <id column="id" property="id" ></id>
-        <result column="cust_group_id" property="cust_group_id" />
-        <result column="cust_group_name" property="cust_group_name" />
+        <result column="cust_condition_id" property="cust_condition_id" />
+        <result column="cust_condition_name" property="cust_condition_name" />
         <result column="create_user_id" property="create_user_id" />
         <result column="condition_desc" property="condition_desc" />
         <result column="condition_desc_id" property="condition_desc_id" />
         <result column="condition_statement" property="condition_statement" />
     </resultMap>
-    <!--<resultMap id="listResult" type="">-->
-
-    <!--</resultMap>-->
 
     <resultMap type="java.util.HashMap" id="listMap">
         <id column="id" property="id" ></id>
-        <result column="cust_group_id" property="cust_group_id" />
-        <result column="cust_group_name" property="cust_group_name" />
+        <result column="cust_condition_id" property="cust_condition_id" />
+        <result column="cust_condition_name" property="cust_condition_name" />
         <result column="condition_desc" property="condition_desc" />
     </resultMap>
 
     <insert id="createCustomerGroupCriteria" parameterType="map">
-        INSERT INTO cust_group_condition(cust_group_name, create_user_id, condition_desc,condition_desc_id) VALUES(#{CustomerGroupCriteriaName},#{create_user_id},#{condition_desc},#{condition_desc_id})
+        INSERT INTO cust_group_condition(cust_condition_name, create_user_id, condition_desc,condition_desc_id) VALUES(#{CustomerGroupCriteriaName},#{create_user_id},#{condition_desc},#{condition_desc_id})
     </insert>
 
     <select id="findCustomerGroup" resultMap="BaseResultMap" parameterType="string">
-        SELECT * FROM cust_group_condition WHERE cust_group_id=#{customerGroupId}
+        SELECT * FROM cust_group_condition WHERE cust_condition_id=#{customerGroupId}
     </select>
 
     <select id="listCustomerGroupCriterias" resultMap="listMap">
-        SELECT cust_group_id,cust_group_name,condition_desc FROM cust_group_condition
+--         SELECT * FROM cust_group_condition
+        SELECT cust_condition_id,cust_condition_name,condition_desc FROM cust_group_condition
     </select>
 
     <delete id="deleteCustomerGroup" parameterType="string">
-        DELETE FROM cust_group_condition WHERE cust_group_id=#{customerGroupId}
+        DELETE FROM cust_group_condition WHERE cust_condition_id=#{customerGroupId}
     </delete>
 </mapper>
