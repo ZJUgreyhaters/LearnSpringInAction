@@ -26,6 +26,7 @@
 		</property>
 	</bean>
 
+
 	<!--<bean name="jacksonMessageConverter"
 		  class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
 		<property name="supportedMediaTypes">
@@ -71,6 +72,18 @@
 			</list>
 		</property>
 		<property name="typeAliasesPackage" value="com.quantchi.metadatamgr.data.entity,com.quantchi.customer.pojo" />
+		<property name="plugins">
+			<array>
+				<bean class="com.github.pagehelper.PageInterceptor">
+					<property name="properties">
+						<!-- config params as the following -->
+						<value>
+							param1=value1
+						</value>
+					</property>
+				</bean>
+			</array>
+		</property>
 	</bean>
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
