@@ -3,6 +3,7 @@ package com.quantchi.customer.controller;
 import com.quantchi.customer.pojo.ConditionGroup;
 import com.quantchi.customer.service.ConditionGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,6 +69,11 @@ public class ConditionGroupController {
             conditionGroupService.createCustomerGroupCriteria(requestMap);
             responseMap.put("code","200");
             responseMap.put("msg","成功");
+            return responseMap;
+        }catch (DuplicateKeyException duplicateKeyException){
+            duplicateKeyException.printStackTrace();
+            responseMap.put("code","500");
+            responseMap.put("msg","条件名已经存在，请使用其他条件名");
             return responseMap;
         } catch (Exception e) {
             e.printStackTrace();
