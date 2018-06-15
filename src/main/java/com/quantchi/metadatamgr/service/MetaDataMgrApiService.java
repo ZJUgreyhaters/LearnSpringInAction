@@ -2,6 +2,7 @@ package com.quantchi.metadatamgr.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.quantchi.metadatamgr.data.DSMetaInfo;
+import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
@@ -37,7 +38,7 @@ public class MetaDataMgrApiService {
     public Map<String, Object> getDSMetaInfo(String dsName, int start, int pagesize){
         Map<String,Object> _ret = new HashMap<>();
         DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
-        if("".equals(dsName))
+        if(!"".equals(dsName))
             _ex.createCriteria().andDsNameEqualTo(dsName);
 
         List<DSMetaInfoDB> _sqlRet =  dsMetaInfoDBMapper.selectByExample(_ex,(start-1)* pagesize,pagesize);
@@ -82,7 +83,7 @@ public class MetaDataMgrApiService {
 
         List<DSMetaInfoDB> _ExistItemList =  dsMetaInfoDBMapper.selectByExample(_ex,defaultSqlStart,defaultPageSize);
         if(_ExistItemList.size() > 0){
-            int _activeRows = dsMetaInfoDBMapper.updateByExample(_record,_ex);
+            int _activeRows = dsMetaInfoDBMapper.updateByExampleSelective(_record,_ex);
             if(_activeRows > 0)
                 _ret = true;
         }else{
@@ -171,12 +172,33 @@ public class MetaDataMgrApiService {
 
     public boolean saveTablesAndFields(String dsName,List<String> tables){
         boolean _ret = false;
-
+        List<Map<String,String>> mapList = null;
+        HiveExtractImp hiveExtractImp = getExtractObj(dsName);
         //for(tables)
+        for(String tableName : tables){
+            List<FieldEntity> fieldList = hiveExtractImp.getFields(dsName, tableName);
+            for(FieldEntity fieldEntity : fieldList){
+                Map<String, String> fieldMap = new HashMap<>();
+                fieldMap.put("datasource_id",dsName);
+                fieldMap.put("table_id",tableName);
+                String name = fieldEntity.getName();
+                fieldMap.put("field_english_name",name);
+                String field = fieldEntity.getType();
+                fieldMap.put("field_type",field);
+                if (field.contains("varchar")){
+                    fieldMap.put("field_length",field.substring(field.indexOf("("),field.indexOf(")")));
+                }else {
+                    fieldMap.put("field_length",null);
+                }
+                mapList.add(fieldMap);
+            }
+        }
 
+        dsMetaInfoDBMapper.insertFields(mapList);
 
         //TODO
         //1.save tables in local db
+
         //2.save fields in local db
 
         return _ret;

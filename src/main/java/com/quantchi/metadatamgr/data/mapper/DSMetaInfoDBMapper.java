@@ -5,6 +5,7 @@ import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DSMetaInfoDBMapper {
     int deleteByExample(@Param("example")DSMetaInfoDBExample example);
@@ -28,4 +29,6 @@ public interface DSMetaInfoDBMapper {
     int updateByPrimaryKeySelective(DSMetaInfoDB record);
 
     int updateByPrimaryKey(DSMetaInfoDB record);
+
+    int insertFields(List<Map<String,String>> list);
 }

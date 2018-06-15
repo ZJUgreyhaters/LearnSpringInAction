@@ -118,7 +118,9 @@ public class HiveExtractImp {
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
-                FieldEntity field = new FieldEntity(resultSet.getString("COLUMN_NAME"),resultSet.getString("TYPE_NAME"));
+                FieldEntity field = new FieldEntity();
+                field.setName(resultSet.getString("COLUMN_NAME"));
+                field.setType(resultSet.getString("TYPE_NAME"));
                 fieldBeanList.add(field);
             }
             conn.close();
