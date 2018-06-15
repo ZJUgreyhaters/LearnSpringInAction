@@ -1,6 +1,7 @@
 package com.quantchi.customer.controller;
 
 import com.quantchi.common.ExportUtil;
+import com.quantchi.common.JsonResult;
 import com.quantchi.customer.pojo.CustomerGroup;
 import com.quantchi.customer.service.CustomerGroupService;
 import java.util.HashMap;
@@ -96,10 +97,13 @@ public class CustomerGroupController {
 
   //客群客户检索结果展示
   @ResponseBody
-  @RequestMapping(value = "/listCustomersWithDim", method = {RequestMethod.POST})
-  public Map<String, Object> listCustomersWithDim(@RequestBody CustomerGroup group) {
-
-    return service.listCustomersWithDim(group);
+  @RequestMapping(value = "/listCustomersWithDim", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+  public String listCustomersWithDim(@RequestBody CustomerGroup group) {
+    String result = JsonResult.successJson(service.listCustomersWithDim(group)).replaceAll("customer_no", "客户号")
+        .replaceAll("customer_name", "姓名").replaceAll("fin_balance", "融资负债（万元）")
+        .replaceAll("total_asset", "总资产（万元}").replaceAll("assure_debit_rate", "维保比例")
+        .replaceAll("concentrate", "当前仓位").replaceAll("profit_rate_y", "年度收益率 ");
+    return result;
   }
 
   //客群客户详情列表展示

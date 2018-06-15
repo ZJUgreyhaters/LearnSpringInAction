@@ -190,7 +190,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     try {
       StringBuilder sql = new StringBuilder();
       String string =
-          "select '20160101' as init_date,condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y,0 as stock_choose_value,0 as exchange_value,0 as avg_concentrate,0 as avg_loss_rate from (";
+          "select '20160101' as init_date,condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y from (";
       sql.append(string);
       List<Map<String, String>> list = new ArrayList<>();
       Map<String, String> result = new HashMap<String, String>();
@@ -208,7 +208,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       sql.append(sql1).append(z).append(w);
       PageHelper.startPage(1, 10);
       List<Map<String, Object>> Resultlist = HiveLink.selectHive(sql.toString(), jdbcPool);
-      if (list.toString().contains("select error")) {
+      if (Resultlist.toString().contains("select error")) {
         return util.genRet(500, null, "select CustomerGroup error", 0);
       }
       PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(Resultlist, 10);
@@ -216,12 +216,14 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
 
       resultz.put("total", pageInfo.getTotal());
       // 结果rows数据
-      List<Map<String, Object>>  infoList= pageInfo.getList();
-      infoList.add(sub());
+      List<Map<String, Object>>  infoList= new ArrayList<>();
+      Map<String, Object> resultInfo = new HashMap<String, Object>();
+      resultInfo.put("data_source",pageInfo.getList());
+      resultInfo.put("cust_nums",Resultlist.size());
+      resultInfo.put("subcondition",sub());
+      infoList.add(resultInfo);
       resultz.put("data",infoList);
-      return util
-          .genRet(200, resultz.get("data"), "ok",
-              Integer.parseInt(resultz.get("total").toString()));
+      return resultz;
     } catch (Exception e) {
       e.printStackTrace();
       return util.genRet(500, null, "select CustomerGroup error", 0);
@@ -307,11 +309,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
 
   Map<String, Object> sub() {
     Map<String, Object> map = new HashedMap();
-    map.put("融资负债", "100万以下，100-200万，200-500万，500-1000万，1000万以上");
-    map.put("总资产", "100万以下，100-200万，200-500万，500-1000万，1000万以上");
-    map.put("持仓比例", "0-20%，20%-40%，40%-60%，60%-80%，80%-100%");
-    map.put("维保比例", "0-130%，130%-140%，140%-150%，150%以上");
-    map.put("年度收益率", "亏损30%以上，亏损0-30%，收益0-30%，收益30%以上");
+    map.put("id", "1");
+    map.put("name", "收益率");
+    map.put("option", " [ {id: 1, value:'收益30%以上', number:111}, {id: 2, value:'收益30%以上', number:111},]");
     return map;
   }
 }
