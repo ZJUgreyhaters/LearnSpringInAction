@@ -34,21 +34,21 @@ public class ConditionGroupController {
         } catch (SQLException e) {
             e.printStackTrace();
             map.put("code",500);
-            map.put("msg",e.getMessage());
+            map.put("msg","查询失败");
             return map;
         }
     }
 
-    @RequestMapping(value = "/findCustomerGroup", method = RequestMethod.POST)
+    @RequestMapping(value = "/findCustomerCondition", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> findCustomerGroup(@RequestBody Map<String, String> map){
         Map<String, Object> responseMap = new HashMap<>();
-        if(map.get("customerGroupId") == null || map.get("customerGroupId").equals("")){
+        if(map.get("customerConditionId") == null || map.get("customerConditionId").equals("")){
             responseMap.put("code",400);
-            responseMap.put("msg","请输入条件ID");
+            responseMap.put("msg","请输入正确条件ID");
             return  responseMap;
         }
-        responseMap = conditionGroupService.findCustomerGroup(map.get("customerGroupId"));
+        responseMap = conditionGroupService.findCustomerGroup(map.get("customerConditionId"));
         return  responseMap;
     }
 
@@ -68,7 +68,7 @@ public class ConditionGroupController {
             requestMap.put("condition_desc_id", condition_desc_id);
             conditionGroupService.createCustomerGroupCriteria(requestMap);
             responseMap.put("code","200");
-            responseMap.put("msg","成功");
+            responseMap.put("msg","创建成功");
             return responseMap;
         }catch (DuplicateKeyException duplicateKeyException){
             duplicateKeyException.printStackTrace();
@@ -78,7 +78,7 @@ public class ConditionGroupController {
         } catch (Exception e) {
             e.printStackTrace();
             responseMap.put("code","500");
-            responseMap.put("msg",e.getMessage());
+            responseMap.put("msg","创建失败");
             return responseMap;
         }
     }
@@ -87,11 +87,11 @@ public class ConditionGroupController {
     @ResponseBody
     public Map<String, Object> deleteCustomerGroup(@RequestBody Map<String, String> map){
         Map<String, Object> responseMap = new HashMap<>();
-        if(map.get("customerGroupId") == null || map.get("customerGroupId").equals("")){
+        if(map.get("customerConditionId") == null || map.get("customerConditionId").equals("")){
             responseMap.put("code",400);
-            responseMap.put("msg","请输入条件ID");
+            responseMap.put("msg","请输入正确条件ID");
             return  responseMap;
         }
-        return conditionGroupService.deleteCustomerGroup(map.get("customerGroupId"));
+        return conditionGroupService.deleteCustomerGroup(map.get("customerConditionId"));
     }
 }

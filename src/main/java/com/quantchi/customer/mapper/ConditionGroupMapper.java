@@ -9,6 +9,6 @@ import java.util.Map;
 public interface ConditionGroupMapper {
     void createCustomerGroupCriteria(Map<String, Object> map);
     List<Object> listCustomerGroupCriterias();
-    ConditionGroup findCustomerGroup(String customerGroupId);
-    void deleteCustomerGroup(String customerGroupId);
+    ConditionGroup findCustomerGroup(String customerConditionId);
+    void deleteCustomerGroup(String customerConditionId);
 }
