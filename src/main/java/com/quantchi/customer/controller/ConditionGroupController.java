@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,5 +94,66 @@ public class ConditionGroupController {
             return  responseMap;
         }
         return conditionGroupService.deleteCustomerGroup(map.get("customerConditionId"));
+    }
+
+    @RequestMapping(value = "/getDdlDimData", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> getDdlDimData(@RequestBody Map<String,String> map){
+        Map<String,Object> responseMap = new HashMap<>();
+        List<Map<String,Object>> list = new ArrayList<>();
+
+        Map<String,Object> conditionMap = new HashMap<>();
+        conditionMap.put("id",1);
+        conditionMap.put("type","value");
+        conditionMap.put("name","营业部地址");
+        List<String> listValue = new ArrayList<>();
+        listValue.add("杭州");
+        conditionMap.put("value",listValue);
+        list.add(conditionMap);
+
+        Map<String,Object> conditionMap2 = new HashMap<>();
+        conditionMap2.put("id",2);
+        conditionMap2.put("type","select");
+        conditionMap2.put("name","客户性别");
+        List<String> listValue2 = new ArrayList<>();
+        listValue2.add("男");
+        listValue2.add("女");
+        conditionMap2.put("value",listValue2);
+        list.add(conditionMap2);
+
+        Map<String,Object> conditionMap3 = new HashMap<>();
+        conditionMap3.put("id",3);
+        conditionMap3.put("type","select");
+        conditionMap3.put("name","客户类别");
+        List<String> listValue3 = new ArrayList<>();
+        listValue3.add("个人客户");
+        listValue3.add("机构客户");
+        listValue3.add("私募");
+        conditionMap3.put("value",listValue3);
+        list.add(conditionMap3);
+
+        Map<String,Object> conditionMap4 = new HashMap<>();
+        conditionMap4.put("id",4);
+        conditionMap4.put("type","area");
+        conditionMap4.put("name","维保比例");
+        List<String> listValue4 = new ArrayList<>();
+        listValue4.add("0");
+        listValue4.add("无穷大");
+        conditionMap4.put("value",listValue4);
+        list.add(conditionMap4);
+
+        Map<String,Object> conditionMap5 = new HashMap<>();
+        conditionMap5.put("id",5);
+        conditionMap5.put("type","area");
+        conditionMap5.put("name","年日均总资产");
+        List<String> listValue5 = new ArrayList<>();
+        listValue5.add("0");
+        listValue5.add("无穷大");
+        conditionMap5.put("value",listValue5);
+        list.add(conditionMap5);
+
+        responseMap.put("code",200);
+        responseMap.put("data",list);
+        return responseMap;
     }
 }
