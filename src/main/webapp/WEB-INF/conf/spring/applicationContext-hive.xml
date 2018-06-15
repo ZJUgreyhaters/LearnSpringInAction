@@ -4,8 +4,8 @@
 <beans>
 <bean id="hiveJdbcPool" class="com.quantchi.tianshu.common.JdbcPool" destroy-method="close">
     <constructor-arg index="0" value="jdbc:hive2://192.168.2.57:10000/default;auth=noSasl" type="java.lang.String"/>
-    <constructor-arg index="1" value="hive" type="java.lang.String"/>
-    <constructor-arg index="2" value="hive" type="java.lang.String"/>
+    <constructor-arg index="1" value="root" type="java.lang.String"/>
+    <constructor-arg index="2" value="root" type="java.lang.String"/>
     <constructor-arg index="3" value="org.apache.hive.jdbc.HiveDriver" type="java.lang.String"/>
 </bean>
 </beans>

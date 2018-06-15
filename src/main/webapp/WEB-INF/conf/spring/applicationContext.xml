@@ -26,7 +26,6 @@
 		</property>
 	</bean>
 
-
 	<!--<bean name="jacksonMessageConverter"
 		  class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
 		<property name="supportedMediaTypes">
@@ -60,8 +59,7 @@
 		<property name="connectionTimeout" value="500"/>
 	</bean>
 
-	<bean id="intelquery" class="com.quantchi.intelquery.intelQuery">
-	</bean>
+	<bean id="intelquery" class="com.quantchi.intelquery.intelQuery"></bean>
 
 	<!-- define the SqlSessionFactory -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
