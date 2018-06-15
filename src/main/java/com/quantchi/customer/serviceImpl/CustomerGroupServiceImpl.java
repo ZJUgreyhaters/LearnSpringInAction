@@ -38,10 +38,11 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
   private SQLQueryConfig sqlQueryConfig;
 
   @Override
-  public Map<String, Object> selectCustomerGroup(CustomerGroup customerGroup, Integer pageIndex,
-      Integer pagesize) {
+  public Map<String, Object> selectCustomerGroup(CustomerGroup customerGroup) {
     try {
-      PageHelper.startPage(pageIndex, pagesize);
+      if(customerGroup.getPage()!=null&&customerGroup.getPage_size()!=null){
+        PageHelper.startPage(customerGroup.getPage(), customerGroup.getPage_size());
+      }
       // 执行查询
       List<CustomerGroup> list = mapper.selectCustomerGroup(customerGroup);
       // 取分页信息
@@ -206,7 +207,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       String z = " left join mtoi.dim_customer cust on condition01.customer_no=cust.customer_no";
       String w = " left join (select * from mtoi.agg_cust_statistics where part_date = 20160101) main_data on condition01.customer_no=main_data.customer_no";
       sql.append(sql1).append(z).append(w);
-      PageHelper.startPage(1, 10);
+      if(group.getPage()!=null && group.getPage_size()!=null){
+        PageHelper.startPage(group.getPage(), group.getPage_size());
+      }
       List<Map<String, Object>> Resultlist = HiveLink.selectHive(sql.toString(), jdbcPool);
       if (Resultlist.toString().contains("select error")) {
         return util.genRet(500, null, "select CustomerGroup error", 0);
@@ -254,7 +257,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_KLINE_COUNTRY_BY_COUNTRY();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
-      PageHelper.startPage(group.getPage(), group.getPage_size());
+      if(group.getPage()!=null && group.getPage_size()!=null){
+        PageHelper.startPage(group.getPage(), group.getPage_size());
+      }
       List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return util.genRet(500, null, "select CustomerGroup error", 0);
@@ -287,6 +292,8 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         result.put("code", "500");
         result.put("msg", "error");
       }
+
+      mapper.updateCustomerGroup(group);
       result.put("code", "200");
       result.put("msg", "ok");
       return result;

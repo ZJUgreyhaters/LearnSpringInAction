@@ -9,8 +9,7 @@ import java.util.Map;
  */
 public interface CustomerGroupService {
 
-  public Map<String, Object> selectCustomerGroup(CustomerGroup group, Integer pageIndex,
-                                                 Integer pagesize);
+  public Map<String, Object> selectCustomerGroup(CustomerGroup group);
 
   public Map<String, Object> createCustomerGroup(CustomerGroup group,
                                                  List<Map<String, String>> customerGroupCriteria);

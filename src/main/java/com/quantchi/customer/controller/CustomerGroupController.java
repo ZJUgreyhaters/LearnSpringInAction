@@ -27,16 +27,14 @@ public class CustomerGroupController {
 
   //客群列表查看
   @ResponseBody
-  @RequestMapping(value = "/listCustomerGroups", method = {RequestMethod.POST})
+  @RequestMapping(value = "/listCustomerGroups", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
   public Map<String, Object> listCustomerGroups(@RequestBody CustomerGroup group) {
-    Integer pageIndex = group.getPage();
-    Integer pagesize = group.getPage_size();
-    return service.selectCustomerGroup(group, pageIndex, pagesize);
+    return service.selectCustomerGroup(group);
   }
 
   //客群列表添加
   @ResponseBody
-  @RequestMapping(value = "/createCustomerGroup", method = {RequestMethod.POST})
+  @RequestMapping(value = "/createCustomerGroup", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
   public Map<String, Object> createCustomerGroup(@RequestBody Map<String, Object> map) {
     CustomerGroup group = new CustomerGroup();
     group.setCust_group_name(map.get("cust_group_name").toString());
@@ -51,21 +49,21 @@ public class CustomerGroupController {
 
   //客群列表删除
   @ResponseBody
-  @RequestMapping(value = "/deleteCustomerGroup", method = {RequestMethod.POST})
+  @RequestMapping(value = "/deleteCustomerGroup", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
   public Map<String, Object> deleteCustomerGroup(@RequestBody CustomerGroup group) {
     return service.deleteCustomerGroup(group);
   }
 
   //客群列表更新
   @ResponseBody
-  @RequestMapping(value = "/updateCustomerGroup", method = {RequestMethod.POST})
+  @RequestMapping(value = "/updateCustomerGroup", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
   public Map<String, Object> updateCustomerGroup(@RequestBody CustomerGroup group) {
     return service.updateCustomerGroup(group);
   }
 
   //客群客户列表结果导出
   @ResponseBody
-  @RequestMapping(value = "/exportCustomerList", method = {RequestMethod.POST})
+  @RequestMapping(value = "/exportCustomerList", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
   public Map<String, Object> exportCustomerList(@RequestBody CustomerGroup group,
       HttpServletResponse response) {
     Map<String, Object> result = new HashMap<String, Object>();
@@ -108,7 +106,7 @@ public class CustomerGroupController {
 
   //客群客户详情列表展示
   @ResponseBody
-  @RequestMapping(value = "/listCustomersByCustomerGroupId", method = {RequestMethod.POST})
+  @RequestMapping(value = "/listCustomersByCustomerGroupId", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
   public Map<String, Object> listCustomersByCustomerGroupId(@RequestBody CustomerGroup group) {
 
     return service.listCustomersByCustomerGroupId(group);
@@ -116,7 +114,7 @@ public class CustomerGroupController {
 
   //刷新客群
   @ResponseBody
-  @RequestMapping(value = "/refreshCustomerGroup", method = {RequestMethod.POST})
+  @RequestMapping(value = "/refreshCustomerGroup", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
   public Map<String, Object> refreshCustomerGroup(@RequestBody CustomerGroup group) {
 
     return service.refreshCustomerGroup(group);
