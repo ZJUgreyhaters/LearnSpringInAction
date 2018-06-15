@@ -59,12 +59,12 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
     }
 
     @Override
-    public Map<String, Object> findCustomerGroup(String customerGroupId) {
+    public Map<String, Object> findCustomerGroup(String customerConditionId) {
         ConditionGroup conditionGroup = null;
         Map<String, Object> map = new HashMap<>();
         List<Map<String, Object>> list = new ArrayList<>();
         try{
-            conditionGroup = conditionGroupMapper.findCustomerGroup(customerGroupId);
+            conditionGroup = conditionGroupMapper.findCustomerGroup(customerConditionId);
             map.put("cust_condition_name",conditionGroup.getCust_condition_name());
             map.put("create_user_id",conditionGroup.getCreate_user_id());
             String condition_desc = conditionGroup.getCondition_desc();
@@ -88,31 +88,32 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
                 }
                 list.add(conditionMap);
             }
-
-            map.put("CustomerGroupCriteria",list);
+            map.put("code","200");
+            map.put("msg","查询成功");
+            map.put("CustomerGroupCriteriaDef",list);
             return map;
 
         } catch (Exception e){
             e.printStackTrace();
             map.put("code",500);
-            map.put("msg",e.getMessage());
+            map.put("msg","查询失败，请输入正确id");
             return map;
         }
 
     }
 
     @Override
-    public Map<String, Object> deleteCustomerGroup(String customerGroupId) {
+    public Map<String, Object> deleteCustomerGroup(String customerConditionId) {
         Map<String, Object> result = new HashMap<String, Object>();
         try{
-            conditionGroupMapper.deleteCustomerGroup(customerGroupId);
+            conditionGroupMapper.deleteCustomerGroup(customerConditionId);
             result.put("code",200);
             result.put("msg","删除成功");
             return result;
         }catch (Exception e){
             e.printStackTrace();
             result.put("code",500);
-            result.put("msg",e.getMessage());
+            result.put("msg","删除失败");
             return result;
         }
     }

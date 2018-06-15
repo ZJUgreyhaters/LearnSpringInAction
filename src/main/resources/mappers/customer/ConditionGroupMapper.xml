@@ -23,7 +23,7 @@
     </insert>
 
     <select id="findCustomerGroup" resultMap="BaseResultMap" parameterType="string">
-        SELECT * FROM cust_group_condition WHERE cust_condition_id=#{customerGroupId}
+        SELECT * FROM cust_group_condition WHERE cust_condition_id=#{customerConditionId}
     </select>
 
     <select id="listCustomerGroupCriterias" resultMap="listMap">
@@ -32,6 +32,6 @@
     </select>
 
     <delete id="deleteCustomerGroup" parameterType="string">
-        DELETE FROM cust_group_condition WHERE cust_condition_id=#{customerGroupId}
+        DELETE FROM cust_group_condition WHERE cust_condition_id=#{customerConditionId}
     </delete>
 </mapper>
