@@ -252,6 +252,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+
   <insert id="insertFields" parameterType="java.util.List">
     INSERT INTO ds_field_info(
     datasource_id,
@@ -270,4 +271,5 @@
       )
     </foreach>
   </insert>
+
 </mapper>

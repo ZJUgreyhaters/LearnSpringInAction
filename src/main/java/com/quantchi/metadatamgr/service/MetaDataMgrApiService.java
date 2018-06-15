@@ -4,19 +4,21 @@ import com.alibaba.fastjson.JSONObject;
 import com.quantchi.metadatamgr.data.DSMetaInfo;
 import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
+import com.quantchi.metadatamgr.data.KeyInfo;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
+import com.quantchi.metadatamgr.data.mapper.DSFieldInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.DSFieldRelDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
 import com.quantchi.metadatamgr.extract.HiveExtractImp;
+import javafx.scene.effect.SepiaTone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MetaDataMgrApiService {
@@ -34,6 +36,15 @@ public class MetaDataMgrApiService {
 
     @Autowired
     private  DSMetaInfoDBMapper dsMetaInfoDBMapper;
+
+    @Autowired
+    private DSTableInfoDBMapper dsTableInfoDBMapper;
+
+    @Autowired
+    private DSFieldInfoDBMapper dsFieldInfoDBMapper;
+
+    @Autowired
+    private DSFieldRelDBMapper dsFieldRelDBMapper;
 
     public Map<String, Object> getDSMetaInfo(String dsName, int start, int pagesize){
         Map<String,Object> _ret = new HashMap<>();
@@ -171,35 +182,60 @@ public class MetaDataMgrApiService {
     }
 
     public boolean saveTablesAndFields(String dsName,List<String> tables){
-        boolean _ret = false;
-        List<Map<String,String>> mapList = null;
+        boolean _ret = true;
+        List<Map<String,String>> mapList = new ArrayList<>();
+
         HiveExtractImp hiveExtractImp = getExtractObj(dsName);
         //for(tables)
+        //1.save tables in local db
         for(String tableName : tables){
-            List<FieldEntity> fieldList = hiveExtractImp.getFields(dsName, tableName);
+            String[] dbTableName = tableName.split("\\.");
+            List<FieldEntity> fieldList = hiveExtractImp.getFields(dbTableName[0], dbTableName[1]);
             for(FieldEntity fieldEntity : fieldList){
                 Map<String, String> fieldMap = new HashMap<>();
                 fieldMap.put("datasource_id",dsName);
                 fieldMap.put("table_id",tableName);
-                String name = fieldEntity.getName();
-                fieldMap.put("field_english_name",name);
+                fieldMap.put("field_english_name",fieldEntity.getName());
                 String field = fieldEntity.getType();
                 fieldMap.put("field_type",field);
                 if (field.contains("varchar")){
-                    fieldMap.put("field_length",field.substring(field.indexOf("("),field.indexOf(")")));
+                    fieldMap.put("field_length",field.substring(field.indexOf("(")+1,field.indexOf(")")));
                 }else {
                     fieldMap.put("field_length",null);
                 }
                 mapList.add(fieldMap);
             }
         }
-
-        dsMetaInfoDBMapper.insertFields(mapList);
-
-        //TODO
-        //1.save tables in local db
+        if(dsFieldInfoDBMapper.insertFields(mapList) <= 0){
+            _ret = false;
+        }
 
         //2.save fields in local db
+        List<Map<String,String>> tableList = new ArrayList<>();
+        for(String tableName : tables){
+            Map<String,String> tableMap = new HashMap<>();
+            tableMap.put("table_english_name",tableName);
+            tableMap.put("datasource_id",dsName);
+            tableList.add(tableMap);
+        }
+        if(dsTableInfoDBMapper.insertTables(tableList) <= 0){
+            _ret = false;
+        }
+
+        //3.add relation
+        for (String tableName : tables){
+            String[] dbTableName = tableName.split("\\.");
+            String dbName = dbTableName[0];
+            String[] name = {dbTableName[1]};
+            Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbTableName[0],name);
+            dsFieldRelDBMapper.insertReleations(set);
+            Iterator it = set.iterator();
+            while(it.hasNext()){
+                KeyInfo keyInfo = (KeyInfo) it.next();
+            }
+
+        }
+
 
         return _ret;
     }

@@ -1,10 +1,12 @@
 package com.quantchi.metadatamgr.data.mapper;
 
+import com.quantchi.metadatamgr.data.KeyInfo;
 import com.quantchi.metadatamgr.data.entity.DSFieldRelDB;
 import com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface DSFieldRelDBMapper {
     int deleteByExample(DSFieldRelDBExample example);
@@ -26,4 +28,6 @@ public interface DSFieldRelDBMapper {
     int updateByPrimaryKeySelective(DSFieldRelDB record);
 
     int updateByPrimaryKey(DSFieldRelDB record);
+
+    int insertReleations(Set<KeyInfo> set);
 }

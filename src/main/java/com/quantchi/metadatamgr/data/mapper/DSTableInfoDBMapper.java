@@ -5,6 +5,7 @@ import com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DSTableInfoDBMapper {
     int deleteByExample(DSTableInfoDBExample example);
@@ -26,4 +27,6 @@ public interface DSTableInfoDBMapper {
     int updateByPrimaryKeySelective(DSTableInfoDB record);
 
     int updateByPrimaryKey(DSTableInfoDB record);
+
+    int insertTables(List<Map<String,String>> list);
 }
