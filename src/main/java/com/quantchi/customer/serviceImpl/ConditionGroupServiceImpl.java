@@ -32,7 +32,7 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
         // 返回处理结果
         Map<String,Object> result = new HashMap<String,Object>();
         // 获取总条数
-        result.put("Total",pageInfo.getTotal());
+        result.put("total",pageInfo.getTotal());
 
         List<Object> pageList = pageInfo.getList();
         List<Object> resultList = new ArrayList<>();
@@ -88,9 +88,9 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
                 }
                 list.add(conditionMap);
             }
-            map.put("code","200");
+            map.put("code",200);
             map.put("msg","查询成功");
-            map.put("CustomerGroupCriteriaDef",list);
+            map.put("customer_group_criteria_def",list);
             return map;
 
         } catch (Exception e){

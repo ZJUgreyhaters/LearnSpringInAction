@@ -44,23 +44,23 @@ public class ConditionGroupController {
     @ResponseBody
     public Map<String, Object> findCustomerGroup(@RequestBody Map<String, String> map){
         Map<String, Object> responseMap = new HashMap<>();
-        if(map.get("customerConditionId") == null || map.get("customerConditionId").equals("")){
+        if(map.get("customer_condition_id") == null || map.get("customer_condition_id").equals("")){
             responseMap.put("code",400);
             responseMap.put("msg","请输入正确条件ID");
             return  responseMap;
         }
-        responseMap = conditionGroupService.findCustomerGroup(map.get("customerConditionId"));
+        responseMap = conditionGroupService.findCustomerGroup(map.get("customer_condition_id"));
         return  responseMap;
     }
 
     @RequestMapping(value = "/createCustomerGroupCriteria", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> createCustomerGroupCriteria(@RequestBody Map<String, Object> requestMap){
-        Map<String, String> responseMap = new HashMap<>();
+    public Map<String, Object> createCustomerGroupCriteria(@RequestBody Map<String, Object> requestMap){
+        Map<String, Object> responseMap = new HashMap<>();
         String condition_desc = "";
         String condition_desc_id = "";
         try {
-            List<Map<String, Object>> CustomerGroupCriteriaDef = (List<Map<String, Object>>) requestMap.get("CustomerGroupCriteriaDef");
+            List<Map<String, Object>> CustomerGroupCriteriaDef = (List<Map<String, Object>>) requestMap.get("customer_group_criteria_def");
             for(Map<String, Object> listMap : CustomerGroupCriteriaDef){
                 condition_desc += listMap.get("name") + ":" + String.join(",",(List)listMap.get("value")) + "|";
                 condition_desc_id += "id:" + listMap.get("id") + ",type:" + listMap.get("type") +"|";
@@ -68,17 +68,17 @@ public class ConditionGroupController {
             requestMap.put("condition_desc", condition_desc);
             requestMap.put("condition_desc_id", condition_desc_id);
             conditionGroupService.createCustomerGroupCriteria(requestMap);
-            responseMap.put("code","200");
+            responseMap.put("code",200);
             responseMap.put("msg","创建成功");
             return responseMap;
         }catch (DuplicateKeyException duplicateKeyException){
             duplicateKeyException.printStackTrace();
-            responseMap.put("code","500");
+            responseMap.put("code",500);
             responseMap.put("msg","条件名已经存在，请使用其他条件名");
             return responseMap;
         } catch (Exception e) {
             e.printStackTrace();
-            responseMap.put("code","500");
+            responseMap.put("code",500);
             responseMap.put("msg","创建失败");
             return responseMap;
         }
@@ -88,12 +88,12 @@ public class ConditionGroupController {
     @ResponseBody
     public Map<String, Object> deleteCustomerGroup(@RequestBody Map<String, String> map){
         Map<String, Object> responseMap = new HashMap<>();
-        if(map.get("customerConditionId") == null || map.get("customerConditionId").equals("")){
+        if(map.get("customer_condition_id") == null || map.get("customer_condition_id").equals("")){
             responseMap.put("code",400);
             responseMap.put("msg","请输入正确条件ID");
             return  responseMap;
         }
-        return conditionGroupService.deleteCustomerGroup(map.get("customerConditionId"));
+        return conditionGroupService.deleteCustomerGroup(map.get("customer_condition_id"));
     }
 
     @RequestMapping(value = "/getDdlDimData", method = RequestMethod.POST)
