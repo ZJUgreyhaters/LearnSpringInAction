@@ -220,4 +220,19 @@
       foreign_table_id = #{foreignTableId,jdbcType=VARCHAR}
     where relation_id = #{relationId,jdbcType=INTEGER}
   </update>
+
+  <insert id="insertReleations" parameterType="java.util.Set">
+    INSERT INTO ds_field_releation(releation,field_id,table_id,foreign_field_id,foreign_table_id)
+    VALUES
+    <foreach collection="set" index="index" item="set" separator=",">
+      (
+        #{set.tblName},
+        #{set.fieldName},
+        #{set.table_id},
+        #{set.foreign_field_id},
+        #{set.foreign_table_id}
+      )
+    </foreach>
+
+  </insert>
 </mapper>

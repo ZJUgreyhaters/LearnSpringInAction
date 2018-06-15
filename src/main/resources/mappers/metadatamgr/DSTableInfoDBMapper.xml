@@ -251,4 +251,18 @@
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <insert id="insertTables" parameterType="java.util.List">
+    INSERT INTO ds_table_info(
+    table_english_name,
+    datasource_id
+    )VALUES
+    <foreach collection="list" item="list" index="index" separator=",">
+      (
+      #{list.table_english_name},
+      #{list.datasource_id}
+      )
+    </foreach>
+  </insert>
+
 </mapper>

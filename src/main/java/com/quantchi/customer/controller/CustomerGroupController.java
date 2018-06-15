@@ -1,7 +1,6 @@
 package com.quantchi.customer.controller;
 
 import com.quantchi.common.ExportUtil;
-import com.quantchi.common.JsonResult;
 import com.quantchi.customer.pojo.CustomerGroup;
 import com.quantchi.customer.service.CustomerGroupService;
 import java.util.HashMap;
@@ -63,11 +62,12 @@ public class CustomerGroupController {
 
   //客群客户列表结果导出
   @ResponseBody
-  @RequestMapping(value = "/exportCustomerList", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
-  public Map<String, Object> exportCustomerList(@RequestBody CustomerGroup group,
-      HttpServletResponse response) {
+  @RequestMapping(value = "/exportCustomerList", method = {RequestMethod.GET})
+  public Map<String, Object> exportCustomerList(HttpServletResponse response) {
     Map<String, Object> result = new HashMap<String, Object>();
     try {
+      CustomerGroup group =new CustomerGroup();
+      group.setCust_group_id("CG000002");
       List<Map<String, Object>> list = service.exportCustomerList(group);
       if (list.toString().contains("select error")) {
         result.put("code", "500");
@@ -97,10 +97,7 @@ public class CustomerGroupController {
   @ResponseBody
   @RequestMapping(value = "/listCustomersWithDim", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
   public String listCustomersWithDim(@RequestBody CustomerGroup group) {
-    String result = JsonResult.successJson(service.listCustomersWithDim(group)).replaceAll("customer_no", "客户号")
-        .replaceAll("customer_name", "姓名").replaceAll("fin_balance", "融资负债（万元）")
-        .replaceAll("total_asset", "总资产（万元}").replaceAll("assure_debit_rate", "维保比例")
-        .replaceAll("concentrate", "当前仓位").replaceAll("profit_rate_y", "年度收益率 ");
+    String result = service.listCustomersWithDim(group);
     return result;
   }
 

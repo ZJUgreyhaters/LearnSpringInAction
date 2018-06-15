@@ -114,7 +114,11 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
     public Map<String, Object> deleteCustomerGroup(String customerConditionId) {
         Map<String, Object> result = new HashMap<String, Object>();
         try{
-            conditionGroupMapper.deleteCustomerGroup(customerConditionId);
+            if(conditionGroupMapper.deleteCustomerGroup(customerConditionId) <=0){
+                result.put("code",500);
+                result.put("msg","当前id已经被删除");
+                return result;
+            }
             result.put("code",200);
             result.put("msg","删除成功");
             return result;
