@@ -86,6 +86,14 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
                     conditionMap.put("name",desc[0]);
                     conditionMap.put("value",desc[1]);
                 }
+
+                List<String> listValue1 = new ArrayList<>();
+                listValue1.add("个人客户");
+                listValue1.add("机构客户");
+                listValue1.add("私募");
+
+
+                conditionMap.put("values",listValue1);
                 list.add(conditionMap);
             }
             map.put("code",200);
