@@ -9,15 +9,14 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 	<context:annotation-config/>
 	<!--<context:component-scan base-package="com.quantchi.*.**" />-->
-	<context:component-scan base-package="com.quantchi.customer.*"/>
-	<context:component-scan base-package="com.quantchi.transport.*"/>
-	<context:property-placeholder location="classpath:app.properties"/>
+
 	<import resource="applicationContext-dataSource.xml" />
 	<!--<import resource="applicationContext-transaction.xml" />
 	<import resource="applicationContext-task.xml" />-->
 	<import resource="applicationContext-hive.xml" />
 
-
+	<context:component-scan base-package="com.quantchi"/>
+	<context:property-placeholder location="classpath:app.properties"/>
 	<bean name="messageSource"
 		  class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">

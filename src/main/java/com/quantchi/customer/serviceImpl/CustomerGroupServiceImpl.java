@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -72,7 +73,11 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         result.put("msg", "条件不能为空！");
         return result;
       }
-      insertCustomerInfo();
+      int a = insertCustomerInfo();
+      if (a < -400) {
+        result.put("code", "500");
+        result.put("msg", "error");
+      }
       group.setCondition_desc(customerGroupCriteria.get(0).get("value"));
       group.setCust_group_id(str);
       group.setRefresh_status("0");
@@ -163,7 +168,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     //String string =
     //"select '20160101' as init_date,condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y,0 as stock_choose_value,0 as exchange_value,0 as avg_concentrate,0 as avg_loss_rate from (";
     // sql.append("select condition01.customer_no from (");
-   // sql.append(string);
+    // sql.append(string);
     if (keys.size() == 0) {
       return sql.toString();
     } else {
@@ -203,12 +208,17 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       sql.append(sql1).append(z).append(w);
       PageHelper.startPage(1, 10);
       List<Map<String, Object>> Resultlist = HiveLink.selectHive(sql.toString(), jdbcPool);
+      if (list.toString().contains("select error")) {
+        return util.genRet(500, null, "select CustomerGroup error", 0);
+      }
       PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(Resultlist, 10);
       Map<String, Object> resultz = new HashMap<String, Object>();
 
       resultz.put("total", pageInfo.getTotal());
       // 结果rows数据
-      resultz.put("data", pageInfo.getList());
+      List<Map<String, Object>>  infoList= pageInfo.getList();
+      infoList.add(sub());
+      resultz.put("data",infoList);
       return util
           .genRet(200, resultz.get("data"), "ok",
               Integer.parseInt(resultz.get("total").toString()));
@@ -218,13 +228,14 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     }
   }
 
-  void insertCustomerInfo() {
+  int insertCustomerInfo() {
     StringBuilder sql = new StringBuilder();
-    String String = "insert overwrite table mtoi.cust_group_detail partition (part_group_id = 'CG000002',PART_DATE = 20160103) select 'CG000002' as part_group_id, '20160105' as init_date,condition01.customer_no,"
-        + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
+    String String =
+        "insert overwrite table mtoi.cust_group_detail partition (part_group_id = 'CG000002',PART_DATE = 20160103) select 'CG000002' as part_group_id, '20160101' as init_date,condition01.customer_no,"
+            + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
     List<Map<String, String>> list = new ArrayList<>();
     Map<String, String> result = new HashMap<String, String>();
-    result.put("mtoi.dim_customer", "open_date>20160101");
+    result.put("mtoi.dim_customer", "open_date>20140101");
     list.add(result);
     Map<String, String> result1 = new HashMap<String, String>();
     result1.put("mtoi.agg_cust_statistics", "assure_debit_rate>=1.3");
@@ -234,15 +245,18 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     list.add(result2);
     String sql1 = jointSql(list);
     sql.append(String).append(sql1);
-    HiveLink.elseHive(sql.toString(),jdbcPool);
+    return HiveLink.elseHive(sql.toString(), jdbcPool);
   }
 
-  public Map<String,Object> listCustomersByCustomerGroupId(CustomerGroup group){
+  public Map<String, Object> listCustomersByCustomerGroupId(CustomerGroup group) {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_KLINE_COUNTRY_BY_COUNTRY();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
       PageHelper.startPage(group.getPage(), group.getPage_size());
       List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
+      if (list.toString().contains("select error")) {
+        return util.genRet(500, null, "select CustomerGroup error", 0);
+      }
       PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(list);
       Map<String, Object> result = new HashMap<String, Object>();
       result.put("total", pageInfo.getTotal());
@@ -255,4 +269,49 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     }
   }
 
+  public List<Map<String, Object>> exportCustomerList(CustomerGroup group) {
+    String sqlQuery = sqlQueryConfig.getSEL_KLINE_COUNTRY_BY_COUNTRY();
+    sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
+    List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
+    return list;
+  }
+
+  public Map<String, Object> refreshCustomerGroup(CustomerGroup group) {
+    Map<String, Object> result = new HashMap<String, Object>();
+    try {
+      String sql = mapper.selectCondition(group);
+      int a = updateCustomerInfo(sql);
+      if (a < -400) {
+        result.put("code", "500");
+        result.put("msg", "error");
+      }
+      result.put("code", "200");
+      result.put("msg", "ok");
+      return result;
+    } catch (Exception e) {
+      e.printStackTrace();
+      result.put("code", "500");
+      result.put("msg", "error");
+      return result;
+    }
+  }
+
+  int updateCustomerInfo(String sql1) {
+    StringBuilder sql = new StringBuilder();
+    String String =
+        "insert overwrite table mtoi.cust_group_detail partition (part_group_id = 'CG000002',PART_DATE = 20160103) select 'CG000002' as part_group_id, '20160101' as init_date,condition01.customer_no,"
+            + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
+    sql.append(String).append(sql1);
+    return HiveLink.elseHive(sql.toString(), jdbcPool);
+  }
+
+  Map<String, Object> sub() {
+    Map<String, Object> map = new HashedMap();
+    map.put("融资负债", "100万以下，100-200万，200-500万，500-1000万，1000万以上");
+    map.put("总资产", "100万以下，100-200万，200-500万，500-1000万，1000万以上");
+    map.put("持仓比例", "0-20%，20%-40%，40%-60%，60%-80%，80%-100%");
+    map.put("维保比例", "0-130%，130%-140%，140%-150%，150%以上");
+    map.put("年度收益率", "亏损30%以上，亏损0-30%，收益0-30%，收益30%以上");
+    return map;
+  }
 }

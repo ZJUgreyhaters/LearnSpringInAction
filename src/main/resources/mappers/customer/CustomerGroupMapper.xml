@@ -50,7 +50,8 @@
       where cust_group_id = #{cust_group_id}  -- 根据所选择的客群ID作相应更新
   </delete>
 
-  <select id="selectCondition" resultType="String">
-    select condition_statement from dmp.cust_group_header WHERE cust_group_id = #{cust_group_id}
-  </select>
+ <!-- <update id="deleteCustomerGroup">
+    update dmp.cust_group_header set delete_status = SYSDATE(),cust_nums=#{cust_nums}
+    where cust_group_id = #{cust_group_id}  &#45;&#45; 根据所选择的客群ID作相应更新
+  </update>-->
 </mapper>

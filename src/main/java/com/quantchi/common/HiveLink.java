@@ -52,10 +52,13 @@ public class HiveLink {
         }
         list.add(map);
       }
+      return list;
     } catch (SQLException e) {
       e.printStackTrace();
+      return exception();
     } catch (Exception e) {
       e.printStackTrace();
+      return exception();
     } finally {
       if (rs != null) { // 关闭记录集
         try {
@@ -79,10 +82,9 @@ public class HiveLink {
         }
       }
     }
-    return list;
   }
 
-  public static void elseHive(String sql, JdbcPool jdbcPool) {
+  public static int elseHive(String sql, JdbcPool jdbcPool) {
     Connection conn = null;
     PreparedStatement pstmt = null;
     int rs;
@@ -90,10 +92,13 @@ public class HiveLink {
       conn = jdbcPool.getConnection();
       pstmt = conn.prepareStatement(sql);
       rs = pstmt.executeUpdate();
+     return rs;
     } catch (SQLException e) {
       e.printStackTrace();
+      return -500;
     } catch (Exception e) {
       e.printStackTrace();
+      return -500;
     } finally {
       if (pstmt != null) { // 关闭声明
         try {
@@ -112,4 +117,11 @@ public class HiveLink {
     }
   }
 
+  public static List<Map<String, Object>> exception(){
+    List<Map<String, Object>> list = new ArrayList<>();
+    Map<String, Object> mapException = new HashedMap();
+    mapException.put("msg","select error");
+    list.add(mapException);
+    return list;
+  }
 }

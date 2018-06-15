@@ -1,7 +1,9 @@
 package com.quantchi.customer.controller;
 
+import com.quantchi.common.ExportUtil;
 import com.quantchi.customer.pojo.CustomerGroup;
 import com.quantchi.customer.service.CustomerGroupService;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
@@ -65,13 +67,31 @@ public class CustomerGroupController {
   @RequestMapping(value = "/exportCustomerList", method = {RequestMethod.POST})
   public Map<String, Object> exportCustomerList(@RequestBody CustomerGroup group,
       HttpServletResponse response) {
+    Map<String, Object> result = new HashMap<String, Object>();
+    try {
+      List<Map<String, Object>> list = service.exportCustomerList(group);
+      if (list.toString().contains("select error")) {
+        result.put("code", "500");
+        result.put("msg", "export error");
+        result.put("data", "excel");
+      }
+      String fileName = "客群分析-个体详情";
+      String title = "客群分析-个体详情";
+      String[] titles = {"客户号", "客户姓名", "融资负债（万元）", "总资产（万元）", "维保比例", "当前仓位", "年度收益率", "选股成功率",
+          "买卖正确率", "平均仓位", "平均", "亏损率"};
+      String msg = ExportUtil.exportRelationExcel(response, fileName, title, titles, list);
+      result.put("code", "200");
+      result.put("msg", msg);
+      result.put("data", "excel");
+      return result;
+    } catch (Exception e) {
+      e.printStackTrace();
+      result.put("code", "500");
+      result.put("msg", "export error");
+      result.put("data", "excel");
+      return result;
+    }
 
-    String fileName = "客群分析-个体详情";
-    String title = "客群分析-个体详情";
-    String[] titles = {"客户号", "客户姓名", "融资负债（万元）", "总资产（万元）", "维保比例", "当前仓位", "年度收益率", "选股成功率",
-        "买卖正确率", "平均仓位", "平均", "亏损率"};
-    //String msg = ExportUtil.exportRelationExcel(response, fileName, title, titles, mappingData);
-    return service.updateCustomerGroup(group);
   }
 
   //客群客户检索结果展示
@@ -88,5 +108,13 @@ public class CustomerGroupController {
   public Map<String, Object> listCustomersByCustomerGroupId(@RequestBody CustomerGroup group) {
 
     return service.listCustomersByCustomerGroupId(group);
+  }
+
+  //刷新客群
+  @ResponseBody
+  @RequestMapping(value = "/refreshCustomerGroup", method = {RequestMethod.POST})
+  public Map<String, Object> refreshCustomerGroup(@RequestBody CustomerGroup group) {
+
+    return service.refreshCustomerGroup(group);
   }
 }

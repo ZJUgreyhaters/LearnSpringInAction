@@ -17,4 +17,6 @@ public interface CustomerGroupMapper {
   void deleteCustomerGroup(CustomerGroup group);
 
   void updateCustomerGroup(CustomerGroup group);
+
+  String selectCondition(CustomerGroup group);
 }

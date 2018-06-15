@@ -22,4 +22,8 @@ public interface CustomerGroupService {
   public Map<String,Object> listCustomersWithDim(CustomerGroup group);
 
   public Map<String,Object> listCustomersByCustomerGroupId(CustomerGroup group);
+
+  public List<Map<String,Object>> exportCustomerList(CustomerGroup group);
+
+  public Map<String,Object> refreshCustomerGroup(CustomerGroup group);
 }
