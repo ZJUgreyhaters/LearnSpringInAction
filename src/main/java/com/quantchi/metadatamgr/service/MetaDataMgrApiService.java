@@ -223,19 +223,51 @@ public class MetaDataMgrApiService {
         }
 
         //3.add relation
-        for (String tableName : tables){
+        int i=0;
+        String[] dbName = new String[100];
+        String[] name = new String[100];
+        for (String tableName : tables) {
             String[] dbTableName = tableName.split("\\.");
-            String dbName = dbTableName[0];
-            String[] name = {dbTableName[1]};
-            Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbTableName[0],name);
-            dsFieldRelDBMapper.insertReleations(set);
-            Iterator it = set.iterator();
-            while(it.hasNext()){
-                KeyInfo keyInfo = (KeyInfo) it.next();
-            }
-
+            dbName[i] = dbTableName[0];
+            name[i] = dbTableName[1];
+            i++;
         }
-
+        String[] names = new String[100];
+        names[0] = name[0];
+        int j=1,k=1;
+        for(; j < i; j++){
+            if(dbName[j].equals(dbName[j-1])){
+                names[k]=name[j];
+                k++;
+            }else{
+                names = null;
+                k=0;
+                Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbName[j],names);
+                Iterator it = set.iterator();
+                while(it.hasNext()){
+                    KeyInfo keyInfo = (KeyInfo) it.next();
+                    String foreignFieldId;
+                    if(keyInfo.getIncidenceTBL() == null){
+                        foreignFieldId = null;
+                    }else{
+                        foreignFieldId = keyInfo.getFieldName();
+                    }
+                    dsFieldRelDBMapper.insertReleations(keyInfo.getTblName(),keyInfo.getFieldName(),keyInfo.getIncidenceTBL(),foreignFieldId);
+                }
+            }
+        }
+        Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbName[j-1],names);
+        Iterator it = set.iterator();
+        while(it.hasNext()){
+            KeyInfo keyInfo = (KeyInfo) it.next();
+            String foreignFieldId;
+            if(keyInfo.getIncidenceTBL() == null){
+                foreignFieldId = null;
+            }else{
+                foreignFieldId = keyInfo.getFieldName();
+            }
+            dsFieldRelDBMapper.insertReleations(keyInfo.getTblName(),keyInfo.getFieldName(),keyInfo.getIncidenceTBL(),foreignFieldId);
+        }
 
         return _ret;
     }
