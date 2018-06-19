@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper" >
-  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="table_english_name" property="tableEnglishName" jdbcType="VARCHAR" />
-    <result column="table_chinese_name" property="tableChineseName" jdbcType="VARCHAR" />
-    <result column="datasource_id" property="datasourceId" jdbcType="VARCHAR" />
-    <result column="entity" property="entity" jdbcType="VARCHAR" />
-    <result column="entity_field" property="entityField" jdbcType="VARCHAR" />
-    <result column="business" property="business" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="INTEGER" />
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper">
+  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.DSTableInfoDB">
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="table_english_name" property="tableEnglishName" jdbcType="VARCHAR"/>
+    <result column="table_chinese_name" property="tableChineseName" jdbcType="VARCHAR"/>
+    <result column="datasource_id" property="datasourceId" jdbcType="VARCHAR"/>
+    <result column="primary_key" property="primaryKey" jdbcType="VARCHAR"/>
+    <result column="business" property="business" jdbcType="VARCHAR"/>
+    <result column="status" property="status" jdbcType="INTEGER"/>
+    <result column="nums" property="nums" jdbcType="VARCHAR"/>
+    <result column="foreignNums" property="foreignNums" jdbcType="INTEGER"/>
   </resultMap>
-  <sql id="Example_Where_Clause" >
-    <where >
-      <foreach collection="oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" suffix=")" prefixOverrides="and">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
                   and ${criterion.condition}
                 </when>
-                <when test="criterion.singleValue" >
+                <when test="criterion.singleValue">
                   and ${criterion.condition} #{criterion.value}
                 </when>
-                <when test="criterion.betweenValue" >
+                <when test="criterion.betweenValue">
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
-                <when test="criterion.listValue" >
+                <when test="criterion.listValue">
                   and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                    separator=",">
                     #{listItem}
                   </foreach>
                 </when>
@@ -40,25 +43,26 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Update_By_Example_Where_Clause" >
-    <where >
-      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" suffix=")" prefixOverrides="and">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
                   and ${criterion.condition}
                 </when>
-                <when test="criterion.singleValue" >
+                <when test="criterion.singleValue">
                   and ${criterion.condition} #{criterion.value}
                 </when>
-                <when test="criterion.betweenValue" >
+                <when test="criterion.betweenValue">
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
-                <when test="criterion.listValue" >
+                <when test="criterion.listValue">
                   and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                    separator=",">
                     #{listItem}
                   </foreach>
                 </when>
@@ -69,42 +73,44 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Base_Column_List" >
-    id, table_english_name, table_chinese_name, datasource_id, entity, entity_field, 
-    business, status
+  <sql id="Base_Column_List">
+    id, table_english_name, table_chinese_name, datasource_id, primary_key,
+    status
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample" >
+  <select id="selectByExample" resultMap="BaseResultMap"
+    parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample">
     select
-    <if test="distinct" >
+    <if test="distinct">
       distinct
     </if>
     'false' as QUERYID,
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List"/>
     from ds_table_info
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
     </if>
-    <if test="orderByClause != null" >
+    <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_List"/>
     from ds_table_info
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ds_table_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample" >
+  <delete id="deleteByExample"
+    parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample">
     delete from ds_table_info
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
     </if>
   </delete>
-  <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
+  <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB">
     insert into ds_table_info (id, table_english_name, table_chinese_name, 
       datasource_id, entity, entity_field, 
       business, status)
@@ -112,135 +118,137 @@
       #{datasourceId,jdbcType=VARCHAR}, #{entity,jdbcType=VARCHAR}, #{entityField,jdbcType=VARCHAR}, 
       #{business,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
+  <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB">
     insert into ds_table_info
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="tableEnglishName != null" >
+      <if test="tableEnglishName != null">
         table_english_name,
       </if>
-      <if test="tableChineseName != null" >
+      <if test="tableChineseName != null">
         table_chinese_name,
       </if>
-      <if test="datasourceId != null" >
+      <if test="datasourceId != null">
         datasource_id,
       </if>
-      <if test="entity != null" >
+      <if test="entity != null">
         entity,
       </if>
-      <if test="entityField != null" >
+      <if test="entityField != null">
         entity_field,
       </if>
-      <if test="business != null" >
+      <if test="business != null">
         business,
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         status,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="tableEnglishName != null" >
+      <if test="tableEnglishName != null">
         #{tableEnglishName,jdbcType=VARCHAR},
       </if>
-      <if test="tableChineseName != null" >
+      <if test="tableChineseName != null">
         #{tableChineseName,jdbcType=VARCHAR},
       </if>
-      <if test="datasourceId != null" >
+      <if test="datasourceId != null">
         #{datasourceId,jdbcType=VARCHAR},
       </if>
-      <if test="entity != null" >
+      <if test="entity != null">
         #{entity,jdbcType=VARCHAR},
       </if>
-      <if test="entityField != null" >
+      <if test="entityField != null">
         #{entityField,jdbcType=VARCHAR},
       </if>
-      <if test="business != null" >
+      <if test="business != null">
         #{business,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         #{status,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
-  <update id="updateByExampleSelective" parameterType="map" >
+  <update id="updateByExampleSelective" parameterType="map">
     update ds_table_info
-    <set >
-      <if test="record.id != null" >
+    <set>
+      <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.tableEnglishName != null" >
+      <if test="record.tableEnglishName != null">
         table_english_name = #{record.tableEnglishName,jdbcType=VARCHAR},
       </if>
-      <if test="record.tableChineseName != null" >
+      <if test="record.tableChineseName != null">
         table_chinese_name = #{record.tableChineseName,jdbcType=VARCHAR},
       </if>
-      <if test="record.datasourceId != null" >
+      <if test="record.datasourceId != null">
         datasource_id = #{record.datasourceId,jdbcType=VARCHAR},
       </if>
-      <if test="record.entity != null" >
+      <if test="record.entity != null">
         entity = #{record.entity,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityField != null" >
+      <if test="record.entityField != null">
         entity_field = #{record.entityField,jdbcType=VARCHAR},
       </if>
-      <if test="record.business != null" >
+      <if test="record.business != null">
         business = #{record.business,jdbcType=VARCHAR},
       </if>
-      <if test="record.status != null" >
+      <if test="record.status != null">
         status = #{record.status,jdbcType=INTEGER},
       </if>
     </set>
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
+  <update id="updateByExample" parameterType="map">
     update ds_table_info
     set id = #{record.id,jdbcType=INTEGER},
-      table_english_name = #{record.tableEnglishName,jdbcType=VARCHAR},
-      table_chinese_name = #{record.tableChineseName,jdbcType=VARCHAR},
-      datasource_id = #{record.datasourceId,jdbcType=VARCHAR},
-      entity = #{record.entity,jdbcType=VARCHAR},
-      entity_field = #{record.entityField,jdbcType=VARCHAR},
-      business = #{record.business,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=INTEGER}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
+    table_english_name = #{record.tableEnglishName,jdbcType=VARCHAR},
+    table_chinese_name = #{record.tableChineseName,jdbcType=VARCHAR},
+    datasource_id = #{record.datasourceId,jdbcType=VARCHAR},
+    entity = #{record.entity,jdbcType=VARCHAR},
+    entity_field = #{record.entityField,jdbcType=VARCHAR},
+    business = #{record.business,jdbcType=VARCHAR},
+    status = #{record.status,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
+  <update id="updateByPrimaryKeySelective"
+    parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB">
     update ds_table_info
-    <set >
-      <if test="tableEnglishName != null" >
+    <set>
+      <if test="tableEnglishName != null">
         table_english_name = #{tableEnglishName,jdbcType=VARCHAR},
       </if>
-      <if test="tableChineseName != null" >
+      <if test="tableChineseName != null">
         table_chinese_name = #{tableChineseName,jdbcType=VARCHAR},
       </if>
-      <if test="datasourceId != null" >
+      <if test="datasourceId != null">
         datasource_id = #{datasourceId,jdbcType=VARCHAR},
       </if>
-      <if test="entity != null" >
+      <if test="entity != null">
         entity = #{entity,jdbcType=VARCHAR},
       </if>
-      <if test="entityField != null" >
+      <if test="entityField != null">
         entity_field = #{entityField,jdbcType=VARCHAR},
       </if>
-      <if test="business != null" >
+      <if test="business != null">
         business = #{business,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         status = #{status,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
+  <update id="updateByPrimaryKey"
+    parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB">
     update ds_table_info
     set table_english_name = #{tableEnglishName,jdbcType=VARCHAR},
       table_chinese_name = #{tableChineseName,jdbcType=VARCHAR},
@@ -250,5 +258,43 @@
       business = #{business,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="search" resultMap="BaseResultMap">
+    SELECT *FROM ds_table_info a LEFT JOIN ( SELECT COUNT(*)nums,table_id FROM ds_field_info GROUP
+    BY table_id) b ON
+    a.table_english_name=b.table_id LEFT JOIN (SELECT COUNT(*)foreignNums,table_id AS id ,isprimary
+    FROM ds_field_releation WHERE isprimary = '0' GROUP BY table_id )c ON
+    a.table_english_name=c.id
+    <where>
+      <if test="datasourceId !=null and datasourceId.toString().length()>0">AND datasource_id
+        LIKE CONCAT(CONCAT('%',#{datasourceId}), '%')
+      </if>
+      <if test="status !=null and status.toString().length()>0">AND status
+        LIKE CONCAT(CONCAT('%',#{status}), '%')
+      </if>
+      <if test="tableEnglishName !=null and tableEnglishName.toString().length()>0">AND
+        table_english_name
+        LIKE CONCAT(CONCAT('%',#{tableEnglishName}), '%')
+      </if>
+    </where>
+  </select>
+  <delete id="delete">
+     DELETE  from  ds_table_info where id = #{id}
+  </delete>
+
+  <update id="update">
+    UPDATE ds_table_info
+    <set>
+      <if test="tableChineseName !=null and tableChineseName.toString().length()>0">
+        table_chinese_name = #{tableChineseName},
+      </if>
+      <if test="primaryKey !=null and primaryKey.toString().length()>0">
+        primary_key = #{primaryKey},
+      </if>
+      <if test="status !=null and status.toString().length()>0">
+        status = #{status},
+      </if>
+    </set>
+    WHERE id = #{id}
   </update>
 </mapper>
