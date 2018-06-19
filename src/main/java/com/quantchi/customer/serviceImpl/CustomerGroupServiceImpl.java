@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.quantchi.common.HiveLink;
 import com.quantchi.common.JsonResult;
+import com.quantchi.common.Paging;
 import com.quantchi.common.SQLQueryConfig;
 import com.quantchi.common.util;
 import com.quantchi.customer.mapper.CustomerGroupMapper;
@@ -63,7 +64,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
   }
 
   public Map<String, Object> createCustomerGroup(CustomerGroup group,
-      List<Map<String, String>> customerGroupCriteria) {
+      List<Map<String, Object>> customerGroupCriteria) {
     Map<String, Object> result = new HashMap<String, Object>();
     try {
       String str = mapper.selectCustGroupId();
@@ -80,7 +81,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         result.put("code", "500");
         result.put("msg", "error");
       }
-      group.setCondition_desc(customerGroupCriteria.get(0).get("value"));
+      List<String> list = (List<String>) customerGroupCriteria.get(0).get("value");
+      String obj = String.join(";", list);
+      group.setCondition_desc(obj);
       group.setCust_group_id(str);
       group.setRefresh_status("0");
       group.setDelete_status("0");
@@ -208,19 +211,18 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       String z = " left join mtoi.dim_customer cust on condition01.customer_no=cust.customer_no";
       String w = " left join (select * from mtoi.agg_cust_statistics where part_date = 20160101) main_data on condition01.customer_no=main_data.customer_no";
       sql.append(sql1).append(z).append(w);
-      if (group.getPage() != null && group.getPage_size() != null) {
-        PageHelper.startPage(group.getPage(), group.getPage_size());
-      }
       List<Map<String, Object>> Resultlist = HiveLink.selectHive(sql.toString(), jdbcPool);
       if (Resultlist.toString().contains("select error")) {
         return JsonResult.errorJson("error");
       }
-      PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(Resultlist, 10);
-      // 结果rows数据
+      int total = Resultlist.size();
+      if (group.getPage() != null && group.getPage_size() != null) {
+        Resultlist = Paging.pagingPlug(Resultlist, group.getPage_size(), group.getPage());
+      }
       Map<String, Object> resultInfo = new HashMap<String, Object>();
-      resultInfo.put("total", pageInfo.getTotal());
-      resultInfo.put("data_source", pageInfo.getList());
-      resultInfo.put("cust_nums", Resultlist.size());
+      resultInfo.put("total", total);
+      resultInfo.put("data_source", Resultlist);
+      resultInfo.put("cust_nums", total);
       resultInfo.put("subcondition", sub());
       String str = JsonResult.successJson(resultInfo).replaceAll("customer_no", "客户号")
           .replaceAll("customer_name", "姓名").replaceAll("fin_balance", "融资负债（万元）")
@@ -257,17 +259,19 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_KLINE_COUNTRY_BY_COUNTRY();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
-      if (group.getPage() != null && group.getPage_size() != null) {
-        PageHelper.startPage(group.getPage(), group.getPage_size());
-      }
       List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return util.genRet(500, null, "select CustomerGroup error", 0);
       }
+      int total = list.size();
+      if (group.getPage() != null && group.getPage_size() != null) {
+        list = Paging.pagingPlug(list, group.getPage_size(), group.getPage());
+      }
+
       PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(list);
       Map<String, Object> result = new HashMap<String, Object>();
-      result.put("total", pageInfo.getTotal());
-      result.put("data", pageInfo.getList());
+      result.put("total", total);
+      result.put("data", list);
       return util
           .genRet(200, result.get("data"), "ok", Integer.parseInt(result.get("total").toString()));
     } catch (Exception e) {
@@ -329,7 +333,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     list.add(map2);
     map.put("id", "1");
     map.put("name", "收益率");
-    map.put("option","list");
+    map.put("option", "list");
     return map;
   }
 }
