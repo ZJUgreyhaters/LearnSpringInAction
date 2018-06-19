@@ -1,8 +1,6 @@
 package com.quantchi.metadatamgr.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.quantchi.common.util;
-import com.quantchi.metadatamgr.service.MetaDataMgrApiService;
+import com.quantchi.metadatamgr.data.entity.DSTableInfoDB;
 import com.quantchi.metadatamgr.service.MetaDataMgrTableApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Map;
-
 @Controller
 @RequestMapping(value = "api/metadata/table")
 public class MetaDataMgrTableApiController {
@@ -24,67 +20,32 @@ public class MetaDataMgrTableApiController {
     @Autowired
     private MetaDataMgrTableApiService metaDataMgrTableApiService;
 
-    @RequestMapping(value = "/search", method = { RequestMethod.POST })
-    public @ResponseBody
-    Map<String, Object> search (@RequestBody String bodyString) {
-        try{
-
-            return util.genRet(500,null,"",0);
-            //return util.genRet(200,_ret.get("data"),"ok",Integer.parseInt(_ret.get("total").toString()));
-        }catch (Exception e){
-            logger.error("list func err:",e.getMessage());
-            return util.genRet(500,null,e.getMessage(),0);
-        }
-
-
-
+    //搜索
+    @ResponseBody
+    @RequestMapping(value = "/search", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+    public String search(@RequestBody DSTableInfoDB tableInfo) {
+        return metaDataMgrTableApiService.search(tableInfo);
     }
 
-    @RequestMapping(value = "/del", method = { RequestMethod.POST })
-    public @ResponseBody
-    Map<String, Object> delete (@RequestBody String bodyString) {
-        try{
-
-            return util.genRet(500,null,"",0);
-            //return util.genRet(200,_ret.get("data"),"ok",Integer.parseInt(_ret.get("total").toString()));
-        }catch (Exception e){
-            logger.error("list func err:",e.getMessage());
-            return util.genRet(500,null,e.getMessage(),0);
-        }
-
-
-
+    //删除
+    @ResponseBody
+    @RequestMapping(value = "/del", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+    public String delete(@RequestBody DSTableInfoDB tableInfo) {
+        return metaDataMgrTableApiService.delete(tableInfo);
     }
 
-    @RequestMapping(value = "/edit", method = { RequestMethod.POST })
-    public @ResponseBody
-    Map<String, Object> edit (@RequestBody String bodyString) {
-        try{
-
-            return util.genRet(500,null,"",0);
-            //return util.genRet(200,_ret.get("data"),"ok",Integer.parseInt(_ret.get("total").toString()));
-        }catch (Exception e){
-            logger.error("list func err:",e.getMessage());
-            return util.genRet(500,null,e.getMessage(),0);
-        }
-
-
-
+    //修改
+    @ResponseBody
+    @RequestMapping(value = "/edit", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+    public String update(@RequestBody DSTableInfoDB tableInfo) {
+        return metaDataMgrTableApiService.update(tableInfo);
     }
 
-    @RequestMapping(value = "/check", method = { RequestMethod.POST })
-    public @ResponseBody
-    Map<String, Object> check (@RequestBody String bodyString) {
-        try{
-
-            return util.genRet(500,null,"",0);
-            //return util.genRet(200,_ret.get("data"),"ok",Integer.parseInt(_ret.get("total").toString()));
-        }catch (Exception e){
-            logger.error("list func err:",e.getMessage());
-            return util.genRet(500,null,e.getMessage(),0);
-        }
-
-
-
+    //审核
+    @ResponseBody
+    @RequestMapping(value = "/check", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+    public String check(@RequestBody DSTableInfoDB tableInfo) {
+        return metaDataMgrTableApiService.check(tableInfo);
     }
+
 }
