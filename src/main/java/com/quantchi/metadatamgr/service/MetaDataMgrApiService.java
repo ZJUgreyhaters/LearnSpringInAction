@@ -323,6 +323,7 @@ public class MetaDataMgrApiService {
                     relationResultMap.put("from", dsFieldRelDB.getTableId());
                     relationResultMap.put("to", dsFieldRelDB.getForeignTableId());
                     relationResultMap.put("relation_id", dsFieldRelDB.getRelationId().toString());
+                    relationResultMap.put("relation", dsFieldRelDB.getRelation());
                     relationResultMap.put("from_field", dsFieldRelDB.getFieldId());
                     relationResultMap.put("to_field", dsFieldRelDB.getForeignFieldId());
                     tableRelation.add(relationResultMap);
@@ -332,5 +333,14 @@ public class MetaDataMgrApiService {
         responseMap.put("table_info", tableInfo);
         responseMap.put("table_relation",tableRelation);
         return responseMap;
+    }
+
+    public Map<String, Object> relationSave(JSONObject jsonParam){
+        DSFieldRelDBExample dsFieldRelDBExample = new DSFieldRelDBExample();
+        dsFieldRelDBExample.createCriteria().andTableIdEqualTo(jsonParam.getString("from"))
+                .andForeignTableIdEqualTo(jsonParam.getString("to"))
+                .andFieldIdEqualTo(jsonParam.getString("from_field"))
+                .andForeignFieldIdEqualTo(jsonParam.getString("to_field"));
+        return null;
     }
 }

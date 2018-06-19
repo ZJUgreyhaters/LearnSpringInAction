@@ -224,13 +224,39 @@ public class MetaDataMgrApiController {
             Map<String,Object> map = metaDataMgrApiService.relationList(dsName, tbList);
             responseMap.put("data",map);
             responseMap.put("code",200);
+            responseMap.put("msg","查询成功");
             return responseMap;
         }catch (Exception e){
             logger.error(e.getMessage());
             responseMap.put("code",500);
+            responseMap.put("msg",e.getMessage());
             return responseMap;
         }
 
     }
 
+    @RequestMapping(value = "/relation/save", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> relationSave(@RequestBody String bodyString){
+        Map<String, Object> responseMap = new HashMap<>();
+        try{
+            JSONObject json = JSONObject.parseObject(bodyString);
+            if(json.getString("data_source_name") == null){
+                throw new Exception("miss data source name");
+            }
+            if(json.getString("from") == null){
+                throw new Exception("miss from");
+            }
+            if(json.getString("to") == null){
+                throw new Exception("miss to");
+            }
+            if(json.getString("relation") == null){
+                throw new Exception("miss relation");
+            }
+            metaDataMgrApiService.relationSave(json);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return responseMap;
+    }
 }
