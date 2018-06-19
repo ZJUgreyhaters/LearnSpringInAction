@@ -333,7 +333,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     list.add(map2);
     map.put("id", "1");
     map.put("name", "收益率");
-    map.put("option", "list");
+    map.put("option", list);
     return map;
   }
 }
