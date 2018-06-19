@@ -88,9 +88,18 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
                 }
 
                 List<String> listValue1 = new ArrayList<>();
-                listValue1.add("个人客户");
-                listValue1.add("机构客户");
-                listValue1.add("私募");
+                if(conditionMap.get("type").equals("value")){
+                    listValue1.add("杭州");
+                }
+                if(conditionMap.get("type").equals("select")){
+                    listValue1.add("男");
+                    listValue1.add("女");
+                }
+                if(conditionMap.get("type").equals("area")) {
+                    listValue1.add("个人客户");
+                    listValue1.add("机构客户");
+                    listValue1.add("私募");
+                }
 
 
                 conditionMap.put("values",listValue1);
