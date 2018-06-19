@@ -3,6 +3,7 @@ package com.quantchi.customer.serviceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.quantchi.common.HiveLink;
+import com.quantchi.common.JsonResult;
 import com.quantchi.common.SQLQueryConfig;
 import com.quantchi.common.util;
 import com.quantchi.customer.mapper.CustomerGroupMapper;
@@ -38,10 +39,11 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
   private SQLQueryConfig sqlQueryConfig;
 
   @Override
-  public Map<String, Object> selectCustomerGroup(CustomerGroup customerGroup, Integer pageIndex,
-      Integer pagesize) {
+  public Map<String, Object> selectCustomerGroup(CustomerGroup customerGroup) {
     try {
-      PageHelper.startPage(pageIndex, pagesize);
+      if (customerGroup.getPage() != null && customerGroup.getPage_size() != null) {
+        PageHelper.startPage(customerGroup.getPage(), customerGroup.getPage_size());
+      }
       // 执行查询
       List<CustomerGroup> list = mapper.selectCustomerGroup(customerGroup);
       // 取分页信息
@@ -186,7 +188,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     return sql.toString();
   }
 
-  public Map<String, Object> listCustomersWithDim(CustomerGroup group) {
+  public String listCustomersWithDim(CustomerGroup group) {
     try {
       StringBuilder sql = new StringBuilder();
       String string =
@@ -206,27 +208,28 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       String z = " left join mtoi.dim_customer cust on condition01.customer_no=cust.customer_no";
       String w = " left join (select * from mtoi.agg_cust_statistics where part_date = 20160101) main_data on condition01.customer_no=main_data.customer_no";
       sql.append(sql1).append(z).append(w);
-      PageHelper.startPage(1, 10);
+      if (group.getPage() != null && group.getPage_size() != null) {
+        PageHelper.startPage(group.getPage(), group.getPage_size());
+      }
       List<Map<String, Object>> Resultlist = HiveLink.selectHive(sql.toString(), jdbcPool);
       if (Resultlist.toString().contains("select error")) {
-        return util.genRet(500, null, "select CustomerGroup error", 0);
+        return JsonResult.errorJson("error");
       }
       PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(Resultlist, 10);
-      Map<String, Object> resultz = new HashMap<String, Object>();
-
-      resultz.put("total", pageInfo.getTotal());
       // 结果rows数据
-      List<Map<String, Object>>  infoList= new ArrayList<>();
       Map<String, Object> resultInfo = new HashMap<String, Object>();
-      resultInfo.put("data_source",pageInfo.getList());
-      resultInfo.put("cust_nums",Resultlist.size());
-      resultInfo.put("subcondition",sub());
-      infoList.add(resultInfo);
-      resultz.put("data",infoList);
-      return resultz;
+      resultInfo.put("total", pageInfo.getTotal());
+      resultInfo.put("data_source", pageInfo.getList());
+      resultInfo.put("cust_nums", Resultlist.size());
+      resultInfo.put("subcondition", sub());
+      String str = JsonResult.successJson(resultInfo).replaceAll("customer_no", "客户号")
+          .replaceAll("customer_name", "姓名").replaceAll("fin_balance", "融资负债（万元）")
+          .replaceAll("total_asset", "总资产（万元}").replaceAll("assure_debit_rate", "维保比例")
+          .replaceAll("concentrate", "当前仓位").replaceAll("profit_rate_y", "年度收益率 ");
+      return str;
     } catch (Exception e) {
       e.printStackTrace();
-      return util.genRet(500, null, "select CustomerGroup error", 0);
+      return JsonResult.errorJson("error");
     }
   }
 
@@ -254,7 +257,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_KLINE_COUNTRY_BY_COUNTRY();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
-      PageHelper.startPage(group.getPage(), group.getPage_size());
+      if (group.getPage() != null && group.getPage_size() != null) {
+        PageHelper.startPage(group.getPage(), group.getPage_size());
+      }
       List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return util.genRet(500, null, "select CustomerGroup error", 0);
@@ -287,6 +292,8 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         result.put("code", "500");
         result.put("msg", "error");
       }
+
+      mapper.updateCustomerGroup(group);
       result.put("code", "200");
       result.put("msg", "ok");
       return result;
@@ -309,9 +316,20 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
 
   Map<String, Object> sub() {
     Map<String, Object> map = new HashedMap();
+    List<Map<String, Object>> list = new ArrayList<>();
+    Map<String, Object> map1 = new HashedMap();
+    Map<String, Object> map2 = new HashedMap();
+    map1.put("id", "1");
+    map1.put("value", "收益30%以上");
+    map1.put("number", "111");
+    map2.put("id", "2");
+    map2.put("value", "收益30%以上");
+    map2.put("number", "111");
+    list.add(map1);
+    list.add(map2);
     map.put("id", "1");
     map.put("name", "收益率");
-    map.put("option", " [ {id: 1, value:'收益30%以上', number:111}, {id: 2, value:'收益30%以上', number:111},]");
+    map.put("option","list");
     return map;
   }
 }
