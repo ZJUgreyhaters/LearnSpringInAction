@@ -3,11 +3,10 @@
 <mapper namespace="com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper" >
   <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="table_english_name" property="tableEnglishName" jdbcType="VARCHAR" />
+    <id column="table_english_name" property="tableEnglishName" jdbcType="VARCHAR" />
     <result column="table_chinese_name" property="tableChineseName" jdbcType="VARCHAR" />
     <result column="datasource_id" property="datasourceId" jdbcType="VARCHAR" />
-    <result column="entity" property="entity" jdbcType="VARCHAR" />
-    <result column="entity_field" property="entityField" jdbcType="VARCHAR" />
+    <result column="primary_key" property="primaryKey" jdbcType="VARCHAR" />
     <result column="business" property="business" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
   </resultMap>
@@ -70,8 +69,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, table_english_name, table_chinese_name, datasource_id, entity, entity_field, 
-    business, status
+    id, table_english_name, table_chinese_name, datasource_id, primary_key, business,
+    status
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample" >
     select
@@ -88,15 +87,17 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map" >
+    select
     <include refid="Base_Column_List" />
     from ds_table_info
     where id = #{id,jdbcType=INTEGER}
+    and table_english_name = #{tableEnglishName,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="map" >
     delete from ds_table_info
     where id = #{id,jdbcType=INTEGER}
+    and table_english_name = #{tableEnglishName,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample" >
     delete from ds_table_info
@@ -105,12 +106,12 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
-    insert into ds_table_info (id, table_english_name, table_chinese_name, 
-      datasource_id, entity, entity_field, 
-      business, status)
-    values (#{id,jdbcType=INTEGER}, #{tableEnglishName,jdbcType=VARCHAR}, #{tableChineseName,jdbcType=VARCHAR}, 
-      #{datasourceId,jdbcType=VARCHAR}, #{entity,jdbcType=VARCHAR}, #{entityField,jdbcType=VARCHAR}, 
-      #{business,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+    insert into ds_table_info (id, table_english_name, table_chinese_name,
+    datasource_id, primary_key, business,
+    status)
+    values (#{id,jdbcType=INTEGER}, #{tableEnglishName,jdbcType=VARCHAR}, #{tableChineseName,jdbcType=VARCHAR},
+    #{datasourceId,jdbcType=VARCHAR}, #{primaryKey,jdbcType=VARCHAR}, #{business,jdbcType=VARCHAR},
+    #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
     insert into ds_table_info
@@ -127,11 +128,8 @@
       <if test="datasourceId != null" >
         datasource_id,
       </if>
-      <if test="entity != null" >
-        entity,
-      </if>
-      <if test="entityField != null" >
-        entity_field,
+      <if test="primaryKey != null" >
+        primary_key,
       </if>
       <if test="business != null" >
         business,
@@ -153,11 +151,8 @@
       <if test="datasourceId != null" >
         #{datasourceId,jdbcType=VARCHAR},
       </if>
-      <if test="entity != null" >
-        #{entity,jdbcType=VARCHAR},
-      </if>
-      <if test="entityField != null" >
-        #{entityField,jdbcType=VARCHAR},
+      <if test="primaryKey != null" >
+        #{primaryKey,jdbcType=VARCHAR},
       </if>
       <if test="business != null" >
         #{business,jdbcType=VARCHAR},
@@ -182,11 +177,8 @@
       <if test="record.datasourceId != null" >
         datasource_id = #{record.datasourceId,jdbcType=VARCHAR},
       </if>
-      <if test="record.entity != null" >
-        entity = #{record.entity,jdbcType=VARCHAR},
-      </if>
-      <if test="record.entityField != null" >
-        entity_field = #{record.entityField,jdbcType=VARCHAR},
+      <if test="record.primaryKey != null" >
+        primary_key = #{record.primaryKey,jdbcType=VARCHAR},
       </if>
       <if test="record.business != null" >
         business = #{record.business,jdbcType=VARCHAR},
@@ -202,13 +194,12 @@
   <update id="updateByExample" parameterType="map" >
     update ds_table_info
     set id = #{record.id,jdbcType=INTEGER},
-      table_english_name = #{record.tableEnglishName,jdbcType=VARCHAR},
-      table_chinese_name = #{record.tableChineseName,jdbcType=VARCHAR},
-      datasource_id = #{record.datasourceId,jdbcType=VARCHAR},
-      entity = #{record.entity,jdbcType=VARCHAR},
-      entity_field = #{record.entityField,jdbcType=VARCHAR},
-      business = #{record.business,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=INTEGER}
+    table_english_name = #{record.tableEnglishName,jdbcType=VARCHAR},
+    table_chinese_name = #{record.tableChineseName,jdbcType=VARCHAR},
+    datasource_id = #{record.datasourceId,jdbcType=VARCHAR},
+    primary_key = #{record.primaryKey,jdbcType=VARCHAR},
+    business = #{record.business,jdbcType=VARCHAR},
+    status = #{record.status,jdbcType=INTEGER}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -216,20 +207,14 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
     update ds_table_info
     <set >
-      <if test="tableEnglishName != null" >
-        table_english_name = #{tableEnglishName,jdbcType=VARCHAR},
-      </if>
       <if test="tableChineseName != null" >
         table_chinese_name = #{tableChineseName,jdbcType=VARCHAR},
       </if>
       <if test="datasourceId != null" >
         datasource_id = #{datasourceId,jdbcType=VARCHAR},
       </if>
-      <if test="entity != null" >
-        entity = #{entity,jdbcType=VARCHAR},
-      </if>
-      <if test="entityField != null" >
-        entity_field = #{entityField,jdbcType=VARCHAR},
+      <if test="primaryKey != null" >
+        primary_key = #{primaryKey,jdbcType=VARCHAR},
       </if>
       <if test="business != null" >
         business = #{business,jdbcType=VARCHAR},
@@ -239,17 +224,17 @@
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
+    and table_english_name = #{tableEnglishName,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
     update ds_table_info
-    set table_english_name = #{tableEnglishName,jdbcType=VARCHAR},
-      table_chinese_name = #{tableChineseName,jdbcType=VARCHAR},
+    set table_chinese_name = #{tableChineseName,jdbcType=VARCHAR},
       datasource_id = #{datasourceId,jdbcType=VARCHAR},
-      entity = #{entity,jdbcType=VARCHAR},
-      entity_field = #{entityField,jdbcType=VARCHAR},
+      primary_key = #{primaryKey,jdbcType=VARCHAR},
       business = #{business,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
+      and table_english_name = #{tableEnglishName,jdbcType=VARCHAR}
   </update>
 
   <insert id="insertTables" parameterType="java.util.List">

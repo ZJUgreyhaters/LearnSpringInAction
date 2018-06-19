@@ -233,7 +233,7 @@ public class MetaDataMgrApiService {
         }
         String[] names = new String[100];
         names[0] = name[0];
-        int j=1,k=1;
+        int j=1,k=1,isprimary=0;
         for(; j < i; j++){
             if(dbName[j].equals(dbName[j-1])){
                 names[k]=name[j];
@@ -246,12 +246,18 @@ public class MetaDataMgrApiService {
                 while(it.hasNext()){
                     KeyInfo keyInfo = (KeyInfo) it.next();
                     String foreignFieldId;
+                    isprimary=0;
+                    if(keyInfo.getKeyType() == "PK"){
+                        isprimary=1;
+                    }
                     if(keyInfo.getIncidenceTBL() == null){
                         foreignFieldId = null;
+                        dsFieldRelDBMapper.insertReleations(dbName[j-1] +"."+ keyInfo.getTblName(),keyInfo.getFieldName(),null,foreignFieldId,isprimary);
                     }else{
                         foreignFieldId = keyInfo.getFieldName();
-                        dsFieldRelDBMapper.insertReleations(keyInfo.getTblName(),keyInfo.getFieldName(),keyInfo.getIncidenceTBL(),foreignFieldId);
+                        dsFieldRelDBMapper.insertReleations(dbName[j-1] +"."+ keyInfo.getTblName(),keyInfo.getFieldName(),dbName[j-1] + "." + keyInfo.getIncidenceTBL(),foreignFieldId,isprimary);
                     }
+
                 }
             }
         }
@@ -262,9 +268,12 @@ public class MetaDataMgrApiService {
             String foreignFieldId;
             if(keyInfo.getIncidenceTBL() == null){
                 foreignFieldId = null;
+                dsFieldRelDBMapper.insertReleations(dbName[j-1] +"."+ keyInfo.getTblName(),keyInfo.getFieldName(),null,foreignFieldId,isprimary);
+
             }else{
                 foreignFieldId = keyInfo.getFieldName();
-                dsFieldRelDBMapper.insertReleations(keyInfo.getTblName(),keyInfo.getFieldName(),keyInfo.getIncidenceTBL(),foreignFieldId);
+                dsFieldRelDBMapper.insertReleations(dbName[j-1] +"."+ keyInfo.getTblName(),keyInfo.getFieldName(),dbName[j-1] +"."+ keyInfo.getIncidenceTBL(),foreignFieldId,isprimary);
+
             }
 
         }
@@ -316,7 +325,7 @@ public class MetaDataMgrApiService {
                 DSFieldRelDBExample dsFieldRelDBExample = new DSFieldRelDBExample();
                 String fieldId = tbList.get(i).split("\\.")[1];
                 String foreignId = tbList.get(j).split("\\.")[1];
-                dsFieldRelDBExample.createCriteria().andTableIdEqualTo(fieldId).andForeignTableIdEqualTo(foreignId);
+                dsFieldRelDBExample.createCriteria().andTableIdEqualTo(tbList.get(i)).andForeignTableIdEqualTo(tbList.get(j));
                 List<DSFieldRelDB> relationList = dsFieldRelDBMapper.selectByExample(dsFieldRelDBExample);
                 for(DSFieldRelDB dsFieldRelDB : relationList){
                     Map<String,String> relationResultMap = new HashMap<>();
@@ -335,12 +344,18 @@ public class MetaDataMgrApiService {
         return responseMap;
     }
 
-    public Map<String, Object> relationSave(JSONObject jsonParam){
-        DSFieldRelDBExample dsFieldRelDBExample = new DSFieldRelDBExample();
-        dsFieldRelDBExample.createCriteria().andTableIdEqualTo(jsonParam.getString("from"))
-                .andForeignTableIdEqualTo(jsonParam.getString("to"))
-                .andFieldIdEqualTo(jsonParam.getString("from_field"))
-                .andForeignFieldIdEqualTo(jsonParam.getString("to_field"));
-        return null;
+    public int relationSave(JSONObject jsonParam){
+        Map<String, Object> map = new HashMap<>();
+        DSFieldRelDB dsFieldRelDB = new DSFieldRelDB();
+        dsFieldRelDB.setTableId(jsonParam.getString("from"));
+        dsFieldRelDB.setFieldId(jsonParam.getString("from_field"));
+        dsFieldRelDB.setForeignTableId(jsonParam.getString("to"));
+        dsFieldRelDB.setForeignFieldId(jsonParam.getString("to_field"));
+        dsFieldRelDB.setRelation(jsonParam.getString("relation"));
+        return dsFieldRelDBMapper.insert(dsFieldRelDB);
+    }
+
+    public int relationDel(String relation_id){
+        return dsFieldRelDBMapper.deleteByPrimaryKey(Integer.parseInt(relation_id));
     }
 }

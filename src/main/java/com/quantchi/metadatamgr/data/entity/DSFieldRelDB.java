@@ -13,6 +13,8 @@ public class DSFieldRelDB {
 
     private String foreignTableId;
 
+    private Integer isprimary;
+
     public Integer getRelationId() {
         return relationId;
     }
@@ -55,6 +57,14 @@ public class DSFieldRelDB {
 
     public String getForeignTableId() {
         return foreignTableId;
+    }
+
+    public Integer getIsprimary() {
+        return isprimary;
+    }
+
+    public void setIsprimary(Integer isprimary) {
+        this.isprimary = isprimary;
     }
 
     public void setForeignTableId(String foreignTableId) {

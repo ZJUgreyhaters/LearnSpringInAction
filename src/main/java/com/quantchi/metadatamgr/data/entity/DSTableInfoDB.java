@@ -9,9 +9,7 @@ public class DSTableInfoDB {
 
     private String datasourceId;
 
-    private String entity;
-
-    private String entityField;
+    private String primaryKey;
 
     private String business;
 
@@ -49,20 +47,12 @@ public class DSTableInfoDB {
         this.datasourceId = datasourceId == null ? null : datasourceId.trim();
     }
 
-    public String getEntity() {
-        return entity;
+    public String getPrimaryKey() {
+        return primaryKey;
     }
 
-    public void setEntity(String entity) {
-        this.entity = entity == null ? null : entity.trim();
-    }
-
-    public String getEntityField() {
-        return entityField;
-    }
-
-    public void setEntityField(String entityField) {
-        this.entityField = entityField == null ? null : entityField.trim();
+    public void setPrimaryKey(String primaryKey) {
+        this.primaryKey = primaryKey == null ? null : primaryKey.trim();
     }
 
     public String getBusiness() {
