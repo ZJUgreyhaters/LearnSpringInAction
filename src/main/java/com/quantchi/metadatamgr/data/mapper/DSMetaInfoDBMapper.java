@@ -30,5 +30,4 @@ public interface DSMetaInfoDBMapper {
 
     int updateByPrimaryKey(DSMetaInfoDB record);
 
-    int insertFields(List<Map<String,String>> list);
 }

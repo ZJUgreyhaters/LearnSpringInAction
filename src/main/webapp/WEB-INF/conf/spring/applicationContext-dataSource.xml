@@ -58,7 +58,7 @@
     </bean>
 
     <!--编号表专用-->
-    <bean id="dataSource2" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="dataSource2" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="com.mysql.jdbc.Driver" />
         <property name="jdbcUrl" value="${datasource.url}" />
         <property name="user" value="${datasource.username}" />
