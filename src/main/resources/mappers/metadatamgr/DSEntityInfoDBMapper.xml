@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.DSEntityInfoDBMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.DSEntityInfoDB" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="entity_name" property="entityName" jdbcType="VARCHAR" />
+    <result column="business" property="business" jdbcType="VARCHAR" />
+    <result column="datasource_id" property="datasourceId" jdbcType="VARCHAR" />
+    <result column="main_table" property="mainTable" jdbcType="VARCHAR" />
+    <result column="entity_field" property="entityField" jdbcType="VARCHAR" />
+    <result column="non_main_table" property="nonMainTable" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, entity_name, business, datasource_id, main_table, entity_field, non_main_table
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDBExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from ds_entity_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ds_entity_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ds_entity_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDBExample" >
+    delete from ds_entity_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDB" >
+    insert into ds_entity_info (id, entity_name, business, 
+      datasource_id, main_table, entity_field, 
+      non_main_table)
+    values (#{id,jdbcType=INTEGER}, #{entityName,jdbcType=VARCHAR}, #{business,jdbcType=VARCHAR}, 
+      #{datasourceId,jdbcType=VARCHAR}, #{mainTable,jdbcType=VARCHAR}, #{entityField,jdbcType=VARCHAR}, 
+      #{nonMainTable,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDB" >
+    insert into ds_entity_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="entityName != null" >
+        entity_name,
+      </if>
+      <if test="business != null" >
+        business,
+      </if>
+      <if test="datasourceId != null" >
+        datasource_id,
+      </if>
+      <if test="mainTable != null" >
+        main_table,
+      </if>
+      <if test="entityField != null" >
+        entity_field,
+      </if>
+      <if test="nonMainTable != null" >
+        non_main_table,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="entityName != null" >
+        #{entityName,jdbcType=VARCHAR},
+      </if>
+      <if test="business != null" >
+        #{business,jdbcType=VARCHAR},
+      </if>
+      <if test="datasourceId != null" >
+        #{datasourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainTable != null" >
+        #{mainTable,jdbcType=VARCHAR},
+      </if>
+      <if test="entityField != null" >
+        #{entityField,jdbcType=VARCHAR},
+      </if>
+      <if test="nonMainTable != null" >
+        #{nonMainTable,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ds_entity_info
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.entityName != null" >
+        entity_name = #{record.entityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.business != null" >
+        business = #{record.business,jdbcType=VARCHAR},
+      </if>
+      <if test="record.datasourceId != null" >
+        datasource_id = #{record.datasourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mainTable != null" >
+        main_table = #{record.mainTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.entityField != null" >
+        entity_field = #{record.entityField,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nonMainTable != null" >
+        non_main_table = #{record.nonMainTable,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ds_entity_info
+    set id = #{record.id,jdbcType=INTEGER},
+      entity_name = #{record.entityName,jdbcType=VARCHAR},
+      business = #{record.business,jdbcType=VARCHAR},
+      datasource_id = #{record.datasourceId,jdbcType=VARCHAR},
+      main_table = #{record.mainTable,jdbcType=VARCHAR},
+      entity_field = #{record.entityField,jdbcType=VARCHAR},
+      non_main_table = #{record.nonMainTable,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDB" >
+    update ds_entity_info
+    <set >
+      <if test="entityName != null" >
+        entity_name = #{entityName,jdbcType=VARCHAR},
+      </if>
+      <if test="business != null" >
+        business = #{business,jdbcType=VARCHAR},
+      </if>
+      <if test="datasourceId != null" >
+        datasource_id = #{datasourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainTable != null" >
+        main_table = #{mainTable,jdbcType=VARCHAR},
+      </if>
+      <if test="entityField != null" >
+        entity_field = #{entityField,jdbcType=VARCHAR},
+      </if>
+      <if test="nonMainTable != null" >
+        non_main_table = #{nonMainTable,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDB" >
+    update ds_entity_info
+    set entity_name = #{entityName,jdbcType=VARCHAR},
+      business = #{business,jdbcType=VARCHAR},
+      datasource_id = #{datasourceId,jdbcType=VARCHAR},
+      main_table = #{mainTable,jdbcType=VARCHAR},
+      entity_field = #{entityField,jdbcType=VARCHAR},
+      non_main_table = #{nonMainTable,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
