@@ -42,7 +42,6 @@ public class MetaDataMgrFieldApiController {
     public @ResponseBody
     Map<String, Object> edit (@RequestBody String bodyString) {
         try{
-
             return util.genRet(500,null,"",0);
             //return util.genRet(200,_ret.get("data"),"ok",Integer.parseInt(_ret.get("total").toString()));
         }catch (Exception e){
