@@ -1,6 +1,5 @@
 package com.quantchi.customer.serviceImpl;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.quantchi.common.HiveLink;
 import com.quantchi.common.JsonResult;
@@ -42,19 +41,17 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
   @Override
   public Map<String, Object> selectCustomerGroup(CustomerGroup customerGroup) {
     try {
-      if (customerGroup.getPage() != null && customerGroup.getPage_size() != null) {
-        PageHelper.startPage(customerGroup.getPage(), customerGroup.getPage_size());
-      }
       // 执行查询
-      List<CustomerGroup> list = mapper.selectCustomerGroup(customerGroup);
-      // 取分页信息
-      PageInfo<CustomerGroup> pageInfo = new PageInfo<>(list);
-      // 返回处理结果
+      List<Map<String,Object>> list = mapper.selectCustomerGroup(customerGroup);
+      int total = list.size();
+      if (customerGroup.getPage() != null && customerGroup.getPage_size() != null) {
+        list = Paging.pagingPlug(list, customerGroup.getPage_size(), customerGroup.getPage());
+      }
       Map<String, Object> result = new HashMap<String, Object>();
       // 获取总条数
-      result.put("total", pageInfo.getTotal());
+      result.put("total",total);
       // 结果rows数据
-      result.put("data", pageInfo.getList());
+      result.put("data", list);
       return util
           .genRet(200, result.get("data"), "ok", Integer.parseInt(result.get("total").toString()));
     } catch (Exception e) {
