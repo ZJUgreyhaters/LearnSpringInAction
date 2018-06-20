@@ -28,5 +28,5 @@ public interface DSFieldInfoDBMapper {
 
     int updateByPrimaryKey(DSFieldInfoDB record);
 
-    int insertFields(List<Map<String,String>> list);
+    int insertFields(List<Map<String,Object>> list);
 }

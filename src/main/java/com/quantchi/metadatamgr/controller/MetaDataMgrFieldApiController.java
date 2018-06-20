@@ -38,9 +38,6 @@ public class MetaDataMgrFieldApiController {
             if(json.getString("table_name") == null){
                 throw new Exception("miss table name");
             }
-            if(json.getString("keywords") == null){
-                throw new Exception("miss keywords");
-            }
             responseMap = metaDataMgrFieldApiService.search(json);
             responseMap.put("code",200);
             responseMap.put("msg","查询成功");
