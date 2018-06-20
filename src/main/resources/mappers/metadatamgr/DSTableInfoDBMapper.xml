@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper" >
-  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <id column="table_english_name" property="tableEnglishName" jdbcType="VARCHAR" />
-    <result column="table_chinese_name" property="tableChineseName" jdbcType="VARCHAR" />
-    <result column="datasource_id" property="datasourceId" jdbcType="VARCHAR" />
-    <result column="primary_key" property="primaryKey" jdbcType="VARCHAR" />
-    <result column="business" property="business" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="INTEGER" />
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper">
+  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.DSTableInfoDB">
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="table_english_name" property="tableEnglishName" jdbcType="VARCHAR"/>
+    <result column="table_chinese_name" property="tableChineseName" jdbcType="VARCHAR"/>
+    <result column="datasource_id" property="datasourceId" jdbcType="VARCHAR"/>
+    <result column="primary_key" property="primaryKey" jdbcType="VARCHAR"/>
+    <result column="business" property="business" jdbcType="VARCHAR"/>
+    <result column="status" property="status" jdbcType="INTEGER"/>
+    <result column="nums" property="nums" jdbcType="VARCHAR"/>
+    <result column="foreignNums" property="foreignNums" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -168,7 +171,7 @@
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.tableEnglishName != null" >
+      <if test="record.tableEnglishName != null">
         table_english_name = #{record.tableEnglishName,jdbcType=VARCHAR},
       </if>
       <if test="record.tableChineseName != null" >
@@ -236,18 +239,54 @@
     where id = #{id,jdbcType=INTEGER}
       and table_english_name = #{tableEnglishName,jdbcType=VARCHAR}
   </update>
+  <select id="search" resultMap="BaseResultMap">
+    SELECT *FROM ds_table_info a LEFT JOIN ( SELECT COUNT(*)nums,table_id FROM ds_field_info GROUP
+    BY table_id) b ON
+    a.table_english_name=b.table_id LEFT JOIN (SELECT COUNT(*)foreignNums,table_id AS id ,isprimary
+    FROM ds_field_releation WHERE isprimary = '0' GROUP BY table_id )c ON
+    a.table_english_name=c.id
+    <where>
+      <if test="datasourceId !=null and datasourceId.toString().length()>0">AND datasource_id
+        LIKE CONCAT(CONCAT('%',#{datasourceId}), '%')
+      </if>
+      <if test="status !=null and status.toString().length()>0">AND status
+        LIKE CONCAT(CONCAT('%',#{status}), '%')
+      </if>
+      <if test="tableEnglishName !=null and tableEnglishName.toString().length()>0">AND
+        table_english_name
+        LIKE CONCAT(CONCAT('%',#{tableEnglishName}), '%')
+      </if>
+    </where>
+  </select>
+  <delete id="delete">
+     DELETE  from  ds_table_info where id = #{id}
+  </delete>
 
-  <insert id="insertTables" parameterType="java.util.List">
-    INSERT INTO ds_table_info(
-    table_english_name,
-    datasource_id
-    )VALUES
-    <foreach collection="list" item="list" index="index" separator=",">
-      (
-      #{list.table_english_name},
-      #{list.datasource_id}
-      )
-    </foreach>
-  </insert>
-
+  <update id="update">
+    UPDATE ds_table_info
+    <set>
+      <if test="tableChineseName !=null and tableChineseName.toString().length()>0">
+        table_chinese_name = #{tableChineseName},
+      </if>
+      <if test="primaryKey !=null and primaryKey.toString().length()>0">
+        primary_key = #{primaryKey},
+      </if>
+      <if test="status !=null and status.toString().length()>0">
+        status = #{status},
+      </if>
+    </set>
+    WHERE id = #{id}
+  </update>
+    <insert id="insertTables" parameterType="java.util.List">
+        INSERT INTO ds_table_info(
+        table_english_name,
+        datasource_id
+        )VALUES
+        <foreach collection="list" item="list" index="index" separator=",">
+            (
+            #{list.table_english_name},
+            #{list.datasource_id}
+            )
+        </foreach>
+    </insert>
 </mapper>

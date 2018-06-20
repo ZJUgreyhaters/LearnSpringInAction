@@ -92,7 +92,7 @@
 	</bean>
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.quantchi.metadatamgr.data.mapper,com.quantchi.customer.mapper" />
+		<property name="basePackage" value="com.quantchi.termInfo.mapper,com.quantchi.metadatamgr.data.mapper,com.quantchi.customer.mapper" />
 	</bean>
 
 

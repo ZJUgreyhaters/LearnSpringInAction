@@ -2,23 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.quantchi.customer.mapper.CustomerGroupMapper">
-  <resultMap type="com.quantchi.customer.pojo.CustomerGroup" id="BaseResultMap">
-    <id column="id" property="id"></id>
-    <result column="cust_group_id" property="cust_group_id"/>
-    <result column="cust_group_name" property="cust_group_name"/>
-    <result column="condition_nums" property="condition_nums"/>
-    <result column="create_time" property="create_time"/>
-    <result column="create_user_id" property="create_user_id"/>
-    <result column="last_refresh_time" property="last_refresh_time"/>
-    <result column="cust_nums" property="cust_nums"/>
-    <result column="condition_desc" property="condition_desc"/>
-    <result column="condition_statement" property="condition_statement"/>
-    <result column="refresh_status" property="refresh_status"/>
-    <result column="delete_status" property="delete_status"/>
-    <result column="history_status" property="history_status"/>
-    <result column="default_analysis" property="default_analysis"/>
+  <resultMap id="BaseResultMap" type="com.quantchi.customer.pojo.CustomerGroup" >
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="cust_group_id" property="cust_group_id" jdbcType="VARCHAR"/>
+    <result column="cust_group_name" property="cust_group_name" jdbcType="VARCHAR"/>
+    <result column="condition_nums" property="condition_nums" jdbcType="INTEGER"/>
+    <result column="create_time" property="create_time" jdbcType="VARCHAR"/>
+    <result column="create_user_id" property="create_user_id" jdbcType="VARCHAR"/>
+    <result column="last_refresh_time" property="last_refresh_time" jdbcType="VARCHAR"/>
+    <result column="cust_nums" property="cust_nums" jdbcType="INTEGER"/>
+    <result column="condition_desc" property="condition_desc" jdbcType="VARCHAR"/>
+    <result column="condition_statement" property="condition_statement" jdbcType="VARCHAR"/>
+    <result column="refresh_status" property="refresh_status" jdbcType="VARCHAR"/>
+    <result column="delete_status" property="delete_status" jdbcType="VARCHAR"/>
+    <result column="history_status" property="history_status" jdbcType="VARCHAR"/>
+    <result column="default_analysis" property="default_analysis" jdbcType="VARCHAR"/>
   </resultMap>
-  <select id="selectCustomerGroup" resultMap="BaseResultMap">
+  <select id="selectCustomerGroup" resultType="java.util.Map">
     select cust_group_id, -- 客群ID
     cust_group_name, -- 客群名称
     condition_nums, -- 条件个数
