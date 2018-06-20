@@ -29,5 +29,5 @@ public interface DSFieldRelDBMapper {
 
     int updateByPrimaryKey(DSFieldRelDB record);
 
-    int insertReleations(@Param("tableName")String tableName,@Param("field")String field, @Param("foreignTable")String foreignTable, @Param("foreignFieldId")String foreignFieldId);
+    int insertReleations(@Param("tableName")String tableName,@Param("field")String field, @Param("foreignTable")String foreignTable, @Param("foreignFieldId")String foreignFieldId, @Param("isprimary")Integer isprimary);
 }

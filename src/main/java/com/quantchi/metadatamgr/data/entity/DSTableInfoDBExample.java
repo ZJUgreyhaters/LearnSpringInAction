@@ -374,143 +374,73 @@ public class DSTableInfoDBExample {
             return (Criteria) this;
         }
 
-        public Criteria andEntityIsNull() {
-            addCriterion("entity is null");
+        public Criteria andPrimaryKeyIsNull() {
+            addCriterion("primary_key is null");
             return (Criteria) this;
         }
 
-        public Criteria andEntityIsNotNull() {
-            addCriterion("entity is not null");
+        public Criteria andPrimaryKeyIsNotNull() {
+            addCriterion("primary_key is not null");
             return (Criteria) this;
         }
 
-        public Criteria andEntityEqualTo(String value) {
-            addCriterion("entity =", value, "entity");
+        public Criteria andPrimaryKeyEqualTo(String value) {
+            addCriterion("primary_key =", value, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityNotEqualTo(String value) {
-            addCriterion("entity <>", value, "entity");
+        public Criteria andPrimaryKeyNotEqualTo(String value) {
+            addCriterion("primary_key <>", value, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityGreaterThan(String value) {
-            addCriterion("entity >", value, "entity");
+        public Criteria andPrimaryKeyGreaterThan(String value) {
+            addCriterion("primary_key >", value, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityGreaterThanOrEqualTo(String value) {
-            addCriterion("entity >=", value, "entity");
+        public Criteria andPrimaryKeyGreaterThanOrEqualTo(String value) {
+            addCriterion("primary_key >=", value, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityLessThan(String value) {
-            addCriterion("entity <", value, "entity");
+        public Criteria andPrimaryKeyLessThan(String value) {
+            addCriterion("primary_key <", value, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityLessThanOrEqualTo(String value) {
-            addCriterion("entity <=", value, "entity");
+        public Criteria andPrimaryKeyLessThanOrEqualTo(String value) {
+            addCriterion("primary_key <=", value, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityLike(String value) {
-            addCriterion("entity like", value, "entity");
+        public Criteria andPrimaryKeyLike(String value) {
+            addCriterion("primary_key like", value, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityNotLike(String value) {
-            addCriterion("entity not like", value, "entity");
+        public Criteria andPrimaryKeyNotLike(String value) {
+            addCriterion("primary_key not like", value, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityIn(List<String> values) {
-            addCriterion("entity in", values, "entity");
+        public Criteria andPrimaryKeyIn(List<String> values) {
+            addCriterion("primary_key in", values, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityNotIn(List<String> values) {
-            addCriterion("entity not in", values, "entity");
+        public Criteria andPrimaryKeyNotIn(List<String> values) {
+            addCriterion("primary_key not in", values, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityBetween(String value1, String value2) {
-            addCriterion("entity between", value1, value2, "entity");
+        public Criteria andPrimaryKeyBetween(String value1, String value2) {
+            addCriterion("primary_key between", value1, value2, "primaryKey");
             return (Criteria) this;
         }
 
-        public Criteria andEntityNotBetween(String value1, String value2) {
-            addCriterion("entity not between", value1, value2, "entity");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldIsNull() {
-            addCriterion("entity_field is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldIsNotNull() {
-            addCriterion("entity_field is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldEqualTo(String value) {
-            addCriterion("entity_field =", value, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldNotEqualTo(String value) {
-            addCriterion("entity_field <>", value, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldGreaterThan(String value) {
-            addCriterion("entity_field >", value, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldGreaterThanOrEqualTo(String value) {
-            addCriterion("entity_field >=", value, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldLessThan(String value) {
-            addCriterion("entity_field <", value, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldLessThanOrEqualTo(String value) {
-            addCriterion("entity_field <=", value, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldLike(String value) {
-            addCriterion("entity_field like", value, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldNotLike(String value) {
-            addCriterion("entity_field not like", value, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldIn(List<String> values) {
-            addCriterion("entity_field in", values, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldNotIn(List<String> values) {
-            addCriterion("entity_field not in", values, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldBetween(String value1, String value2) {
-            addCriterion("entity_field between", value1, value2, "entityField");
-            return (Criteria) this;
-        }
-
-        public Criteria andEntityFieldNotBetween(String value1, String value2) {
-            addCriterion("entity_field not between", value1, value2, "entityField");
+        public Criteria andPrimaryKeyNotBetween(String value1, String value2) {
+            addCriterion("primary_key not between", value1, value2, "primaryKey");
             return (Criteria) this;
         }
 

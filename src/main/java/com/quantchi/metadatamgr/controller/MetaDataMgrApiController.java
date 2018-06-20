@@ -253,10 +253,41 @@ public class MetaDataMgrApiController {
             if(json.getString("relation") == null){
                 throw new Exception("miss relation");
             }
-            metaDataMgrApiService.relationSave(json);
+            if(metaDataMgrApiService.relationSave(json) <=0){
+                throw new Exception("save fail");
+            }
+            responseMap.put("code",200);
+            responseMap.put("msg","保存成功");
+            return responseMap;
         }catch (Exception e){
             logger.error(e.getMessage());
+            responseMap.put("code",500);
+            responseMap.put("msg",e.getMessage());
+            return responseMap;
         }
-        return responseMap;
+    }
+
+    @RequestMapping(value = "/relation/del", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> relationDel(@RequestBody String bodyString){
+        Map<String, Object> responseMap = new HashMap<>();
+        try{
+            JSONObject json = JSONObject.parseObject(bodyString);
+            if(json.getString("relation_id") == null){
+                throw new Exception("miss relation_id");
+            }
+            if(metaDataMgrApiService.relationDel(json.getString("relation_id")) <=0){
+                throw new Exception("delete fail");
+            }
+            responseMap.put("code",200);
+            responseMap.put("msg","删除成功");
+            return responseMap;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            responseMap.put("code",500);
+            responseMap.put("msg",e.getMessage());
+            return responseMap;
+        }
+
     }
 }
