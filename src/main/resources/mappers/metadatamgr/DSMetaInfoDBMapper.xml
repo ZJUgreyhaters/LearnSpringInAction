@@ -303,23 +303,6 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <insert id="insertFields" parameterType="java.util.List">
-    INSERT INTO ds_field_info(
-      datasource_id,
-      table_id,
-      field_english_name,
-      field_type,
-      field_name
-    )VALUES
-    <foreach collection="list" item="list" index="index" separator=",">
-      (
-        #{list.datasource_id},
-        #{list.table_id},
-        #{list.field_english_name},
-        #{list.field_type},
-        #{list.field_name}
-      )
-    </foreach>
-  </insert>
+
 
 </mapper>

@@ -121,7 +121,7 @@ public class MetaDataMgrApiService {
         DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
         _ex.createCriteria().andDsNameEqualTo(dsName);
         List<DSMetaInfoDB> _retSql = dsMetaInfoDBMapper.selectByExample(_ex,defaultSqlStart,defaultPageSize);
-        if(_retSql.size() > 0 )
+        if(_retSql.size() == 0 )
             ret = true;
         return ret;
     }

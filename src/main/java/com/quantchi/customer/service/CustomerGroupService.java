@@ -12,7 +12,7 @@ public interface CustomerGroupService {
   public Map<String, Object> selectCustomerGroup(CustomerGroup group);
 
   public Map<String, Object> createCustomerGroup(CustomerGroup group,
-                                                 List<Map<String, String>> customerGroupCriteria);
+                                                 List<Map<String, Object>> customerGroupCriteria);
 
   public Map<String, Object> deleteCustomerGroup(CustomerGroup group);
 

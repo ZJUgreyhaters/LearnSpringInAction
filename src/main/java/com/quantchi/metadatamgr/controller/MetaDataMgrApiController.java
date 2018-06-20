@@ -151,7 +151,7 @@ public class MetaDataMgrApiController {
                 if(_ret)
                     return util.genRet(200,_ret,"成功",0);
                 else
-                    return util.genRet(201,_ret,"失败",0);
+                    return util.genRet(201,_ret,"重复",0);
             }
         }catch (Exception e){
             logger.error("check func err:",e.getMessage());

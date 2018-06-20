@@ -39,7 +39,7 @@ public class CustomerGroupController {
     group.setCust_group_name(map.get("cust_group_name").toString());
     group.setCreate_user_id(map.get("create_user_id").toString());
     group.setCust_nums(Integer.valueOf(map.get("cust_nums").toString()));
-    List<Map<String, String>> customerGroupCriteria = (List<Map<String, String>>) map
+    List<Map<String, Object>> customerGroupCriteria = (List<Map<String, Object>>) map
         .get("customer_group_criteria");
     group.setCondition_nums(customerGroupCriteria.size());
     return service.createCustomerGroup(group, customerGroupCriteria);
