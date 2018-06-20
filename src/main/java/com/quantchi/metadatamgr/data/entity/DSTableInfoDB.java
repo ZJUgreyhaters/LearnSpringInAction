@@ -1,83 +1,114 @@
 package com.quantchi.metadatamgr.data.entity;
 
 public class DSTableInfoDB {
-    private Integer id;
 
-    private String tableEnglishName;
+  private Integer id;
 
-    private String tableChineseName;
+  private String tableEnglishName;
 
-    private String datasourceId;
+  private String tableChineseName;
 
-    private String entity;
+  private String datasourceId;
 
-    private String entityField;
+  private String primaryKey;
 
-    private String business;
+  private String business;
 
-    private Integer status;
+  private Integer status;
 
-    public Integer getId() {
-        return id;
-    }
+  private Integer page;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  private Integer page_size;
 
-    public String getTableEnglishName() {
-        return tableEnglishName;
-    }
+  private Integer nums;
 
-    public void setTableEnglishName(String tableEnglishName) {
-        this.tableEnglishName = tableEnglishName == null ? null : tableEnglishName.trim();
-    }
+  private Integer foreignNums;
 
-    public String getTableChineseName() {
-        return tableChineseName;
-    }
+  public Integer getNums() {
+    return nums;
+  }
 
-    public void setTableChineseName(String tableChineseName) {
-        this.tableChineseName = tableChineseName == null ? null : tableChineseName.trim();
-    }
+  public void setNums(Integer nums) {
+    this.nums = nums;
+  }
 
-    public String getDatasourceId() {
-        return datasourceId;
-    }
+  public Integer getForeignNums() {
+    return foreignNums;
+  }
 
-    public void setDatasourceId(String datasourceId) {
-        this.datasourceId = datasourceId == null ? null : datasourceId.trim();
-    }
+  public void setForeignNums(Integer foreignNums) {
+    this.foreignNums = foreignNums;
+  }
 
-    public String getEntity() {
-        return entity;
-    }
+  public Integer getPage() {
+    return page;
+  }
 
-    public void setEntity(String entity) {
-        this.entity = entity == null ? null : entity.trim();
-    }
+  public void setPage(Integer page) {
+    this.page = page;
+  }
 
-    public String getEntityField() {
-        return entityField;
-    }
+  public Integer getPage_size() {
+    return page_size;
+  }
 
-    public void setEntityField(String entityField) {
-        this.entityField = entityField == null ? null : entityField.trim();
-    }
+  public void setPage_size(Integer page_size) {
+    this.page_size = page_size;
+  }
 
-    public String getBusiness() {
-        return business;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public void setBusiness(String business) {
-        this.business = business == null ? null : business.trim();
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public Integer getStatus() {
-        return status;
-    }
+  public String getTableEnglishName() {
+    return tableEnglishName;
+  }
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+  public void setTableEnglishName(String tableEnglishName) {
+    this.tableEnglishName = tableEnglishName == null ? null : tableEnglishName.trim();
+  }
+
+  public String getTableChineseName() {
+    return tableChineseName;
+  }
+
+  public void setTableChineseName(String tableChineseName) {
+    this.tableChineseName = tableChineseName == null ? null : tableChineseName.trim();
+  }
+
+  public String getDatasourceId() {
+    return datasourceId;
+  }
+
+  public void setDatasourceId(String datasourceId) {
+    this.datasourceId = datasourceId == null ? null : datasourceId.trim();
+  }
+
+  public String getBusiness() {
+    return business;
+  }
+
+  public void setBusiness(String business) {
+    this.business = business == null ? null : business.trim();
+  }
+
+  public Integer getStatus() {
+    return status;
+  }
+
+  public void setStatus(Integer status) {
+    this.status = status;
+  }
+
+  public String getPrimaryKey() {
+    return primaryKey;
+  }
+
+  public void setPrimaryKey(String primaryKey) {
+    this.primaryKey = primaryKey;
+  }
 }
