@@ -171,7 +171,7 @@
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.tableEnglishName != null">
+      <if test="record.tableEnglishName != null" >
         table_english_name = #{record.tableEnglishName,jdbcType=VARCHAR},
       </if>
       <if test="record.tableChineseName != null" >
