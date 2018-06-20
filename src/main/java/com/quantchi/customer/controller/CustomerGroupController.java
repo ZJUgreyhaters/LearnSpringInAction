@@ -74,10 +74,10 @@ public class CustomerGroupController {
         result.put("msg", "export error");
         result.put("data", "excel");
       }
-     // System.out.println(list.toString());
       String fileName = "客群分析-个体详情";
       String title = "客群分析-个体详情";
-      String[] titles = {"客户号", "客户姓名", "融资负债（万元）", "总资产（万元）", "维保比例", "当前仓位", "年度收益率"};
+      String[] titles = {"客户号", "客户姓名", "融资负债（万元）", "总资产（万元）", "维保比例", "当前仓位", "年度收益率", "选股成功率",
+          "买卖正确率", "平均仓位", "平均", "亏损率"};
       String msg = ExportUtil.exportRelationExcel(response, fileName, title, titles, list);
       result.put("code", "200");
       result.put("msg", msg);

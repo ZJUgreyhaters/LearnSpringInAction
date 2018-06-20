@@ -8,6 +8,7 @@
     <result column="table_id" property="tableId" jdbcType="VARCHAR" />
     <result column="foreign_field_id" property="foreignFieldId" jdbcType="VARCHAR" />
     <result column="foreign_table_id" property="foreignTableId" jdbcType="VARCHAR" />
+    <result column="isprimary" property="isprimary" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -220,4 +221,9 @@
       foreign_table_id = #{foreignTableId,jdbcType=VARCHAR}
     where relation_id = #{relationId,jdbcType=INTEGER}
   </update>
+
+  <insert id="insertReleations">
+    INSERT INTO ds_field_releation(table_id,field_id,foreign_table_id,foreign_field_id,isprimary)
+    VALUES (#{tableName},#{field},#{foreignTable},#{foreignFieldId},#{isprimary})
+  </insert>
 </mapper>

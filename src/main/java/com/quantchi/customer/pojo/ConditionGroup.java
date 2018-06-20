@@ -2,14 +2,14 @@ package com.quantchi.customer.pojo;
 
 public class ConditionGroup {
 
-    private Integer cust_condition_id;
+    private String cust_condition_id;
     private String cust_condition_name;
     private String create_user_id;
     private String condition_desc;
     private String condition_desc_id;
     private String condition_statement;
 
-    public Integer getCust_condition_id() {
+    public String getCust_condition_id() {
         return cust_condition_id;
     }
 
@@ -33,7 +33,7 @@ public class ConditionGroup {
         return condition_statement;
     }
 
-    public void setCust_condition_id(Integer cust_condition_id) {
+    public void setCust_condition_id(String cust_condition_id) {
         this.cust_condition_id = cust_condition_id;
     }
 

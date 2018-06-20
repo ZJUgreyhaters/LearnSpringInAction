@@ -13,11 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "api/metadata/datasource")
+@RequestMapping(value = "api/metadata")
 public class MetaDataMgrApiController {
 
     private static final Logger logger = LoggerFactory.getLogger(MetaDataMgrApiController.class);
@@ -25,7 +26,7 @@ public class MetaDataMgrApiController {
     @Autowired
     private MetaDataMgrApiService metaDataMgrApiService;
 
-    @RequestMapping(value = "/list", method = { RequestMethod.POST })
+    @RequestMapping(value = "/datasource/list", method = { RequestMethod.POST })
     public @ResponseBody
     Map<String, Object> list (@RequestBody String bodyString) {
         try{
@@ -47,7 +48,7 @@ public class MetaDataMgrApiController {
 
     }
 
-    @RequestMapping(value = "/connect", method = { RequestMethod.POST })
+    @RequestMapping(value = "/datasource/connect", method = { RequestMethod.POST })
     public @ResponseBody
     Map<String, Object> connectTest (@RequestBody String bodyString) {
         try{
@@ -79,7 +80,7 @@ public class MetaDataMgrApiController {
 
     }
 
-    @RequestMapping(value = "/save", method = { RequestMethod.POST })
+    @RequestMapping(value = "/datasource/save", method = { RequestMethod.POST })
     public @ResponseBody
     Map<String, Object> save (@RequestBody String bodyString) {
         try{
@@ -107,7 +108,7 @@ public class MetaDataMgrApiController {
 
     }
 
-    @RequestMapping(value = "/del", method = { RequestMethod.POST })
+    @RequestMapping(value = "/datasource/del", method = { RequestMethod.POST })
     public @ResponseBody
     Map<String, Object> deleteDataSource (@RequestBody String bodyString) {
         try{
@@ -134,7 +135,7 @@ public class MetaDataMgrApiController {
 
     }
 
-    @RequestMapping(value = "/check", method = { RequestMethod.POST })
+    @RequestMapping(value = "/datasource/check", method = { RequestMethod.POST })
     public @ResponseBody
     Map<String, Object> checkDSName (@RequestBody String bodyString) {
         try{
@@ -150,7 +151,7 @@ public class MetaDataMgrApiController {
                 if(_ret)
                     return util.genRet(200,_ret,"成功",0);
                 else
-                    return util.genRet(201,_ret,"失败",0);
+                    return util.genRet(201,_ret,"重复",0);
             }
         }catch (Exception e){
             logger.error("check func err:",e.getMessage());
@@ -161,7 +162,7 @@ public class MetaDataMgrApiController {
 
     }
 
-    @RequestMapping(value = "/getsourcedata", method = { RequestMethod.POST })
+    @RequestMapping(value = "/datasource/getsourcedata", method = { RequestMethod.POST })
     public @ResponseBody
     Map<String, Object> extractTables (@RequestBody String bodyString) {
         try{
@@ -183,9 +184,9 @@ public class MetaDataMgrApiController {
 
     }
 
-    @RequestMapping(value = "/localsave", method = { RequestMethod.POST })
+    @RequestMapping(value = "/datasource/localsave", method = { RequestMethod.POST })
     public @ResponseBody
-    Map<String, Object> localsave (@RequestBody String bodyString) {
+    Map<String, Object> localSave (@RequestBody String bodyString) {
         try{
 
             JSONObject json = JSONObject.parseObject(bodyString);
@@ -207,10 +208,86 @@ public class MetaDataMgrApiController {
             logger.error("extractTables func err:",e.getMessage());
             return util.genRet(500,null,e.getMessage(),0);
         }
+    }
 
-
+    @RequestMapping(value = "/relation/list", method = { RequestMethod.POST })
+    public @ResponseBody
+    Map<String, Object> relationList(@RequestBody String bodyString){
+        Map<String, Object> responseMap = new HashMap<>();
+        try{
+            JSONObject json = JSONObject.parseObject(bodyString);
+            if(json.getString("data_source_name") == null){
+                throw new Exception("miss data source name");
+            }
+            String dsName = json.getString("data_source_name");
+            List<String> tbList = (List<String>) json.get("table_list");
+            Map<String,Object> map = metaDataMgrApiService.relationList(dsName, tbList);
+            responseMap.put("data",map);
+            responseMap.put("code",200);
+            responseMap.put("msg","查询成功");
+            return responseMap;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            responseMap.put("code",500);
+            responseMap.put("msg",e.getMessage());
+            return responseMap;
+        }
 
     }
 
+    @RequestMapping(value = "/relation/save", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> relationSave(@RequestBody String bodyString){
+        Map<String, Object> responseMap = new HashMap<>();
+        try{
+            JSONObject json = JSONObject.parseObject(bodyString);
+            if(json.getString("data_source_name") == null){
+                throw new Exception("miss data source name");
+            }
+            if(json.getString("from") == null){
+                throw new Exception("miss from");
+            }
+            if(json.getString("to") == null){
+                throw new Exception("miss to");
+            }
+            if(json.getString("relation") == null){
+                throw new Exception("miss relation");
+            }
+            if(metaDataMgrApiService.relationSave(json) <=0){
+                throw new Exception("save fail");
+            }
+            responseMap.put("code",200);
+            responseMap.put("msg","保存成功");
+            return responseMap;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            responseMap.put("code",500);
+            responseMap.put("msg",e.getMessage());
+            return responseMap;
+        }
+    }
 
+    @RequestMapping(value = "/relation/del", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> relationDel(@RequestBody String bodyString){
+        Map<String, Object> responseMap = new HashMap<>();
+        try{
+            JSONObject json = JSONObject.parseObject(bodyString);
+            if(json.getString("relation_id") == null){
+                throw new Exception("miss relation_id");
+            }
+            if(metaDataMgrApiService.relationDel(json.getString("relation_id")) <=0){
+                throw new Exception("delete fail");
+            }
+            responseMap.put("code",200);
+            responseMap.put("msg","删除成功");
+            return responseMap;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            responseMap.put("code",500);
+            responseMap.put("msg",e.getMessage());
+            return responseMap;
+        }
+
+    }
 }

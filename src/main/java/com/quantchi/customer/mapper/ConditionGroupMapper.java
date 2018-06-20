@@ -10,5 +10,5 @@ public interface ConditionGroupMapper {
     void createCustomerGroupCriteria(Map<String, Object> map);
     List<Object> listCustomerGroupCriterias();
     ConditionGroup findCustomerGroup(String customerConditionId);
-    void deleteCustomerGroup(String customerConditionId);
+    int deleteCustomerGroup(String customerConditionId);
 }

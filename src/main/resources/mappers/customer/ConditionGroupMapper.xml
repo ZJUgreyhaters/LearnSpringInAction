@@ -19,7 +19,7 @@
     </resultMap>
 
     <insert id="createCustomerGroupCriteria" parameterType="map">
-        INSERT INTO cust_group_condition(cust_condition_name, create_user_id, condition_desc,condition_desc_id) VALUES(#{CustomerGroupCriteriaName},#{create_user_id},#{condition_desc},#{condition_desc_id})
+        INSERT INTO cust_group_condition(cust_condition_name, create_user_id, condition_desc,condition_desc_id) VALUES(#{cust_condition_name},#{create_user_id},#{condition_desc},#{condition_desc_id})
     </insert>
 
     <select id="findCustomerGroup" resultMap="BaseResultMap" parameterType="string">

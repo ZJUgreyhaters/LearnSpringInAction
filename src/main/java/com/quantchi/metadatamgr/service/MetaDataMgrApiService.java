@@ -4,19 +4,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.quantchi.metadatamgr.data.DSMetaInfo;
 import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
-import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
-import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
+import com.quantchi.metadatamgr.data.KeyInfo;
+import com.quantchi.metadatamgr.data.entity.*;
+import com.quantchi.metadatamgr.data.mapper.DSFieldInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.DSFieldRelDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
 import com.quantchi.metadatamgr.extract.HiveExtractImp;
+import javafx.scene.effect.SepiaTone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MetaDataMgrApiService {
@@ -34,6 +35,15 @@ public class MetaDataMgrApiService {
 
     @Autowired
     private  DSMetaInfoDBMapper dsMetaInfoDBMapper;
+
+    @Autowired
+    private DSTableInfoDBMapper dsTableInfoDBMapper;
+
+    @Autowired
+    private DSFieldInfoDBMapper dsFieldInfoDBMapper;
+
+    @Autowired
+    private DSFieldRelDBMapper dsFieldRelDBMapper;
 
     public Map<String, Object> getDSMetaInfo(String dsName, int start, int pagesize){
         Map<String,Object> _ret = new HashMap<>();
@@ -111,7 +121,7 @@ public class MetaDataMgrApiService {
         DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
         _ex.createCriteria().andDsNameEqualTo(dsName);
         List<DSMetaInfoDB> _retSql = dsMetaInfoDBMapper.selectByExample(_ex,defaultSqlStart,defaultPageSize);
-        if(_retSql.size() > 0 )
+        if(_retSql.size() == 0 )
             ret = true;
         return ret;
     }
@@ -171,36 +181,181 @@ public class MetaDataMgrApiService {
     }
 
     public boolean saveTablesAndFields(String dsName,List<String> tables){
-        boolean _ret = false;
-        List<Map<String,String>> mapList = null;
+        boolean _ret = true;
+        List<Map<String,String>> mapList = new ArrayList<>();
+
         HiveExtractImp hiveExtractImp = getExtractObj(dsName);
         //for(tables)
+        //1.save tables in local db
         for(String tableName : tables){
-            List<FieldEntity> fieldList = hiveExtractImp.getFields(dsName, tableName);
+            String[] dbTableName = tableName.split("\\.");
+            List<FieldEntity> fieldList = hiveExtractImp.getFields(dbTableName[0], dbTableName[1]);
             for(FieldEntity fieldEntity : fieldList){
                 Map<String, String> fieldMap = new HashMap<>();
                 fieldMap.put("datasource_id",dsName);
                 fieldMap.put("table_id",tableName);
-                String name = fieldEntity.getName();
-                fieldMap.put("field_english_name",name);
+                fieldMap.put("field_english_name",fieldEntity.getName());
                 String field = fieldEntity.getType();
                 fieldMap.put("field_type",field);
                 if (field.contains("varchar")){
-                    fieldMap.put("field_length",field.substring(field.indexOf("("),field.indexOf(")")));
+                    fieldMap.put("field_length",field.substring(field.indexOf("(")+1,field.indexOf(")")));
                 }else {
                     fieldMap.put("field_length",null);
                 }
                 mapList.add(fieldMap);
             }
         }
-
-        dsMetaInfoDBMapper.insertFields(mapList);
-
-        //TODO
-        //1.save tables in local db
+        if(dsFieldInfoDBMapper.insertFields(mapList) <= 0){
+            _ret = false;
+        }
 
         //2.save fields in local db
+        List<Map<String,String>> tableList = new ArrayList<>();
+        for(String tableName : tables){
+            Map<String,String> tableMap = new HashMap<>();
+            tableMap.put("table_english_name",tableName);
+            tableMap.put("datasource_id",dsName);
+            tableList.add(tableMap);
+        }
+        if(dsTableInfoDBMapper.insertTables(tableList) <= 0){
+            _ret = false;
+        }
+
+        //3.add relation
+        int i=0;
+        String[] dbName = new String[100];
+        String[] name = new String[100];
+        for (String tableName : tables) {
+            String[] dbTableName = tableName.split("\\.");
+            dbName[i] = dbTableName[0];
+            name[i] = dbTableName[1];
+            i++;
+        }
+        String[] names = new String[100];
+        names[0] = name[0];
+        int j=1,k=1,isprimary=0;
+        for(; j < i; j++){
+            if(dbName[j].equals(dbName[j-1])){
+                names[k]=name[j];
+                k++;
+            }else{
+                names = null;
+                k=0;
+                Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbName[j],names);
+                Iterator it = set.iterator();
+                while(it.hasNext()){
+                    KeyInfo keyInfo = (KeyInfo) it.next();
+                    String foreignFieldId;
+                    isprimary=0;
+                    if(keyInfo.getKeyType() == "PK"){
+                        isprimary=1;
+                    }
+                    if(keyInfo.getIncidenceTBL() == null){
+                        foreignFieldId = null;
+                        dsFieldRelDBMapper.insertReleations(dbName[j-1] +"."+ keyInfo.getTblName(),keyInfo.getFieldName(),null,foreignFieldId,isprimary);
+                    }else{
+                        foreignFieldId = keyInfo.getFieldName();
+                        dsFieldRelDBMapper.insertReleations(dbName[j-1] +"."+ keyInfo.getTblName(),keyInfo.getFieldName(),dbName[j-1] + "." + keyInfo.getIncidenceTBL(),foreignFieldId,isprimary);
+                    }
+
+                }
+            }
+        }
+        Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbName[j-1],names);
+        Iterator it = set.iterator();
+        while(it.hasNext()){
+            KeyInfo keyInfo = (KeyInfo) it.next();
+            String foreignFieldId;
+            if(keyInfo.getIncidenceTBL() == null){
+                foreignFieldId = null;
+                dsFieldRelDBMapper.insertReleations(dbName[j-1] +"."+ keyInfo.getTblName(),keyInfo.getFieldName(),null,foreignFieldId,isprimary);
+
+            }else{
+                foreignFieldId = keyInfo.getFieldName();
+                dsFieldRelDBMapper.insertReleations(dbName[j-1] +"."+ keyInfo.getTblName(),keyInfo.getFieldName(),dbName[j-1] +"."+ keyInfo.getIncidenceTBL(),foreignFieldId,isprimary);
+
+            }
+
+        }
 
         return _ret;
+    }
+
+    public Map<String, Object> relationList(String dsName, List<String> tbList){
+
+        Map<String,Object> responseMap = new HashMap<>();
+        List<Object> tableInfo = new ArrayList<>();
+        List<Object> tableRelation = new ArrayList<>();
+        if(tbList == null){
+            tbList = new ArrayList<>();
+            //获取dsName对应得所有表
+            DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
+            dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsName);
+            List<DSTableInfoDB> tableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
+            for(DSTableInfoDB dsTableInfoDB : tableInfoDBList){
+                tbList.add(dsTableInfoDB.getTableEnglishName());
+            }
+        }
+        for(int i=0; i < tbList.size(); i++){
+            Map<String, Object> fieldMap = new HashMap<>();
+            //获取表id
+            DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
+            dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsName).andTableEnglishNameEqualTo(tbList.get(i));
+            List<DSTableInfoDB> tableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
+            fieldMap.put("id",tableInfoDBList.get(0).getId());
+            fieldMap.put("name",tbList.get(i));
+
+            //获取表列
+            DSFieldInfoDBExample dsFieldInfoDBExample = new DSFieldInfoDBExample();
+            dsFieldInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsName).andTableIdEqualTo(tbList.get(i));
+            List<DSFieldInfoDB> fieldList = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
+
+            List<Map<String,String>> resultList = new ArrayList<>();
+            for(DSFieldInfoDB list : fieldList){
+                Map<String,String> resultMap = new HashMap<>();
+                resultMap.put("field",list.getFieldEnglishName());
+                resultMap.put("name",list.getFieldEnglishName());
+                resultList.add(resultMap);
+            }
+            fieldMap.put("fields",resultList);
+            tableInfo.add(fieldMap);
+
+            //获取表列关联关系
+            for(int j=i+1; j<tbList.size(); j++){
+                DSFieldRelDBExample dsFieldRelDBExample = new DSFieldRelDBExample();
+                String fieldId = tbList.get(i).split("\\.")[1];
+                String foreignId = tbList.get(j).split("\\.")[1];
+                dsFieldRelDBExample.createCriteria().andTableIdEqualTo(tbList.get(i)).andForeignTableIdEqualTo(tbList.get(j));
+                List<DSFieldRelDB> relationList = dsFieldRelDBMapper.selectByExample(dsFieldRelDBExample);
+                for(DSFieldRelDB dsFieldRelDB : relationList){
+                    Map<String,String> relationResultMap = new HashMap<>();
+                    relationResultMap.put("from", dsFieldRelDB.getTableId());
+                    relationResultMap.put("to", dsFieldRelDB.getForeignTableId());
+                    relationResultMap.put("relation_id", dsFieldRelDB.getRelationId().toString());
+                    relationResultMap.put("relation", dsFieldRelDB.getRelation());
+                    relationResultMap.put("from_field", dsFieldRelDB.getFieldId());
+                    relationResultMap.put("to_field", dsFieldRelDB.getForeignFieldId());
+                    tableRelation.add(relationResultMap);
+                }
+            }
+        }
+        responseMap.put("table_info", tableInfo);
+        responseMap.put("table_relation",tableRelation);
+        return responseMap;
+    }
+
+    public int relationSave(JSONObject jsonParam){
+        Map<String, Object> map = new HashMap<>();
+        DSFieldRelDB dsFieldRelDB = new DSFieldRelDB();
+        dsFieldRelDB.setTableId(jsonParam.getString("from"));
+        dsFieldRelDB.setFieldId(jsonParam.getString("from_field"));
+        dsFieldRelDB.setForeignTableId(jsonParam.getString("to"));
+        dsFieldRelDB.setForeignFieldId(jsonParam.getString("to_field"));
+        dsFieldRelDB.setRelation(jsonParam.getString("relation"));
+        return dsFieldRelDBMapper.insert(dsFieldRelDB);
+    }
+
+    public int relationDel(String relation_id){
+        return dsFieldRelDBMapper.deleteByPrimaryKey(Integer.parseInt(relation_id));
     }
 }

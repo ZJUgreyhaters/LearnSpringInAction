@@ -32,7 +32,7 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
         // 返回处理结果
         Map<String,Object> result = new HashMap<String,Object>();
         // 获取总条数
-        result.put("Total",pageInfo.getTotal());
+        result.put("total",pageInfo.getTotal());
 
         List<Object> pageList = pageInfo.getList();
         List<Object> resultList = new ArrayList<>();
@@ -86,11 +86,31 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
                     conditionMap.put("name",desc[0]);
                     conditionMap.put("value",desc[1]);
                 }
+
+                List<String> listValue1 = new ArrayList<>();
+//                if(conditionMap.get("type").equals("value")){
+//                    listValue1.add("杭州");
+//                }
+//                if(conditionMap.get("type").equals("area")){
+//                    listValue1.add("男");
+//                    listValue1.add("女");
+//                }
+//                if(conditionMap.get("type").equals("select")) {
+//                    listValue1.add("个人客户");
+//                    listValue1.add("机构客户");
+//                    listValue1.add("私募");
+//                }
+                listValue1.add("个人客户");
+                listValue1.add("机构客户");
+                listValue1.add("私募");
+
+
+                conditionMap.put("values",listValue1);
                 list.add(conditionMap);
             }
-            map.put("code","200");
+            map.put("code",200);
             map.put("msg","查询成功");
-            map.put("CustomerGroupCriteriaDef",list);
+            map.put("customer_group_criteria_def",list);
             return map;
 
         } catch (Exception e){
@@ -106,7 +126,11 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
     public Map<String, Object> deleteCustomerGroup(String customerConditionId) {
         Map<String, Object> result = new HashMap<String, Object>();
         try{
-            conditionGroupMapper.deleteCustomerGroup(customerConditionId);
+            if(conditionGroupMapper.deleteCustomerGroup(customerConditionId) <=0){
+                result.put("code",500);
+                result.put("msg","当前id已经被删除");
+                return result;
+            }
             result.put("code",200);
             result.put("msg","删除成功");
             return result;
