@@ -11,6 +11,6 @@ public interface TermInfoMapper {
 
   List<Map<String,Object>> selectTermAll(TermInfoPojo termInfoPojo);
 
-  List<Map<String,Object>> selectUdc(TermInfoPojo termInfoPojo);
+  List<Map<String,Object>> selectUdc(String logicType);
 
 }
