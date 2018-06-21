@@ -1,21 +1,34 @@
 package com.quantchi.customer.controller;
 
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.fastjson.JSONObject;
 import com.quantchi.customer.pojo.ConditionGroup;
 import com.quantchi.customer.service.ConditionGroupService;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.noggit.JSONUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("api")
 public class ConditionGroupController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ConditionGroupController.class);
 
     @Autowired
     private ConditionGroupService conditionGroupService;
@@ -102,58 +115,44 @@ public class ConditionGroupController {
         Map<String,Object> responseMap = new HashMap<>();
         List<Map<String,Object>> list = new ArrayList<>();
 
-        Map<String,Object> conditionMap = new HashMap<>();
-        conditionMap.put("id",1);
-        conditionMap.put("type","value");
-        conditionMap.put("name","营业部地址");
-        List<String> listValue = new ArrayList<>();
-        listValue.add("杭州");
-        conditionMap.put("value",listValue);
-        list.add(conditionMap);
+        try{
+            HttpPost httpPost = new HttpPost("http://localhost:8081/termInfo");
+            CloseableHttpClient client = HttpClients.createDefault();
 
-//        Map<String,Object> conditionMap2 = new HashMap<>();
-//        conditionMap2.put("id",2);
-//        conditionMap2.put("type","select");
-//        conditionMap2.put("name","客户性别");
-//        List<String> listValue2 = new ArrayList<>();
-//        listValue2.add("男");
-//        listValue2.add("女");
-//        conditionMap2.put("value",listValue2);
-//        list.add(conditionMap2);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("keyword","111");
+            StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
+            entity.setContentType("UTF-8");
+            entity.setContentType("application/json");
 
-        Map<String,Object> conditionMap3 = new HashMap<>();
-        conditionMap3.put("id",3);
-        conditionMap3.put("type","select");
-        conditionMap3.put("name","客户类别");
-        List<String> listValue3 = new ArrayList<>();
-        listValue3.add("个人客户");
-        listValue3.add("机构客户");
-        listValue3.add("私募");
-        conditionMap3.put("value",listValue3);
-        list.add(conditionMap3);
+            httpPost.setEntity(entity);
+            HttpResponse resp = client.execute(httpPost);
+            String respContent = null;
+            if(resp.getStatusLine().getStatusCode() == 200) {
+                HttpEntity he = resp.getEntity();
+                respContent = EntityUtils.toString(he,"UTF-8");
+                JSONObject responseJson = new JSONObject();
+                JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
+//                List<Map<String,Object>> mapList = (List<Map<String,Object>>)resultJson.get("entitys");
+                JSONObject entityJson = (JSONObject)resultJson.get("entitys");
 
-        Map<String,Object> conditionMap4 = new HashMap<>();
-        conditionMap4.put("id",4);
-        conditionMap4.put("type","area");
-        conditionMap4.put("name","维保比例");
-        List<String> listValue4 = new ArrayList<>();
-        listValue4.add("0");
-        listValue4.add("无穷大");
-        conditionMap4.put("value",listValue4);
-        list.add(conditionMap4);
+                Iterator iterator = (Iterator) entityJson.entrySet();
+                while (iterator.hasNext()){
+                }
 
-//        Map<String,Object> conditionMap5 = new HashMap<>();
-//        conditionMap5.put("id",5);
-//        conditionMap5.put("type","area");
-//        conditionMap5.put("name","年日均总资产");
-//        List<String> listValue5 = new ArrayList<>();
-//        listValue5.add("0");
-//        listValue5.add("无穷大");
-//        conditionMap5.put("value",listValue5);
-//        list.add(conditionMap5);
+//                responseMap.put("data",jsonObject1);
+            }
+            responseMap.put("code",200);
+            responseMap.put("msg","成功");
+            return responseMap;
 
-        responseMap.put("code",200);
-        responseMap.put("data",list);
-        return responseMap;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            responseMap.put("code",500);
+            responseMap.put("msg",e.getMessage());
+            return responseMap;
+        }
+
+
     }
 }

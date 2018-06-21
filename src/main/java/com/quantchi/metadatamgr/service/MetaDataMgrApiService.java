@@ -342,7 +342,7 @@ public class MetaDataMgrApiService {
             tableInfo.add(fieldMap);
 
             //获取表列关联关系
-            for(int j=i+1; j<tbList.size(); j++){
+            for(int j=0; j<tbList.size(); j++){
                 DSTableInfoDBExample ds = new DSTableInfoDBExample();
                 ds.createCriteria().andDatasourceIdEqualTo(dsName).andTableEnglishNameEqualTo(tbList.get(j));
                 List<DSTableInfoDB> foreignTableInfoDBList = dsTableInfoDBMapper.selectByExample(ds);
