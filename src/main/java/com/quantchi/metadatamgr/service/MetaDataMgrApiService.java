@@ -126,7 +126,7 @@ public class MetaDataMgrApiService {
         return ret;
     }
 
-    public Map<String, Object> extractTables(String dsName){
+    public Map<String, Object> extractTables(String dsName) throws Exception{
         Map<String,Object> _ret = new HashMap<>();
         List<Map<String,Object>> _dbs_info = new ArrayList<>();
 
@@ -180,7 +180,7 @@ public class MetaDataMgrApiService {
         return _extract;
     }
 
-    public boolean saveTablesAndFields(String dsName,List<String> tables){
+    public boolean saveTablesAndFields(String dsName,List<String> tables) throws Exception{
         boolean _ret = true;
         List<Map<String,Object>> mapList = new ArrayList<>();
 
