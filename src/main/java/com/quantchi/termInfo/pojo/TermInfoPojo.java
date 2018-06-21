@@ -45,6 +45,16 @@ public class TermInfoPojo {
 
   private String displayType;
 
+  private Integer nums;
+
+  public Integer getNums() {
+    return nums;
+  }
+
+  public void setNums(Integer nums) {
+    this.nums = nums;
+  }
+
   /****************
    *set和get方法
    ****************/
