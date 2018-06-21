@@ -1,10 +1,18 @@
 package com.quantchi.customer.serviceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.quantchi.customer.mapper.ConditionGroupMapper;
 import com.quantchi.customer.pojo.ConditionGroup;
 import com.quantchi.customer.service.ConditionGroupService;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,25 +95,43 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
                     conditionMap.put("value",desc[1]);
                 }
 
-                List<String> listValue1 = new ArrayList<>();
-//                if(conditionMap.get("type").equals("value")){
-//                    listValue1.add("杭州");
-//                }
-//                if(conditionMap.get("type").equals("area")){
-//                    listValue1.add("男");
-//                    listValue1.add("女");
-//                }
-//                if(conditionMap.get("type").equals("select")) {
-//                    listValue1.add("个人客户");
-//                    listValue1.add("机构客户");
-//                    listValue1.add("私募");
-//                }
-                listValue1.add("个人客户");
-                listValue1.add("机构客户");
-                listValue1.add("私募");
+                //获取下拉数据封装到values
+                List<Object> listValues = new ArrayList<>();
+                HttpPost httpPost = new HttpPost("http://localhost:8081/term");
+                CloseableHttpClient client = HttpClients.createDefault();
 
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("entityId",conditionMap.get("id"));
+                StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
+                entity.setContentType("UTF-8");
+                entity.setContentType("application/json");
 
-                conditionMap.put("values",listValue1);
+                httpPost.setEntity(entity);
+                HttpResponse resp = client.execute(httpPost);
+                String respContent = null;
+                if(resp.getStatusLine().getStatusCode() == 200) {
+                    HttpEntity he = resp.getEntity();
+                    respContent = EntityUtils.toString(he,"UTF-8");
+                    JSONObject responseJson = new JSONObject();
+                    JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
+                    JSONObject jsondata = (JSONObject)resultJson.get("data");
+
+                    List<Map<String,Object>> mapList = (List<Map<String,Object>>)jsondata.get("entitys");
+                    for(Map<String,Object> entityMap : mapList){
+                        Map<String,Object> responseEntityMap = new HashMap<>();
+                        Map<String, Object> selectMap = (Map<String, Object>)entityMap.get("physicalField");
+
+                        List<Map<String,Object>> selectList = (List<Map<String,Object>>)selectMap.get("dataUDC");
+                        List<Object> responseEntityList = new ArrayList<>();
+                        for(Map<String,Object> selectEntityMap : selectList){
+                            responseEntityList.add(selectEntityMap.get("dataUDCDesc"));
+                        }
+                        responseEntityMap.put("selectValue",responseEntityList);
+                        listValues.add(responseEntityMap);
+                    }
+                }
+
+                conditionMap.put("values",listValues);
                 list.add(conditionMap);
             }
             map.put("code",200);

@@ -1,6 +1,7 @@
 package com.quantchi.metadatamgr.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.quantchi.metadatamgr.data.entity.DSEntityInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSEntityInfoDBExample;
@@ -46,13 +47,21 @@ public class MetaDataMgrEntityApiService {
     public Map<String, Object> searchEntity(JSONObject json){
         Map<String,Object> responseMap = new HashMap<>();
         DSEntityInfoDBExample dsEntityInfoDBExample = new DSEntityInfoDBExample();
-        dsEntityInfoDBExample.createCriteria().andDatasourceIdEqualTo(json.getString("data_source_name"))
-                .andBusinessEqualTo(json.getString("business"))
-                .andEntityNameEqualTo(json.getString("keywords"));
+        DSEntityInfoDBExample.Criteria _cr = dsEntityInfoDBExample.createCriteria();
+        _cr.andDatasourceIdEqualTo(json.getString("data_source_name"))
+                .andBusinessEqualTo(json.getString("business"));
+        if(json.getString("keywords") != null){
+            _cr.andEntityNameLike("%"+json.getString("keywords")+"%");
+        }
+        int page = Integer.parseInt(json.getString("page"));
+        int page_size = Integer.parseInt(json.getString("page_size"));
+        PageHelper.startPage(page, page_size);
         List<DSEntityInfoDB> list = dsEntityInfoDBMapper.selectByExample(dsEntityInfoDBExample);
+
         PageInfo<DSEntityInfoDB> pageInfo = new PageInfo<>(list);
         List<Map<String,Object>> responseList = new ArrayList<>();
-        for(DSEntityInfoDB dsEntityInfoDB : list){
+        List<DSEntityInfoDB> dsList = pageInfo.getList();
+        for(DSEntityInfoDB dsEntityInfoDB : dsList){
             Map<String,Object> map = new HashMap<>();
             map.put("id",dsEntityInfoDB.getId());
             map.put("entity_name",dsEntityInfoDB.getEntityName());

@@ -85,9 +85,6 @@ public class MetaDataMgrEntityApiController {
             if(json.getString("business") == null){
                 throw new Exception("miss business");
             }
-            if(json.getString("keywords") == null){
-                throw new Exception("miss keywords");
-            }
             responseMap = metaDataMgrEntityApiService.searchEntity(json);
             responseMap.put("code",200);
             responseMap.put("msg","成功");

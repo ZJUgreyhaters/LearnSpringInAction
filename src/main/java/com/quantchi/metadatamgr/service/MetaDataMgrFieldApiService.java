@@ -1,11 +1,9 @@
 package com.quantchi.metadatamgr.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.quantchi.metadatamgr.data.entity.DSFieldInfoDB;
-import com.quantchi.metadatamgr.data.entity.DSFieldInfoDBExample;
-import com.quantchi.metadatamgr.data.entity.DSTableInfoDB;
-import com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample;
+import com.quantchi.metadatamgr.data.entity.*;
 import com.quantchi.metadatamgr.data.mapper.DSFieldInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
 import org.slf4j.Logger;
@@ -30,20 +28,28 @@ public class MetaDataMgrFieldApiService {
     private DSTableInfoDBMapper dsTableInfoDBMapper;
 
     public Map<String, Object> search(JSONObject jsonParam){
+
         DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
         dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(jsonParam.getString("table_name")).andDatasourceIdEqualTo(jsonParam.getString("data_source_name"));
         List<DSTableInfoDB> tableList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
 
+        int page = Integer.parseInt(jsonParam.getString("page"));
+        int page_size = Integer.parseInt(jsonParam.getString("page_size"));
+        PageHelper.startPage(page, page_size);
         DSFieldInfoDBExample dsFieldInfoDBExample = new DSFieldInfoDBExample();
-        dsFieldInfoDBExample.createCriteria().andDatasourceIdEqualTo(jsonParam.getString("data_source_name"))
-                .andTableIdEqualTo(tableList.get(0).getId().toString())
-                .andFieldEnglishNameEqualTo(jsonParam.getString("keywords"));
+        DSFieldInfoDBExample.Criteria _cr = dsFieldInfoDBExample.createCriteria();
+        _cr.andDatasourceIdEqualTo(jsonParam.getString("data_source_name"))
+                .andTableIdEqualTo(tableList.get(0).getId().toString());
+        if(jsonParam.get("keywords") != null){
+            _cr.andFieldEnglishNameLike(jsonParam.getString("keywords"));
+        }
+
         List<DSFieldInfoDB> list = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
         PageInfo<DSFieldInfoDB> pageInfo = new PageInfo<>(list);
         Map<String, Object> map = new HashMap<>();
         map.put("total",pageInfo.getTotal());
         List<Map<String,Object>> mapList = new ArrayList<>();
-        for(DSFieldInfoDB dsFieldInfoDB : list){
+        for(DSFieldInfoDB dsFieldInfoDB : pageInfo.getList()){
             Map<String,Object> fieldMap = new HashMap<>();
             fieldMap.put("field_english_name",dsFieldInfoDB.getFieldEnglishName());
             fieldMap.put("field_chinese_name",dsFieldInfoDB.getFieldChineseName());

@@ -188,10 +188,19 @@ public class MetaDataMgrApiService {
         //for(tables)
         //1.save tables in local db
         List<Map<String,String>> tableList = new ArrayList<>();
+        String oldTable="";
         for(String tableName : tables){
+            DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
+            dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableName).andDatasourceIdEqualTo(dsName);
+            List<DSTableInfoDB> dsTableInfoDBSList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
+            if(dsTableInfoDBSList.size()>0) {
+                oldTable += tableName;
+                continue;
+            }
             Map<String,String> tableMap = new HashMap<>();
             tableMap.put("table_english_name",tableName);
             tableMap.put("datasource_id",dsName);
+
             tableList.add(tableMap);
         }
         if(dsTableInfoDBMapper.insertTables(tableList) <= 0){
@@ -199,14 +208,14 @@ public class MetaDataMgrApiService {
         }
 
         //2.save fields in local db
-        for(String tableName : tables){
-            String[] dbTableName = tableName.split("\\.");
+        for(Map<String,String> tableMap : tableList){
+            String[] dbTableName = tableMap.get("table_english_name").split("\\.");
             List<FieldEntity> fieldList = hiveExtractImp.getFields(dbTableName[0], dbTableName[1]);
             for(FieldEntity fieldEntity : fieldList){
                 Map<String, Object> fieldMap = new HashMap<>();
                 fieldMap.put("datasource_id",dsName);
                 DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-                dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableName);
+                dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableMap.get("table_english_name"));
                 List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
                 fieldMap.put("table_id",list.get(0).getId());
                 fieldMap.put("field_english_name",fieldEntity.getName());
@@ -244,7 +253,7 @@ public class MetaDataMgrApiService {
             }else{
                 names = null;
                 k=0;
-                Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbName[j],names);
+                Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbName[j-1],names);
                 Iterator it = set.iterator();
                 while(it.hasNext()){
                     KeyInfo keyInfo = (KeyInfo) it.next();
@@ -260,14 +269,20 @@ public class MetaDataMgrApiService {
 
                     if(keyInfo.getIncidenceTBL() == null){
                         foreignFieldId = null;
-                        dsFieldRelDBMapper.insertReleations(list.get(0).getId().toString(),keyInfo.getFieldName(),null,foreignFieldId,isprimary);
+                        if(!oldTable.contains(list.get(0).getId().toString())){
+                            dsFieldRelDBMapper.insertReleations(list.get(0).getId().toString(),keyInfo.getFieldName(),null,foreignFieldId,isprimary);
+
+                        }
                     }else{
                         foreignFieldId = keyInfo.getFieldName();
                         String foreigntb = dbName[j-1] + "." + keyInfo.getIncidenceTBL();
                         DSTableInfoDBExample ds = new DSTableInfoDBExample();
                         ds.createCriteria().andTableEnglishNameEqualTo(foreigntb);
                         List<DSTableInfoDB> foreignList = dsTableInfoDBMapper.selectByExample(ds);
-                        dsFieldRelDBMapper.insertReleations(list.get(0).getId().toString(),keyInfo.getFieldName(),foreignList.get(0).getId().toString(),foreignFieldId,isprimary);
+                        if(!oldTable.contains(list.get(0).getId().toString())){
+                            dsFieldRelDBMapper.insertReleations(list.get(0).getId().toString(),keyInfo.getFieldName(),foreignList.get(0).getId().toString(),foreignFieldId,isprimary);
+
+                        }
                     }
 
                 }
@@ -287,14 +302,19 @@ public class MetaDataMgrApiService {
             List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
             if(keyInfo.getIncidenceTBL() == null){
                 foreignFieldId = null;
-                dsFieldRelDBMapper.insertReleations(list.get(0).getId().toString(),keyInfo.getFieldName(),null,foreignFieldId,isprimary);
+                if(!oldTable.contains(list.get(0).getId().toString())){
+                    dsFieldRelDBMapper.insertReleations(list.get(0).getId().toString(),keyInfo.getFieldName(),null,foreignFieldId,isprimary);
+
+                }
             }else{
                 foreignFieldId = keyInfo.getFieldName();
                 String foreigntb = dbName[j-1] + "." + keyInfo.getIncidenceTBL();
                 DSTableInfoDBExample ds = new DSTableInfoDBExample();
                 ds.createCriteria().andTableEnglishNameEqualTo(foreigntb);
                 List<DSTableInfoDB> foreignList = dsTableInfoDBMapper.selectByExample(ds);
-                dsFieldRelDBMapper.insertReleations(list.get(0).getId().toString(),keyInfo.getFieldName(),foreignList.get(0).getId().toString(),foreignFieldId,isprimary);
+                if(!oldTable.contains(list.get(0).getId().toString())){
+                    dsFieldRelDBMapper.insertReleations(list.get(0).getId().toString(),keyInfo.getFieldName(),foreignList.get(0).getId().toString(),foreignFieldId,isprimary);
+                }
             }
 
         }

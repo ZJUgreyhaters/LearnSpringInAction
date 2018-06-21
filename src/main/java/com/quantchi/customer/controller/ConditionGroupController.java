@@ -120,7 +120,8 @@ public class ConditionGroupController {
             CloseableHttpClient client = HttpClients.createDefault();
 
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("keyword","111");
+            jsonObject.put("entityDesc",map.get("keyword"));
+            jsonObject.put("nums",map.get("nums"));
             StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
             entity.setContentType("UTF-8");
             entity.setContentType("application/json");
@@ -134,16 +135,31 @@ public class ConditionGroupController {
                 JSONObject responseJson = new JSONObject();
                 JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
 //                List<Map<String,Object>> mapList = (List<Map<String,Object>>)resultJson.get("entitys");
-                JSONObject entityJson = (JSONObject)resultJson.get("entitys");
+//                JSONObject entityJson = (JSONObject)resultJson.get("entitys");
+                JSONObject jsondata = (JSONObject)resultJson.get("data");
 
-                Iterator iterator = (Iterator) entityJson.entrySet();
-                while (iterator.hasNext()){
+                List<Map<String,Object>> mapList = (List<Map<String,Object>>)jsondata.get("entitys");
+                for(Map<String,Object> entityMap : mapList){
+                    Map<String,Object> responseEntityMap = new HashMap<>();
+                    Map<String, Object> selectMap = (Map<String, Object>)entityMap.get("physicalField");
+                    responseEntityMap.put("id", selectMap.get("entityId"));
+                    responseEntityMap.put("type",entityMap.get("displayType"));
+                    responseEntityMap.put("name",selectMap.get("physicalFieldDesc"));
+
+                    List<Map<String,Object>> selectList = (List<Map<String,Object>>)selectMap.get("dataUDC");
+                    List<Object> responseEntityList = new ArrayList<>();
+                    for(Map<String,Object> selectEntityMap : selectList){
+                        responseEntityList.add(selectEntityMap.get("dataUDCDesc"));
+                    }
+                    responseEntityMap.put("selectValue",responseEntityList);
+                    list.add(responseEntityMap);
                 }
 
 //                responseMap.put("data",jsonObject1);
             }
             responseMap.put("code",200);
             responseMap.put("msg","成功");
+            responseMap.put("data",list);
             return responseMap;
 
         }catch (Exception e){
