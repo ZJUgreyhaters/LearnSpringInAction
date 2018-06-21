@@ -20,6 +20,8 @@ public interface DSMetaInfoDBMapper {
 
     List<DSMetaInfoDB> selectByExample(@Param("example")DSMetaInfoDBExample example,@Param("start") Integer start, @Param("pagesize") Integer pagesize);
 
+    List<DSMetaInfoDB> selectAllByExample(@Param("example")DSMetaInfoDBExample example);
+
     DSMetaInfoDB selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") DSMetaInfoDB record, @Param("example") DSMetaInfoDBExample example);

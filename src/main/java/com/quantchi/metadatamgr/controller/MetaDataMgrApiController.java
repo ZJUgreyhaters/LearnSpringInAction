@@ -35,9 +35,9 @@ public class MetaDataMgrApiController {
             String dsName = "";
             if(json.get("data_source_name") != null)
                 dsName = json.get("data_source_name").toString();
-            int start = Integer.parseInt(json.get("page").toString());
-            int pagesize = Integer.parseInt(json.get("page_size").toString());
-            Map<String, Object> _ret = metaDataMgrApiService.getDSMetaInfo(dsName,start,pagesize);
+            //int start = Integer.parseInt(json.get("page").toString());
+            //int pagesize = Integer.parseInt(json.get("page_size").toString());
+            Map<String, Object> _ret = metaDataMgrApiService.getDSMetaInfo(dsName,json.getString("page"),json.getString("page_size"));
             return util.genRet(200,_ret.get("data"),"ok",Integer.parseInt(_ret.get("total").toString()));
         }catch (Exception e){
             logger.error("list func err:",e.getMessage());
@@ -66,6 +66,18 @@ public class MetaDataMgrApiController {
                 String username = json.get("data_source_username").toString();
                 String pswd = json.get("data_source_passwd").toString();
                 boolean _ret = metaDataMgrApiService.connectTest(host,port,username,pswd);
+                if(json.getString("data_source_type").equals("hive")){
+                    if(json.get("data_source_mysql_url") == null
+                            || json.get("data_source_mysql_usr") == null
+                            || json.get("data_source_mysql_pswd") == null)
+                        throw new Exception("miss data source meta connection info");
+                    String url = json.getString("data_source_mysql_url");
+                    String mysql_user = json.getString("data_source_port");
+                    String mysql_pswd = json.getString("data_source_mysql_pswd");
+                    boolean _retMeta =  metaDataMgrApiService.connectMysqlTest(url,mysql_user,mysql_pswd);
+                    if(!_retMeta)
+                        return util.genRet(201,_ret,"meta 数据库连接失败",0);
+                }
                 if(_ret)
                     return util.genRet(200,_ret,"连接成功",0);
                 else
@@ -173,8 +185,9 @@ public class MetaDataMgrApiController {
                 throw new Exception("miss data source connection info");
 
             String dsName = json.getString("data_source_name");
-            Map<String, Object>  _ret = metaDataMgrApiService.extractTables(dsName);
-            return util.genRet(200,_ret.get("data"),"成功",0);
+            String keyword = json.getString("keyword");
+            Map<String, Object>  _ret = metaDataMgrApiService.extractTables(dsName,keyword);
+            return util.genRet(200,_ret.get("data"),"成功",Integer.parseInt(_ret.get("total").toString()));
         }catch (Exception e){
             logger.error("extractTables func err:",e.getMessage());
             return util.genRet(500,null,e.getMessage(),0);
