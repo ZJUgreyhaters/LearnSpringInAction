@@ -44,6 +44,24 @@ public class HiveExtractImp {
     }
 
 
+    public static boolean connectionMysqlTest(String url,String username,String password){
+
+        Connection conn = null;
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(url, username, password);
+            if(!conn.isClosed()){
+                conn.close();
+                return true;
+            }
+        }catch (Exception e){
+            return false;
+        }
+
+        return false;
+    }
+
     //返回一个mysql连接
     private Connection getMysqlConnection() throws Exception{
 
@@ -87,12 +105,15 @@ public class HiveExtractImp {
     }
 
     //    根据库名返回库所有的表
-    public List<String> getTables(String database) throws Exception{
+    public List<String> getTables(String database,String keyword) throws Exception{
         List<String> tblList = new ArrayList<>();
 
         Connection conn = getMysqlConnection();
 
         String sql = "SELECT a.TBL_NAME FROM TBLS a, DBS b WHERE a.DB_ID = b.DB_ID AND b.`NAME` = '" + database + "'";
+        if(keyword != null)
+            sql = "SELECT a.TBL_NAME FROM TBLS a, DBS b WHERE a.DB_ID = b.DB_ID AND b.`NAME` = '" + database + "' AND a.TBL_NAME like '%"+keyword+"%'";
+
 
         try{
             PreparedStatement statement = conn.prepareStatement(sql);
