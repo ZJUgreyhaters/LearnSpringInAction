@@ -9,4 +9,6 @@ public interface TermInfoService {
 
   String selectTermAll(TermInfoPojo termInfoPojo);
 
+  String selectTerm(TermInfoPojo termInfoPojo);
+
 }

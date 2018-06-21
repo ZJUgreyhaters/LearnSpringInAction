@@ -21,12 +21,17 @@ public class TermInfoController {
 
   //查询
   @ResponseBody
-  @RequestMapping(value = "/select", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+  @RequestMapping(value = "/termInfo", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
   public String selectTermAll(@RequestBody TermInfoPojo termInfoPojo) {
     return service.selectTermAll(termInfoPojo);
   }
 
-
+  //查询
+  @ResponseBody
+  @RequestMapping(value = "/term", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+  public String selectTerm(@RequestBody TermInfoPojo termInfoPojo) {
+    return service.selectTerm(termInfoPojo);
+  }
 
 
 }
