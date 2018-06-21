@@ -45,7 +45,7 @@ public class HiveExtractImp {
 
 
     //返回一个mysql连接
-    private Connection getMysqlConnection(){
+    private Connection getMysqlConnection() throws Exception{
 
         HiveMetaInfo hiveMetaInfo = dsMetaInfo.getHiveMetaInfo();
         String url = hiveMetaInfo.getMysqlUrl();
@@ -58,14 +58,15 @@ public class HiveExtractImp {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(url, username, password);
         }catch (Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            throw new Exception(e.getMessage());
         }
 
         return conn;
 
     }
     //返回所有的库
-    public List<String> getDatabases(){
+    public List<String> getDatabases() throws Exception{
         List<String> dbList = new ArrayList<>();
 
         Connection conn = getMysqlConnection();
@@ -86,7 +87,7 @@ public class HiveExtractImp {
     }
 
     //    根据库名返回库所有的表
-    public List<String> getTables(String database){
+    public List<String> getTables(String database) throws Exception{
         List<String> tblList = new ArrayList<>();
 
         Connection conn = getMysqlConnection();
@@ -108,7 +109,7 @@ public class HiveExtractImp {
     }
 
     //    根据库名和表名返回字段信息
-    public List<FieldEntity> getFields(String database, String table){
+    public List<FieldEntity> getFields(String database, String table) throws Exception{
         List<FieldEntity> fieldBeanList = new ArrayList<>();
 
         Connection conn = getMysqlConnection();
@@ -133,7 +134,7 @@ public class HiveExtractImp {
     }
 
     //根据库名，表名获取相应表的字段主外键信息
-    public Set<KeyInfo> getKeyInfo(String database,String[] tables){
+    public Set<KeyInfo> getKeyInfo(String database,String[] tables) throws Exception{
         Set<KeyInfo> keyInfoList = new HashSet<>();
 
         int bound = 5;

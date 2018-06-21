@@ -1,6 +1,7 @@
 package com.quantchi.termInfo.serviceImpl;
 
 import com.quantchi.common.JsonResult;
+import com.quantchi.common.Paging;
 import com.quantchi.termInfo.mapper.TermInfoMapper;
 import com.quantchi.termInfo.pojo.TermInfoPojo;
 import com.quantchi.termInfo.service.TermInfoService;
@@ -51,6 +52,7 @@ public class TermInfoServiceImpl implements TermInfoService {
   public String selectTermAll(TermInfoPojo termInfoPojo) {
     try {
       List<Map<String, Object>> list = mapper.selectTermAll(termInfoPojo);
+      List<Map<String, Object>> list1 = mapper.selectUdc();
       List<Map<String, Object>> ResultList = new ArrayList<>();
       for (Map<String, Object> map : list) {
         Map<String, Object> map1 = new LinkedHashMap<>();
@@ -61,11 +63,20 @@ public class TermInfoServiceImpl implements TermInfoService {
         for (String str : physicalField) {
           physical.put(str, map.get(str));
         }
-        List<Map<String, Object>> list1 = mapper.selectUdc(map.get("logicType").toString());
-        physical.put("dataUDC", list1);
+        List<Map<String, Object>> udc = new ArrayList<>();
+        for(Map<String,Object> map2:list1){
+          if(map.get("entityId").equals(map2.get("entityId"))){
+            udc.add(map2);
+          }
+        }
+        physical.put("dataUDC",udc);
         map1.put("physicalField", physical);
         ResultList.add(map1);
       }
+      if (termInfoPojo.getNums() != null) {
+        ResultList = Paging.pagingPlug(ResultList, termInfoPojo.getNums(), 0);
+      }
+
       Map<String, Object> result = new HashedMap();
       result.put("entitys", ResultList);
       return JsonResult.successJson(result);
@@ -87,29 +98,28 @@ public class TermInfoServiceImpl implements TermInfoService {
         Map<String, Object> physicalTables = new LinkedHashMap<>();
         Map<String, Object> externalInfos = new LinkedHashMap<>();
         for (String str : entity) {
-          entitys.put(str,map.get(str));
+          entitys.put(str, map.get(str));
         }
         for (String str : physicalField) {
-          map1.put(str,map.get(str));
+          map1.put(str, map.get(str));
         }
         List<Map<String, Object>> list1 = mapper
-            .selectTermUdbc(map.get("logicType").toString(), map.get("entityId").toString());
-        map1.put("dataUDC",list1);
+            .selectTermUdbc(map.get("entityId").toString());
+        map1.put("dataUDC", list1);
         entitys.put("physicalField", map1);
         for (String str : physicalFieldStatistics) {
-          physicalFieldStatistic.put(str,map.get(str));
+          physicalFieldStatistic.put(str, map.get(str));
         }
         entitys.put("physicalFieldStatistics", physicalFieldStatistic);
         for (String str : physicalTable) {
-          physicalTables.put(str,map.get(str));
+          physicalTables.put(str, map.get(str));
         }
         List<Map<String, Object>> list2 = mapper
-            .selectTermPhysical(map.get("fieldPartition").toString(),
-                map.get("physicalTable").toString());
-        physicalTables.put("partitionInfo",list2);
+            .selectTermPhysical(map.get("physicalTable").toString());
+        physicalTables.put("partitionInfo", list2);
         entitys.put("physicalTable", physicalTables);
         for (String str : externalInfo) {
-          externalInfos.put(str,map.get(str));
+          externalInfos.put(str, map.get(str));
         }
         entitys.put("externalInfo", externalInfos);
         ResultList.add(entitys);

@@ -62,7 +62,7 @@
      from md_term_main_info a
     left join md_physical_field_info b on a.entity_id = b.entity_id
     left join sys_udc c on b.udc_rule_name = c.udc_rule_name and b.udc_code = c.udc_code
-    where logic_type = #{logicType}
+    where logic_type = '代码'
   </select>
 
   <select id="selectTerm" resultType="java.util.Map">
@@ -123,7 +123,7 @@
   LEFT JOIN md_term_external_info d ON a.entity_id = d.entity_id
   <where>
     <if test="entityId!=null and entityId.toString().length()>0">
-      entity_id = #{entityId}
+      a.entity_id = #{entityId}
     </if>
   </where>
   </select>
@@ -140,7 +140,7 @@
   FROM md_term_main_info a
   LEFT JOIN md_physical_field_info b ON a.entity_id = b.entity_id
   LEFT JOIN sys_udc c ON b.udc_rule_name = c.udc_rule_name AND b.udc_code = c.udc_code
-  WHERE logic_type = #{logicType} AND a.entity_id = #{entityId}
+  WHERE logic_type = '代码' AND a.entity_id = #{entityId}
   </select>
 
   <select id="selectTermPhysical" resultType="java.util.Map">
@@ -152,7 +152,7 @@
     b.data_pattern AS partFieldPattern
   FROM md_physical_table_info a
   LEFT JOIN md_physical_field_info b ON a.physical_table = b.physical_table
-  WHERE b.partition_flag =#{fieldPartition}  AND a.physical_table = #{physicalTable}
+  WHERE b.partition_flag = '1' AND a.physical_table = #{physicalTable}
   </select>
 
 

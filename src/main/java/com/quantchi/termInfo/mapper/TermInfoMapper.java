@@ -12,13 +12,11 @@ public interface TermInfoMapper {
 
   List<Map<String,Object>> selectTermAll(TermInfoPojo termInfoPojo);
 
-  List<Map<String,Object>> selectUdc(String logicType);
+  List<Map<String,Object>> selectUdc();
 
   List<Map<String,Object>> selectTerm(TermInfoPojo termInfoPojo);
 
-  List<Map<String,Object>> selectTermUdbc(@Param("logicType") String str,
-      @Param("entityId") String str1);
+  List<Map<String,Object>> selectTermUdbc(@Param("entityId") String str1);
 
-  List<Map<String,Object>> selectTermPhysical(@Param("fieldPartition") String str,
-      @Param("physicalTable") String str1);
+  List<Map<String,Object>> selectTermPhysical(@Param("physicalTable") String str1);
 }
