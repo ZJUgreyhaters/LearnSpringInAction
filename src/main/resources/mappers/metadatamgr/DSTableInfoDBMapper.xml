@@ -247,10 +247,10 @@
     a.table_english_name=c.id
     <where>
       <if test="datasourceId !=null and datasourceId.toString().length()>0">AND datasource_id
-        LIKE CONCAT(CONCAT('%',#{datasourceId}), '%')
+        = #{datasourceId}
       </if>
       <if test="status !=null and status.toString().length()>0">AND status
-        LIKE CONCAT(CONCAT('%',#{status}), '%')
+        = #{status}
       </if>
       <if test="tableEnglishName !=null and tableEnglishName.toString().length()>0">AND
         table_english_name
