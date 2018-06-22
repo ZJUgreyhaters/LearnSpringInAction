@@ -121,15 +121,21 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
                     JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
                     List<Map<String,Object>> jsondata = (List<Map<String,Object>>) resultJson.get("data");
 
-//                    List<Map<String,Object>> mapList = (List<Map<String,Object>>)resultJson.get("data");
-//                    List<Map<String,Object>> mapList = (List<Map<String,Object>>)resultJson.get("entit");
-                    for(Map<String,Object> entityMap : jsondata){
-                        Map<String, Object> selectMap = (Map<String, Object>)entityMap.get("physicalField");
+                    Map<String, Object> selectMap = (Map<String, Object>)jsondata.get(0).get("physicalField");
                         List<Map<String,Object>> selectList = (List<Map<String,Object>>)selectMap.get("dataUDC");
                         for(Map<String,Object> selectEntityMap : selectList){
                             responseEntityList.add(selectEntityMap.get("dataUDCDesc"));
                         }
-                    }
+
+//                    List<Map<String,Object>> mapList = (List<Map<String,Object>>)resultJson.get("data");
+//                    List<Map<String,Object>> mapList = (List<Map<String,Object>>)resultJson.get("entit");
+//                    for(Map<String,Object> entityMap : jsondata){
+//                        Map<String, Object> selectMap = (Map<String, Object>)entityMap.get("physicalField");
+//                        List<Map<String,Object>> selectList = (List<Map<String,Object>>)selectMap.get("dataUDC");
+//                        for(Map<String,Object> selectEntityMap : selectList){
+//                            responseEntityList.add(selectEntityMap.get("dataUDCDesc"));
+//                        }
+//                    }
                 }
 
                 conditionMap.put("values",responseEntityList);
