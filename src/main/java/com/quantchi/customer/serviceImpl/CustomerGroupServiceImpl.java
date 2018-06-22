@@ -337,13 +337,13 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     return HiveLink.elseHive(sql.toString(), jdbcPool);
   }
 
-  public Map<String, Object> listCustomersByCustomerGroupId(CustomerGroup group) {
+  public String listCustomersByCustomerGroupId(CustomerGroup group) {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_KLINE_COUNTRY_BY_COUNTRY();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
       List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
-        return util.genRet(500, null, "select CustomerGroup error", 0);
+       return JsonResult.errorJson("select CustomerGroup error");
       }
       int total = list.size();
       if (group.getPage() != null && group.getPage_size() != null) {
@@ -351,14 +351,14 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       }
 
       PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(list);
-      Map<String, Object> result = new HashMap<String, Object>();
-      result.put("total", total);
-      result.put("data", list);
-      return util
-          .genRet(200, result.get("data"), "ok", Integer.parseInt(result.get("total").toString()));
+      String str = JsonResult.successJson(total+"",list);
+      return str.replaceAll("customer_no", "客户号")
+          .replaceAll("customer_name", "姓名").replaceAll("fin_balance", "融资负债（万元）")
+          .replaceAll("total_asset", "总资产（万元}").replaceAll("assure_debit_rate", "维保比例")
+          .replaceAll("concentrate", "当前仓位").replaceAll("profit_rate_y", "年度收益率 ");
     } catch (Exception e) {
       e.printStackTrace();
-      return util.genRet(500, null, "select CustomerGroup error", 0);
+      return JsonResult.errorJson("error");
     }
   }
 
