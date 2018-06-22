@@ -29,19 +29,23 @@ public class MetaDataMgrFieldApiService {
 
     public Map<String, Object> search(JSONObject jsonParam){
 
-        DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-        dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(jsonParam.getString("table_name")).andDatasourceIdEqualTo(jsonParam.getString("data_source_name"));
-        List<DSTableInfoDB> tableList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
-
         int page = Integer.parseInt(jsonParam.getString("page"));
         int page_size = Integer.parseInt(jsonParam.getString("page_size"));
         PageHelper.startPage(page, page_size);
         DSFieldInfoDBExample dsFieldInfoDBExample = new DSFieldInfoDBExample();
         DSFieldInfoDBExample.Criteria _cr = dsFieldInfoDBExample.createCriteria();
-        _cr.andDatasourceIdEqualTo(jsonParam.getString("data_source_name"))
-                .andTableIdEqualTo(tableList.get(0).getId().toString());
+
+        if(jsonParam.getString("data_source_name") != null && !jsonParam.getString("data_source_name").equals("")){
+            _cr.andDatasourceIdEqualTo(jsonParam.getString("data_source_name"));
+        }
+        if(jsonParam.getString("table_name") != null && !jsonParam.getString("table_name").equals("")){
+            DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
+            dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(jsonParam.getString("table_name")).andDatasourceIdEqualTo(jsonParam.getString("data_source_name"));
+            List<DSTableInfoDB> tableList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
+            _cr.andTableIdEqualTo(tableList.get(0).getId().toString());
+        }
         if(jsonParam.get("keywords") != null && !jsonParam.get("keywords").equals("")){
-            _cr.andFieldEnglishNameLike(jsonParam.getString("keywords"));
+            _cr.andFieldEnglishNameLike("%"+jsonParam.getString("keywords")+"%");
         }
 
         List<DSFieldInfoDB> list = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
@@ -57,8 +61,11 @@ public class MetaDataMgrFieldApiService {
             DSTableInfoDBExample ds = new DSTableInfoDBExample();
             ds.createCriteria().andIdEqualTo(Integer.parseInt(dsFieldInfoDB.getTableId()));
             List<DSTableInfoDB> dslist = dsTableInfoDBMapper.selectByExample(ds);
-
-            fieldMap.put("table",dslist.get(0).getTableEnglishName());
+            if(dslist.size() == 0){
+                fieldMap.put("table",null);
+            }else{
+                fieldMap.put("table",dslist.get(0).getTableEnglishName());
+            }
             fieldMap.put("datasource",dsFieldInfoDB.getDatasourceId());
             fieldMap.put("type",dsFieldInfoDB.getFieldType());
             fieldMap.put("length",dsFieldInfoDB.getFieldLength());

@@ -74,7 +74,7 @@ public class TermInfoServiceImpl implements TermInfoService {
         ResultList.add(map1);
       }
       if (termInfoPojo.getNums() != null) {
-        ResultList = Paging.pagingPlug(ResultList, termInfoPojo.getNums(), 0);
+        ResultList = Paging.pagingPlug(ResultList, termInfoPojo.getNums(), 1);
       }
 
       Map<String, Object> result = new HashedMap();
