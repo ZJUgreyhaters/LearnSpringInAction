@@ -1,13 +1,11 @@
 package com.quantchi.termInfo.controller;
 
+import com.quantchi.termInfo.pojo.TermGenInfo;
 import com.quantchi.termInfo.pojo.TermInfoPojo;
 import com.quantchi.termInfo.service.TermInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by 49537 on 2018/6/20.
@@ -34,5 +32,11 @@ public class TermInfoController {
     return service.selectTerm(termInfoPojo);
   }
 
+  //插入
+  @ResponseBody
+  @RequestMapping(value = "/term", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+  public String selectTerm(@RequestBody TermGenInfo termGenInfo) {
+    return service.insertTerm(termGenInfo);
+  }
 
 }

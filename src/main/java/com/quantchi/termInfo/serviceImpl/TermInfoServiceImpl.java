@@ -2,8 +2,11 @@ package com.quantchi.termInfo.serviceImpl;
 
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
+import com.quantchi.termInfo.mapper.PhysicalFieldInfoMapper;
+import com.quantchi.termInfo.mapper.PhysicalTableInfoMapper;
 import com.quantchi.termInfo.mapper.TermInfoMapper;
-import com.quantchi.termInfo.pojo.TermInfoPojo;
+import com.quantchi.termInfo.mapper.TermMainInfoMapper;
+import com.quantchi.termInfo.pojo.*;
 import com.quantchi.termInfo.service.TermInfoService;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +17,8 @@ import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.jdo.annotations.Transactional;
+
 /**
  * Created by 49537 on 2018/6/20.
  */
@@ -22,6 +27,15 @@ public class TermInfoServiceImpl implements TermInfoService {
 
   @Autowired
   TermInfoMapper mapper;
+
+  @Autowired
+  PhysicalTableInfoMapper physicalTableInfoMapper;
+
+  @Autowired
+  PhysicalFieldInfoMapper physicalFieldInfoMapper;
+
+  @Autowired
+  TermMainInfoMapper termMainInfoMapper;
 
   private List<String> name = Arrays
       .asList("entityType", "entityId", "entityHash", "entityName", "entityDesc", "logicType",
@@ -131,5 +145,32 @@ public class TermInfoServiceImpl implements TermInfoService {
     }
   }
 
+  @Transactional
+  @Override
+  public String insertTerm(TermGenInfo termGenInfo){
+
+
+      if(termGenInfo.getTableInfo() == null
+      || termGenInfo.getFieldInfoList() == null
+      || termGenInfo.getTermMainInfo() == null )
+          return JsonResult.errorJson("miss table or field or term info");
+
+      try {
+          //插入表信息
+          physicalTableInfoMapper.insert(termGenInfo.getTableInfo());
+
+          //插入字段信息
+          physicalFieldInfoMapper.insertFields(termGenInfo.getFieldInfoList());
+
+          //术语主信息插入
+          termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
+
+          return JsonResult.successJson();
+      }catch (Exception e){
+          e.printStackTrace();
+          return JsonResult.errorJson(e.getMessage());
+      }
+
+  }
 
 }

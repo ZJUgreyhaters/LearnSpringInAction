@@ -1,5 +1,6 @@
 package com.quantchi.termInfo.service;
 
+import com.quantchi.termInfo.pojo.TermGenInfo;
 import com.quantchi.termInfo.pojo.TermInfoPojo;
 
 /**
@@ -10,5 +11,7 @@ public interface TermInfoService {
   String selectTermAll(TermInfoPojo termInfoPojo);
 
   String selectTerm(TermInfoPojo termInfoPojo);
+
+  String insertTerm(TermGenInfo termInfoPojo);
 
 }
