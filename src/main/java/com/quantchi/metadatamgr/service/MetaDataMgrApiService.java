@@ -239,8 +239,9 @@ public class MetaDataMgrApiService {
         }
 
         //如果是全部都是老表 不需要处理后续逻辑
-        if(tableList.size() == 0)
+        if(tableList.size() == 0) {
             return true;
+        }
 
         if(dsTableInfoDBMapper.insertTables(tableList) <= 0){
             _ret = false;
