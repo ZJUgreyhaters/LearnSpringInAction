@@ -3,6 +3,7 @@ package com.quantchi.customer.mapper;
 import com.quantchi.customer.pojo.CustomerGroup;
 import java.util.List;
 import java.util.Map;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * Created by 49537 on 2018/6/11.
@@ -20,4 +21,6 @@ public interface CustomerGroupMapper {
   void updateCustomerGroup(CustomerGroup group);
 
   String selectCondition(CustomerGroup group);
+
+  List<Map<String,Object>> selectUdc(@Param("entityIds") String entityIds);
 }
