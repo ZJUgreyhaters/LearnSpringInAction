@@ -5,13 +5,9 @@ import java.util.List;
 
 public class TermGenInfo {
 
-    private String testid;
-
     private PhysicalTableInfo tableInfo;
 
     private List<PhysicalFieldInfo> fieldInfoList;
-
-    private TermMainInfo termMainInfo;
 
     public PhysicalTableInfo getTableInfo() {
         return tableInfo;
@@ -29,19 +25,4 @@ public class TermGenInfo {
         this.fieldInfoList = fieldInfoList;
     }
 
-    public TermMainInfo getTermMainInfo() {
-        return termMainInfo;
-    }
-
-    public void setTermMainInfo(TermMainInfo termMainInfo) {
-        this.termMainInfo = termMainInfo;
-    }
-
-    public String getTestid() {
-        return testid;
-    }
-
-    public void setTestid(String testid) {
-        this.testid = testid;
-    }
 }
