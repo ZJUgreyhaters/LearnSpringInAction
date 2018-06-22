@@ -68,6 +68,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       List<Map<String, Object>> customerGroupCriteria) {
     Map<String, Object> result = new HashMap<String, Object>();
     try {
+      sub(customerGroupCriteria);
       String str = mapper.selectCustGroupId();
       if (str == null) {
         group.setCust_group_id("CG000001");
@@ -156,63 +157,63 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       String englishName = ((JSONObject) data.get(0)).get("entityName").toString();
       String type = ((JSONObject) data.get(0)).get("displayType").toString();
       String logicType = ((JSONObject) data.get(0)).get("logicType").toString();
-      JSONObject physical = JSONObject.fromObject(((JSONObject) data.get(0)).get("physicalField")) ;
+      JSONObject physical = JSONObject.fromObject(((JSONObject) data.get(0)).get("physicalField"));
       String table = physical.get("physicalDB") + "." + physical.get("physicalTable");
       String str = null;
-      if (type.equals("Select-list")&&logicType.equals("代码")) {
+      if (type.equals("Select-list") && logicType.equals("代码")) {
         StringBuilder v = new StringBuilder();
         int a = 0;
-        for(String split:list){
-          if(a==0){
+        for (String split : list) {
+          if (a == 0) {
             v.append("'").append(split).append("'");
-          }else{
+          } else {
             v.append(",").append("'").append(split).append("'");
           }
           a++;
         }
-        str = englishName + "in (" + v +")";
+        str = englishName + " in (" + v + ")";
       }
-      if(type.equals("Text")&&logicType.equals("文本")){
-        str = englishName + "like %" + list.get(0) +"%";
+      if (type.equals("Text") && logicType.equals("文本")) {
+        str = englishName + " like %" + list.get(0) + "%";
       }
-      if(type.equals("Area")&&logicType.equals("度量")){
-        if(list.get(0).equals("大于")){
-          str = englishName + ">" + list.get(1);
+      if (type.equals("Area") && logicType.equals("度量")) {
+        if (list.get(0).equals("大于")) {
+          str = englishName + " > " + list.get(1);
         }
-        if(list.get(0).equals("小于")){
-          str = englishName + "<" + list.get(1);
+        if (list.get(0).equals("小于")) {
+          str = englishName + " < " + list.get(1);
         }
-        if(list.get(0).equals("大于等于")){
-          str = englishName + ">=" + list.get(1);
+        if (list.get(0).equals("大于等于")) {
+          str = englishName + " >= " + list.get(1);
         }
-        if(list.get(0).equals("小于等于")){
-          str = englishName + "<=" + list.get(1);
+        if (list.get(0).equals("小于等于")) {
+          str = englishName + " <= " + list.get(1);
         }
-        if(list.get(0).equals("等于")){
-          str = englishName + "=" + list.get(1);
+        if (list.get(0).equals("等于")) {
+          str = englishName + " = " + list.get(1);
         }
-        if(list.get(0).equals("介于")){
-          str = englishName + "between" + list.get(1)+"and" +list.get(2);
+        if (list.get(0).equals("介于")) {
+          str = englishName + " between " + list.get(1) + " and " + list.get(2);
         }
       }
-      if(type.equals("DateTime")&&logicType.equals("日期")){
-        str = englishName + "=" + list.get(0);
+      if (type.equals("DateTime") && logicType.equals("日期")) {
+        str = englishName + " = " + list.get(0);
       }
-      if(type.equals("Text")&&logicType.equals("编号")){
+      if (type.equals("Text") && logicType.equals("编号")) {
         String[] splits = list.get(0).split(",");
         StringBuilder v = new StringBuilder();
         int a = 0;
-        for(String split:splits){
-          if(a==0){
+        for (String split : splits) {
+          if (a == 0) {
             v.append("'").append(split).append("'");
-          }else{
+          } else {
             v.append(",").append("'").append(split).append("'");
           }
           a++;
         }
-        str = englishName + "in (" + v +")";
+        str = englishName + " in (" + v + ")";
       }
-      conditionMap.put(table,str);
+      conditionMap.put(table, str);
       condition.add(conditionMap);
     }
     return condition;
@@ -269,25 +270,41 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
   public String listCustomersWithDim(Map<String, Object> map) {
     try {
       CustomerGroup group = new CustomerGroup();
-      group.setPage_size(Integer.valueOf(map.get("page_size").toString()));
-      group.setPage(Integer.valueOf(map.get("page").toString()));
-      List<Map<String, Object>> condition = (List<Map<String, Object>>)map.get("condition");
-      List<Map<String, Object>> subcondition =(List<Map<String, Object>>)map.get("subcondition");
-     if(subcondition!=null && !subcondition.isEmpty()){
-       for(Map<String, Object> map1:subcondition){
-         condition.add(map1);
-       }
-     }
+      if (map.get("page_size") != null && map.get("page") != null) {
+        group.setPage_size(Integer.valueOf(map.get("page_size").toString()));
+        group.setPage(Integer.valueOf(map.get("page").toString()));
+      }
+      List<Map<String, Object>> condition = (List<Map<String, Object>>) map.get("condition");
+      List<Map<String, Object>> subcondition = (List<Map<String, Object>>) map.get("subcondition");
+      if (subcondition != null && !subcondition.isEmpty()) {
+        for (Map<String, Object> map1 : subcondition) {
+          condition.add(map1);
+        }
+      }
       List<Map<String, Object>> assemble = assemble(condition);
       String jointSql = jointSql(assemble);
       StringBuilder sql = new StringBuilder();
-      String string =
-          "select '20160101' as init_date,condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y from (";
+      String names = sqlQueryConfig.getSEL_NAMES();
+      String string = null;
+      if (names != null && names.length() > 0) {
+        string =
+            "select '20160101' as init_date," + names
+                + "condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y from (";
+      } else {
+        string =
+            "select '20160101' as init_date,condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y from (";
+      }
       sql.append(string);
       String z = " left join mtoi.dim_customer cust on condition01.customer_no=cust.customer_no";
-      String w = " left join (select * from mtoi.agg_cust_statistics where part_date = 20160101) main_data on condition01.customer_no=main_data.customer_no";
-      sql.append(jointSql).append(z).append(w);
+      String w = " left join (select * from mtoi.agg_cust_statistics where part_date = 20160101) main_data on condition01.customer_no=main_data.customer_no ";
+      String sqls = sqlQueryConfig.getSEL_SQLS();
+      if (sqls != null && sqls.length() > 0) {
+        sql.append(jointSql).append(z).append(w).append(sqls);
+      } else {
+        sql.append(jointSql).append(z).append(w);
+      }
       List<Map<String, Object>> Resultlist = HiveLink.selectHive(sql.toString(), jdbcPool);
+      List<Map<String, Object>> sub = sub(Resultlist);
       if (Resultlist.toString().contains("select error")) {
         return JsonResult.errorJson("error");
       }
@@ -299,7 +316,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       resultInfo.put("total", total);
       resultInfo.put("data_source", Resultlist);
       resultInfo.put("cust_nums", total);
-      resultInfo.put("subcondition", sub());
+      resultInfo.put("subcondition", sub);
       String str = JsonResult.successJson(resultInfo).replaceAll("customer_no", "客户号")
           .replaceAll("customer_name", "姓名").replaceAll("fin_balance", "融资负债（万元）")
           .replaceAll("total_asset", "总资产（万元}").replaceAll("assure_debit_rate", "维保比例")
@@ -389,23 +406,55 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     return HiveLink.elseHive(sql.toString(), jdbcPool);
   }
 
-  Map<String, Object> sub() {
-    Map<String, Object> map = new HashedMap();
+  List<Map<String, Object>> sub(List<Map<String, Object>> Resultlist) {
+    String ids = sqlQueryConfig.getSEL_IDS();
+    List<Map<String, Object>> list1 = mapper.selectUdc(ids);
+    String idsNames = sqlQueryConfig.getSEL_IDS_NAMES();
+    List<String> nameList = new ArrayList<>();
+    for(Map<String, Object> map1 : list1){
+      String dataUDCDesc = map1.get("dataUDCDesc").toString();
+      if(!nameList.contains(dataUDCDesc)){
+        nameList.add(dataUDCDesc);
+      }
+    }
     List<Map<String, Object>> list = new ArrayList<>();
-    Map<String, Object> map1 = new HashedMap();
-    Map<String, Object> map2 = new HashedMap();
-    map1.put("id", "1");
-    map1.put("value", "收益30%以上");
-    map1.put("number", "111");
-    map2.put("id", "2");
-    map2.put("value", "收益30%以上");
-    map2.put("number", "111");
-    list.add(map1);
-    list.add(map2);
-    map.put("id", "1");
-    map.put("name", "收益率");
-    map.put("option", list);
-    return map;
+    for (String name : nameList) {
+      for (Map<String, Object> map1 : list1) {
+        String dataUDCDesc = map1.get("dataUDCDesc").toString();
+        String entityId = map1.get("entityId").toString();
+        if (name.equals(dataUDCDesc)) {
+          Map<String, Object> map2 = new HashedMap();
+          int a = 0;
+          for (Map<String, Object> result : Resultlist) {
+            if (result.get(name).equals(dataUDCDesc)) {
+              a++;
+            }
+          }
+          map2.put("id", entityId);
+          map2.put("value", dataUDCDesc);
+          map2.put("number", a);
+          list.add(map2);
+        }
+
+      }
+    }
+    String[] split = idsNames.split(",");
+    List<Map<String, Object>> list3 = new ArrayList<>();
+    for (String idName : split) {
+      String[] split1 = idName.split(":");
+      Map<String, Object> map = new HashedMap();
+      List<Map<String, Object>> list2 = new ArrayList<>();
+      for (Map<String, Object> listMap : list) {
+        if (split1[0].equals(listMap.get("id"))) {
+          list2.add(listMap);
+        }
+      }
+      map.put("id", split1[0]);
+      map.put("name", split1[1]);
+      map.put("option", list2);
+      list3.add(map);
+    }
+    return list3;
   }
 
 

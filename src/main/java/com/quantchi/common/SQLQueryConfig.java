@@ -17,6 +17,50 @@ public class SQLQueryConfig {
     @Value("${sel.hive.customer.customer.groupId}")
     private String SEL_KLINE_COUNTRY_BY_COUNTRY;
 
+    @Value("${sel.ids}")
+    private String SEL_IDS;
+
+    @Value("${sel.names}")
+    private String SEL_NAMES;
+
+    @Value("${sel.sqls}")
+    private String SEL_SQLS;
+
+    @Value("${sel.ids.names}")
+    private String SEL_IDS_NAMES;
+
+    public String getSEL_IDS_NAMES() {
+        return SEL_IDS_NAMES;
+    }
+
+    public void setSEL_IDS_NAMES(String SEL_IDS_NAMES) {
+        this.SEL_IDS_NAMES = SEL_IDS_NAMES;
+    }
+
+    public String getSEL_NAMES() {
+        return SEL_NAMES;
+    }
+
+    public void setSEL_NAMES(String SEL_NAMES) {
+        this.SEL_NAMES = SEL_NAMES;
+    }
+
+    public String getSEL_SQLS() {
+        return SEL_SQLS;
+    }
+
+    public void setSEL_SQLS(String SEL_SQLS) {
+        this.SEL_SQLS = SEL_SQLS;
+    }
+
+    public String getSEL_IDS() {
+        return SEL_IDS;
+    }
+
+    public void setSEL_IDS(String SEL_IDS) {
+        this.SEL_IDS = SEL_IDS;
+    }
+
     public String getSEL_KLINE_COUNTRY_BY_COUNTRY() {
         return SEL_KLINE_COUNTRY_BY_COUNTRY;
     }
