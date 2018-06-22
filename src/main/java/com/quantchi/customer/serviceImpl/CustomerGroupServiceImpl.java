@@ -77,10 +77,21 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       if (a < -400) {
         result.put("code", "500");
         result.put("msg", "error");
+        return result;
       }
-      List<String> list = (List<String>) customerGroupCriteria.get(0).get("value");
-      String obj = String.join(";", list);
-      group.setCondition_desc(obj);
+      int i = 1;
+      StringBuilder builder = new StringBuilder();
+      for(Map<String,Object> map:customerGroupCriteria){
+        List<String> list =(List<String>) map.get("value");
+        String obj = String.join(";", list);
+        if(i==1){
+          builder.append(obj);
+        }else{
+        builder.append(";"+obj);
+        }
+        i++;
+      }
+      group.setCondition_desc(builder.toString());
       group.setCust_group_id(str);
       group.setRefresh_status("0");
       group.setDelete_status("0");
@@ -288,10 +299,16 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     Map<String, Object> result = new HashMap<String, Object>();
     try {
       String sql = mapper.selectCondition(group);
+      if(sql==null){
+        result.put("code", "500");
+        result.put("msg", "条件不能为空！");
+        return result;
+      }
       int a = updateCustomerInfo(sql);
       if (a < -400) {
         result.put("code", "500");
         result.put("msg", "error");
+        return result;
       }
 
       mapper.updateCustomerGroup(group);

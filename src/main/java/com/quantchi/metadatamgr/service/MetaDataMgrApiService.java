@@ -45,15 +45,24 @@ public class MetaDataMgrApiService {
     @Autowired
     private DSFieldRelDBMapper dsFieldRelDBMapper;
 
-    public Map<String, Object> getDSMetaInfo(String dsName, int start, int pagesize){
+    public Map<String, Object> getDSMetaInfo(String dsName, String start, String pagesize){
         Map<String,Object> _ret = new HashMap<>();
         DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
         if(!"".equals(dsName))
             _ex.createCriteria().andDsNameEqualTo(dsName);
 
-        List<DSMetaInfoDB> _sqlRet =  dsMetaInfoDBMapper.selectByExample(_ex,(start-1)* pagesize,pagesize);
+        List<DSMetaInfoDB> _sqlRet = null;
+        if(start != null){
+            int _start = Integer.parseInt(start);
+            int _pagesize = Integer.parseInt(pagesize);
+            _sqlRet =  dsMetaInfoDBMapper.selectByExample(_ex,(_start-1)* _pagesize,_pagesize);
+        }else
+            _sqlRet =  dsMetaInfoDBMapper.selectAllByExample(_ex);
+
+        DSMetaInfoDBExample _exCount = new DSMetaInfoDBExample();
+        List<DSMetaInfoDB> _sqlRetCount = dsMetaInfoDBMapper.selectAllByExample(_exCount);
         _ret.put("data",_sqlRet);
-        _ret.put("total",_sqlRet.size());
+        _ret.put("total",_sqlRetCount.size());
         return _ret;
     }
 
@@ -64,6 +73,14 @@ public class MetaDataMgrApiService {
 
         return  HiveExtractImp.connectionTest(host,port,username,password);
     }
+
+    public boolean connectMysqlTest(String url,
+                               String username,
+                               String password){
+
+        return  HiveExtractImp.connectionMysqlTest(url,username,password);
+    }
+
 
     public boolean saveMetaInfo(JSONObject jsonParam) throws Exception{
         boolean _ret = false;
@@ -126,11 +143,12 @@ public class MetaDataMgrApiService {
         return ret;
     }
 
-    public Map<String, Object> extractTables(String dsName){
+    public Map<String, Object> extractTables(String dsName,String keyword) throws Exception{
         Map<String,Object> _ret = new HashMap<>();
         List<Map<String,Object>> _dbs_info = new ArrayList<>();
 
         HiveExtractImp _extract = getExtractObj(dsName);
+        String _keyword = keyword;
         if(_extract != null){
             List<String> dbs = _extract.getDatabases();
             for(String database : dbs){
@@ -139,7 +157,17 @@ public class MetaDataMgrApiService {
                 _databaseMap.put("name",database);
                 _databaseMap.put("type","db");
 
-                List<String> tbs = _extract.getTables(database);
+                if(keyword != null){
+                    //如果关键字在库里出现，则列举所有的表
+                    if(database.indexOf(keyword) != -1)
+                        _keyword = null;
+                    else
+                        _keyword = keyword;
+                }
+
+
+
+                List<String> tbs = _extract.getTables(database,_keyword);
                 List<Map<String,String>> _childs = new ArrayList<>();
 
                 for(String table:tbs){
@@ -149,12 +177,18 @@ public class MetaDataMgrApiService {
                     _tableMap.put("type","table");
                     _childs.add(_tableMap);
                 }
-                _databaseMap.put("children",_childs);
-                _dbs_info.add(_databaseMap);
+
+                //如果查不到表，则不加入返回
+                if(_childs.size() != 0){
+                    _databaseMap.put("children",_childs);
+                    _dbs_info.add(_databaseMap);
+                }
+
             }
         }
 
         _ret.put("data",_dbs_info);
+        _ret.put("total",_dbs_info.size());
         return _ret;
     }
 
@@ -180,7 +214,7 @@ public class MetaDataMgrApiService {
         return _extract;
     }
 
-    public boolean saveTablesAndFields(String dsName,List<String> tables){
+    public boolean saveTablesAndFields(String dsName,List<String> tables) throws Exception{
         boolean _ret = true;
         List<Map<String,Object>> mapList = new ArrayList<>();
 
