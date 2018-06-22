@@ -36,6 +36,9 @@ public class MetaDataMgrEntityApiService {
     public int modifyEntity(JSONObject json){
         DSEntityInfoDB dsEntityInfoDB = new DSEntityInfoDB();
         dsEntityInfoDB.setId(Integer.parseInt(json.getString("entity_id")));
+        dsEntityInfoDB.setEntityName(json.getString("entity_name"));
+        dsEntityInfoDB.setBusiness(json.getString("business"));
+        dsEntityInfoDB.setDatasourceId(json.getString("data_source_name"));
         dsEntityInfoDB.setMainTable(json.getString("main_table_id"));
         dsEntityInfoDB.setEntityField(json.getString("main_entity_field_id"));
         String nonMainTable = String.join(",", (List)json.get("non_main_table_id"));
@@ -48,9 +51,10 @@ public class MetaDataMgrEntityApiService {
         Map<String,Object> responseMap = new HashMap<>();
         DSEntityInfoDBExample dsEntityInfoDBExample = new DSEntityInfoDBExample();
         DSEntityInfoDBExample.Criteria _cr = dsEntityInfoDBExample.createCriteria();
-        _cr.andDatasourceIdEqualTo(json.getString("data_source_name"))
-                .andBusinessEqualTo(json.getString("business"));
-        if(json.getString("keywords") != null){
+        if(json.getString("business") != null && !json.getString("business").equals("")){
+            _cr.andBusinessEqualTo(json.getString("business"));
+        }
+        if(json.getString("keywords") != null && !json.getString("keywords").equals("")){
             _cr.andEntityNameLike("%"+json.getString("keywords")+"%");
         }
         int page = Integer.parseInt(json.getString("page"));

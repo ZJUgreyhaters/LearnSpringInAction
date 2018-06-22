@@ -79,12 +79,6 @@ public class MetaDataMgrEntityApiController {
         Map<String, Object> responseMap = new HashMap<>();
         try{
             JSONObject json = JSONObject.parseObject(bodyString);
-            if(json.getString("data_source_name") == null){
-                throw new Exception("miss data source name");
-            }
-            if(json.getString("business") == null){
-                throw new Exception("miss business");
-            }
             responseMap = metaDataMgrEntityApiService.searchEntity(json);
             responseMap.put("code",200);
             responseMap.put("msg","成功");

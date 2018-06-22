@@ -2,6 +2,7 @@ package com.quantchi.customer.controller;
 
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.quantchi.common.AppProperties;
 import com.quantchi.customer.pojo.ConditionGroup;
 import com.quantchi.customer.service.ConditionGroupService;
 import org.apache.http.HttpEntity;
@@ -116,7 +117,8 @@ public class ConditionGroupController {
         List<Map<String,Object>> list = new ArrayList<>();
 
         try{
-            HttpPost httpPost = new HttpPost("http://localhost:8081/termInfo");
+            String url = AppProperties.get("termInfo.url");
+            HttpPost httpPost = new HttpPost(url);
             CloseableHttpClient client = HttpClients.createDefault();
 
             JSONObject jsonObject = new JSONObject();
@@ -134,8 +136,6 @@ public class ConditionGroupController {
                 respContent = EntityUtils.toString(he,"UTF-8");
                 JSONObject responseJson = new JSONObject();
                 JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
-//                List<Map<String,Object>> mapList = (List<Map<String,Object>>)resultJson.get("entitys");
-//                JSONObject entityJson = (JSONObject)resultJson.get("entitys");
                 JSONObject jsondata = (JSONObject)resultJson.get("data");
 
                 List<Map<String,Object>> mapList = (List<Map<String,Object>>)jsondata.get("entitys");

@@ -235,15 +235,15 @@ public class MetaDataMgrApiService {
 
         //3.add relation
         int i=0;
-        String[] dbName = new String[100];
-        String[] name = new String[100];
+        String[] dbName = new String[100000];
+        String[] name = new String[100000];
         for (String tableName : tables) {
             String[] dbTableName = tableName.split("\\.");
             dbName[i] = dbTableName[0];
             name[i] = dbTableName[1];
             i++;
         }
-        String[] names = new String[100];
+        String[] names = new String[100000];
         names[0] = name[0];
         int j=1,k=1,isprimary=0;
         for(; j < i; j++){
