@@ -21,6 +21,15 @@ public class CustomerGroup {
   private String default_analysis;
   private Integer page;
   private Integer page_size;
+  private String customer_name;
+
+  public String getCustomer_name() {
+    return customer_name;
+  }
+
+  public void setCustomer_name(String customer_name) {
+    this.customer_name = customer_name;
+  }
 
   public Integer getId() {
     return id;

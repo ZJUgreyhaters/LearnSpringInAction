@@ -31,6 +31,15 @@ public class JsonResult {
         return JSONObject.toJSONString(response);
     }
 
+    public static String successJson(String total,Object obj) {
+        JsonResponse response = new JsonResponse();
+        response.setCode(ResultCode.SUCCESS);
+        response.setTotal(total);
+        response.setData(obj);
+        response.setMsg("success");
+        return JSONObject.toJSONString(response);
+    }
+
     public static String successJson(String message) {
         JsonResponse response = new JsonResponse();
         response.setCode(ResultCode.SUCCESS);
@@ -56,7 +65,7 @@ public class JsonResult {
         private String code;
         private String msg;
         private Object data;
-
+        private String total;
         public String getCode() {
             return code;
         }
@@ -81,5 +90,12 @@ public class JsonResult {
             this.data = data;
         }
 
+        public String getTotal() {
+            return total;
+        }
+
+        public void setTotal(String total) {
+            this.total = total;
+        }
     }
 }
