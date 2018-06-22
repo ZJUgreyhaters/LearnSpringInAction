@@ -343,7 +343,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
       List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
-       return JsonResult.errorJson("select CustomerGroup error");
+        return JsonResult.errorJson("error");
       }
       int total = list.size();
       if (group.getPage() != null && group.getPage_size() != null) {
@@ -410,23 +410,22 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     String ids = sqlQueryConfig.getSEL_IDS();
     List<Map<String, Object>> list1 = mapper.selectUdc(ids);
     String idsNames = sqlQueryConfig.getSEL_IDS_NAMES();
+    String names = sqlQueryConfig.getSEL_NAMES();
+    String[] split2 = names.split(",");
     List<String> nameList = new ArrayList<>();
-    for(Map<String, Object> map1 : list1){
-      String dataUDCDesc = map1.get("dataUDCDesc").toString();
-      if(!nameList.contains(dataUDCDesc)){
-        nameList.add(dataUDCDesc);
-      }
+    for(String sp:split2){
+      String[] split = sp.split("\\.");
+      nameList.add(split[1]);
     }
     List<Map<String, Object>> list = new ArrayList<>();
     for (String name : nameList) {
       for (Map<String, Object> map1 : list1) {
         String dataUDCDesc = map1.get("dataUDCDesc").toString();
         String entityId = map1.get("entityId").toString();
-        if (name.equals(dataUDCDesc)) {
           Map<String, Object> map2 = new HashedMap();
           int a = 0;
           for (Map<String, Object> result : Resultlist) {
-            if (result.get(name).equals(dataUDCDesc)) {
+            if (dataUDCDesc.equals(result.get(name))) {
               a++;
             }
           }
@@ -434,8 +433,6 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
           map2.put("value", dataUDCDesc);
           map2.put("number", a);
           list.add(map2);
-        }
-
       }
     }
     String[] split = idsNames.split(",");
