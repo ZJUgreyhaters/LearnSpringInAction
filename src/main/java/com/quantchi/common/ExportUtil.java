@@ -66,15 +66,9 @@ public class ExportUtil {
       sheet.setColumnView(4, 20);
       sheet.setColumnView(5, 20);
       sheet.setColumnView(6, 20);
-      sheet.setColumnView(7, 20);
-      sheet.setColumnView(8, 20);
-      sheet.setColumnView(9, 20);
-      sheet.setColumnView(10, 20);
-      sheet.setColumnView(11, 20);
-      sheet.setColumnView(12, 20);
 
       sheet.addCell(new Label(0, 0, title, wcf_center));
-      sheet.mergeCells(0, 0, 8, 0);
+      sheet.mergeCells(0, 0, 6, 0);
       for (int i = 0; i < titleArray.length; i++) {
         sheet.addCell(new Label(i, 1, titleArray[i], wcf_center));
       }

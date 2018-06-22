@@ -3,14 +3,8 @@ package com.quantchi.metadatamgr.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.quantchi.common.JsonResult;
-import com.quantchi.metadatamgr.data.entity.DSFieldRelDB;
-import com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample;
 import com.quantchi.metadatamgr.data.entity.DSTableInfoDB;
-import com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample;
-import com.quantchi.metadatamgr.data.mapper.DSFieldRelDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +31,7 @@ public class MetaDataMgrTableApiService {
       List<DSTableInfoDB> search = mapper.search(tableInfo);
       // 取分页信息
       PageInfo<DSTableInfoDB> pageInfo = new PageInfo<>(search);
-      // 返回处理结果
-      Map<String, Object> result = new HashMap<String, Object>();
-      // 获取总条数
-      result.put("total", pageInfo.getTotal());
-      // 结果rows数据
-      result.put("result",pageInfo.getList());
-      return JsonResult.successJson(result);
+      return JsonResult.successJson(pageInfo.getTotal()+"",pageInfo.getList());
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("search tableInfo error");
@@ -119,5 +107,3 @@ public class MetaDataMgrTableApiService {
 
   }
 }
-
-

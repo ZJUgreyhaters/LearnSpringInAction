@@ -22,7 +22,7 @@
     select cust_group_id, -- 客群ID
     cust_group_name, -- 客群名称
     condition_nums, -- 条件个数
-    create_time, -- 创建时间
+    ifnull(create_time,'') as create_time, -- 创建时间
     ifnull(last_refresh_time,'') as last_refresh_time, -- 数据最后更新时间
     cust_nums -- 客户数
     from dmp.cust_group_header

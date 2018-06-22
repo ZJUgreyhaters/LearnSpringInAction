@@ -63,11 +63,9 @@ public class CustomerGroupController {
   //客群客户列表结果导出
   @ResponseBody
   @RequestMapping(value = "/exportCustomerList", method = {RequestMethod.GET})
-  public Map<String, Object> exportCustomerList(HttpServletResponse response) {
+  public Map<String, Object> exportCustomerList(HttpServletResponse response,CustomerGroup group) {
     Map<String, Object> result = new HashMap<String, Object>();
     try {
-      CustomerGroup group =new CustomerGroup();
-      group.setCust_group_id("CG000002");
       List<Map<String, Object>> list = service.exportCustomerList(group);
       if (list.toString().contains("select error")) {
         result.put("code", "500");
@@ -76,8 +74,7 @@ public class CustomerGroupController {
       }
       String fileName = "客群分析-个体详情";
       String title = "客群分析-个体详情";
-      String[] titles = {"客户号", "客户姓名", "融资负债（万元）", "总资产（万元）", "维保比例", "当前仓位", "年度收益率", "选股成功率",
-          "买卖正确率", "平均仓位", "平均", "亏损率"};
+      String[] titles = {"客户号", "客户姓名", "融资负债（万元）", "总资产（万元）", "维保比例", "当前仓位", "年度收益率"};
       String msg = ExportUtil.exportRelationExcel(response, fileName, title, titles, list);
       result.put("code", "200");
       result.put("msg", msg);
@@ -96,8 +93,8 @@ public class CustomerGroupController {
   //客群客户检索结果展示
   @ResponseBody
   @RequestMapping(value = "/listCustomersWithDim", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
-  public String listCustomersWithDim(@RequestBody CustomerGroup group) {
-    String result = service.listCustomersWithDim(group);
+  public String listCustomersWithDim(@RequestBody Map<String, Object> map) {
+    String result = service.listCustomersWithDim(map);
     return result;
   }
 
