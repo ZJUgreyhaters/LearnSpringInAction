@@ -40,7 +40,7 @@ public class MetaDataMgrFieldApiService {
         DSFieldInfoDBExample.Criteria _cr = dsFieldInfoDBExample.createCriteria();
         _cr.andDatasourceIdEqualTo(jsonParam.getString("data_source_name"))
                 .andTableIdEqualTo(tableList.get(0).getId().toString());
-        if(jsonParam.get("keywords") != null){
+        if(jsonParam.get("keywords") != null && !jsonParam.get("keywords").equals("")){
             _cr.andFieldEnglishNameLike(jsonParam.getString("keywords"));
         }
 

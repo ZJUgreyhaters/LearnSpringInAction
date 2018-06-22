@@ -1,8 +1,10 @@
 package com.quantchi.customer.serviceImpl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.quantchi.common.AppProperties;
 import com.quantchi.customer.mapper.ConditionGroupMapper;
 import com.quantchi.customer.pojo.ConditionGroup;
 import com.quantchi.customer.service.ConditionGroupService;
@@ -73,8 +75,6 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
         List<Map<String, Object>> list = new ArrayList<>();
         try{
             conditionGroup = conditionGroupMapper.findCustomerGroup(customerConditionId);
-            map.put("cust_condition_name",conditionGroup.getCust_condition_name());
-            map.put("create_user_id",conditionGroup.getCreate_user_id());
             String condition_desc = conditionGroup.getCondition_desc();
             String condition_desc_id = conditionGroup.getCondition_desc_id();
             String[] condition_descs = condition_desc.split("\\|");
@@ -97,11 +97,12 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
 
                 //获取下拉数据封装到values
                 List<Object> listValues = new ArrayList<>();
-                HttpPost httpPost = new HttpPost("http://localhost:8081/term");
+                String url = AppProperties.get("term.url");
+                HttpPost httpPost = new HttpPost(url);
                 CloseableHttpClient client = HttpClients.createDefault();
 
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("entityId",conditionMap.get("id"));
+                jsonObject.put("entityID",conditionMap.get("id"));
                 StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
                 entity.setContentType("UTF-8");
                 entity.setContentType("application/json");
@@ -109,31 +110,30 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
                 httpPost.setEntity(entity);
                 HttpResponse resp = client.execute(httpPost);
                 String respContent = null;
+                List<Object> responseEntityList = new ArrayList<>();
                 if(resp.getStatusLine().getStatusCode() == 200) {
                     HttpEntity he = resp.getEntity();
                     respContent = EntityUtils.toString(he,"UTF-8");
                     JSONObject responseJson = new JSONObject();
                     JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
-                    JSONObject jsondata = (JSONObject)resultJson.get("data");
+                    List<Map<String,Object>> jsondata = (List<Map<String,Object>>) resultJson.get("data");
 
-                    List<Map<String,Object>> mapList = (List<Map<String,Object>>)jsondata.get("entitys");
-                    for(Map<String,Object> entityMap : mapList){
-                        Map<String,Object> responseEntityMap = new HashMap<>();
+//                    List<Map<String,Object>> mapList = (List<Map<String,Object>>)resultJson.get("data");
+//                    List<Map<String,Object>> mapList = (List<Map<String,Object>>)resultJson.get("entit");
+                    for(Map<String,Object> entityMap : jsondata){
                         Map<String, Object> selectMap = (Map<String, Object>)entityMap.get("physicalField");
-
                         List<Map<String,Object>> selectList = (List<Map<String,Object>>)selectMap.get("dataUDC");
-                        List<Object> responseEntityList = new ArrayList<>();
                         for(Map<String,Object> selectEntityMap : selectList){
                             responseEntityList.add(selectEntityMap.get("dataUDCDesc"));
                         }
-                        responseEntityMap.put("selectValue",responseEntityList);
-                        listValues.add(responseEntityMap);
                     }
                 }
 
-                conditionMap.put("values",listValues);
+                conditionMap.put("values",responseEntityList);
                 list.add(conditionMap);
             }
+            map.put("cust_condition_name",conditionGroup.getCust_condition_name());
+            map.put("create_user_id",conditionGroup.getCreate_user_id());
             map.put("code",200);
             map.put("msg","查询成功");
             map.put("customer_group_criteria_def",list);
