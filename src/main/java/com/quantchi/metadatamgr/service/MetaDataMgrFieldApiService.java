@@ -31,7 +31,7 @@ public class MetaDataMgrFieldApiService {
 
         int page = Integer.parseInt(jsonParam.getString("page"));
         int page_size = Integer.parseInt(jsonParam.getString("page_size"));
-        PageHelper.startPage(page, page_size);
+
         DSFieldInfoDBExample dsFieldInfoDBExample = new DSFieldInfoDBExample();
         DSFieldInfoDBExample.Criteria _cr = dsFieldInfoDBExample.createCriteria();
 
@@ -47,7 +47,7 @@ public class MetaDataMgrFieldApiService {
         if(jsonParam.get("keywords") != null && !jsonParam.get("keywords").equals("")){
             _cr.andFieldEnglishNameLike("%"+jsonParam.getString("keywords")+"%");
         }
-
+        PageHelper.startPage(page, page_size);
         List<DSFieldInfoDB> list = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
         PageInfo<DSFieldInfoDB> pageInfo = new PageInfo<>(list);
         Map<String, Object> map = new HashMap<>();
