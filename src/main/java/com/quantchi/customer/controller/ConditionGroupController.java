@@ -8,6 +8,7 @@ import com.quantchi.customer.service.ConditionGroupService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -117,19 +118,20 @@ public class ConditionGroupController {
         List<Map<String,Object>> list = new ArrayList<>();
 
         try{
-            String url = AppProperties.get("termInfo.url");
-            HttpPost httpPost = new HttpPost(url);
+            String url = AppProperties.get("term.url");
+            url += "?nums="+map.get("nums")+"&entityDesc="+map.get("keyword");
+//            HttpPost httpPost = new HttpPost(url);
+            HttpGet httpGet = new HttpGet(url);
             CloseableHttpClient client = HttpClients.createDefault();
 
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("entityDesc",map.get("keyword"));
-            jsonObject.put("nums",map.get("nums"));
-            StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
-            entity.setContentType("UTF-8");
-            entity.setContentType("application/json");
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("entityDesc",map.get("keyword"));
+//            jsonObject.put("nums",map.get("nums"));
+//            StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
+//            entity.setContentType("UTF-8");
+//            entity.setContentType("application/json");
 
-            httpPost.setEntity(entity);
-            HttpResponse resp = client.execute(httpPost);
+            HttpResponse resp = client.execute(httpGet);
             String respContent = null;
             if(resp.getStatusLine().getStatusCode() == 200) {
                 HttpEntity he = resp.getEntity();

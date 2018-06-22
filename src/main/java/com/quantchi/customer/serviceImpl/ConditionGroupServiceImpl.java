@@ -10,10 +10,12 @@ import com.quantchi.customer.pojo.ConditionGroup;
 import com.quantchi.customer.service.ConditionGroupService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HttpDateGenerator;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,17 +100,18 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
                 //获取下拉数据封装到values
                 List<Object> listValues = new ArrayList<>();
                 String url = AppProperties.get("term.url");
-                HttpPost httpPost = new HttpPost(url);
+                url += "/" + conditionMap.get("id");
+//                HttpPost httpPost = new HttpPost(url);
+                HttpGet httpGet = new HttpGet(url);
                 CloseableHttpClient client = HttpClients.createDefault();
 
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("entityID",conditionMap.get("id"));
-                StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
-                entity.setContentType("UTF-8");
-                entity.setContentType("application/json");
-
-                httpPost.setEntity(entity);
-                HttpResponse resp = client.execute(httpPost);
+//                JSONObject jsonObject = new JSONObject();
+//                StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
+//                entity.setContentType("UTF-8");
+//                entity.setContentType("application/json");
+//
+//                httpPost.setEntity(entity);
+                HttpResponse resp = client.execute(httpGet);
                 String respContent = null;
                 List<Object> responseEntityList = new ArrayList<>();
                 if(resp.getStatusLine().getStatusCode() == 200) {
