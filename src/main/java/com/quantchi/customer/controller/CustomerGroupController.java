@@ -101,7 +101,7 @@ public class CustomerGroupController {
   //客群客户详情列表展示
   @ResponseBody
   @RequestMapping(value = "/listCustomersByCustomerGroupId", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
-  public Map<String, Object> listCustomersByCustomerGroupId(@RequestBody CustomerGroup group) {
+  public String listCustomersByCustomerGroupId(@RequestBody CustomerGroup group) {
 
     return service.listCustomersByCustomerGroupId(group);
   }
