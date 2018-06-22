@@ -225,7 +225,7 @@ public class MetaDataMgrApiService {
         String oldTable="";
         for(String tableName : tables){
             DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-            dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableName).andDatasourceIdEqualTo(dsName);
+            dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableName);
             List<DSTableInfoDB> dsTableInfoDBSList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
             if(dsTableInfoDBSList.size()>0) {
                 oldTable += tableName;
