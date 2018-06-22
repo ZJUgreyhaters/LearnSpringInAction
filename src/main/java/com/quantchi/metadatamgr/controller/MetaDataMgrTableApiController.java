@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 @RequestMapping(value = "api/metadata/table")
 public class MetaDataMgrTableApiController {
@@ -46,6 +50,31 @@ public class MetaDataMgrTableApiController {
     @RequestMapping(value = "/check", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
     public String check(@RequestBody DSTableInfoDB tableInfo) {
         return metaDataMgrTableApiService.check(tableInfo);
+    }
+
+    //表外键搜索接口
+    @ResponseBody
+    @RequestMapping(value = "foreignkeys",  method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+    public Map<String,Object> foreignkeys(@RequestBody Map<String,String> requestMap){
+        Map<String,Object> responseMap = new HashMap<>();
+        try{
+            if (requestMap.get("data_source_name") == null || requestMap.get("data_source_name").equals("")) {
+                throw new Exception("miss data source name");
+            }
+            if(requestMap.get("table_name") == null || requestMap.get("table_name").equals("")){
+                throw new Exception("miss table name");
+            }
+            List<Map<String,String>> mapList = metaDataMgrTableApiService.foreignkeys(requestMap);
+            responseMap.put("data",mapList);
+            responseMap.put("code",200);
+            responseMap.put("msg","成功");
+            return responseMap;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            responseMap.put("code",500);
+            responseMap.put("msg",e.getMessage());
+            return responseMap;
+        }
     }
 
 }
