@@ -5,9 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.quantchi.common.JsonResult;
 import com.quantchi.metadatamgr.data.entity.DSTableInfoDB;
 import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +26,7 @@ public class MetaDataMgrTableApiService {
       List<DSTableInfoDB> search = mapper.search(tableInfo);
       // 取分页信息
       PageInfo<DSTableInfoDB> pageInfo = new PageInfo<>(search);
-      // 返回处理结果
-      Map<String, Object> result = new HashMap<String, Object>();
-      // 获取总条数
-      result.put("total", pageInfo.getTotal());
-      // 结果rows数据
-      result.put("result",pageInfo.getList());
-      return JsonResult.successJson(result);
+      return JsonResult.successJson(pageInfo.getTotal()+"",pageInfo.getList());
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("search tableInfo error");

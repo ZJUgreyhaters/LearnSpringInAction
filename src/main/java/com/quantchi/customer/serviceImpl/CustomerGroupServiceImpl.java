@@ -17,10 +17,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by 49537 on 2018/6/11.
@@ -42,14 +46,14 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
   public Map<String, Object> selectCustomerGroup(CustomerGroup customerGroup) {
     try {
       // 执行查询
-      List<Map<String,Object>> list = mapper.selectCustomerGroup(customerGroup);
+      List<Map<String, Object>> list = mapper.selectCustomerGroup(customerGroup);
       int total = list.size();
       if (customerGroup.getPage() != null && customerGroup.getPage_size() != null) {
         list = Paging.pagingPlug(list, customerGroup.getPage_size(), customerGroup.getPage());
       }
       Map<String, Object> result = new HashMap<String, Object>();
       // 获取总条数
-      result.put("total",total);
+      result.put("total", total);
       // 结果rows数据
       result.put("data", list);
       return util
@@ -73,25 +77,24 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         result.put("msg", "条件不能为空！");
         return result;
       }
-      int a = insertCustomerInfo();
+      List<Map<String, Object>> assemble = assemble(customerGroupCriteria);
+      String Sql = jointSql(assemble);
+      int a = insertCustomerInfo(Sql);
       if (a < -400) {
         result.put("code", "500");
         result.put("msg", "error");
         return result;
       }
-      int i = 1;
       StringBuilder builder = new StringBuilder();
-      for(Map<String,Object> map:customerGroupCriteria){
-        List<String> list =(List<String>) map.get("value");
-        String obj = String.join(";", list);
-        if(i==1){
-          builder.append(obj);
-        }else{
-        builder.append(";"+obj);
-        }
-        i++;
+      for (Map<String, Object> map : customerGroupCriteria) {
+        List<String> list = (List<String>) map.get("value");
+        String name = map.get("name").toString();
+        String obj = String.join(",", list);
+        builder.append(name + ":");
+        builder.append(obj + ";");
       }
       group.setCondition_desc(builder.toString());
+      group.setCondition_statement(Sql);
       group.setCust_group_id(str);
       group.setRefresh_status("0");
       group.setDelete_status("0");
@@ -138,19 +141,87 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     }
   }
 
-  String assemble(List<Map<String, String>> customerGroupCriteria) {
-    StringBuilder condition_statement = new StringBuilder();
-    for (Map<String, String> map : customerGroupCriteria) {
-      // String field = mapper.selectFieldById(map.get("id"));
-
+  List<Map<String, Object>> assemble(List<Map<String, Object>> customerGroupCriteria) {
+    RestTemplate restTemplate = new RestTemplate();
+    List<Map<String, Object>> condition = new ArrayList<>();
+    for (Map<String, Object> map : customerGroupCriteria) {
+      Map<String, Object> conditionMap = new HashedMap();
+      String id = map.get("id").toString();
+      List<String> list = (List<String>) map.get("value");
+      ResponseEntity<String> responseEntity = restTemplate
+          .getForEntity("http://localhost:8081/term/{EntityId}", String.class, id);
+      String body = responseEntity.getBody();
+      JSONObject json = JSONObject.fromObject(body);
+      JSONArray data = (JSONArray) json.get("data");
+      String englishName = ((JSONObject) data.get(0)).get("entityName").toString();
+      String type = ((JSONObject) data.get(0)).get("displayType").toString();
+      String logicType = ((JSONObject) data.get(0)).get("logicType").toString();
+      JSONObject physical = JSONObject.fromObject(((JSONObject) data.get(0)).get("physicalField")) ;
+      String table = physical.get("physicalDB") + "." + physical.get("physicalTable");
+      String str = null;
+      if (type.equals("Select-list")&&logicType.equals("代码")) {
+        StringBuilder v = new StringBuilder();
+        int a = 0;
+        for(String split:list){
+          if(a==0){
+            v.append("'").append(split).append("'");
+          }else{
+            v.append(",").append("'").append(split).append("'");
+          }
+          a++;
+        }
+        str = englishName + "in (" + v +")";
+      }
+      if(type.equals("Text")&&logicType.equals("文本")){
+        str = englishName + "like %" + list.get(0) +"%";
+      }
+      if(type.equals("Area")&&logicType.equals("度量")){
+        if(list.get(0).equals("大于")){
+          str = englishName + ">" + list.get(1);
+        }
+        if(list.get(0).equals("小于")){
+          str = englishName + "<" + list.get(1);
+        }
+        if(list.get(0).equals("大于等于")){
+          str = englishName + ">=" + list.get(1);
+        }
+        if(list.get(0).equals("小于等于")){
+          str = englishName + "<=" + list.get(1);
+        }
+        if(list.get(0).equals("等于")){
+          str = englishName + "=" + list.get(1);
+        }
+        if(list.get(0).equals("介于")){
+          str = englishName + "between" + list.get(1)+"and" +list.get(2);
+        }
+      }
+      if(type.equals("DateTime")&&logicType.equals("日期")){
+        str = englishName + "=" + list.get(0);
+      }
+      if(type.equals("Text")&&logicType.equals("编号")){
+        String[] splits = list.get(0).split(",");
+        StringBuilder v = new StringBuilder();
+        int a = 0;
+        for(String split:splits){
+          if(a==0){
+            v.append("'").append(split).append("'");
+          }else{
+            v.append(",").append("'").append(split).append("'");
+          }
+          a++;
+        }
+        str = englishName + "in (" + v +")";
+      }
+      conditionMap.put(table,str);
+      condition.add(conditionMap);
     }
-    return "";
+    return condition;
   }
 
-  String jointSql(List<Map<String, String>> jointConditions) {
+  String jointSql(List<Map<String, Object>> jointConditions) {
     Map<String, String> map = new LinkedHashMap<>();
     List<String> keys = new ArrayList<>();
-    for (Map<String, String> jointCondition : jointConditions) {
+    for (Map<String, Object> jointCondition : jointConditions) {
       Set<String> strings = jointCondition.keySet();
       List<String> lists = new ArrayList<>(strings);
       if (lists.isEmpty() || keys.contains(lists.get(0))) {
@@ -162,8 +233,8 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       int i = 0;
       StringBuilder value = new StringBuilder();
       value.append(" select distinct customer_no from " + keys.get(j));
-      for (Map<String, String> jointCondition : jointConditions) {
-        String str = jointCondition.get(keys.get(j));
+      for (Map<String, Object> jointCondition : jointConditions) {
+        String str = jointCondition.get(keys.get(j)).toString();
         if (str == null) {
           continue;
         }
@@ -178,10 +249,6 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       map.put(keys.get(j), value.toString());
     }
     StringBuilder sql = new StringBuilder();
-    //String string =
-    //"select '20160101' as init_date,condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y,0 as stock_choose_value,0 as exchange_value,0 as avg_concentrate,0 as avg_loss_rate from (";
-    // sql.append("select condition01.customer_no from (");
-    // sql.append(string);
     if (keys.size() == 0) {
       return sql.toString();
     } else {
@@ -199,26 +266,27 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     return sql.toString();
   }
 
-  public String listCustomersWithDim(CustomerGroup group) {
+  public String listCustomersWithDim(Map<String, Object> map) {
     try {
+      CustomerGroup group = new CustomerGroup();
+      group.setPage_size(Integer.valueOf(map.get("page_size").toString()));
+      group.setPage(Integer.valueOf(map.get("page").toString()));
+      List<Map<String, Object>> condition = (List<Map<String, Object>>)map.get("condition");
+      List<Map<String, Object>> subcondition =(List<Map<String, Object>>)map.get("subcondition");
+     if(subcondition!=null && !subcondition.isEmpty()){
+       for(Map<String, Object> map1:subcondition){
+         condition.add(map1);
+       }
+     }
+      List<Map<String, Object>> assemble = assemble(condition);
+      String jointSql = jointSql(assemble);
       StringBuilder sql = new StringBuilder();
       String string =
           "select '20160101' as init_date,condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y from (";
       sql.append(string);
-      List<Map<String, String>> list = new ArrayList<>();
-      Map<String, String> result = new HashMap<String, String>();
-      result.put("mtoi.dim_customer", "open_date>20140101");
-      list.add(result);
-      Map<String, String> result1 = new HashMap<String, String>();
-      result1.put("mtoi.agg_cust_statistics", "assure_debit_rate>=1.3");
-      list.add(result1);
-      Map<String, String> result2 = new HashMap<String, String>();
-      result2.put("mtoi.agg_cust_statistics", "branch_no in ('101')");
-      list.add(result2);
-      String sql1 = jointSql(list);
       String z = " left join mtoi.dim_customer cust on condition01.customer_no=cust.customer_no";
       String w = " left join (select * from mtoi.agg_cust_statistics where part_date = 20160101) main_data on condition01.customer_no=main_data.customer_no";
-      sql.append(sql1).append(z).append(w);
+      sql.append(jointSql).append(z).append(w);
       List<Map<String, Object>> Resultlist = HiveLink.selectHive(sql.toString(), jdbcPool);
       if (Resultlist.toString().contains("select error")) {
         return JsonResult.errorJson("error");
@@ -243,22 +311,11 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     }
   }
 
-  int insertCustomerInfo() {
+  int insertCustomerInfo(String sql1) {
     StringBuilder sql = new StringBuilder();
     String String =
         "insert overwrite table mtoi.cust_group_detail partition (part_group_id = 'CG000002',PART_DATE = 20160103) select 'CG000002' as part_group_id, '20160101' as init_date,condition01.customer_no,"
             + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
-    List<Map<String, String>> list = new ArrayList<>();
-    Map<String, String> result = new HashMap<String, String>();
-    result.put("mtoi.dim_customer", "open_date>20140101");
-    list.add(result);
-    Map<String, String> result1 = new HashMap<String, String>();
-    result1.put("mtoi.agg_cust_statistics", "assure_debit_rate>=1.3");
-    list.add(result1);
-    Map<String, String> result2 = new HashMap<String, String>();
-    result2.put("mtoi.agg_cust_statistics", "branch_no in ('101')");
-    list.add(result2);
-    String sql1 = jointSql(list);
     sql.append(String).append(sql1);
     return HiveLink.elseHive(sql.toString(), jdbcPool);
   }
@@ -299,7 +356,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     Map<String, Object> result = new HashMap<String, Object>();
     try {
       String sql = mapper.selectCondition(group);
-      if(sql==null){
+      if (sql == null) {
         result.put("code", "500");
         result.put("msg", "条件不能为空！");
         return result;
@@ -350,4 +407,6 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     map.put("option", list);
     return map;
   }
+
+
 }
