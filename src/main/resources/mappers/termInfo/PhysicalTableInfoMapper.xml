@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.termInfo.mapper.PhysicalTableInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.termInfo.pojo.PhysicalTableInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="physical_table_hash" property="physicalTableHash" jdbcType="VARCHAR" />
+    <result column="physical_table" property="physicalTable" jdbcType="VARCHAR" />
+    <result column="physical_db" property="physicalDb" jdbcType="VARCHAR" />
+    <result column="table_type" property="tableType" jdbcType="VARCHAR" />
+    <result column="table_name" property="tableName" jdbcType="VARCHAR" />
+    <result column="table_desc" property="tableDesc" jdbcType="VARCHAR" />
+    <result column="last_modified_time" property="lastModifiedTime" jdbcType="TIMESTAMP" />
+    <result column="partition_flag" property="partitionFlag" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.quantchi.termInfo.pojo.PhysicalTableInfo" extends="BaseResultMap" >
+    <result column="primary_key" property="primaryKey" jdbcType="LONGVARCHAR" />
+    <result column="foreign_key" property="foreignKey" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, physical_table_hash, physical_table, physical_db, table_type, table_name, table_desc, 
+    last_modified_time, partition_flag
+  </sql>
+  <sql id="Blob_Column_List" >
+    primary_key, foreign_key
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.quantchi.termInfo.pojo.PhysicalTableInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from md_physical_table_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.termInfo.pojo.PhysicalTableInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from md_physical_table_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from md_physical_table_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from md_physical_table_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.quantchi.termInfo.pojo.PhysicalTableInfoExample" >
+    delete from md_physical_table_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.quantchi.termInfo.pojo.PhysicalTableInfo" >
+    insert into md_physical_table_info (id, physical_table_hash, physical_table, 
+      physical_db, table_type, table_name, 
+      table_desc, last_modified_time, partition_flag, 
+      primary_key, foreign_key)
+    values (#{id,jdbcType=INTEGER}, #{physicalTableHash,jdbcType=VARCHAR}, #{physicalTable,jdbcType=VARCHAR}, 
+      #{physicalDb,jdbcType=VARCHAR}, #{tableType,jdbcType=VARCHAR}, #{tableName,jdbcType=VARCHAR}, 
+      #{tableDesc,jdbcType=VARCHAR}, #{lastModifiedTime,jdbcType=TIMESTAMP}, #{partitionFlag,jdbcType=VARCHAR}, 
+      #{primaryKey,jdbcType=LONGVARCHAR}, #{foreignKey,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.quantchi.termInfo.pojo.PhysicalTableInfo" >
+    insert into md_physical_table_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="physicalTableHash != null" >
+        physical_table_hash,
+      </if>
+      <if test="physicalTable != null" >
+        physical_table,
+      </if>
+      <if test="physicalDb != null" >
+        physical_db,
+      </if>
+      <if test="tableType != null" >
+        table_type,
+      </if>
+      <if test="tableName != null" >
+        table_name,
+      </if>
+      <if test="tableDesc != null" >
+        table_desc,
+      </if>
+      <if test="lastModifiedTime != null" >
+        last_modified_time,
+      </if>
+      <if test="partitionFlag != null" >
+        partition_flag,
+      </if>
+      <if test="primaryKey != null" >
+        primary_key,
+      </if>
+      <if test="foreignKey != null" >
+        foreign_key,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="physicalTableHash != null" >
+        #{physicalTableHash,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalTable != null" >
+        #{physicalTable,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalDb != null" >
+        #{physicalDb,jdbcType=VARCHAR},
+      </if>
+      <if test="tableType != null" >
+        #{tableType,jdbcType=VARCHAR},
+      </if>
+      <if test="tableName != null" >
+        #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="tableDesc != null" >
+        #{tableDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedTime != null" >
+        #{lastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="partitionFlag != null" >
+        #{partitionFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="primaryKey != null" >
+        #{primaryKey,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="foreignKey != null" >
+        #{foreignKey,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update md_physical_table_info
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.physicalTableHash != null" >
+        physical_table_hash = #{record.physicalTableHash,jdbcType=VARCHAR},
+      </if>
+      <if test="record.physicalTable != null" >
+        physical_table = #{record.physicalTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.physicalDb != null" >
+        physical_db = #{record.physicalDb,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tableType != null" >
+        table_type = #{record.tableType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tableName != null" >
+        table_name = #{record.tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tableDesc != null" >
+        table_desc = #{record.tableDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifiedTime != null" >
+        last_modified_time = #{record.lastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.partitionFlag != null" >
+        partition_flag = #{record.partitionFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.primaryKey != null" >
+        primary_key = #{record.primaryKey,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.foreignKey != null" >
+        foreign_key = #{record.foreignKey,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update md_physical_table_info
+    set id = #{record.id,jdbcType=INTEGER},
+      physical_table_hash = #{record.physicalTableHash,jdbcType=VARCHAR},
+      physical_table = #{record.physicalTable,jdbcType=VARCHAR},
+      physical_db = #{record.physicalDb,jdbcType=VARCHAR},
+      table_type = #{record.tableType,jdbcType=VARCHAR},
+      table_name = #{record.tableName,jdbcType=VARCHAR},
+      table_desc = #{record.tableDesc,jdbcType=VARCHAR},
+      last_modified_time = #{record.lastModifiedTime,jdbcType=TIMESTAMP},
+      partition_flag = #{record.partitionFlag,jdbcType=VARCHAR},
+      primary_key = #{record.primaryKey,jdbcType=LONGVARCHAR},
+      foreign_key = #{record.foreignKey,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update md_physical_table_info
+    set id = #{record.id,jdbcType=INTEGER},
+      physical_table_hash = #{record.physicalTableHash,jdbcType=VARCHAR},
+      physical_table = #{record.physicalTable,jdbcType=VARCHAR},
+      physical_db = #{record.physicalDb,jdbcType=VARCHAR},
+      table_type = #{record.tableType,jdbcType=VARCHAR},
+      table_name = #{record.tableName,jdbcType=VARCHAR},
+      table_desc = #{record.tableDesc,jdbcType=VARCHAR},
+      last_modified_time = #{record.lastModifiedTime,jdbcType=TIMESTAMP},
+      partition_flag = #{record.partitionFlag,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.termInfo.pojo.PhysicalTableInfo" >
+    update md_physical_table_info
+    <set >
+      <if test="physicalTableHash != null" >
+        physical_table_hash = #{physicalTableHash,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalTable != null" >
+        physical_table = #{physicalTable,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalDb != null" >
+        physical_db = #{physicalDb,jdbcType=VARCHAR},
+      </if>
+      <if test="tableType != null" >
+        table_type = #{tableType,jdbcType=VARCHAR},
+      </if>
+      <if test="tableName != null" >
+        table_name = #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="tableDesc != null" >
+        table_desc = #{tableDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedTime != null" >
+        last_modified_time = #{lastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="partitionFlag != null" >
+        partition_flag = #{partitionFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="primaryKey != null" >
+        primary_key = #{primaryKey,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="foreignKey != null" >
+        foreign_key = #{foreignKey,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.quantchi.termInfo.pojo.PhysicalTableInfo" >
+    update md_physical_table_info
+    set physical_table_hash = #{physicalTableHash,jdbcType=VARCHAR},
+      physical_table = #{physicalTable,jdbcType=VARCHAR},
+      physical_db = #{physicalDb,jdbcType=VARCHAR},
+      table_type = #{tableType,jdbcType=VARCHAR},
+      table_name = #{tableName,jdbcType=VARCHAR},
+      table_desc = #{tableDesc,jdbcType=VARCHAR},
+      last_modified_time = #{lastModifiedTime,jdbcType=TIMESTAMP},
+      partition_flag = #{partitionFlag,jdbcType=VARCHAR},
+      primary_key = #{primaryKey,jdbcType=LONGVARCHAR},
+      foreign_key = #{foreignKey,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.termInfo.pojo.PhysicalTableInfo" >
+    update md_physical_table_info
+    set physical_table_hash = #{physicalTableHash,jdbcType=VARCHAR},
+      physical_table = #{physicalTable,jdbcType=VARCHAR},
+      physical_db = #{physicalDb,jdbcType=VARCHAR},
+      table_type = #{tableType,jdbcType=VARCHAR},
+      table_name = #{tableName,jdbcType=VARCHAR},
+      table_desc = #{tableDesc,jdbcType=VARCHAR},
+      last_modified_time = #{lastModifiedTime,jdbcType=TIMESTAMP},
+      partition_flag = #{partitionFlag,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

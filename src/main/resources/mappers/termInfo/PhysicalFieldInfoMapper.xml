@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.termInfo.mapper.PhysicalFieldInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.termInfo.pojo.PhysicalFieldInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="entity_id" property="entityId" jdbcType="VARCHAR" />
+    <result column="physical_field_hash" property="physicalFieldHash" jdbcType="VARCHAR" />
+    <result column="physical_field" property="physicalField" jdbcType="VARCHAR" />
+    <result column="physical_field_desc" property="physicalFieldDesc" jdbcType="VARCHAR" />
+    <result column="physical_table" property="physicalTable" jdbcType="VARCHAR" />
+    <result column="physical_db" property="physicalDb" jdbcType="VARCHAR" />
+    <result column="data_type" property="dataType" jdbcType="VARCHAR" />
+    <result column="data_length" property="dataLength" jdbcType="INTEGER" />
+    <result column="data_precision" property="dataPrecision" jdbcType="INTEGER" />
+    <result column="data_pattern" property="dataPattern" jdbcType="VARCHAR" />
+    <result column="data_unit" property="dataUnit" jdbcType="VARCHAR" />
+    <result column="partition_flag" property="partitionFlag" jdbcType="VARCHAR" />
+    <result column="udc_rule_name" property="udcRuleName" jdbcType="VARCHAR" />
+    <result column="udc_code" property="udcCode" jdbcType="VARCHAR" />
+    <result column="max" property="max" jdbcType="DECIMAL" />
+    <result column="min" property="min" jdbcType="DECIMAL" />
+    <result column="avg" property="avg" jdbcType="DECIMAL" />
+    <result column="data_null" property="dataNull" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.quantchi.termInfo.pojo.PhysicalFieldInfo" extends="BaseResultMap" >
+    <result column="distribution" property="distribution" jdbcType="LONGVARCHAR" />
+    <result column="enumeration" property="enumeration" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, entity_id, physical_field_hash, physical_field, physical_field_desc, physical_table, 
+    physical_db, data_type, data_length, data_precision, data_pattern, data_unit, partition_flag, 
+    udc_rule_name, udc_code, max, min, avg, data_null
+  </sql>
+  <sql id="Blob_Column_List" >
+    distribution, enumeration
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.quantchi.termInfo.pojo.PhysicalFieldInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from md_physical_field_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.termInfo.pojo.PhysicalFieldInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from md_physical_field_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from md_physical_field_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from md_physical_field_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.quantchi.termInfo.pojo.PhysicalFieldInfoExample" >
+    delete from md_physical_field_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.quantchi.termInfo.pojo.PhysicalFieldInfo" >
+    insert into md_physical_field_info (id, entity_id, physical_field_hash, 
+      physical_field, physical_field_desc, physical_table, 
+      physical_db, data_type, data_length, 
+      data_precision, data_pattern, data_unit, 
+      partition_flag, udc_rule_name, udc_code, 
+      max, min, avg, data_null, 
+      distribution, enumeration)
+    values (#{id,jdbcType=INTEGER}, #{entityId,jdbcType=VARCHAR}, #{physicalFieldHash,jdbcType=VARCHAR}, 
+      #{physicalField,jdbcType=VARCHAR}, #{physicalFieldDesc,jdbcType=VARCHAR}, #{physicalTable,jdbcType=VARCHAR}, 
+      #{physicalDb,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, #{dataLength,jdbcType=INTEGER}, 
+      #{dataPrecision,jdbcType=INTEGER}, #{dataPattern,jdbcType=VARCHAR}, #{dataUnit,jdbcType=VARCHAR}, 
+      #{partitionFlag,jdbcType=VARCHAR}, #{udcRuleName,jdbcType=VARCHAR}, #{udcCode,jdbcType=VARCHAR}, 
+      #{max,jdbcType=DECIMAL}, #{min,jdbcType=DECIMAL}, #{avg,jdbcType=DECIMAL}, #{dataNull,jdbcType=DECIMAL}, 
+      #{distribution,jdbcType=LONGVARCHAR}, #{enumeration,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.quantchi.termInfo.pojo.PhysicalFieldInfo" >
+    insert into md_physical_field_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="entityId != null" >
+        entity_id,
+      </if>
+      <if test="physicalFieldHash != null" >
+        physical_field_hash,
+      </if>
+      <if test="physicalField != null" >
+        physical_field,
+      </if>
+      <if test="physicalFieldDesc != null" >
+        physical_field_desc,
+      </if>
+      <if test="physicalTable != null" >
+        physical_table,
+      </if>
+      <if test="physicalDb != null" >
+        physical_db,
+      </if>
+      <if test="dataType != null" >
+        data_type,
+      </if>
+      <if test="dataLength != null" >
+        data_length,
+      </if>
+      <if test="dataPrecision != null" >
+        data_precision,
+      </if>
+      <if test="dataPattern != null" >
+        data_pattern,
+      </if>
+      <if test="dataUnit != null" >
+        data_unit,
+      </if>
+      <if test="partitionFlag != null" >
+        partition_flag,
+      </if>
+      <if test="udcRuleName != null" >
+        udc_rule_name,
+      </if>
+      <if test="udcCode != null" >
+        udc_code,
+      </if>
+      <if test="max != null" >
+        max,
+      </if>
+      <if test="min != null" >
+        min,
+      </if>
+      <if test="avg != null" >
+        avg,
+      </if>
+      <if test="dataNull != null" >
+        data_null,
+      </if>
+      <if test="distribution != null" >
+        distribution,
+      </if>
+      <if test="enumeration != null" >
+        enumeration,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="entityId != null" >
+        #{entityId,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalFieldHash != null" >
+        #{physicalFieldHash,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalField != null" >
+        #{physicalField,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalFieldDesc != null" >
+        #{physicalFieldDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalTable != null" >
+        #{physicalTable,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalDb != null" >
+        #{physicalDb,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null" >
+        #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="dataLength != null" >
+        #{dataLength,jdbcType=INTEGER},
+      </if>
+      <if test="dataPrecision != null" >
+        #{dataPrecision,jdbcType=INTEGER},
+      </if>
+      <if test="dataPattern != null" >
+        #{dataPattern,jdbcType=VARCHAR},
+      </if>
+      <if test="dataUnit != null" >
+        #{dataUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="partitionFlag != null" >
+        #{partitionFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="udcRuleName != null" >
+        #{udcRuleName,jdbcType=VARCHAR},
+      </if>
+      <if test="udcCode != null" >
+        #{udcCode,jdbcType=VARCHAR},
+      </if>
+      <if test="max != null" >
+        #{max,jdbcType=DECIMAL},
+      </if>
+      <if test="min != null" >
+        #{min,jdbcType=DECIMAL},
+      </if>
+      <if test="avg != null" >
+        #{avg,jdbcType=DECIMAL},
+      </if>
+      <if test="dataNull != null" >
+        #{dataNull,jdbcType=DECIMAL},
+      </if>
+      <if test="distribution != null" >
+        #{distribution,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="enumeration != null" >
+        #{enumeration,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update md_physical_field_info
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.entityId != null" >
+        entity_id = #{record.entityId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.physicalFieldHash != null" >
+        physical_field_hash = #{record.physicalFieldHash,jdbcType=VARCHAR},
+      </if>
+      <if test="record.physicalField != null" >
+        physical_field = #{record.physicalField,jdbcType=VARCHAR},
+      </if>
+      <if test="record.physicalFieldDesc != null" >
+        physical_field_desc = #{record.physicalFieldDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.physicalTable != null" >
+        physical_table = #{record.physicalTable,jdbcType=VARCHAR},
+      </if>
+      <if test="record.physicalDb != null" >
+        physical_db = #{record.physicalDb,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataType != null" >
+        data_type = #{record.dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataLength != null" >
+        data_length = #{record.dataLength,jdbcType=INTEGER},
+      </if>
+      <if test="record.dataPrecision != null" >
+        data_precision = #{record.dataPrecision,jdbcType=INTEGER},
+      </if>
+      <if test="record.dataPattern != null" >
+        data_pattern = #{record.dataPattern,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataUnit != null" >
+        data_unit = #{record.dataUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.partitionFlag != null" >
+        partition_flag = #{record.partitionFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.udcRuleName != null" >
+        udc_rule_name = #{record.udcRuleName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.udcCode != null" >
+        udc_code = #{record.udcCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.max != null" >
+        max = #{record.max,jdbcType=DECIMAL},
+      </if>
+      <if test="record.min != null" >
+        min = #{record.min,jdbcType=DECIMAL},
+      </if>
+      <if test="record.avg != null" >
+        avg = #{record.avg,jdbcType=DECIMAL},
+      </if>
+      <if test="record.dataNull != null" >
+        data_null = #{record.dataNull,jdbcType=DECIMAL},
+      </if>
+      <if test="record.distribution != null" >
+        distribution = #{record.distribution,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.enumeration != null" >
+        enumeration = #{record.enumeration,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update md_physical_field_info
+    set id = #{record.id,jdbcType=INTEGER},
+      entity_id = #{record.entityId,jdbcType=VARCHAR},
+      physical_field_hash = #{record.physicalFieldHash,jdbcType=VARCHAR},
+      physical_field = #{record.physicalField,jdbcType=VARCHAR},
+      physical_field_desc = #{record.physicalFieldDesc,jdbcType=VARCHAR},
+      physical_table = #{record.physicalTable,jdbcType=VARCHAR},
+      physical_db = #{record.physicalDb,jdbcType=VARCHAR},
+      data_type = #{record.dataType,jdbcType=VARCHAR},
+      data_length = #{record.dataLength,jdbcType=INTEGER},
+      data_precision = #{record.dataPrecision,jdbcType=INTEGER},
+      data_pattern = #{record.dataPattern,jdbcType=VARCHAR},
+      data_unit = #{record.dataUnit,jdbcType=VARCHAR},
+      partition_flag = #{record.partitionFlag,jdbcType=VARCHAR},
+      udc_rule_name = #{record.udcRuleName,jdbcType=VARCHAR},
+      udc_code = #{record.udcCode,jdbcType=VARCHAR},
+      max = #{record.max,jdbcType=DECIMAL},
+      min = #{record.min,jdbcType=DECIMAL},
+      avg = #{record.avg,jdbcType=DECIMAL},
+      data_null = #{record.dataNull,jdbcType=DECIMAL},
+      distribution = #{record.distribution,jdbcType=LONGVARCHAR},
+      enumeration = #{record.enumeration,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update md_physical_field_info
+    set id = #{record.id,jdbcType=INTEGER},
+      entity_id = #{record.entityId,jdbcType=VARCHAR},
+      physical_field_hash = #{record.physicalFieldHash,jdbcType=VARCHAR},
+      physical_field = #{record.physicalField,jdbcType=VARCHAR},
+      physical_field_desc = #{record.physicalFieldDesc,jdbcType=VARCHAR},
+      physical_table = #{record.physicalTable,jdbcType=VARCHAR},
+      physical_db = #{record.physicalDb,jdbcType=VARCHAR},
+      data_type = #{record.dataType,jdbcType=VARCHAR},
+      data_length = #{record.dataLength,jdbcType=INTEGER},
+      data_precision = #{record.dataPrecision,jdbcType=INTEGER},
+      data_pattern = #{record.dataPattern,jdbcType=VARCHAR},
+      data_unit = #{record.dataUnit,jdbcType=VARCHAR},
+      partition_flag = #{record.partitionFlag,jdbcType=VARCHAR},
+      udc_rule_name = #{record.udcRuleName,jdbcType=VARCHAR},
+      udc_code = #{record.udcCode,jdbcType=VARCHAR},
+      max = #{record.max,jdbcType=DECIMAL},
+      min = #{record.min,jdbcType=DECIMAL},
+      avg = #{record.avg,jdbcType=DECIMAL},
+      data_null = #{record.dataNull,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.termInfo.pojo.PhysicalFieldInfo" >
+    update md_physical_field_info
+    <set >
+      <if test="entityId != null" >
+        entity_id = #{entityId,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalFieldHash != null" >
+        physical_field_hash = #{physicalFieldHash,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalField != null" >
+        physical_field = #{physicalField,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalFieldDesc != null" >
+        physical_field_desc = #{physicalFieldDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalTable != null" >
+        physical_table = #{physicalTable,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalDb != null" >
+        physical_db = #{physicalDb,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null" >
+        data_type = #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="dataLength != null" >
+        data_length = #{dataLength,jdbcType=INTEGER},
+      </if>
+      <if test="dataPrecision != null" >
+        data_precision = #{dataPrecision,jdbcType=INTEGER},
+      </if>
+      <if test="dataPattern != null" >
+        data_pattern = #{dataPattern,jdbcType=VARCHAR},
+      </if>
+      <if test="dataUnit != null" >
+        data_unit = #{dataUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="partitionFlag != null" >
+        partition_flag = #{partitionFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="udcRuleName != null" >
+        udc_rule_name = #{udcRuleName,jdbcType=VARCHAR},
+      </if>
+      <if test="udcCode != null" >
+        udc_code = #{udcCode,jdbcType=VARCHAR},
+      </if>
+      <if test="max != null" >
+        max = #{max,jdbcType=DECIMAL},
+      </if>
+      <if test="min != null" >
+        min = #{min,jdbcType=DECIMAL},
+      </if>
+      <if test="avg != null" >
+        avg = #{avg,jdbcType=DECIMAL},
+      </if>
+      <if test="dataNull != null" >
+        data_null = #{dataNull,jdbcType=DECIMAL},
+      </if>
+      <if test="distribution != null" >
+        distribution = #{distribution,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="enumeration != null" >
+        enumeration = #{enumeration,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.quantchi.termInfo.pojo.PhysicalFieldInfo" >
+    update md_physical_field_info
+    set entity_id = #{entityId,jdbcType=VARCHAR},
+      physical_field_hash = #{physicalFieldHash,jdbcType=VARCHAR},
+      physical_field = #{physicalField,jdbcType=VARCHAR},
+      physical_field_desc = #{physicalFieldDesc,jdbcType=VARCHAR},
+      physical_table = #{physicalTable,jdbcType=VARCHAR},
+      physical_db = #{physicalDb,jdbcType=VARCHAR},
+      data_type = #{dataType,jdbcType=VARCHAR},
+      data_length = #{dataLength,jdbcType=INTEGER},
+      data_precision = #{dataPrecision,jdbcType=INTEGER},
+      data_pattern = #{dataPattern,jdbcType=VARCHAR},
+      data_unit = #{dataUnit,jdbcType=VARCHAR},
+      partition_flag = #{partitionFlag,jdbcType=VARCHAR},
+      udc_rule_name = #{udcRuleName,jdbcType=VARCHAR},
+      udc_code = #{udcCode,jdbcType=VARCHAR},
+      max = #{max,jdbcType=DECIMAL},
+      min = #{min,jdbcType=DECIMAL},
+      avg = #{avg,jdbcType=DECIMAL},
+      data_null = #{dataNull,jdbcType=DECIMAL},
+      distribution = #{distribution,jdbcType=LONGVARCHAR},
+      enumeration = #{enumeration,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.termInfo.pojo.PhysicalFieldInfo" >
+    update md_physical_field_info
+    set entity_id = #{entityId,jdbcType=VARCHAR},
+      physical_field_hash = #{physicalFieldHash,jdbcType=VARCHAR},
+      physical_field = #{physicalField,jdbcType=VARCHAR},
+      physical_field_desc = #{physicalFieldDesc,jdbcType=VARCHAR},
+      physical_table = #{physicalTable,jdbcType=VARCHAR},
+      physical_db = #{physicalDb,jdbcType=VARCHAR},
+      data_type = #{dataType,jdbcType=VARCHAR},
+      data_length = #{dataLength,jdbcType=INTEGER},
+      data_precision = #{dataPrecision,jdbcType=INTEGER},
+      data_pattern = #{dataPattern,jdbcType=VARCHAR},
+      data_unit = #{dataUnit,jdbcType=VARCHAR},
+      partition_flag = #{partitionFlag,jdbcType=VARCHAR},
+      udc_rule_name = #{udcRuleName,jdbcType=VARCHAR},
+      udc_code = #{udcCode,jdbcType=VARCHAR},
+      max = #{max,jdbcType=DECIMAL},
+      min = #{min,jdbcType=DECIMAL},
+      avg = #{avg,jdbcType=DECIMAL},
+      data_null = #{dataNull,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="insertFields" parameterType="java.util.List">
+      INSERT INTO md_physical_field_info
+      (entity_id, physical_field_hash,
+      physical_field, physical_field_desc, physical_table,
+      physical_db, data_type, data_length,
+      data_precision, data_pattern, data_unit,
+      partition_flag, udc_rule_name, udc_code,
+      max, min, avg, data_null,
+      distribution, enumeration)
+      VALUES
+      <foreach collection="list" item="list" index="index" separator=",">
+            (
+            #{list.entity_id},
+            #{list.physical_field_hash},
+            #{list.physical_field},
+            #{list.physical_field_desc},
+            #{list.physical_table},
+            #{list.physical_db},
+            #{list.data_type},
+            #{list.data_length},
+            #{list.data_precision},
+            #{list.udc_rule_name},
+            #{list.data_pattern},
+            #{list.data_unit},
+            #{list.partition_flag},
+            #{list.udc_rule_name},
+            #{list.udc_code},
+            #{list.max},
+            #{list.min},
+            #{list.avg},
+            #{list.data_null},
+            #{list.distribution},
+            #{list.enumeration}
+            )
+      </foreach>
+  </insert>
+</mapper>
