@@ -175,7 +175,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         str = englishName + " in (" + v + ")";
       }
       if (type.equals("Text") && logicType.equals("文本")) {
-        str = englishName + " like %" + list.get(0) + "%";
+        str = englishName + " like '%" + list.get(0) + "%'";
       }
       if (type.equals("Area") && logicType.equals("度量")) {
         if (list.get(0).equals("大于")) {
