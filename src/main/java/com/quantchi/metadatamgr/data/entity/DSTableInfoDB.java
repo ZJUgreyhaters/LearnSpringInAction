@@ -69,7 +69,7 @@ public class DSTableInfoDB {
   }
 
   public void setTableEnglishName(String tableEnglishName) {
-    this.tableEnglishName = tableEnglishName == null ? null : tableEnglishName.trim();
+    this.tableEnglishName = tableEnglishName;
   }
 
   public String getTableChineseName() {
@@ -77,7 +77,7 @@ public class DSTableInfoDB {
   }
 
   public void setTableChineseName(String tableChineseName) {
-    this.tableChineseName = tableChineseName == null ? null : tableChineseName.trim();
+    this.tableChineseName = tableChineseName;
   }
 
   public String getDatasourceId() {
@@ -85,7 +85,7 @@ public class DSTableInfoDB {
   }
 
   public void setDatasourceId(String datasourceId) {
-    this.datasourceId = datasourceId == null ? null : datasourceId.trim();
+    this.datasourceId = datasourceId;
   }
 
   public String getBusiness() {
@@ -93,7 +93,7 @@ public class DSTableInfoDB {
   }
 
   public void setBusiness(String business) {
-    this.business = business == null ? null : business.trim();
+    this.business = business;
   }
 
   public Integer getStatus() {
