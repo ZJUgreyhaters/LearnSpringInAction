@@ -1,6 +1,7 @@
 package com.quantchi.metadatamgr.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.quantchi.common.AppProperties;
 import com.quantchi.metadatamgr.data.DSMetaInfo;
 import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
@@ -11,7 +12,15 @@ import com.quantchi.metadatamgr.data.mapper.DSFieldRelDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
 import com.quantchi.metadatamgr.extract.HiveExtractImp;
+import com.quantchi.termInfo.pojo.PhysicalFieldInfo;
+import com.quantchi.termInfo.pojo.PhysicalTableInfo;
+import com.quantchi.termInfo.pojo.TermGenInfo;
 import javafx.scene.effect.SepiaTone;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -440,5 +449,64 @@ public class MetaDataMgrApiService {
 
     public int relationDel(String relation_id){
         return dsFieldRelDBMapper.deleteByPrimaryKey(Integer.parseInt(relation_id));
+    }
+
+    public Boolean createTerm(String data_source_name) throws Exception{
+        Boolean bool = true;
+        List<TermGenInfo> termGenInfoList = new ArrayList<>();
+
+        //根据data_source_name获取所有表
+        DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
+        dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(data_source_name);
+        List<DSTableInfoDB> tableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
+        //遍历所有表
+        for(DSTableInfoDB dsTableInfoDB : tableInfoDBList){
+            TermGenInfo termGenInfo = new TermGenInfo();
+            PhysicalTableInfo physicalTableInfo = new PhysicalTableInfo();
+            physicalTableInfo.setTableName(dsTableInfoDB.getTableEnglishName());
+            physicalTableInfo.setPrimaryKey(dsTableInfoDB.getPrimaryKey());
+            String db = dsTableInfoDB.getTableEnglishName().split("\\.")[0];
+            physicalTableInfo.setPhysicalDb(db);
+            physicalTableInfo.setPrimaryKey(dsTableInfoDB.getPrimaryKey());
+            termGenInfo.setTableInfo(physicalTableInfo);
+
+            //获取表的所有列
+            DSFieldInfoDBExample dsFieldInfoDBExample = new DSFieldInfoDBExample();
+            dsFieldInfoDBExample.createCriteria().andTableIdEqualTo(dsTableInfoDB.getId().toString());
+            List<DSFieldInfoDB> dsFieldInfoDBList = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
+            List<PhysicalFieldInfo> physicalFieldInfoList = new ArrayList<>();
+            //遍历表的所有列
+            for(DSFieldInfoDB dsFieldInfoDB : dsFieldInfoDBList){
+                PhysicalFieldInfo physicalFieldInfo = new PhysicalFieldInfo();
+                physicalFieldInfo.setPhysicalField(dsFieldInfoDB.getFieldEnglishName());
+                physicalFieldInfo.setPhysicalDb(db);
+                physicalFieldInfo.setPhysicalTable(dsTableInfoDB.getTableEnglishName());
+                physicalFieldInfo.setDataType(dsFieldInfoDB.getFieldType());
+                if(dsFieldInfoDB.getFieldLength() == null){
+                    physicalFieldInfo.setDataLength(null);
+                }else{
+                    physicalFieldInfo.setDataLength(Integer.parseInt(dsFieldInfoDB.getFieldLength()));
+                }
+                physicalFieldInfoList.add(physicalFieldInfo);
+            }
+            termGenInfo.setFieldInfoList(physicalFieldInfoList);
+
+            //新建http请求
+            //调用term接口插入
+            String url = AppProperties.get("term.url");
+            HttpPost httpPost = new HttpPost(url);
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("termGenInfo",termGenInfo);
+            StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
+            entity.setContentType("UTF-8");
+            entity.setContentType("application/json");
+            httpPost.setEntity(entity);
+            HttpResponse resp = httpClient.execute(httpPost);
+            if(resp.getStatusLine().getStatusCode() != 200) {
+                bool = false;
+            }
+        }
+        return bool;
     }
 }

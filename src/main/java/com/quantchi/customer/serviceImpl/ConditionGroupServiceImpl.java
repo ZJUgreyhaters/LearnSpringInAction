@@ -148,7 +148,12 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
             map.put("customer_group_criteria_def",list);
             return map;
 
-        } catch (Exception e){
+        }catch (IndexOutOfBoundsException ie){
+            ie.printStackTrace();
+            map.put("code",500);
+            map.put("msg","数据库condition id不正确，condition id是从数据库中获取的，不要随便定义condition id");
+            return map;
+        }catch (Exception e){
             e.printStackTrace();
             map.put("code",500);
             map.put("msg","查询失败，请输入正确id");
