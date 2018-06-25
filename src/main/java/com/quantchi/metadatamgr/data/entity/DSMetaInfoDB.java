@@ -23,6 +23,8 @@ public class DSMetaInfoDB {
 
     private String createUserId;
 
+    private String table_num;
+
     public Integer getId() {
         return id;
     }
@@ -109,5 +111,13 @@ public class DSMetaInfoDB {
 
     public void setCreateUserId(String createUserId) {
         this.createUserId = createUserId == null ? null : createUserId.trim();
+    }
+
+    public String getTable_num() {
+        return table_num;
+    }
+
+    public void setTable_num(String table_num) {
+        this.table_num = table_num;
     }
 }
