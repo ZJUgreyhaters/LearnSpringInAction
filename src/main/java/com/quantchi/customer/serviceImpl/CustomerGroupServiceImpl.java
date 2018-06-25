@@ -236,10 +236,10 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       StringBuilder value = new StringBuilder();
       value.append(" select distinct customer_no from " + keys.get(j));
       for (Map<String, Object> jointCondition : jointConditions) {
-        String str = jointCondition.get(keys.get(j)).toString();
-        if (str == null) {
+        if (jointCondition.get(keys.get(j)) == null) {
           continue;
         }
+        String str = jointCondition.get(keys.get(j)).toString();
         i++;
         if (i == 1) {
           value.append(" where " + str);
