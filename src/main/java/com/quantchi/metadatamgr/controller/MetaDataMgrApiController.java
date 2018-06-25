@@ -1,10 +1,16 @@
 package com.quantchi.metadatamgr.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.quantchi.common.AppProperties;
 import com.quantchi.common.util;
 import com.quantchi.metadatamgr.service.MetaDataMgrApiService;
+import com.quantchi.termInfo.pojo.TermGenInfo;
 import com.quantchi.tianshu.common.web.Status;
 import com.quantchi.transport.controller.SearchApiController;
+import javafx.application.Application;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.Logger;
@@ -303,5 +309,31 @@ public class MetaDataMgrApiController {
             return responseMap;
         }
 
+    }
+
+    @RequestMapping(value = "/source/createterm", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> createTerm(@RequestBody String bodyString){
+        Map<String, Object> responseMap = new HashMap<>();
+        try{
+            JSONObject json = JSONObject.parseObject(bodyString);
+            if(json.getString("data_source_name") == null){
+                throw new Exception("miss data source name");
+            }
+            Boolean bool = metaDataMgrApiService.createTerm(json.getString("data_source_name"));
+            if(bool == true){
+                responseMap.put("code",200);
+                responseMap.put("msg","成功");
+            }else {
+                responseMap.put("code",500);
+                responseMap.put("msg","失败");
+            }
+            return responseMap;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            responseMap.put("code",500);
+            responseMap.put("msg",e.getMessage());
+            return responseMap;
+        }
     }
 }

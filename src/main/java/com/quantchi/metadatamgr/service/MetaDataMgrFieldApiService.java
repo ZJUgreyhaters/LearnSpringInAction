@@ -70,6 +70,7 @@ public class MetaDataMgrFieldApiService {
             fieldMap.put("type",dsFieldInfoDB.getFieldType());
             fieldMap.put("length",dsFieldInfoDB.getFieldLength());
             fieldMap.put("isterm",dsFieldInfoDB.getIsterm());
+            fieldMap.put("id",dsFieldInfoDB.getId());
             mapList.add(fieldMap);
         }
         map.put("data", mapList);
