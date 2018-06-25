@@ -151,8 +151,7 @@ public class TermInfoServiceImpl implements TermInfoService {
 
 
       if(termGenInfo.getTableInfo() == null
-      || termGenInfo.getFieldInfoList() == null
-      || termGenInfo.getTermMainInfo() == null )
+      || termGenInfo.getFieldInfoList() == null)
           return JsonResult.errorJson("miss table or field or term info");
 
       try {
@@ -163,7 +162,7 @@ public class TermInfoServiceImpl implements TermInfoService {
           physicalFieldInfoMapper.insertFields(termGenInfo.getFieldInfoList());
 
           //术语主信息插入
-          termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
+          //termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
 
           return JsonResult.successJson();
       }catch (Exception e){
