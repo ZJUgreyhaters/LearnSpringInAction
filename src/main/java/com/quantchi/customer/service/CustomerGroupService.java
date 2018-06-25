@@ -20,7 +20,7 @@ public interface CustomerGroupService {
 
   public String listCustomersWithDim(Map<String, Object> map);
 
-  public Map<String,Object> listCustomersByCustomerGroupId(CustomerGroup group);
+  public String listCustomersByCustomerGroupId(CustomerGroup group);
 
   public List<Map<String,Object>> exportCustomerList(CustomerGroup group);
 
