@@ -65,19 +65,20 @@ public class MetaDataMgrApiController {
                 String port = json.get("data_source_port").toString();
                 String username = json.get("data_source_username").toString();
                 String pswd = json.get("data_source_passwd").toString();
-                boolean _ret = metaDataMgrApiService.connectTest(host,port,username,pswd);
-                if(json.getString("data_source_type").equals("hive")){
+                if(json.getString("data_source_type").toLowerCase().equals("hive")){
                     if(json.get("data_source_mysql_url") == null
                             || json.get("data_source_mysql_usr") == null
                             || json.get("data_source_mysql_pswd") == null)
                         throw new Exception("miss data source meta connection info");
                     String url = json.getString("data_source_mysql_url");
-                    String mysql_user = json.getString("data_source_port");
+                    String mysql_user = json.getString("data_source_mysql_usr");
                     String mysql_pswd = json.getString("data_source_mysql_pswd");
                     boolean _retMeta =  metaDataMgrApiService.connectMysqlTest(url,mysql_user,mysql_pswd);
                     if(!_retMeta)
-                        return util.genRet(201,_ret,"meta 数据库连接失败",0);
+                        return util.genRet(201,false,"meta 数据库连接失败",0);
                 }
+
+                boolean _ret = metaDataMgrApiService.connectTest(host,port,username,pswd);
                 if(_ret)
                     return util.genRet(200,_ret,"连接成功",0);
                 else
