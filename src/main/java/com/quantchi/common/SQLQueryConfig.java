@@ -29,6 +29,17 @@ public class SQLQueryConfig {
     @Value("${sel.ids.names}")
     private String SEL_IDS_NAMES;
 
+    @Value("${restTemplate.url}")
+    private String REST_TEMPLATE_URL;
+
+    public String getREST_TEMPLATE_URL() {
+        return REST_TEMPLATE_URL;
+    }
+
+    public void setREST_TEMPLATE_URL(String REST_TEMPLATE_URL) {
+        this.REST_TEMPLATE_URL = REST_TEMPLATE_URL;
+    }
+
     public String getSEL_IDS_NAMES() {
         return SEL_IDS_NAMES;
     }

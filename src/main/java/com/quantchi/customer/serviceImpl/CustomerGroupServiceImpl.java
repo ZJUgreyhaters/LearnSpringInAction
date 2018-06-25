@@ -149,8 +149,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       Map<String, Object> conditionMap = new HashedMap();
       String id = map.get("id").toString();
       List<String> list = (List<String>) map.get("value");
+      String url = sqlQueryConfig.getREST_TEMPLATE_URL();
       ResponseEntity<String> responseEntity = restTemplate
-          .getForEntity("http://localhost:8081/term/{EntityId}", String.class, id);
+          .getForEntity(url, String.class, id);
       String body = responseEntity.getBody();
       JSONObject json = JSONObject.fromObject(body);
       JSONArray data = (JSONArray) json.get("data");
