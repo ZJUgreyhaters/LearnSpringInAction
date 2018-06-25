@@ -351,7 +351,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       }
 
       PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(list);
-      String str = JsonResult.successJson(total+"",list);
+      String str = JsonResult.successJson(total + "", list);
       return str.replaceAll("customer_no", "客户号")
           .replaceAll("customer_name", "姓名").replaceAll("fin_balance", "融资负债（万元）")
           .replaceAll("total_asset", "总资产（万元}").replaceAll("assure_debit_rate", "维保比例")
@@ -413,7 +413,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     String names = sqlQueryConfig.getSEL_NAMES();
     String[] split2 = names.split(",");
     List<String> nameList = new ArrayList<>();
-    for(String sp:split2){
+    for (String sp : split2) {
       String[] split = sp.split("\\.");
       nameList.add(split[1]);
     }
@@ -422,17 +422,17 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       for (Map<String, Object> map1 : list1) {
         String dataUDCDesc = map1.get("dataUDCDesc").toString();
         String entityId = map1.get("entityId").toString();
-          Map<String, Object> map2 = new HashedMap();
-          int a = 0;
-          for (Map<String, Object> result : Resultlist) {
-            if (dataUDCDesc.equals(result.get(name))) {
-              a++;
-            }
+        Map<String, Object> map2 = new HashedMap();
+        int a = 0;
+        for (Map<String, Object> result : Resultlist) {
+          if (dataUDCDesc.equals(result.get(name))) {
+            a++;
           }
-          map2.put("id", entityId);
-          map2.put("value", dataUDCDesc);
-          map2.put("number", a);
-          list.add(map2);
+        }
+        map2.put("id", entityId);
+        map2.put("value", dataUDCDesc);
+        map2.put("number", a);
+        list.add(map2);
       }
     }
     String[] split = idsNames.split(",");

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.map.HashedMap;
@@ -29,7 +30,7 @@ public class HiveLink {
       ResultSetMetaData md = rs.getMetaData();
       int columnCount = md.getColumnCount(); // 获得列数
       while (rs.next()) {
-        Map<String, Object> map = new HashedMap();
+        Map<String, Object> map = new LinkedHashMap();
         for (int i = 1; i <= columnCount; i++) {
           String columnName ;
           if (md.getColumnName(i).contains(".")) {
