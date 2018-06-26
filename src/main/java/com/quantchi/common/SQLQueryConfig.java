@@ -32,6 +32,72 @@ public class SQLQueryConfig {
     @Value("${restTemplate.url}")
     private String REST_TEMPLATE_URL;
 
+    @Value("${sel.hive.customer.ratio}")
+    private String SEL_HIVE_COUNTRY_RATIO;
+
+    @Value("${sel.hive.customer.analyze}")
+    private String SEL_HIVE_COUNTRY_ANALYZE;
+
+    @Value("${sel.hive.customer.yield}")
+    private String SEL_HIVE_COUNTRY_YIELD;
+
+    @Value("${sel.hive.customer.grade}")
+    private String SEL_HIVE_COUNTRY_GRADE;
+
+    @Value("${sel.hive.customer.department}")
+    private String SEL_HIVE_COUNTRY_DEPARTMENT;
+
+    @Value("${sel.hive.customer.preference}")
+    private String SEL_HIVE_COUNTRY_PREFERENCE;
+
+    public String getSEL_HIVE_COUNTRY_RATIO() {
+        return SEL_HIVE_COUNTRY_RATIO;
+    }
+
+    public void setSEL_HIVE_COUNTRY_RATIO(String SEL_HIVE_COUNTRY_RATIO) {
+        this.SEL_HIVE_COUNTRY_RATIO = SEL_HIVE_COUNTRY_RATIO;
+    }
+
+    public String getSEL_HIVE_COUNTRY_ANALYZE() {
+        return SEL_HIVE_COUNTRY_ANALYZE;
+    }
+
+    public void setSEL_HIVE_COUNTRY_ANALYZE(String SEL_HIVE_COUNTRY_ANALYZE) {
+        this.SEL_HIVE_COUNTRY_ANALYZE = SEL_HIVE_COUNTRY_ANALYZE;
+    }
+
+    public String getSEL_HIVE_COUNTRY_YIELD() {
+        return SEL_HIVE_COUNTRY_YIELD;
+    }
+
+    public void setSEL_HIVE_COUNTRY_YIELD(String SEL_HIVE_COUNTRY_YIELD) {
+        this.SEL_HIVE_COUNTRY_YIELD = SEL_HIVE_COUNTRY_YIELD;
+    }
+
+    public String getSEL_HIVE_COUNTRY_GRADE() {
+        return SEL_HIVE_COUNTRY_GRADE;
+    }
+
+    public void setSEL_HIVE_COUNTRY_GRADE(String SEL_HIVE_COUNTRY_GRADE) {
+        this.SEL_HIVE_COUNTRY_GRADE = SEL_HIVE_COUNTRY_GRADE;
+    }
+
+    public String getSEL_HIVE_COUNTRY_DEPARTMENT() {
+        return SEL_HIVE_COUNTRY_DEPARTMENT;
+    }
+
+    public void setSEL_HIVE_COUNTRY_DEPARTMENT(String SEL_HIVE_COUNTRY_DEPARTMENT) {
+        this.SEL_HIVE_COUNTRY_DEPARTMENT = SEL_HIVE_COUNTRY_DEPARTMENT;
+    }
+
+    public String getSEL_HIVE_COUNTRY_PREFERENCE() {
+        return SEL_HIVE_COUNTRY_PREFERENCE;
+    }
+
+    public void setSEL_HIVE_COUNTRY_PREFERENCE(String SEL_HIVE_COUNTRY_PREFERENCE) {
+        this.SEL_HIVE_COUNTRY_PREFERENCE = SEL_HIVE_COUNTRY_PREFERENCE;
+    }
+
     public String getREST_TEMPLATE_URL() {
         return REST_TEMPLATE_URL;
     }

@@ -8,6 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.map.HashedMap;
@@ -22,7 +23,7 @@ public class HiveLink {
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
-    List<Map<String, Object>> list = new ArrayList<>();
+    List<Map<String, Object>> list = new LinkedList<>();
     try {
       conn = jdbcPool.getConnection();
       pstmt = conn.prepareStatement(sql);

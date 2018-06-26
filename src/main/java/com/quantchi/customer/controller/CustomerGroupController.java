@@ -3,12 +3,14 @@ package com.quantchi.customer.controller;
 import com.quantchi.common.ExportUtil;
 import com.quantchi.customer.pojo.CustomerGroup;
 import com.quantchi.customer.service.CustomerGroupService;
+import com.quantchi.customer.service.CustomerPortrayalService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +25,9 @@ public class CustomerGroupController {
 
   @Autowired
   private CustomerGroupService service;
+
+  @Autowired
+  private CustomerPortrayalService customerPortrayalService;
 
   //客群列表查看
   @ResponseBody
@@ -112,5 +117,40 @@ public class CustomerGroupController {
   public Map<String, Object> refreshCustomerGroup(@RequestBody CustomerGroup group) {
 
     return service.refreshCustomerGroup(group);
+  }
+
+  //客群画像
+  @ResponseBody
+  @RequestMapping(value = "/customerGroupPortrayal/{type}", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+  public String customerGroupPortrayal(@PathVariable String type,@RequestBody CustomerGroup group) {
+   String result ="";
+    switch (type) {
+      case "1": {
+        result = customerPortrayalService.selectRatio(group);
+        break;
+      }
+      case "2": {
+        result = customerPortrayalService.selectAnalyze(group);
+        break;
+      }
+      case "3": {
+        result = customerPortrayalService.selectYield(group);
+        break;
+      }
+      case "4": {
+        result = customerPortrayalService.selectGrade(group);
+        break;
+      }
+      case "5": {
+       result = customerPortrayalService.selectDepartment(group);
+        break;
+      }
+      case "6": {
+        result = customerPortrayalService.selectPreference(group);
+        break;
+      }
+
+    }
+    return result;
   }
 }
