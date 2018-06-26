@@ -525,25 +525,22 @@ public class MetaDataMgrApiService {
                 physicalFieldInfoList.add(physicalFieldInfo);
             }
             termGenInfo.setFieldInfoList(physicalFieldInfoList);
+            termGenInfoList.add(termGenInfo);
 
-            //新建http请求
-            //调用term接口插入
-            String url = AppProperties.get("term.url");
-            HttpPost httpPost = new HttpPost(url);
-            CloseableHttpClient httpClient = HttpClients.createDefault();
+        }
+        //新建http请求
+        //调用term接口插入
+        String url = AppProperties.get("term.url");
+        HttpPost httpPost = new HttpPost(url);
+        CloseableHttpClient httpClient = HttpClients.createDefault();
 
-            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("termGenInfo",termGenInfo);
-            jsonObject.put("tableInfo",physicalTableInfo);
-            jsonObject.put("fieldInfoList",physicalFieldInfoList);
-            StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
-            entity.setContentType("UTF-8");
-            entity.setContentType("application/json");
-            httpPost.setEntity(entity);
-            HttpResponse resp = httpClient.execute(httpPost);
-            if(resp.getStatusLine().getStatusCode() != 200) {
-                bool = false;
-            }
+        StringEntity entity = new StringEntity(JSONObject.toJSONString(termGenInfoList), "utf-8");
+        entity.setContentType("UTF-8");
+        entity.setContentType("application/json");
+        httpPost.setEntity(entity);
+        HttpResponse resp = httpClient.execute(httpPost);
+        if(resp.getStatusLine().getStatusCode() != 200) {
+            bool = false;
         }
         return bool;
     }
