@@ -163,6 +163,13 @@ public class TermInfoServiceImpl implements TermInfoService {
                 || termGenInfo.getFieldInfoList() == null)
           throw new Exception("miss table or field or term info");
 
+        Map<String,String> _entityIdMap = new HashMap<>();
+
+        for(PhysicalFieldInfo fieldInfo:termGenInfo.getFieldInfoList()){
+            String _uuid = UUID.randomUUID().toString().replace("-","");
+            fieldInfo.setEntityId(_uuid);
+            _entityIdMap.put(fieldInfo.getPhysicalDb()+"."+fieldInfo.getPhysicalTable()+"."+fieldInfo.getPhysicalField(),_uuid);
+        }
 
         //插入表信息
         physicalTableInfoMapper.insert(termGenInfo.getTableInfo());
@@ -175,7 +182,7 @@ public class TermInfoServiceImpl implements TermInfoService {
         for (PhysicalFieldInfo field : termGenInfo.getFieldInfoList()) {
           TermMainInfo _term = new TermMainInfo();
           //from insert field entity_id
-          _term.setEntityId("");
+          _term.setEntityId(_entityIdMap.get(field.getPhysicalDb()+"."+field.getPhysicalTable()+"."+field.getPhysicalField()));
           _term.setEntityType(ENTITY_TYPE);
           _term.setEntityName(field.getPhysicalField());
           _term.setEntityDesc(field.getPhysicalFieldDesc());
