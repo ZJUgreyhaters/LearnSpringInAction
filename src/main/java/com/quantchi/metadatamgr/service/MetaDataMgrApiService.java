@@ -1,12 +1,19 @@
 package com.quantchi.metadatamgr.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.quantchi.common.util;
+import com.quantchi.common.AppProperties;
 import com.quantchi.metadatamgr.data.DSMetaInfo;
 import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
 import com.quantchi.metadatamgr.data.KeyInfo;
-import com.quantchi.metadatamgr.data.entity.*;
+import com.quantchi.metadatamgr.data.entity.DSFieldInfoDB;
+import com.quantchi.metadatamgr.data.entity.DSFieldInfoDBExample;
+import com.quantchi.metadatamgr.data.entity.DSFieldRelDB;
+import com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample;
+import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
+import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
+import com.quantchi.metadatamgr.data.entity.DSTableInfoDB;
+import com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample;
 import com.quantchi.metadatamgr.data.mapper.DSFieldInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSFieldRelDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
@@ -15,7 +22,12 @@ import com.quantchi.metadatamgr.extract.HiveExtractImp;
 import com.quantchi.termInfo.pojo.PhysicalFieldInfo;
 import com.quantchi.termInfo.pojo.PhysicalTableInfo;
 import com.quantchi.termInfo.pojo.TermGenInfo;
-import javafx.scene.effect.SepiaTone;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -25,8 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 public class MetaDataMgrApiService {
