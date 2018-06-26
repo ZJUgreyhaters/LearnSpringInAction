@@ -540,7 +540,7 @@ public class MetaDataMgrApiService {
         httpPost.setEntity(entity);
         HttpResponse resp = httpClient.execute(httpPost);
         if(resp.getStatusLine().getStatusCode() != 200) {
-            bool = false;
+
         }
         return bool;
     }
