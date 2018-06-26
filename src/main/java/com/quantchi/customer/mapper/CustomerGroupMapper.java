@@ -23,4 +23,6 @@ public interface CustomerGroupMapper {
   String selectCondition(CustomerGroup group);
 
   List<Map<String,Object>> selectUdc(@Param("entityIds") String entityIds);
+
+  List<Map<String,Object>> selectName(CustomerGroup customerGroup);
 }

@@ -68,6 +68,12 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       List<Map<String, Object>> customerGroupCriteria) {
     Map<String, Object> result = new HashMap<String, Object>();
     try {
+      List<Map<String, Object>> list1 = mapper.selectName(group);
+      if (list1!=null&&list1.size()>0) {
+        result.put("code", "500");
+        result.put("msg", "客群名称已存在！");
+        return result;
+      }
       sub(customerGroupCriteria);
       String str = mapper.selectCustGroupId();
       if (str == null) {
@@ -80,7 +86,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       }
       List<Map<String, Object>> assemble = assemble(customerGroupCriteria);
       String Sql = jointSql(assemble);
-      int a = insertCustomerInfo(Sql);
+      int a = insertCustomerInfo(Sql, str);
       if (a < -400) {
         result.put("code", "500");
         result.put("msg", "error");
@@ -329,10 +335,12 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     }
   }
 
-  int insertCustomerInfo(String sql1) {
+  int insertCustomerInfo(String sql1, String str) {
     StringBuilder sql = new StringBuilder();
     String String =
-        "insert overwrite table mtoi.cust_group_detail partition (part_group_id = 'CG000002',PART_DATE = 20160103) select 'CG000002' as part_group_id, '20160101' as init_date,condition01.customer_no,"
+        "insert overwrite table mtoi.cust_group_detail partition (part_group_id = '" + str
+            + "',PART_DATE = 20160103) select '" + str
+            + "' as part_group_id, '20160101' as init_date,condition01.customer_no,"
             + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
     sql.append(String).append(sql1);
     return HiveLink.elseHive(sql.toString(), jdbcPool);
@@ -342,6 +350,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_KLINE_COUNTRY_BY_COUNTRY();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
+      if (group.getCustomer_name() != null && group.getCustomer_name().length() > 0) {
+        sqlQuery = sqlQuery + " where cust.customer_name like '%" + group.getCustomer_name() + "%'";
+      }
       List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return JsonResult.errorJson("error");

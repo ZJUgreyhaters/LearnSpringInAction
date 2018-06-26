@@ -77,4 +77,7 @@
       AND a.entity_id IN (${entityIds})
     </if>
   </select>
+  <select id="selectName" resultType="java.util.Map">
+    select cust_group_name from dmp.cust_group_header WHERE cust_group_name =#{cust_group_name}
+  </select>
 </mapper>

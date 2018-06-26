@@ -8,11 +8,9 @@ import com.quantchi.termInfo.mapper.TermInfoMapper;
 import com.quantchi.termInfo.mapper.TermMainInfoMapper;
 import com.quantchi.termInfo.pojo.*;
 import com.quantchi.termInfo.service.TermInfoService;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +59,8 @@ public class TermInfoServiceImpl implements TermInfoService {
       .asList("levelName", "entityId", "themeName", "category1", "category2", "suitableType",
           "category3",
           "suitableCondition");
+
+  private static String ENTITY_TYPE = "1";
 
   @Override
   public String selectTermAll(TermInfoPojo termInfoPojo) {
@@ -147,28 +147,47 @@ public class TermInfoServiceImpl implements TermInfoService {
 
   @Transactional
   @Override
-  public String insertTerm(TermGenInfo termGenInfo){
+  public String insertTerm(ArrayList<TermGenInfo> termGenInfos){
+    try {
+      for(TermGenInfo termGenInfo:termGenInfos) {
+        if (termGenInfo.getTableInfo() == null
+                || termGenInfo.getFieldInfoList() == null)
+          throw new Exception("miss table or field or term info");
 
 
-      if(termGenInfo.getTableInfo() == null
-      || termGenInfo.getFieldInfoList() == null)
-          return JsonResult.errorJson("miss table or field or term info");
+        //插入表信息
+        physicalTableInfoMapper.insert(termGenInfo.getTableInfo());
 
-      try {
-          //插入表信息
-          physicalTableInfoMapper.insert(termGenInfo.getTableInfo());
+        //插入字段信息
+        physicalFieldInfoMapper.insertFields(termGenInfo.getFieldInfoList());
 
-          //插入字段信息
-          physicalFieldInfoMapper.insertFields(termGenInfo.getFieldInfoList());
+        //术语主信息插入
+        List<TermMainInfo> _termlist = new ArrayList<TermMainInfo>();
+        for (PhysicalFieldInfo field : termGenInfo.getFieldInfoList()) {
+          TermMainInfo _term = new TermMainInfo();
+          //from insert field entity_id
+          _term.setEntityId("");
+          _term.setEntityType(ENTITY_TYPE);
+          _term.setEntityName(field.getPhysicalField());
+          _term.setEntityDesc(field.getPhysicalFieldDesc());
+          _term.setTechniqueRule("select " + field.getPhysicalField() + " from " + field.getPhysicalDb() + "." + field.getPhysicalTable());
+          _term.setEntityStatus("正常");
+          _term.setCreateTime(new Date());
 
-          //术语主信息插入
-          //termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
 
-          return JsonResult.successJson();
-      }catch (Exception e){
-          e.printStackTrace();
-          return JsonResult.errorJson(e.getMessage());
+        }
+
+
+        //termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
+
+
+
       }
+      return JsonResult.successJson();
+    }catch (Exception e){
+      e.printStackTrace();
+      return JsonResult.errorJson(e.getMessage());
+    }
 
   }
 
