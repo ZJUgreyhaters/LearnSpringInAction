@@ -295,11 +295,11 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       String string = null;
       if (names != null && names.length() > 0) {
         string =
-            "select '20160101' as init_date," + names
+            "select " + names
                 + "condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y from (";
       } else {
         string =
-            "select '20160101' as init_date,condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y from (";
+            "select condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y from (";
       }
       sql.append(string);
       String z = " left join mtoi.dim_customer cust on condition01.customer_no=cust.customer_no";
@@ -377,6 +377,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
   public List<Map<String, Object>> exportCustomerList(CustomerGroup group) {
     String sqlQuery = sqlQueryConfig.getSEL_KLINE_COUNTRY_BY_COUNTRY();
     sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
+    if (group.getCustomer_name() != null && group.getCustomer_name().length() > 0) {
+      sqlQuery = sqlQuery + " where cust.customer_name like '%" + group.getCustomer_name() + "%'";
+    }
     List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
     return list;
   }
@@ -390,7 +393,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         result.put("msg", "条件不能为空！");
         return result;
       }
-      int a = updateCustomerInfo(sql);
+      int a = updateCustomerInfo(sql,group.getCust_group_id());
       if (a < -400) {
         result.put("code", "500");
         result.put("msg", "error");
@@ -409,10 +412,10 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     }
   }
 
-  int updateCustomerInfo(String sql1) {
+  int updateCustomerInfo(String sql1,String id) {
     StringBuilder sql = new StringBuilder();
     String String =
-        "insert overwrite table mtoi.cust_group_detail partition (part_group_id = 'CG000002',PART_DATE = 20160103) select 'CG000002' as part_group_id, '20160101' as init_date,condition01.customer_no,"
+        "insert overwrite table mtoi.cust_group_detail partition (part_group_id = '"+id+"',PART_DATE = 20160103) select '"+id+"' as part_group_id, '20160101' as init_date,condition01.customer_no,"
             + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
     sql.append(String).append(sql1);
     return HiveLink.elseHive(sql.toString(), jdbcPool);
@@ -438,6 +441,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         int a = 0;
         for (Map<String, Object> result : Resultlist) {
           if (dataUDCDesc.equals(result.get(name))) {
+            result.remove(name);
             a++;
           }
         }

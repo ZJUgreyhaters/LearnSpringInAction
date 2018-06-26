@@ -158,6 +158,7 @@ public class TermInfoServiceImpl implements TermInfoService {
   @Override
   public String insertTerm(ArrayList<TermGenInfo> termGenInfos){
     try {
+      List<TermMainInfo> _termlist = new ArrayList<TermMainInfo>();
       for(TermGenInfo termGenInfo:termGenInfos) {
         if (termGenInfo.getTableInfo() == null
                 || termGenInfo.getFieldInfoList() == null)
@@ -178,7 +179,7 @@ public class TermInfoServiceImpl implements TermInfoService {
         physicalFieldInfoMapper.insertFields(termGenInfo.getFieldInfoList());
 
         //术语主信息插入
-        List<TermMainInfo> _termlist = new ArrayList<TermMainInfo>();
+
         for (PhysicalFieldInfo field : termGenInfo.getFieldInfoList()) {
           TermMainInfo _term = new TermMainInfo();
           //from insert field entity_id
@@ -204,7 +205,7 @@ public class TermInfoServiceImpl implements TermInfoService {
 
 
       }
-      return JsonResult.successJson();
+      return JsonResult.successJson(_termlist.size());
     }catch (Exception e){
       e.printStackTrace();
       return JsonResult.errorJson(e.getMessage());

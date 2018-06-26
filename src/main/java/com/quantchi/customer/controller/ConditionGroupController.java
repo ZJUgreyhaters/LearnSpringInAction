@@ -142,6 +142,9 @@ public class ConditionGroupController {
 
                 List<Map<String,Object>> mapList = (List<Map<String,Object>>)jsondata.get("entitys");
                 for(Map<String,Object> entityMap : mapList){
+                    if(entityMap.get("displayType").equals("DateTime") || entityMap.get("displayType").equals("Select-tree")){
+                        continue;
+                    }
                     Map<String,Object> responseEntityMap = new HashMap<>();
                     Map<String, Object> selectMap = (Map<String, Object>)entityMap.get("physicalField");
                     responseEntityMap.put("id", selectMap.get("entityId"));
