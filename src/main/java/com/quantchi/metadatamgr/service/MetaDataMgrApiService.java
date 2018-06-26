@@ -144,6 +144,26 @@ public class MetaDataMgrApiService {
 
     public boolean delMetaInfo(String dsName){
         boolean ret = false;
+        //获取数据源表
+        DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
+        dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsName);
+        List<DSTableInfoDB> dsTableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
+        if(dsTableInfoDBList.size() != 0){
+            for(DSTableInfoDB dsTableInfoDB : dsTableInfoDBList){
+                String tableId = dsTableInfoDB.getId().toString();
+                //删除表字段
+                DSFieldInfoDBExample dsFieldInfoDBExample = new DSFieldInfoDBExample();
+                dsFieldInfoDBExample.createCriteria().andTableIdEqualTo(tableId);
+                dsFieldInfoDBMapper.deleteByExample(dsFieldInfoDBExample);
+                //删除表字段关系
+                DSFieldRelDBExample dsFieldRelDBExample = new DSFieldRelDBExample();
+                dsFieldRelDBExample.createCriteria().andTableIdEqualTo(tableId);
+                dsFieldRelDBMapper.deleteByExample(dsFieldRelDBExample);
+            }
+            //删除数据源表
+            dsTableInfoDBMapper.deleteByExample(dsTableInfoDBExample);
+        }
+
         DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
         _ex.createCriteria().andDsNameEqualTo(dsName);
         int _activeRows = dsMetaInfoDBMapper.deleteByExample(_ex);
@@ -487,7 +507,7 @@ public class MetaDataMgrApiService {
             List<DSFieldInfoDB> dsFieldInfoDBList = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
             List<PhysicalFieldInfo> physicalFieldInfoList = new ArrayList<>();
             //遍历表的所有列
-            if(physicalFieldInfoList.size() == 0){
+            if(dsFieldInfoDBList.size() == 0){
                 continue;
             }
             for(DSFieldInfoDB dsFieldInfoDB : dsFieldInfoDBList){
