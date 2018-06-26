@@ -515,7 +515,11 @@
       #{list.assistDept},
       #{list.regulatory},
       #{list.logicType},
-      #{list.displayType}
+      #{list.displayType},
+      #{list.entityAlias},
+      #{list.businessRule},
+      #{list.techniqueRule},
+      #{list.devPolicy}
       )
     </foreach>
   </insert>
