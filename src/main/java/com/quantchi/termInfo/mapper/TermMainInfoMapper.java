@@ -14,6 +14,8 @@ public interface TermMainInfoMapper {
 
     int insert(TermMainInfo record);
 
+    int insertTerms(List<TermMainInfo> list);
+
     int insertSelective(TermMainInfo record);
 
     List<TermMainInfo> selectByExampleWithBLOBs(TermMainInfoExample example);
