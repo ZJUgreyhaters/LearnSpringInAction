@@ -158,7 +158,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.quantchi.termInfo.pojo.TermLogicFieldDraft" >
+  <insert id="insert" keyProperty="id" parameterType="com.quantchi.termInfo.pojo.TermLogicFieldDraft" >
     insert into term_logic_field_draft (id, chinese_name, english_name, 
       logic_cate, data_cate, cate, 
       definition, bussiness_criteria, unit, 
@@ -772,4 +772,60 @@
       value_type = #{valueType,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <insert id="insertList" parameterType="java.util.List">
+    INSERT INTO term_logic_field_draft
+    (
+    chinese_name, english_name,
+    logic_cate, data_cate, cate,
+    definition, bussiness_criteria, unit,
+    management, activation, activation_time,
+    deactivation_time, remark, supervision,
+    reference, commitment_msg, committer,
+    create_time, tech_criteria_params, status,
+    common_name, statistical_frequency, regulatory_sign,
+    logic_online_id, term_type, model_url,
+    is_sum, is_group, is_uniq,
+    value_type, tech_criteria, bms_query_result,
+    run_sql, model_params
+    )
+    VALUES
+    <foreach collection="list" item="list" index="index" separator=",">
+      (
+      #{list.chineseName},
+      #{list.englishName},
+      #{list.logicCate},
+      #{list.dataCate},
+      #{list.cate},
+      #{list.definition},
+      #{list.bussinessCriteria},
+      #{list.unit},
+      #{list.management},
+      #{list.activation},
+      #{list.activationTime},
+      #{list.deactivationTime},
+      #{list.remark},
+      #{list.supervision},
+      #{list.reference},
+      #{list.commitmentMsg},
+      #{list.committer},
+      #{list.createTime},
+      #{list.techCriteriaParams},
+      #{list.status},
+      #{list.commonName},
+      #{list.statisticalFrequency},
+      #{list.regulatorySign},
+      #{list.logicOnlineId},
+      #{list.termType},
+      #{list.modelUrl},
+      #{list.isSum},
+      #{list.isGroup},
+      #{list.isUniq},
+      #{list.valueType},
+      #{list.techCriteria},
+      #{list.bmsQueryResult},
+      #{list.runSql},
+      #{list.modelParams}
+      )
+    </foreach>
+  </insert>
 </mapper>

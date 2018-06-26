@@ -91,7 +91,7 @@
 
   </select>
   <select id="selectAllByExample" resultMap="BaseResultMap" parameterType="map" >
-    select a.*,b.table_num from ds_meta_info a LEFT JOIN (select count(*)table_num,datasource_id from ds_table_info GROUP
+    select a.*,IFNULL(b.table_num,0) as table_num from ds_meta_info a LEFT JOIN (select count(*)table_num,datasource_id from ds_table_info GROUP
     BY datasource_id) b on a.ds_name=b.datasource_id
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
