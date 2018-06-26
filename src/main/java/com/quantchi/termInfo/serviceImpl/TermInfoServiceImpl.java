@@ -2,10 +2,7 @@ package com.quantchi.termInfo.serviceImpl;
 
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
-import com.quantchi.termInfo.mapper.PhysicalFieldInfoMapper;
-import com.quantchi.termInfo.mapper.PhysicalTableInfoMapper;
-import com.quantchi.termInfo.mapper.TermInfoMapper;
-import com.quantchi.termInfo.mapper.TermMainInfoMapper;
+import com.quantchi.termInfo.mapper.*;
 import com.quantchi.termInfo.pojo.*;
 import com.quantchi.termInfo.service.TermInfoService;
 
@@ -36,6 +33,12 @@ public class TermInfoServiceImpl implements TermInfoService {
 
   @Autowired
   TermMainInfoMapper termMainInfoMapper;
+
+  @Autowired
+  TermLogicFieldDraftMapper termLogicFieldDraftMapper;
+
+  @Autowired
+  TermLogicFieldMapper termLogicFieldMapper;
 
   private List<String> name = Arrays
       .asList("entityType", "entityId", "entityHash", "entityName", "entityDesc", "logicType",
@@ -187,7 +190,7 @@ public class TermInfoServiceImpl implements TermInfoService {
           _term.setEntityType(ENTITY_TYPE);
           _term.setEntityName(field.getPhysicalField());
           _term.setEntityDesc(field.getPhysicalFieldDesc());
-          _term.setTechniqueRule("select " + field.getPhysicalField() + " from " + field.getPhysicalDb() + "." + field.getPhysicalTable());
+          _term.setTechniqueRule(getTechCriteria(field));
           _term.setEntityStatus("正常");
           _term.setCreateTime(new Date());
 
@@ -220,5 +223,40 @@ public class TermInfoServiceImpl implements TermInfoService {
           return "Text";
 
       return "";
+  }
+
+  private String getTechCriteria(PhysicalFieldInfo field){
+    return "select " + field.getPhysicalField() + " from " + field.getPhysicalDb() + "." + field.getPhysicalTable();
+  }
+
+  private void insertFieldIntoOldDB(ArrayList<TermGenInfo> termGenInfos) throws Exception{
+    try {
+      for (TermGenInfo termInfo : termGenInfos) {
+        PhysicalTableInfo _table = termInfo.getTableInfo();
+        String _tableName = _table.getTableName();
+        List<PhysicalFieldInfo> fieldInfos = termInfo.getFieldInfoList();
+
+        for (PhysicalFieldInfo field : fieldInfos) {
+          TermLogicFieldDraft _logicField_draft = new TermLogicFieldDraft();
+          _logicField_draft.setEnglishName(field.getPhysicalField());
+          //等插入表后返回
+          _logicField_draft.setLogicCate("");
+          _logicField_draft.setTechCriteria(getTechCriteria(field));
+          termLogicFieldDraftMapper.insert(_logicField_draft);
+
+          TermLogicField _logicField = new TermLogicField();
+          _logicField.setEnglishName(field.getPhysicalField());
+          _logicField.setLogicCate("");
+          _logicField.setTechCriteria(getTechCriteria(field));
+          _logicField.setLogicOnlineId(_logicField_draft.getId());
+          termLogicFieldMapper.insert(_logicField);
+
+        }
+
+      }
+    } catch(Exception e){
+         throw new Exception(e.getMessage());
+    }
+
   }
 }

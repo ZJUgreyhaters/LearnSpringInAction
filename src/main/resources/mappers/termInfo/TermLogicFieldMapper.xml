@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.termInfo.mapper.TermLogicFieldMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.termInfo.pojo.TermLogicField" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="chinese_name" property="chineseName" jdbcType="VARCHAR" />
+    <result column="english_name" property="englishName" jdbcType="VARCHAR" />
+    <result column="physical_field" property="physicalField" jdbcType="INTEGER" />
+    <result column="logic_cate" property="logicCate" jdbcType="VARCHAR" />
+    <result column="data_cate" property="dataCate" jdbcType="VARCHAR" />
+    <result column="cate" property="cate" jdbcType="VARCHAR" />
+    <result column="definition" property="definition" jdbcType="VARCHAR" />
+    <result column="bussiness_criteria" property="bussinessCriteria" jdbcType="VARCHAR" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="management" property="management" jdbcType="INTEGER" />
+    <result column="activation" property="activation" jdbcType="CHAR" />
+    <result column="activation_time" property="activationTime" jdbcType="DATE" />
+    <result column="deactivation_time" property="deactivationTime" jdbcType="DATE" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="supervision" property="supervision" jdbcType="CHAR" />
+    <result column="reference" property="reference" jdbcType="VARCHAR" />
+    <result column="commitment_msg" property="commitmentMsg" jdbcType="VARCHAR" />
+    <result column="committer" property="committer" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="tech_criteria_params" property="techCriteriaParams" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="common_name" property="commonName" jdbcType="VARCHAR" />
+    <result column="statistical_frequency" property="statisticalFrequency" jdbcType="VARCHAR" />
+    <result column="regulatory_sign" property="regulatorySign" jdbcType="VARCHAR" />
+    <result column="logic_online_id" property="logicOnlineId" jdbcType="INTEGER" />
+    <result column="term_type" property="termType" jdbcType="VARCHAR" />
+    <result column="model_url" property="modelUrl" jdbcType="VARCHAR" />
+    <result column="is_sum" property="isSum" jdbcType="VARCHAR" />
+    <result column="is_group" property="isGroup" jdbcType="VARCHAR" />
+    <result column="is_uniq" property="isUniq" jdbcType="VARCHAR" />
+    <result column="value_type" property="valueType" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.quantchi.termInfo.pojo.TermLogicField" extends="BaseResultMap" >
+    <result column="tech_criteria" property="techCriteria" jdbcType="LONGVARCHAR" />
+    <result column="bms_query_result" property="bmsQueryResult" jdbcType="LONGVARCHAR" />
+    <result column="run_sql" property="runSql" jdbcType="LONGVARCHAR" />
+    <result column="model_params" property="modelParams" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, chinese_name, english_name, physical_field, logic_cate, data_cate, cate, definition, 
+    bussiness_criteria, unit, management, activation, activation_time, deactivation_time, 
+    remark, supervision, reference, commitment_msg, committer, create_time, tech_criteria_params, 
+    status, common_name, statistical_frequency, regulatory_sign, logic_online_id, term_type, 
+    model_url, is_sum, is_group, is_uniq, value_type
+  </sql>
+  <sql id="Blob_Column_List" >
+    tech_criteria, bms_query_result, run_sql, model_params
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.quantchi.termInfo.pojo.TermLogicFieldExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from term_logic_field
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.termInfo.pojo.TermLogicFieldExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from term_logic_field
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from term_logic_field
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from term_logic_field
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.quantchi.termInfo.pojo.TermLogicFieldExample" >
+    delete from term_logic_field
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.quantchi.termInfo.pojo.TermLogicField" >
+    insert into term_logic_field (id, chinese_name, english_name, 
+      physical_field, logic_cate, data_cate, 
+      cate, definition, bussiness_criteria, 
+      unit, management, activation, 
+      activation_time, deactivation_time, remark, 
+      supervision, reference, commitment_msg, 
+      committer, create_time, tech_criteria_params, 
+      status, common_name, statistical_frequency, 
+      regulatory_sign, logic_online_id, term_type, 
+      model_url, is_sum, is_group, 
+      is_uniq, value_type, tech_criteria, 
+      bms_query_result, run_sql, model_params
+      )
+    values (#{id,jdbcType=INTEGER}, #{chineseName,jdbcType=VARCHAR}, #{englishName,jdbcType=VARCHAR}, 
+      #{physicalField,jdbcType=INTEGER}, #{logicCate,jdbcType=VARCHAR}, #{dataCate,jdbcType=VARCHAR}, 
+      #{cate,jdbcType=VARCHAR}, #{definition,jdbcType=VARCHAR}, #{bussinessCriteria,jdbcType=VARCHAR}, 
+      #{unit,jdbcType=VARCHAR}, #{management,jdbcType=INTEGER}, #{activation,jdbcType=CHAR}, 
+      #{activationTime,jdbcType=DATE}, #{deactivationTime,jdbcType=DATE}, #{remark,jdbcType=VARCHAR}, 
+      #{supervision,jdbcType=CHAR}, #{reference,jdbcType=VARCHAR}, #{commitmentMsg,jdbcType=VARCHAR}, 
+      #{committer,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{techCriteriaParams,jdbcType=VARCHAR}, 
+      #{status,jdbcType=BIT}, #{commonName,jdbcType=VARCHAR}, #{statisticalFrequency,jdbcType=VARCHAR}, 
+      #{regulatorySign,jdbcType=VARCHAR}, #{logicOnlineId,jdbcType=INTEGER}, #{termType,jdbcType=VARCHAR}, 
+      #{modelUrl,jdbcType=VARCHAR}, #{isSum,jdbcType=VARCHAR}, #{isGroup,jdbcType=VARCHAR}, 
+      #{isUniq,jdbcType=VARCHAR}, #{valueType,jdbcType=VARCHAR}, #{techCriteria,jdbcType=LONGVARCHAR}, 
+      #{bmsQueryResult,jdbcType=LONGVARCHAR}, #{runSql,jdbcType=LONGVARCHAR}, #{modelParams,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.quantchi.termInfo.pojo.TermLogicField" >
+    insert into term_logic_field
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="chineseName != null" >
+        chinese_name,
+      </if>
+      <if test="englishName != null" >
+        english_name,
+      </if>
+      <if test="physicalField != null" >
+        physical_field,
+      </if>
+      <if test="logicCate != null" >
+        logic_cate,
+      </if>
+      <if test="dataCate != null" >
+        data_cate,
+      </if>
+      <if test="cate != null" >
+        cate,
+      </if>
+      <if test="definition != null" >
+        definition,
+      </if>
+      <if test="bussinessCriteria != null" >
+        bussiness_criteria,
+      </if>
+      <if test="unit != null" >
+        unit,
+      </if>
+      <if test="management != null" >
+        management,
+      </if>
+      <if test="activation != null" >
+        activation,
+      </if>
+      <if test="activationTime != null" >
+        activation_time,
+      </if>
+      <if test="deactivationTime != null" >
+        deactivation_time,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="supervision != null" >
+        supervision,
+      </if>
+      <if test="reference != null" >
+        reference,
+      </if>
+      <if test="commitmentMsg != null" >
+        commitment_msg,
+      </if>
+      <if test="committer != null" >
+        committer,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="techCriteriaParams != null" >
+        tech_criteria_params,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="commonName != null" >
+        common_name,
+      </if>
+      <if test="statisticalFrequency != null" >
+        statistical_frequency,
+      </if>
+      <if test="regulatorySign != null" >
+        regulatory_sign,
+      </if>
+      <if test="logicOnlineId != null" >
+        logic_online_id,
+      </if>
+      <if test="termType != null" >
+        term_type,
+      </if>
+      <if test="modelUrl != null" >
+        model_url,
+      </if>
+      <if test="isSum != null" >
+        is_sum,
+      </if>
+      <if test="isGroup != null" >
+        is_group,
+      </if>
+      <if test="isUniq != null" >
+        is_uniq,
+      </if>
+      <if test="valueType != null" >
+        value_type,
+      </if>
+      <if test="techCriteria != null" >
+        tech_criteria,
+      </if>
+      <if test="bmsQueryResult != null" >
+        bms_query_result,
+      </if>
+      <if test="runSql != null" >
+        run_sql,
+      </if>
+      <if test="modelParams != null" >
+        model_params,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="chineseName != null" >
+        #{chineseName,jdbcType=VARCHAR},
+      </if>
+      <if test="englishName != null" >
+        #{englishName,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalField != null" >
+        #{physicalField,jdbcType=INTEGER},
+      </if>
+      <if test="logicCate != null" >
+        #{logicCate,jdbcType=VARCHAR},
+      </if>
+      <if test="dataCate != null" >
+        #{dataCate,jdbcType=VARCHAR},
+      </if>
+      <if test="cate != null" >
+        #{cate,jdbcType=VARCHAR},
+      </if>
+      <if test="definition != null" >
+        #{definition,jdbcType=VARCHAR},
+      </if>
+      <if test="bussinessCriteria != null" >
+        #{bussinessCriteria,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="management != null" >
+        #{management,jdbcType=INTEGER},
+      </if>
+      <if test="activation != null" >
+        #{activation,jdbcType=CHAR},
+      </if>
+      <if test="activationTime != null" >
+        #{activationTime,jdbcType=DATE},
+      </if>
+      <if test="deactivationTime != null" >
+        #{deactivationTime,jdbcType=DATE},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="supervision != null" >
+        #{supervision,jdbcType=CHAR},
+      </if>
+      <if test="reference != null" >
+        #{reference,jdbcType=VARCHAR},
+      </if>
+      <if test="commitmentMsg != null" >
+        #{commitmentMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="committer != null" >
+        #{committer,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="techCriteriaParams != null" >
+        #{techCriteriaParams,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="commonName != null" >
+        #{commonName,jdbcType=VARCHAR},
+      </if>
+      <if test="statisticalFrequency != null" >
+        #{statisticalFrequency,jdbcType=VARCHAR},
+      </if>
+      <if test="regulatorySign != null" >
+        #{regulatorySign,jdbcType=VARCHAR},
+      </if>
+      <if test="logicOnlineId != null" >
+        #{logicOnlineId,jdbcType=INTEGER},
+      </if>
+      <if test="termType != null" >
+        #{termType,jdbcType=VARCHAR},
+      </if>
+      <if test="modelUrl != null" >
+        #{modelUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isSum != null" >
+        #{isSum,jdbcType=VARCHAR},
+      </if>
+      <if test="isGroup != null" >
+        #{isGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="isUniq != null" >
+        #{isUniq,jdbcType=VARCHAR},
+      </if>
+      <if test="valueType != null" >
+        #{valueType,jdbcType=VARCHAR},
+      </if>
+      <if test="techCriteria != null" >
+        #{techCriteria,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="bmsQueryResult != null" >
+        #{bmsQueryResult,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="runSql != null" >
+        #{runSql,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="modelParams != null" >
+        #{modelParams,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update term_logic_field
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.chineseName != null" >
+        chinese_name = #{record.chineseName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.englishName != null" >
+        english_name = #{record.englishName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.physicalField != null" >
+        physical_field = #{record.physicalField,jdbcType=INTEGER},
+      </if>
+      <if test="record.logicCate != null" >
+        logic_cate = #{record.logicCate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataCate != null" >
+        data_cate = #{record.dataCate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cate != null" >
+        cate = #{record.cate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.definition != null" >
+        definition = #{record.definition,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bussinessCriteria != null" >
+        bussiness_criteria = #{record.bussinessCriteria,jdbcType=VARCHAR},
+      </if>
+      <if test="record.unit != null" >
+        unit = #{record.unit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.management != null" >
+        management = #{record.management,jdbcType=INTEGER},
+      </if>
+      <if test="record.activation != null" >
+        activation = #{record.activation,jdbcType=CHAR},
+      </if>
+      <if test="record.activationTime != null" >
+        activation_time = #{record.activationTime,jdbcType=DATE},
+      </if>
+      <if test="record.deactivationTime != null" >
+        deactivation_time = #{record.deactivationTime,jdbcType=DATE},
+      </if>
+      <if test="record.remark != null" >
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.supervision != null" >
+        supervision = #{record.supervision,jdbcType=CHAR},
+      </if>
+      <if test="record.reference != null" >
+        reference = #{record.reference,jdbcType=VARCHAR},
+      </if>
+      <if test="record.commitmentMsg != null" >
+        commitment_msg = #{record.commitmentMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.committer != null" >
+        committer = #{record.committer,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.techCriteriaParams != null" >
+        tech_criteria_params = #{record.techCriteriaParams,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=BIT},
+      </if>
+      <if test="record.commonName != null" >
+        common_name = #{record.commonName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statisticalFrequency != null" >
+        statistical_frequency = #{record.statisticalFrequency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.regulatorySign != null" >
+        regulatory_sign = #{record.regulatorySign,jdbcType=VARCHAR},
+      </if>
+      <if test="record.logicOnlineId != null" >
+        logic_online_id = #{record.logicOnlineId,jdbcType=INTEGER},
+      </if>
+      <if test="record.termType != null" >
+        term_type = #{record.termType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modelUrl != null" >
+        model_url = #{record.modelUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isSum != null" >
+        is_sum = #{record.isSum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isGroup != null" >
+        is_group = #{record.isGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isUniq != null" >
+        is_uniq = #{record.isUniq,jdbcType=VARCHAR},
+      </if>
+      <if test="record.valueType != null" >
+        value_type = #{record.valueType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.techCriteria != null" >
+        tech_criteria = #{record.techCriteria,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.bmsQueryResult != null" >
+        bms_query_result = #{record.bmsQueryResult,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.runSql != null" >
+        run_sql = #{record.runSql,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.modelParams != null" >
+        model_params = #{record.modelParams,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update term_logic_field
+    set id = #{record.id,jdbcType=INTEGER},
+      chinese_name = #{record.chineseName,jdbcType=VARCHAR},
+      english_name = #{record.englishName,jdbcType=VARCHAR},
+      physical_field = #{record.physicalField,jdbcType=INTEGER},
+      logic_cate = #{record.logicCate,jdbcType=VARCHAR},
+      data_cate = #{record.dataCate,jdbcType=VARCHAR},
+      cate = #{record.cate,jdbcType=VARCHAR},
+      definition = #{record.definition,jdbcType=VARCHAR},
+      bussiness_criteria = #{record.bussinessCriteria,jdbcType=VARCHAR},
+      unit = #{record.unit,jdbcType=VARCHAR},
+      management = #{record.management,jdbcType=INTEGER},
+      activation = #{record.activation,jdbcType=CHAR},
+      activation_time = #{record.activationTime,jdbcType=DATE},
+      deactivation_time = #{record.deactivationTime,jdbcType=DATE},
+      remark = #{record.remark,jdbcType=VARCHAR},
+      supervision = #{record.supervision,jdbcType=CHAR},
+      reference = #{record.reference,jdbcType=VARCHAR},
+      commitment_msg = #{record.commitmentMsg,jdbcType=VARCHAR},
+      committer = #{record.committer,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      tech_criteria_params = #{record.techCriteriaParams,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=BIT},
+      common_name = #{record.commonName,jdbcType=VARCHAR},
+      statistical_frequency = #{record.statisticalFrequency,jdbcType=VARCHAR},
+      regulatory_sign = #{record.regulatorySign,jdbcType=VARCHAR},
+      logic_online_id = #{record.logicOnlineId,jdbcType=INTEGER},
+      term_type = #{record.termType,jdbcType=VARCHAR},
+      model_url = #{record.modelUrl,jdbcType=VARCHAR},
+      is_sum = #{record.isSum,jdbcType=VARCHAR},
+      is_group = #{record.isGroup,jdbcType=VARCHAR},
+      is_uniq = #{record.isUniq,jdbcType=VARCHAR},
+      value_type = #{record.valueType,jdbcType=VARCHAR},
+      tech_criteria = #{record.techCriteria,jdbcType=LONGVARCHAR},
+      bms_query_result = #{record.bmsQueryResult,jdbcType=LONGVARCHAR},
+      run_sql = #{record.runSql,jdbcType=LONGVARCHAR},
+      model_params = #{record.modelParams,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update term_logic_field
+    set id = #{record.id,jdbcType=INTEGER},
+      chinese_name = #{record.chineseName,jdbcType=VARCHAR},
+      english_name = #{record.englishName,jdbcType=VARCHAR},
+      physical_field = #{record.physicalField,jdbcType=INTEGER},
+      logic_cate = #{record.logicCate,jdbcType=VARCHAR},
+      data_cate = #{record.dataCate,jdbcType=VARCHAR},
+      cate = #{record.cate,jdbcType=VARCHAR},
+      definition = #{record.definition,jdbcType=VARCHAR},
+      bussiness_criteria = #{record.bussinessCriteria,jdbcType=VARCHAR},
+      unit = #{record.unit,jdbcType=VARCHAR},
+      management = #{record.management,jdbcType=INTEGER},
+      activation = #{record.activation,jdbcType=CHAR},
+      activation_time = #{record.activationTime,jdbcType=DATE},
+      deactivation_time = #{record.deactivationTime,jdbcType=DATE},
+      remark = #{record.remark,jdbcType=VARCHAR},
+      supervision = #{record.supervision,jdbcType=CHAR},
+      reference = #{record.reference,jdbcType=VARCHAR},
+      commitment_msg = #{record.commitmentMsg,jdbcType=VARCHAR},
+      committer = #{record.committer,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      tech_criteria_params = #{record.techCriteriaParams,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=BIT},
+      common_name = #{record.commonName,jdbcType=VARCHAR},
+      statistical_frequency = #{record.statisticalFrequency,jdbcType=VARCHAR},
+      regulatory_sign = #{record.regulatorySign,jdbcType=VARCHAR},
+      logic_online_id = #{record.logicOnlineId,jdbcType=INTEGER},
+      term_type = #{record.termType,jdbcType=VARCHAR},
+      model_url = #{record.modelUrl,jdbcType=VARCHAR},
+      is_sum = #{record.isSum,jdbcType=VARCHAR},
+      is_group = #{record.isGroup,jdbcType=VARCHAR},
+      is_uniq = #{record.isUniq,jdbcType=VARCHAR},
+      value_type = #{record.valueType,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.termInfo.pojo.TermLogicField" >
+    update term_logic_field
+    <set >
+      <if test="chineseName != null" >
+        chinese_name = #{chineseName,jdbcType=VARCHAR},
+      </if>
+      <if test="englishName != null" >
+        english_name = #{englishName,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalField != null" >
+        physical_field = #{physicalField,jdbcType=INTEGER},
+      </if>
+      <if test="logicCate != null" >
+        logic_cate = #{logicCate,jdbcType=VARCHAR},
+      </if>
+      <if test="dataCate != null" >
+        data_cate = #{dataCate,jdbcType=VARCHAR},
+      </if>
+      <if test="cate != null" >
+        cate = #{cate,jdbcType=VARCHAR},
+      </if>
+      <if test="definition != null" >
+        definition = #{definition,jdbcType=VARCHAR},
+      </if>
+      <if test="bussinessCriteria != null" >
+        bussiness_criteria = #{bussinessCriteria,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="management != null" >
+        management = #{management,jdbcType=INTEGER},
+      </if>
+      <if test="activation != null" >
+        activation = #{activation,jdbcType=CHAR},
+      </if>
+      <if test="activationTime != null" >
+        activation_time = #{activationTime,jdbcType=DATE},
+      </if>
+      <if test="deactivationTime != null" >
+        deactivation_time = #{deactivationTime,jdbcType=DATE},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="supervision != null" >
+        supervision = #{supervision,jdbcType=CHAR},
+      </if>
+      <if test="reference != null" >
+        reference = #{reference,jdbcType=VARCHAR},
+      </if>
+      <if test="commitmentMsg != null" >
+        commitment_msg = #{commitmentMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="committer != null" >
+        committer = #{committer,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="techCriteriaParams != null" >
+        tech_criteria_params = #{techCriteriaParams,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="commonName != null" >
+        common_name = #{commonName,jdbcType=VARCHAR},
+      </if>
+      <if test="statisticalFrequency != null" >
+        statistical_frequency = #{statisticalFrequency,jdbcType=VARCHAR},
+      </if>
+      <if test="regulatorySign != null" >
+        regulatory_sign = #{regulatorySign,jdbcType=VARCHAR},
+      </if>
+      <if test="logicOnlineId != null" >
+        logic_online_id = #{logicOnlineId,jdbcType=INTEGER},
+      </if>
+      <if test="termType != null" >
+        term_type = #{termType,jdbcType=VARCHAR},
+      </if>
+      <if test="modelUrl != null" >
+        model_url = #{modelUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isSum != null" >
+        is_sum = #{isSum,jdbcType=VARCHAR},
+      </if>
+      <if test="isGroup != null" >
+        is_group = #{isGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="isUniq != null" >
+        is_uniq = #{isUniq,jdbcType=VARCHAR},
+      </if>
+      <if test="valueType != null" >
+        value_type = #{valueType,jdbcType=VARCHAR},
+      </if>
+      <if test="techCriteria != null" >
+        tech_criteria = #{techCriteria,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="bmsQueryResult != null" >
+        bms_query_result = #{bmsQueryResult,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="runSql != null" >
+        run_sql = #{runSql,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="modelParams != null" >
+        model_params = #{modelParams,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.quantchi.termInfo.pojo.TermLogicField" >
+    update term_logic_field
+    set chinese_name = #{chineseName,jdbcType=VARCHAR},
+      english_name = #{englishName,jdbcType=VARCHAR},
+      physical_field = #{physicalField,jdbcType=INTEGER},
+      logic_cate = #{logicCate,jdbcType=VARCHAR},
+      data_cate = #{dataCate,jdbcType=VARCHAR},
+      cate = #{cate,jdbcType=VARCHAR},
+      definition = #{definition,jdbcType=VARCHAR},
+      bussiness_criteria = #{bussinessCriteria,jdbcType=VARCHAR},
+      unit = #{unit,jdbcType=VARCHAR},
+      management = #{management,jdbcType=INTEGER},
+      activation = #{activation,jdbcType=CHAR},
+      activation_time = #{activationTime,jdbcType=DATE},
+      deactivation_time = #{deactivationTime,jdbcType=DATE},
+      remark = #{remark,jdbcType=VARCHAR},
+      supervision = #{supervision,jdbcType=CHAR},
+      reference = #{reference,jdbcType=VARCHAR},
+      commitment_msg = #{commitmentMsg,jdbcType=VARCHAR},
+      committer = #{committer,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      tech_criteria_params = #{techCriteriaParams,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      common_name = #{commonName,jdbcType=VARCHAR},
+      statistical_frequency = #{statisticalFrequency,jdbcType=VARCHAR},
+      regulatory_sign = #{regulatorySign,jdbcType=VARCHAR},
+      logic_online_id = #{logicOnlineId,jdbcType=INTEGER},
+      term_type = #{termType,jdbcType=VARCHAR},
+      model_url = #{modelUrl,jdbcType=VARCHAR},
+      is_sum = #{isSum,jdbcType=VARCHAR},
+      is_group = #{isGroup,jdbcType=VARCHAR},
+      is_uniq = #{isUniq,jdbcType=VARCHAR},
+      value_type = #{valueType,jdbcType=VARCHAR},
+      tech_criteria = #{techCriteria,jdbcType=LONGVARCHAR},
+      bms_query_result = #{bmsQueryResult,jdbcType=LONGVARCHAR},
+      run_sql = #{runSql,jdbcType=LONGVARCHAR},
+      model_params = #{modelParams,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.termInfo.pojo.TermLogicField" >
+    update term_logic_field
+    set chinese_name = #{chineseName,jdbcType=VARCHAR},
+      english_name = #{englishName,jdbcType=VARCHAR},
+      physical_field = #{physicalField,jdbcType=INTEGER},
+      logic_cate = #{logicCate,jdbcType=VARCHAR},
+      data_cate = #{dataCate,jdbcType=VARCHAR},
+      cate = #{cate,jdbcType=VARCHAR},
+      definition = #{definition,jdbcType=VARCHAR},
+      bussiness_criteria = #{bussinessCriteria,jdbcType=VARCHAR},
+      unit = #{unit,jdbcType=VARCHAR},
+      management = #{management,jdbcType=INTEGER},
+      activation = #{activation,jdbcType=CHAR},
+      activation_time = #{activationTime,jdbcType=DATE},
+      deactivation_time = #{deactivationTime,jdbcType=DATE},
+      remark = #{remark,jdbcType=VARCHAR},
+      supervision = #{supervision,jdbcType=CHAR},
+      reference = #{reference,jdbcType=VARCHAR},
+      commitment_msg = #{commitmentMsg,jdbcType=VARCHAR},
+      committer = #{committer,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      tech_criteria_params = #{techCriteriaParams,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      common_name = #{commonName,jdbcType=VARCHAR},
+      statistical_frequency = #{statisticalFrequency,jdbcType=VARCHAR},
+      regulatory_sign = #{regulatorySign,jdbcType=VARCHAR},
+      logic_online_id = #{logicOnlineId,jdbcType=INTEGER},
+      term_type = #{termType,jdbcType=VARCHAR},
+      model_url = #{modelUrl,jdbcType=VARCHAR},
+      is_sum = #{isSum,jdbcType=VARCHAR},
+      is_group = #{isGroup,jdbcType=VARCHAR},
+      is_uniq = #{isUniq,jdbcType=VARCHAR},
+      value_type = #{valueType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
