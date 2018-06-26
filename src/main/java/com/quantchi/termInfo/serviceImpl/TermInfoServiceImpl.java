@@ -11,7 +11,9 @@ import com.quantchi.termInfo.service.TermInfoService;
 
 import java.util.*;
 
+import javafx.util.Pair;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.solr.client.solrj.io.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +62,14 @@ public class TermInfoServiceImpl implements TermInfoService {
           "category3",
           "suitableCondition");
 
-  private static String ENTITY_TYPE = "1";
+  private static final String ENTITY_TYPE = "1";
+
+  private final Map<String,String> _TypeMap = new HashMap<String,String>(){
+      {
+          put("Area","度量");
+          put("Text", "文本");
+      }
+    };
 
   @Override
   public String selectTermAll(TermInfoPojo termInfoPojo) {
@@ -154,6 +163,13 @@ public class TermInfoServiceImpl implements TermInfoService {
                 || termGenInfo.getFieldInfoList() == null)
           throw new Exception("miss table or field or term info");
 
+        Map<String,String> _entityIdMap = new HashMap<>();
+
+        for(PhysicalFieldInfo fieldInfo:termGenInfo.getFieldInfoList()){
+            String _uuid = UUID.randomUUID().toString().replace("-","");
+            fieldInfo.setEntityId(_uuid);
+            _entityIdMap.put(fieldInfo.getPhysicalDb()+"."+fieldInfo.getPhysicalTable()+"."+fieldInfo.getPhysicalField(),_uuid);
+        }
 
         //插入表信息
         physicalTableInfoMapper.insert(termGenInfo.getTableInfo());
@@ -166,7 +182,7 @@ public class TermInfoServiceImpl implements TermInfoService {
         for (PhysicalFieldInfo field : termGenInfo.getFieldInfoList()) {
           TermMainInfo _term = new TermMainInfo();
           //from insert field entity_id
-          _term.setEntityId("");
+          _term.setEntityId(_entityIdMap.get(field.getPhysicalDb()+"."+field.getPhysicalTable()+"."+field.getPhysicalField()));
           _term.setEntityType(ENTITY_TYPE);
           _term.setEntityName(field.getPhysicalField());
           _term.setEntityDesc(field.getPhysicalFieldDesc());
@@ -174,11 +190,16 @@ public class TermInfoServiceImpl implements TermInfoService {
           _term.setEntityStatus("正常");
           _term.setCreateTime(new Date());
 
-
+          //getLogicTypeAndDisplayType(field.getDataType())
+            String _type = getDisplayType(field.getDataType());
+            String _logicType = _TypeMap.get(_type);
+            _term.setDisplayType(_type);
+            _term.setLogicType(_logicType);
+            _termlist.add(_term);
         }
 
-
-        //termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
+        if(_termlist.size() > 0)
+            termMainInfoMapper.insertTerms(_termlist);
 
 
 
@@ -191,4 +212,12 @@ public class TermInfoServiceImpl implements TermInfoService {
 
   }
 
+  private String getDisplayType(String type){
+      if(type.equals("double") || type.equals("float") || type.equals("int"))
+          return "Area";
+      if(type.equals("string") || type.indexOf("varchar")> -1 )
+          return "Text";
+
+      return "";
+  }
 }
