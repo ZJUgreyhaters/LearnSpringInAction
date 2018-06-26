@@ -11,7 +11,9 @@ import com.quantchi.termInfo.service.TermInfoService;
 
 import java.util.*;
 
+import javafx.util.Pair;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.solr.client.solrj.io.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +62,14 @@ public class TermInfoServiceImpl implements TermInfoService {
           "category3",
           "suitableCondition");
 
-  private static String ENTITY_TYPE = "1";
+  private static final String ENTITY_TYPE = "1";
+
+  private final Map<String,String> _TypeMap = new HashMap<String,String>(){
+      {
+          put("Area","度量");
+          put("Text", "文本");
+      }
+    };
 
   @Override
   public String selectTermAll(TermInfoPojo termInfoPojo) {
@@ -174,11 +183,16 @@ public class TermInfoServiceImpl implements TermInfoService {
           _term.setEntityStatus("正常");
           _term.setCreateTime(new Date());
 
-
+          //getLogicTypeAndDisplayType(field.getDataType())
+            String _type = getDisplayType(field.getDataType());
+            String _logicType = _TypeMap.get(_type);
+            _term.setDisplayType(_type);
+            _term.setLogicType(_logicType);
+            _termlist.add(_term);
         }
 
-
-        //termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
+        if(_termlist.size() > 0)
+            termMainInfoMapper.insertTerms(_termlist);
 
 
 
@@ -191,4 +205,12 @@ public class TermInfoServiceImpl implements TermInfoService {
 
   }
 
+  private String getDisplayType(String type){
+      if(type.equals("double") || type.equals("float") || type.equals("int"))
+          return "Area";
+      if(type.equals("string") || type.indexOf("varchar")> -1 )
+          return "Text";
+
+      return "";
+  }
 }

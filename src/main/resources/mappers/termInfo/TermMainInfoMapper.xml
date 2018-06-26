@@ -488,4 +488,35 @@
       display_type = #{displayType,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <insert id="insertTerms" parameterType="java.util.List">
+    INSERT INTO md_term_main_info
+    (
+    entity_type, entity_id,
+    entity_hash, entity_name, entity_desc,
+    entity_status, create_time, offline_time,
+    creator, control_dept, assist_dept,
+    regulatory, logic_type, display_type,
+    entity_alias, business_rule, technique_rule,
+    dev_policy
+    )
+    VALUES
+    <foreach collection="list" item="list" index="index" separator=",">
+      (
+      #{list.entityType},
+      #{list.entityId},
+      #{list.entityHash},
+      #{list.entityName},
+      #{list.entityDesc},
+      #{list.entityStatus},
+      #{list.createTime},
+      #{list.offlineTime},
+      #{list.creator},
+      #{list.controlDept},
+      #{list.assistDept},
+      #{list.regulatory},
+      #{list.logicType},
+      #{list.displayType}
+      )
+    </foreach>
+  </insert>
 </mapper>
