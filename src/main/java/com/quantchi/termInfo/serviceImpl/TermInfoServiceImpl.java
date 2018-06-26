@@ -2,10 +2,7 @@ package com.quantchi.termInfo.serviceImpl;
 
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
-import com.quantchi.termInfo.mapper.PhysicalFieldInfoMapper;
-import com.quantchi.termInfo.mapper.PhysicalTableInfoMapper;
-import com.quantchi.termInfo.mapper.TermInfoMapper;
-import com.quantchi.termInfo.mapper.TermMainInfoMapper;
+import com.quantchi.termInfo.mapper.*;
 import com.quantchi.termInfo.pojo.*;
 import com.quantchi.termInfo.service.TermInfoService;
 
@@ -36,6 +33,9 @@ public class TermInfoServiceImpl implements TermInfoService {
 
   @Autowired
   TermMainInfoMapper termMainInfoMapper;
+
+  @Autowired
+  TermLogicCatagoryMapper termLogicCatagoryMapper;
 
   private List<String> name = Arrays
       .asList("entityType", "entityId", "entityHash", "entityName", "entityDesc", "logicType",
@@ -220,5 +220,20 @@ public class TermInfoServiceImpl implements TermInfoService {
           return "Text";
 
       return "";
+  }
+
+  @Override
+  public String insertTermLogic(ArrayList<TermLogicCatagory> termLogicCatagories) {
+
+    try{
+      for(TermLogicCatagory termLogicCatagory : termLogicCatagories){
+        termLogicCatagoryMapper.insert(termLogicCatagory);
+
+      }
+      return JsonResult.successJson();
+    }catch (Exception e){
+      e.printStackTrace();
+      return JsonResult.errorJson(e.getMessage());
+    }
   }
 }

@@ -7,33 +7,20 @@ import com.quantchi.metadatamgr.data.DSMetaInfo;
 import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
 import com.quantchi.metadatamgr.data.KeyInfo;
-import com.quantchi.metadatamgr.data.entity.DSFieldInfoDB;
-import com.quantchi.metadatamgr.data.entity.DSFieldInfoDBExample;
-import com.quantchi.metadatamgr.data.entity.DSFieldRelDB;
-import com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample;
-import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
-import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
-import com.quantchi.metadatamgr.data.entity.DSTableInfoDB;
-import com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample;
-import com.quantchi.metadatamgr.data.mapper.DSFieldInfoDBMapper;
-import com.quantchi.metadatamgr.data.mapper.DSFieldRelDBMapper;
-import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
-import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
+import com.quantchi.metadatamgr.data.entity.*;
+import com.quantchi.metadatamgr.data.mapper.*;
 import com.quantchi.metadatamgr.extract.HiveExtractImp;
-import com.quantchi.termInfo.pojo.PhysicalFieldInfo;
-import com.quantchi.termInfo.pojo.PhysicalTableInfo;
-import com.quantchi.termInfo.pojo.TermGenInfo;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.quantchi.termInfo.pojo.*;
+
+import java.util.*;
+
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +51,9 @@ public class MetaDataMgrApiService {
 
     @Autowired
     private DSFieldRelDBMapper dsFieldRelDBMapper;
+
+    @Autowired
+    private DSEntityInfoDBMapper dsEntityInfoDBMapper;
 
     public Map<String, Object> getDSMetaInfo(String dsName, String start, String pagesize){
         Map<String,Object> _ret = new HashMap<>();
@@ -267,7 +257,7 @@ public class MetaDataMgrApiService {
             DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
             dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableName).andDatasourceIdEqualTo(dsName);
             List<DSTableInfoDB> dsTableInfoDBSList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
-            if(dsTableInfoDBSList.size()>0) {
+            if(dsTableInfoDBSList.size() > 0) {
                 oldTable += tableName;
                 continue;
             }
@@ -295,7 +285,7 @@ public class MetaDataMgrApiService {
                 Map<String, Object> fieldMap = new HashMap<>();
                 fieldMap.put("datasource_id",dsName);
                 DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-                dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableMap.get("table_english_name"));
+                dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableMap.get("table_english_name")).andDatasourceIdEqualTo(dsName);
                 List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
                 fieldMap.put("table_id",list.get(0).getId());
                 fieldMap.put("field_english_name",fieldEntity.getName());
@@ -323,17 +313,16 @@ public class MetaDataMgrApiService {
             name[i] = dbTableName[1];
             i++;
         }
-        String[] names = new String[100000];
-        names[0] = name[0];
+//        String[] names = new String[100000];
+        ArrayList<String> nameList = new ArrayList<>();
         int j=1,k=1,isprimary=0;
+        nameList.add(dbName[0]);
         for(; j < i; j++){
             if(dbName[j].equals(dbName[j-1])){
-                names[k]=name[j];
-                k++;
+                nameList.add(name[j]);
             }else{
-                names = null;
-                k=0;
-                Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbName[j-1],names);
+                nameList = new ArrayList<>();
+                Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbName[j-1],(String[]) nameList.toArray(new String[nameList.size()]));
                 Iterator it = set.iterator();
                 while(it.hasNext()){
                     KeyInfo keyInfo = (KeyInfo) it.next();
@@ -368,17 +357,19 @@ public class MetaDataMgrApiService {
                 }
             }
         }
-        Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbName[j-1],names);
+        Set<KeyInfo> set = hiveExtractImp.getKeyInfo(dbName[j-1],(String[]) nameList.toArray(new String[nameList.size()]));
         Iterator it = set.iterator();
         String tbname = tables.get(tables.size()-1);
         while(it.hasNext()){
             KeyInfo keyInfo = (KeyInfo) it.next();
             if(keyInfo.getKeyType() == "PK"){
                 isprimary=1;
+            }else{
+                isprimary=0;
             }
             String foreignFieldId;
             DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-            dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tbname);
+            dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(dbName[j-1] + "." + keyInfo.getTblName());
             List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
             if(keyInfo.getIncidenceTBL() == null){
                 foreignFieldId = null;
@@ -482,11 +473,15 @@ public class MetaDataMgrApiService {
         return dsFieldRelDBMapper.deleteByPrimaryKey(Integer.parseInt(relation_id));
     }
 
-    public Boolean createTerm(String data_source_name) throws Exception{
-        Boolean bool = true;
+    public Map<String,Object> createTerm(String data_source_name) throws Exception{
+        Map<String,Object> responseMap = new HashMap<>();
         List<TermGenInfo> termGenInfoList = new ArrayList<>();
+        List<TermLogicCatagory> TermLogicCatagoryTabelList = new ArrayList<>();
+        List<TermLogicCatagory> TermLogicCatagoryEntityList = new ArrayList<>();
 
         //根据data_source_name获取所有表
+        DSEntityInfoDBExample dsEntityInfoDBExample = new DSEntityInfoDBExample();
+        dsEntityInfoDBExample.createCriteria().andDatasourceIdEqualTo(data_source_name);
         DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
         dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(data_source_name);
         List<DSTableInfoDB> tableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
@@ -527,6 +522,12 @@ public class MetaDataMgrApiService {
             termGenInfo.setFieldInfoList(physicalFieldInfoList);
             termGenInfoList.add(termGenInfo);
 
+            //封装termMainInfo,获取表
+            TermLogicCatagory termLogicCatagory = new TermLogicCatagory();
+            termLogicCatagory.setCreateTime(new Date());
+            termLogicCatagory.setPhysicalTable(dsTableInfoDB.getTableEnglishName());
+            TermLogicCatagoryTabelList.add(termLogicCatagory);
+
         }
         //新建http请求
         //调用term接口插入
@@ -540,8 +541,28 @@ public class MetaDataMgrApiService {
         httpPost.setEntity(entity);
         HttpResponse resp = httpClient.execute(httpPost);
         if(resp.getStatusLine().getStatusCode() != 200) {
-
+            responseMap.put("code",500);
+            responseMap.put("msg","失败");
+            return responseMap;
         }
-        return bool;
+
+        HttpEntity he = resp.getEntity();
+        String respContent = EntityUtils.toString(he,"UTF-8");
+        JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
+        responseMap.put("code",resultJson.getString("code"));
+        responseMap.put("msg",resultJson.getString("msg"));
+        responseMap.put("term_nums",resultJson.getString("data"));
+
+        //调用insertTermLogic接口
+        String logicUrl = AppProperties.get("termLogic.url");
+        HttpPost httpPost2 = new HttpPost(logicUrl);
+        CloseableHttpClient httpClient2 = HttpClients.createDefault();
+        StringEntity termLogicEntity = new StringEntity(JSONObject.toJSONString(TermLogicCatagoryTabelList),"utf-8");
+        termLogicEntity.setContentType("UTF-8");
+        termLogicEntity.setContentType("application/json");
+        httpPost2.setEntity(termLogicEntity);
+        HttpResponse termLogicResp = httpClient2.execute(httpPost2);
+
+        return responseMap;
     }
 }
