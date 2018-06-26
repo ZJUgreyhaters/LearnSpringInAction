@@ -477,7 +477,7 @@ public class MetaDataMgrApiService {
             List<DSFieldInfoDB> dsFieldInfoDBList = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
             List<PhysicalFieldInfo> physicalFieldInfoList = new ArrayList<>();
             //遍历表的所有列
-            if(physicalFieldInfoList.size() == 0){
+            if(dsFieldInfoDBList.size() == 0){
                 continue;
             }
             for(DSFieldInfoDB dsFieldInfoDB : dsFieldInfoDBList){
