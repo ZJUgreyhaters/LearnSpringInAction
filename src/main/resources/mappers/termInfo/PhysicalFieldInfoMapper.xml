@@ -528,38 +528,52 @@
   </update>
   <insert id="insertFields" parameterType="java.util.List">
       INSERT INTO md_physical_field_info
-      (entity_id, physical_field_hash,
-      physical_field, physical_field_desc, physical_table,
-      physical_db, data_type, data_length,
-      data_precision, data_pattern, data_unit,
-      partition_flag, udc_rule_name, udc_code,
-      max, min, avg, data_null,
-      distribution, enumeration)
+      (
+          entity_id,
+          physical_field_hash,
+          physical_field,
+          physical_field_desc,
+          physical_table,
+          physical_db,
+          data_type,
+          data_length,
+          data_precision,
+          data_pattern,
+          data_unit,
+          partition_flag,
+          udc_rule_name,
+          udc_code,
+          max,
+          min,
+          avg,
+          data_null,
+          distribution,
+          enumeration
+      )
       VALUES
       <foreach collection="list" item="list" index="index" separator=",">
-            (
-            #{list.entity_id},
-            #{list.physical_field_hash},
-            #{list.physical_field},
-            #{list.physical_field_desc},
-            #{list.physical_table},
-            #{list.physical_db},
-            #{list.data_type},
-            #{list.data_length},
-            #{list.data_precision},
-            #{list.udc_rule_name},
-            #{list.data_pattern},
-            #{list.data_unit},
-            #{list.partition_flag},
-            #{list.udc_rule_name},
-            #{list.udc_code},
+        (
+            #{list.entityId},
+            #{list.physicalFieldHash},
+            #{list.physicalField},
+            #{list.physicalFieldDesc},
+            #{list.physicalTable},
+            #{list.physicalDb},
+            #{list.dataType},
+            #{list.dataLength},
+            #{list.dataPrecision},
+            #{list.dataPattern},
+            #{list.dataUnit},
+            #{list.partitionFlag},
+            #{list.udcRuleName},
+            #{list.udcCode},
             #{list.max},
             #{list.min},
             #{list.avg},
-            #{list.data_null},
+            #{list.dataNull},
             #{list.distribution},
             #{list.enumeration}
-            )
+        )
       </foreach>
   </insert>
 </mapper>

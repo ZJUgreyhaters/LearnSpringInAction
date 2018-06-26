@@ -463,10 +463,11 @@ public class MetaDataMgrApiService {
         for(DSTableInfoDB dsTableInfoDB : tableInfoDBList){
             TermGenInfo termGenInfo = new TermGenInfo();
             PhysicalTableInfo physicalTableInfo = new PhysicalTableInfo();
-            physicalTableInfo.setTableName(dsTableInfoDB.getTableEnglishName());
             physicalTableInfo.setPrimaryKey(dsTableInfoDB.getPrimaryKey());
             String db = dsTableInfoDB.getTableEnglishName().split("\\.")[0];
+            String tableName = dsTableInfoDB.getTableEnglishName().split("\\.")[1];
             physicalTableInfo.setPhysicalDb(db);
+            physicalTableInfo.setPhysicalTable(tableName);
             physicalTableInfo.setPrimaryKey(dsTableInfoDB.getPrimaryKey());
             termGenInfo.setTableInfo(physicalTableInfo);
 
@@ -476,11 +477,14 @@ public class MetaDataMgrApiService {
             List<DSFieldInfoDB> dsFieldInfoDBList = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
             List<PhysicalFieldInfo> physicalFieldInfoList = new ArrayList<>();
             //遍历表的所有列
+            if(physicalFieldInfoList.size() == 0){
+                continue;
+            }
             for(DSFieldInfoDB dsFieldInfoDB : dsFieldInfoDBList){
                 PhysicalFieldInfo physicalFieldInfo = new PhysicalFieldInfo();
                 physicalFieldInfo.setPhysicalField(dsFieldInfoDB.getFieldEnglishName());
                 physicalFieldInfo.setPhysicalDb(db);
-                physicalFieldInfo.setPhysicalTable(dsTableInfoDB.getTableEnglishName());
+                physicalFieldInfo.setPhysicalTable(tableName);
                 physicalFieldInfo.setDataType(dsFieldInfoDB.getFieldType());
                 if(dsFieldInfoDB.getFieldLength() == null){
                     physicalFieldInfo.setDataLength(null);
@@ -496,8 +500,11 @@ public class MetaDataMgrApiService {
             String url = AppProperties.get("term.url");
             HttpPost httpPost = new HttpPost(url);
             CloseableHttpClient httpClient = HttpClients.createDefault();
+
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("termGenInfo",termGenInfo);
+//            jsonObject.put("termGenInfo",termGenInfo);
+            jsonObject.put("tableInfo",physicalTableInfo);
+            jsonObject.put("fieldInfoList",physicalFieldInfoList);
             StringEntity entity = new StringEntity(jsonObject.toString(), "utf-8");
             entity.setContentType("UTF-8");
             entity.setContentType("application/json");
