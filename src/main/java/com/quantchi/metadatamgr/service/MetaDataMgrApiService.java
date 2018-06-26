@@ -71,6 +71,8 @@ public class MetaDataMgrApiService {
         if(!"".equals(dsName))
             _ex.createCriteria().andDsNameEqualTo(dsName);
 
+        _ex.setOrderByClause("id");
+
         List<DSMetaInfoDB> _sqlRet = null;
         if(start != null){
             int _start = Integer.parseInt(start);

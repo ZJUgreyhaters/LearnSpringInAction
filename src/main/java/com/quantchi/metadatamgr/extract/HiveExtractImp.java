@@ -181,14 +181,22 @@ public class HiveExtractImp {
                     List<FieldEntity> fieldEntityList = tableOther.getFieldEntityList();
                     for(int l = 0;l < tableOther.getFieldEntityList().size() && l < bound;l ++){
                         if(field.equals(tableOther.getFieldEntityList().get(l).getName())) {
-                            if(j == 1){
+                            /*if(j == 1){
                                 KeyInfo keyInfo = new KeyInfo(tableNow.getTblName(),field,"PK",null);
                                 keyInfoList.add(keyInfo);
                             }
                             else if(l == 1){
                                 KeyInfo keyInfo = new KeyInfo(tableNow.getTblName(),field,"FK",tableOther.getTblName());
                                 keyInfoList.add(keyInfo);
-                            }
+                            }*/
+                            //排在前面的算主键
+                            KeyInfo keyInfo = null;
+                            if(j < l)
+                                keyInfo = new KeyInfo(tableNow.getTblName(),field,"FK",tableOther.getTblName());
+                            else
+                                keyInfo = new KeyInfo(tableOther.getTblName(),field,"FK",tableNow.getTblName());
+                            if(keyInfo != null)
+                                keyInfoList.add(keyInfo);
                         }
                     }//end for l
                 }//end for k

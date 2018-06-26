@@ -77,13 +77,13 @@
     hive_meta_pswd, create_user_id
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="map" >
-    select a.*,b.table_num from ds_meta_info a LEFT JOIN (select count(*)table_num,datasource_id from ds_table_info GROUP
+    select a.*,IFNULL(b.table_num,0) as table_num from ds_meta_info a LEFT JOIN (select count(*)table_num,datasource_id from ds_table_info GROUP
     BY datasource_id) b on a.ds_name=b.datasource_id
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
     <if test="example.orderByClause != null" >
-      order by ${example.orderByClause}
+      order by ${example.orderByClause} DESC
     </if>
     <if test="example.start != null">
       LIMIT #{start},#{pagesize}
@@ -97,7 +97,7 @@
       <include refid="Example_Where_Clause" />
     </if>
     <if test="example.orderByClause != null" >
-      order by ${example.orderByClause}
+      order by ${example.orderByClause} DESC
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
