@@ -1,7 +1,7 @@
 package com.quantchi.metadatamgr.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.quantchi.common.AppProperties;
+import com.quantchi.common.util;
 import com.quantchi.metadatamgr.data.DSMetaInfo;
 import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
