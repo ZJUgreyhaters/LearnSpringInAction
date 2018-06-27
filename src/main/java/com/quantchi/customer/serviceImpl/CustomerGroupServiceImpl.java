@@ -65,16 +65,38 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
   }
 
   public Map<String, Object> createCustomerGroup(CustomerGroup group,
-      List<Map<String, Object>> customerGroupCriteria) {
+      List<Map<String, Object>> customerGroupCriteria, List<Map<String, Object>> subcondition) {
     Map<String, Object> result = new HashMap<String, Object>();
     try {
       List<Map<String, Object>> list1 = mapper.selectName(group);
-      if (list1!=null&&list1.size()>0) {
+      if (list1 != null && list1.size() > 0) {
         result.put("code", "500");
         result.put("msg", "客群名称已存在！");
         return result;
       }
-      sub(customerGroupCriteria);
+      if (subcondition != null && !subcondition.isEmpty()) {
+        for (Map<String, Object> map1 : subcondition) {
+          int i = 0;
+          for (Map<String, Object> map2 : customerGroupCriteria) {
+            if (map2.get("id").equals(map1.get("id"))) {
+              i++;
+              List<String> list2 = (List<String>)map2.get("value");
+              List<String> list = (List<String>)map1.get("value");
+              for(String str:list){
+                if(!list2.contains(str)){
+                  list2.add(str);
+                }
+              }
+              map2.put("value",list2);
+              break;
+            }
+          }
+          if (i == 0) {
+            customerGroupCriteria.add(map1);
+          }
+        }
+      }
+      // sub(customerGroupCriteria);
       String str = mapper.selectCustGroupId();
       if (str == null) {
         group.setCust_group_id("CG000001");
@@ -393,7 +415,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         result.put("msg", "条件不能为空！");
         return result;
       }
-      int a = updateCustomerInfo(sql,group.getCust_group_id());
+      int a = updateCustomerInfo(sql, group.getCust_group_id());
       if (a < -400) {
         result.put("code", "500");
         result.put("msg", "error");
@@ -412,10 +434,12 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     }
   }
 
-  int updateCustomerInfo(String sql1,String id) {
+  int updateCustomerInfo(String sql1, String id) {
     StringBuilder sql = new StringBuilder();
     String String =
-        "insert overwrite table mtoi.cust_group_detail partition (part_group_id = '"+id+"',PART_DATE = 20160103) select '"+id+"' as part_group_id, '20160101' as init_date,condition01.customer_no,"
+        "insert overwrite table mtoi.cust_group_detail partition (part_group_id = '" + id
+            + "',PART_DATE = 20160103) select '" + id
+            + "' as part_group_id, '20160101' as init_date,condition01.customer_no,"
             + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
     sql.append(String).append(sql1);
     return HiveLink.elseHive(sql.toString(), jdbcPool);
