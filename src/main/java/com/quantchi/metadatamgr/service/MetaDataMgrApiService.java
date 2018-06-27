@@ -550,7 +550,6 @@ public class MetaDataMgrApiService {
         responseMap.put("msg",resultJson.getString("msg"));
         responseMap.put("term_nums",resultJson.getString("data"));
 
-
         //封装termMainInfo,获取表
         DSEntityInfoDBExample dsEntityInfoDBExample = new DSEntityInfoDBExample();
         dsEntityInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getDsName());
@@ -561,6 +560,8 @@ public class MetaDataMgrApiService {
             termLogicCatagory.setPhysicalTable(dsEntityInfoDB.getMainTable().split("\\.")[1]);
             termLogicCatagory.setCategoryName(dsEntityInfoDB.getEntityName());
             termLogicCatagory.setParentId(1);
+            termLogicCatagory.setDataSourceName(dsEntityInfoDB.getDatasourceId());
+            termLogicCatagory.setDataSourceId(dsEntityInfoDB.getId().toString());
             termLogicCatagoryEntityList.add(termLogicCatagory);
         }
         //Entity表调用insertTermLogic接口
@@ -573,29 +574,29 @@ public class MetaDataMgrApiService {
         httpEntityPost.setEntity(termLogicEntity);
         HttpResponse termLogicEntityResp = httpEntityClient.execute(httpEntityPost);
 
-        for(DSTableInfoDB dsTableInfoDB : tableInfoDBList){
-            TermLogicCatagory termLogicCatagory = new TermLogicCatagory();
-            termLogicCatagory.setCreateTime(new Date());
-            termLogicCatagory.setPhysicalTable(dsTableInfoDB.getTableEnglishName().split("\\.")[1]);
-            termLogicCatagory.setLogicTable(dsTableInfoDB.getTableEnglishName().split("\\.")[1]);
-            termLogicCatagory.setCategoryName(dsEntityInfoDBList.get(0).getEntityName());
-
-            TermLogicCatagoryExample termLogicCatagoryExample = new TermLogicCatagoryExample();
-            termLogicCatagoryExample.createCriteria();
-
-            termLogicCatagory.setParentId(1);
-            termLogicCatagoryTabelList.add(termLogicCatagory);
-        }
-
-        //table调用insertTermLogic接口
-        String logicUrl = AppProperties.get("termLogic.url");
-        HttpPost httpPost2 = new HttpPost(logicUrl);
-        CloseableHttpClient httpClient2 = HttpClients.createDefault();
-        StringEntity termLogicEntity2 = new StringEntity(JSONObject.toJSONString(termLogicCatagoryTabelList),"utf-8");
-        termLogicEntity2.setContentType("UTF-8");
-        termLogicEntity2.setContentType("application/json");
-        httpPost2.setEntity(termLogicEntity2);
-        HttpResponse termLogicResp = httpClient2.execute(httpPost2);
+//        for(DSTableInfoDB dsTableInfoDB : tableInfoDBList){
+//            TermLogicCatagory termLogicCatagory = new TermLogicCatagory();
+//            termLogicCatagory.setCreateTime(new Date());
+//            termLogicCatagory.setPhysicalTable(dsTableInfoDB.getTableEnglishName().split("\\.")[1]);
+//            termLogicCatagory.setLogicTable(dsTableInfoDB.getTableEnglishName().split("\\.")[1]);
+//            termLogicCatagory.setCategoryName(dsEntityInfoDBList.get(0).getEntityName());
+//
+//            TermLogicCatagoryExample termLogicCatagoryExample = new TermLogicCatagoryExample();
+//            termLogicCatagoryExample.createCriteria();
+//
+//            termLogicCatagory.setParentId(1);
+//            termLogicCatagoryTabelList.add(termLogicCatagory);
+//        }
+//
+//        //table调用insertTermLogic接口
+//        String logicUrl = AppProperties.get("termLogic.url");
+//        HttpPost httpPost2 = new HttpPost(logicUrl);
+//        CloseableHttpClient httpClient2 = HttpClients.createDefault();
+//        StringEntity termLogicEntity2 = new StringEntity(JSONObject.toJSONString(termLogicCatagoryTabelList),"utf-8");
+//        termLogicEntity2.setContentType("UTF-8");
+//        termLogicEntity2.setContentType("application/json");
+//        httpPost2.setEntity(termLogicEntity2);
+//        HttpResponse termLogicResp = httpClient2.execute(httpPost2);
 
         return responseMap;
     }
