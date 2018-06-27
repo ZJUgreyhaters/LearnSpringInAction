@@ -248,7 +248,7 @@ public class TermInfoServiceImpl implements TermInfoService {
       List<TermLogicCatagory> termLogicCatagories = (List<TermLogicCatagory>)requestMap.get("termLogicCatagoryEntityList");
       String _logicCataStr = JSONObject.toJSONString(termLogicCatagories);
       termLogicCatagories  = JSONObject.parseArray(_logicCataStr,TermLogicCatagory.class);
-      Map<Integer,String> termLogicCategoryIdMap = new HashMap<>();
+      Map<String,String> termLogicCategoryIdMap = new HashMap<>();
       for(TermLogicCatagory termLogicCatagory : termLogicCatagories){
         termLogicCatagoryMapper.insert(termLogicCatagory);
 
@@ -270,7 +270,7 @@ public class TermInfoServiceImpl implements TermInfoService {
             termLogicCatagory2.setCreateTime(new Date());
             termLogicCatagory2.setParentId(termLogicCatagory.getId());
             termLogicCatagoryMapper.insert(termLogicCatagory2);
-            termLogicCategoryIdMap.put(termLogicCatagory2.getId(),tableName);
+            termLogicCategoryIdMap.put(dsTableInfoDB.getId().toString(),dsTableInfoDB.getId()+"_"+termLogicCatagory.getId());
           }
 
         }
