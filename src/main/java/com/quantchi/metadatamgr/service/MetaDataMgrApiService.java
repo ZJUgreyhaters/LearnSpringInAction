@@ -537,27 +537,20 @@ public class MetaDataMgrApiService {
         }
         //新建http请求
         //调用term接口插入
-//        String url = AppProperties.get("term.url");
-//        HttpPost httpPost = new HttpPost(url);
-//        CloseableHttpClient httpClient = HttpClients.createDefault();
-//
-//        StringEntity entity = new StringEntity(JSONObject.toJSONString(termGenInfoList), "utf-8");
-//        entity.setContentType("UTF-8");
-//        entity.setContentType("application/json");
-//        httpPost.setEntity(entity);
-//        HttpResponse resp = httpClient.execute(httpPost);
-//        if(resp.getStatusLine().getStatusCode() != 200) {
-//            responseMap.put("code",500);
-//            responseMap.put("msg","失败");
-//            return responseMap;
-//        }
-//
-//        HttpEntity he = resp.getEntity();
-//        String respContent = EntityUtils.toString(he,"UTF-8");
-//        JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
-//        responseMap.put("code",resultJson.getString("code"));
-//        responseMap.put("msg",resultJson.getString("msg"));
-//        responseMap.put("term_nums",resultJson.getString("data"));
+        String url = AppProperties.get("term.url");
+        HttpPost httpPost = new HttpPost(url);
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+
+        StringEntity entity = new StringEntity(JSONObject.toJSONString(termGenInfoList), "utf-8");
+        entity.setContentType("UTF-8");
+        entity.setContentType("application/json");
+        httpPost.setEntity(entity);
+        HttpResponse resp = httpClient.execute(httpPost);
+        if(resp.getStatusLine().getStatusCode() != 200) {
+            responseMap.put("code",500);
+            responseMap.put("msg","失败");
+            return responseMap;
+        }
 
         //封装termMainInfo,获取表
         DSEntityInfoDBExample dsEntityInfoDBExample = new DSEntityInfoDBExample();
@@ -584,8 +577,8 @@ public class MetaDataMgrApiService {
         termLogicEntity.setContentType("UTF-8");
         termLogicEntity.setContentType("application/json");
         httpEntityPost.setEntity(termLogicEntity);
-        HttpResponse resp = httpEntityClient.execute(httpEntityPost);
-        if(resp.getStatusLine().getStatusCode() != 200) {
+        HttpResponse resp1 = httpEntityClient.execute(httpEntityPost);
+        if(resp1.getStatusLine().getStatusCode() != 200) {
             responseMap.put("code",500);
             responseMap.put("msg","失败");
             return responseMap;
@@ -597,6 +590,15 @@ public class MetaDataMgrApiService {
         responseMap.put("code",resultJson.getString("code"));
         responseMap.put("msg",resultJson.getString("msg"));
         responseMap.put("term_nums",resultJson.getString("data"));
+
+
+
+        /*HttpEntity he = resp.getEntity();
+        String respContent = EntityUtils.toString(he,"UTF-8");
+        JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
+        responseMap.put("code",resultJson.getString("code"));
+        responseMap.put("msg",resultJson.getString("msg"));
+        responseMap.put("term_nums",resultJson.getString("data"));*/
 
         return responseMap;
     }
