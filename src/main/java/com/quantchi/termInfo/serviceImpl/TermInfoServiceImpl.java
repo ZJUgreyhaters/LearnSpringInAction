@@ -250,7 +250,7 @@ public class TermInfoServiceImpl implements TermInfoService {
     return "select " + field.getPhysicalField() + " from " + field.getPhysicalDb() + "." + field.getPhysicalTable();
   }
 
-  private void insertFieldIntoOldDB(ArrayList<TermGenInfo> termGenInfos) throws Exception{
+  private void insertFieldIntoOldDB(List<TermGenInfo> termGenInfos,Map<String,String> termLogicCategoryIdMap) throws Exception{
     try {
       for (TermGenInfo termInfo : termGenInfos) {
         PhysicalTableInfo _table = termInfo.getTableInfo();
@@ -259,16 +259,30 @@ public class TermInfoServiceImpl implements TermInfoService {
 
         for (PhysicalFieldInfo field : fieldInfos) {
           TermLogicFieldDraft _logicField_draft = new TermLogicFieldDraft();
-          _logicField_draft.setEnglishName(field.getPhysicalField());
+          _logicField_draft.setEnglishName(_table.getTableName()+"."+field.getPhysicalField());
+          _logicField_draft.setChineseName(_table.getTableName()+"."+field.getPhysicalField());
+          //_logicField_draft.setChineseName(field.getPhysicalFieldDesc()==null?"undefined":field.getPhysicalFieldDesc());
           //等插入表后返回
-          _logicField_draft.setLogicCate("");
+          _logicField_draft.setLogicCate(termLogicCategoryIdMap.get(_table.getId()));
           _logicField_draft.setTechCriteria(getTechCriteria(field));
+          _logicField_draft.setStatus(2);
+          _logicField_draft.setLogicOnlineId(0);
+          _logicField_draft.setIsSum("false");
+          _logicField_draft.setIsGroup("false");
+          _logicField_draft.setIsUniq("false");
           termLogicFieldDraftMapper.insert(_logicField_draft);
 
           TermLogicField _logicField = new TermLogicField();
-          _logicField.setEnglishName(field.getPhysicalField());
-          _logicField.setLogicCate("");
+          _logicField.setEnglishName(_table.getTableName()+"."+field.getPhysicalField());
+          _logicField.setChineseName(_table.getTableName()+"."+field.getPhysicalField());
+          //_logicField.setChineseName(field.getPhysicalFieldDesc()==null?"undefined":field.getPhysicalFieldDesc());
+          //_logicField.setEnglishName(field.getPhysicalField());
+          _logicField.setLogicCate(termLogicCategoryIdMap.get(_table.getId()));
           _logicField.setTechCriteria(getTechCriteria(field));
+          _logicField.setStatus(2);
+          _logicField.setIsSum("false");
+          _logicField.setIsGroup("false");
+          _logicField.setIsUniq("false");
           _logicField.setLogicOnlineId(_logicField_draft.getId());
           termLogicFieldMapper.insert(_logicField);
 
@@ -284,7 +298,9 @@ public class TermInfoServiceImpl implements TermInfoService {
   @Override
   public String insertTermLogic(Map<String,Object> requestMap) {
     try{
-      List<TermMainInfo> termGenInfos = (List)requestMap.get("termGenInfoList");
+      List<TermGenInfo> termGenInfos = (List)requestMap.get("termGenInfoList");
+      String _termGenInfoStr = JSONObject.toJSONString(termGenInfos);
+      termGenInfos  = JSONObject.parseArray(_termGenInfoStr,TermGenInfo.class);
       List<TermLogicCatagory> termLogicCatagories = (List<TermLogicCatagory>)requestMap.get("termLogicCatagoryEntityList");
       String _logicCataStr = JSONObject.toJSONString(termLogicCatagories);
       termLogicCatagories  = JSONObject.parseArray(_logicCataStr,TermLogicCatagory.class);
@@ -310,12 +326,13 @@ public class TermInfoServiceImpl implements TermInfoService {
             termLogicCatagory2.setCreateTime(new Date());
             termLogicCatagory2.setParentId(termLogicCatagory.getId());
             termLogicCatagoryMapper.insert(termLogicCatagory2);
-            termLogicCategoryIdMap.put(dsTableInfoDB.getId().toString(),dsTableInfoDB.getId()+"_"+termLogicCatagory.getId());
+            termLogicCategoryIdMap.put(dsTableInfoDB.getId().toString(),termLogicCatagory.getParentId()+"_"+dsTableInfoDB.getId()+"_"+termLogicCatagory.getId());
           }
 
         }
 
       }
+      insertFieldIntoOldDB(termGenInfos,termLogicCategoryIdMap);
       return JsonResult.successJson(termLogicCategoryIdMap);
     }catch (Exception e){
       e.printStackTrace();

@@ -23,7 +23,7 @@
     <result column="committer" property="committer" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="tech_criteria_params" property="techCriteriaParams" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="BIT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
     <result column="common_name" property="commonName" jdbcType="VARCHAR" />
     <result column="statistical_frequency" property="statisticalFrequency" jdbcType="VARCHAR" />
     <result column="regulatory_sign" property="regulatorySign" jdbcType="VARCHAR" />
@@ -591,7 +591,7 @@
       committer = #{record.committer,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       tech_criteria_params = #{record.techCriteriaParams,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=BIT},
+      status = #{record.status,jdbcType=INTEGER},
       common_name = #{record.commonName,jdbcType=VARCHAR},
       statistical_frequency = #{record.statisticalFrequency,jdbcType=VARCHAR},
       regulatory_sign = #{record.regulatorySign,jdbcType=VARCHAR},
@@ -670,7 +670,7 @@
         tech_criteria_params = #{techCriteriaParams,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
-        status = #{status,jdbcType=BIT},
+        status = #{status,jdbcType=INTEGER},
       </if>
       <if test="commonName != null" >
         common_name = #{commonName,jdbcType=VARCHAR},
@@ -739,7 +739,7 @@
       committer = #{committer,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       tech_criteria_params = #{techCriteriaParams,jdbcType=VARCHAR},
-      status = #{status,jdbcType=BIT},
+      status = #{status,jdbcType=INTEGER},
       common_name = #{commonName,jdbcType=VARCHAR},
       statistical_frequency = #{statisticalFrequency,jdbcType=VARCHAR},
       regulatory_sign = #{regulatorySign,jdbcType=VARCHAR},
@@ -778,7 +778,7 @@
       committer = #{committer,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       tech_criteria_params = #{techCriteriaParams,jdbcType=VARCHAR},
-      status = #{status,jdbcType=BIT},
+      status = #{status,jdbcType=INTEGER},
       common_name = #{commonName,jdbcType=VARCHAR},
       statistical_frequency = #{statisticalFrequency,jdbcType=VARCHAR},
       regulatory_sign = #{regulatorySign,jdbcType=VARCHAR},
