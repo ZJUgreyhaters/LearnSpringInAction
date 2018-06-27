@@ -76,24 +76,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       }
       if (subcondition != null && !subcondition.isEmpty()) {
         for (Map<String, Object> map1 : subcondition) {
-          int i = 0;
-          for (Map<String, Object> map2 : customerGroupCriteria) {
-            if (map2.get("id").equals(map1.get("id"))) {
-              i++;
-              List<String> list2 = (List<String>)map2.get("value");
-              List<String> list = (List<String>)map1.get("value");
-              for(String str:list){
-                if(!list2.contains(str)){
-                  list2.add(str);
-                }
-              }
-              map2.put("value",list2);
-              break;
-            }
-          }
-          if (i == 0) {
-            customerGroupCriteria.add(map1);
-          }
+          customerGroupCriteria.add(map1);
         }
       }
       // sub(customerGroupCriteria);
@@ -188,6 +171,12 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       String logicType = ((JSONObject) data.get(0)).get("logicType").toString();
       JSONObject physical = JSONObject.fromObject(((JSONObject) data.get(0)).get("physicalField"));
       String table = physical.get("physicalDB") + "." + physical.get("physicalTable");
+     /* if(physical.get("tablePartition").equals("1")){
+        JSONArray partitionInfo = (JSONArray) physical.get("partitionInfo");
+        for(partitionInfo){
+
+        }
+      }*/
       String str = null;
       if (type.equals("Select-list") && logicType.equals("代码")) {
         StringBuilder v = new StringBuilder();
@@ -469,18 +458,20 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     List<Map<String, Object>> list = new ArrayList<>();
     for (String name : nameList) {
       for (Map<String, Object> map1 : list1) {
-        String dataUDCDesc = map1.get("dataUDCValue").toString();
+        String dataUDCValue = map1.get("dataUDCValue").toString();
+        String dataUDCDesc = map1.get("dataUDCDesc").toString();
         String entityId = map1.get("entityId").toString();
         Map<String, Object> map2 = new HashedMap();
         int a = 0;
         for (Map<String, Object> result : Resultlist) {
-          if (dataUDCDesc.equals(result.get(name))) {
+          if (dataUDCValue.equals(result.get(name))) {
             result.remove(name);
             a++;
           }
         }
         map2.put("id", entityId);
-        map2.put("value", dataUDCDesc);
+        map2.put("value",dataUDCValue);
+        map2.put("name",dataUDCDesc);
         map2.put("number", a);
         list.add(map2);
       }
