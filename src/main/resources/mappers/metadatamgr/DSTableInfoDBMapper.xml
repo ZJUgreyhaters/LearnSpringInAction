@@ -240,11 +240,20 @@
       and table_english_name = #{tableEnglishName,jdbcType=VARCHAR}
   </update>
   <select id="search" resultMap="BaseResultMap">
-    SELECT *FROM ds_table_info a LEFT JOIN ( SELECT COUNT(*)nums,table_id FROM ds_field_info GROUP
+    SELECT
+    id,
+    table_english_name,
+    IFNULL(table_chinese_name,"") AS table_chinese_name ,
+    IFNULL(datasource_id,"") AS datasource_id,
+    IFNULL(primary_key,"") AS primary_key,
+    STATUS,
+    IFNULL(nums,"") AS nums,
+    IFNULL(foreignNums,"") AS foreignNums
+    FROM ds_table_info a LEFT JOIN ( SELECT COUNT(*) nums,table_id FROM ds_field_info GROUP
     BY table_id) b ON
-    a.table_english_name=b.table_id LEFT JOIN (SELECT COUNT(*)foreignNums,table_id AS id ,isprimary
+    a.id=b.table_id LEFT JOIN (SELECT COUNT(*) foreignNums,table_id AS cid ,isprimary
     FROM ds_field_releation WHERE isprimary = '0' GROUP BY table_id )c ON
-    a.table_english_name=c.id
+    a.id=c.cid
     <where>
       <if test="datasourceId !=null and datasourceId.toString().length()>0">AND datasource_id
         = #{datasourceId}
