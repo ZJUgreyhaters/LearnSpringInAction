@@ -3,6 +3,7 @@ package com.quantchi.termInfo.controller;
 import com.quantchi.common.JsonResult;
 import com.quantchi.termInfo.pojo.TermGenInfo;
 import com.quantchi.termInfo.pojo.TermInfoPojo;
+import com.quantchi.termInfo.pojo.TermLogicCatagory;
 import com.quantchi.termInfo.service.TermInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +42,17 @@ public class TermInfoController {
   public String selectTerm(@RequestBody ArrayList<TermGenInfo> termGenInfos) {
     try{
       return service.insertTerm(termGenInfos);
+    }catch (Exception e){
+      return JsonResult.errorJson(e.getMessage());
+    }
+  }
+
+  //termLogicCategory
+  @ResponseBody
+  @RequestMapping(value = "/insertTermLogic", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
+  public String insertTermLogic(@RequestBody ArrayList<TermLogicCatagory> termLogicCatagories){
+    try {
+      return service.insertTermLogic(termLogicCatagories);
     }catch (Exception e){
       return JsonResult.errorJson(e.getMessage());
     }

@@ -2,6 +2,7 @@ package com.quantchi.termInfo.service;
 
 import com.quantchi.termInfo.pojo.TermGenInfo;
 import com.quantchi.termInfo.pojo.TermInfoPojo;
+import com.quantchi.termInfo.pojo.TermLogicCatagory;
 
 import java.util.ArrayList;
 
@@ -16,4 +17,5 @@ public interface TermInfoService {
 
   String insertTerm(ArrayList<TermGenInfo> termGenInfos);
 
+  String insertTermLogic(ArrayList<TermLogicCatagory> termLogicCatagories);
 }

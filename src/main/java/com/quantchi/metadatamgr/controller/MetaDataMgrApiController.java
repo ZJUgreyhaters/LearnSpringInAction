@@ -320,14 +320,7 @@ public class MetaDataMgrApiController {
             if(json.getString("data_source_name") == null){
                 throw new Exception("miss data source name");
             }
-            Boolean bool = metaDataMgrApiService.createTerm(json.getString("data_source_name"));
-            if(bool == true){
-                responseMap.put("code",200);
-                responseMap.put("msg","成功");
-            }else {
-                responseMap.put("code",500);
-                responseMap.put("msg","失败");
-            }
+            responseMap = metaDataMgrApiService.createTerm(json.getString("data_source_name"));
             return responseMap;
         }catch (Exception e){
             logger.error(e.getMessage());
