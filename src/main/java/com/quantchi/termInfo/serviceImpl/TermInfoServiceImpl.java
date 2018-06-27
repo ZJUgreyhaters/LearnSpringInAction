@@ -242,8 +242,12 @@ public class TermInfoServiceImpl implements TermInfoService {
   }
 
   @Override
-  public String insertTermLogic(ArrayList<TermLogicCatagory> termLogicCatagories) {
+  public String insertTermLogic(Map<String,Object> requestMap) {
     try{
+      List<TermMainInfo> termGenInfos = (List)requestMap.get("termGenInfoList");
+      List<TermLogicCatagory> termLogicCatagories = (List<TermLogicCatagory>)requestMap.get("termLogicCatagoryEntityList");
+      String _logicCataStr = JSONObject.toJSONString(termLogicCatagories);
+      termLogicCatagories  = JSONObject.parseArray(_logicCataStr,TermLogicCatagory.class);
       Map<Integer,String> termLogicCategoryIdMap = new HashMap<>();
       for(TermLogicCatagory termLogicCatagory : termLogicCatagories){
         termLogicCatagoryMapper.insert(termLogicCatagory);

@@ -528,27 +528,27 @@ public class MetaDataMgrApiService {
         }
         //新建http请求
         //调用term接口插入
-        String url = AppProperties.get("term.url");
-        HttpPost httpPost = new HttpPost(url);
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-
-        StringEntity entity = new StringEntity(JSONObject.toJSONString(termGenInfoList), "utf-8");
-        entity.setContentType("UTF-8");
-        entity.setContentType("application/json");
-        httpPost.setEntity(entity);
-        HttpResponse resp = httpClient.execute(httpPost);
-        if(resp.getStatusLine().getStatusCode() != 200) {
-            responseMap.put("code",500);
-            responseMap.put("msg","失败");
-            return responseMap;
-        }
-
-        HttpEntity he = resp.getEntity();
-        String respContent = EntityUtils.toString(he,"UTF-8");
-        JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
-        responseMap.put("code",resultJson.getString("code"));
-        responseMap.put("msg",resultJson.getString("msg"));
-        responseMap.put("term_nums",resultJson.getString("data"));
+//        String url = AppProperties.get("term.url");
+//        HttpPost httpPost = new HttpPost(url);
+//        CloseableHttpClient httpClient = HttpClients.createDefault();
+//
+//        StringEntity entity = new StringEntity(JSONObject.toJSONString(termGenInfoList), "utf-8");
+//        entity.setContentType("UTF-8");
+//        entity.setContentType("application/json");
+//        httpPost.setEntity(entity);
+//        HttpResponse resp = httpClient.execute(httpPost);
+//        if(resp.getStatusLine().getStatusCode() != 200) {
+//            responseMap.put("code",500);
+//            responseMap.put("msg","失败");
+//            return responseMap;
+//        }
+//
+//        HttpEntity he = resp.getEntity();
+//        String respContent = EntityUtils.toString(he,"UTF-8");
+//        JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
+//        responseMap.put("code",resultJson.getString("code"));
+//        responseMap.put("msg",resultJson.getString("msg"));
+//        responseMap.put("term_nums",resultJson.getString("data"));
 
         //封装termMainInfo,获取表
         DSEntityInfoDBExample dsEntityInfoDBExample = new DSEntityInfoDBExample();
@@ -568,35 +568,26 @@ public class MetaDataMgrApiService {
         String logicEntityUrl = AppProperties.get("termLogic.url");
         HttpPost httpEntityPost = new HttpPost(logicEntityUrl);
         CloseableHttpClient httpEntityClient = HttpClients.createDefault();
-        StringEntity termLogicEntity = new StringEntity(JSONObject.toJSONString(termLogicCatagoryEntityList),"utf-8");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("termGenInfoList",termGenInfoList);
+        jsonObject.put("termLogicCatagoryEntityList",termLogicCatagoryEntityList);
+        StringEntity termLogicEntity = new StringEntity(jsonObject.toString(),"utf-8");
         termLogicEntity.setContentType("UTF-8");
         termLogicEntity.setContentType("application/json");
         httpEntityPost.setEntity(termLogicEntity);
-        HttpResponse termLogicEntityResp = httpEntityClient.execute(httpEntityPost);
+        HttpResponse resp = httpEntityClient.execute(httpEntityPost);
+        if(resp.getStatusLine().getStatusCode() != 200) {
+            responseMap.put("code",500);
+            responseMap.put("msg","失败");
+            return responseMap;
+        }
 
-//        for(DSTableInfoDB dsTableInfoDB : tableInfoDBList){
-//            TermLogicCatagory termLogicCatagory = new TermLogicCatagory();
-//            termLogicCatagory.setCreateTime(new Date());
-//            termLogicCatagory.setPhysicalTable(dsTableInfoDB.getTableEnglishName().split("\\.")[1]);
-//            termLogicCatagory.setLogicTable(dsTableInfoDB.getTableEnglishName().split("\\.")[1]);
-//            termLogicCatagory.setCategoryName(dsEntityInfoDBList.get(0).getEntityName());
-//
-//            TermLogicCatagoryExample termLogicCatagoryExample = new TermLogicCatagoryExample();
-//            termLogicCatagoryExample.createCriteria();
-//
-//            termLogicCatagory.setParentId(1);
-//            termLogicCatagoryTabelList.add(termLogicCatagory);
-//        }
-//
-//        //table调用insertTermLogic接口
-//        String logicUrl = AppProperties.get("termLogic.url");
-//        HttpPost httpPost2 = new HttpPost(logicUrl);
-//        CloseableHttpClient httpClient2 = HttpClients.createDefault();
-//        StringEntity termLogicEntity2 = new StringEntity(JSONObject.toJSONString(termLogicCatagoryTabelList),"utf-8");
-//        termLogicEntity2.setContentType("UTF-8");
-//        termLogicEntity2.setContentType("application/json");
-//        httpPost2.setEntity(termLogicEntity2);
-//        HttpResponse termLogicResp = httpClient2.execute(httpPost2);
+        HttpEntity he = resp.getEntity();
+        String respContent = EntityUtils.toString(he,"UTF-8");
+        JSONObject resultJson = (JSONObject) JSONObject.parse(respContent);
+        responseMap.put("code",resultJson.getString("code"));
+        responseMap.put("msg",resultJson.getString("msg"));
+        responseMap.put("term_nums",resultJson.getString("data"));
 
         return responseMap;
     }
