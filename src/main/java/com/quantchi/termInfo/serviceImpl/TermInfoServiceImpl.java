@@ -5,19 +5,31 @@ import com.quantchi.common.Paging;
 import com.quantchi.termInfo.mapper.PhysicalFieldInfoMapper;
 import com.quantchi.termInfo.mapper.PhysicalTableInfoMapper;
 import com.quantchi.termInfo.mapper.TermInfoMapper;
+import com.quantchi.termInfo.mapper.TermLogicCatagoryMapper;
+import com.quantchi.termInfo.mapper.TermLogicFieldDraftMapper;
+import com.quantchi.termInfo.mapper.TermLogicFieldMapper;
 import com.quantchi.termInfo.mapper.TermMainInfoMapper;
-import com.quantchi.termInfo.pojo.*;
+import com.quantchi.termInfo.pojo.PhysicalFieldInfo;
+import com.quantchi.termInfo.pojo.PhysicalTableInfo;
+import com.quantchi.termInfo.pojo.TermGenInfo;
+import com.quantchi.termInfo.pojo.TermInfoPojo;
+import com.quantchi.termInfo.pojo.TermLogicCatagory;
+import com.quantchi.termInfo.pojo.TermLogicField;
+import com.quantchi.termInfo.pojo.TermLogicFieldDraft;
+import com.quantchi.termInfo.pojo.TermMainInfo;
 import com.quantchi.termInfo.service.TermInfoService;
-
-import java.util.*;
-
-import javafx.util.Pair;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import javax.jdo.annotations.Transactional;
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.solr.client.solrj.io.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.jdo.annotations.Transactional;
 
 /**
  * Created by 49537 on 2018/6/20.
