@@ -1,7 +1,6 @@
 package com.quantchi.termInfo.serviceImpl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.quantchi.common.AppProperties;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
 import com.quantchi.metadatamgr.data.entity.DSEntityInfoDB;
@@ -283,9 +282,13 @@ public class TermInfoServiceImpl implements TermInfoService {
   }
 
   @Override
-  public String insertTermLogic(ArrayList<TermLogicCatagory> termLogicCatagories) {
+  public String insertTermLogic(Map<String,Object> requestMap) {
     try{
-      Map<Integer,String> termLogicCategoryIdMap = new HashMap<>();
+      List<TermMainInfo> termGenInfos = (List)requestMap.get("termGenInfoList");
+      List<TermLogicCatagory> termLogicCatagories = (List<TermLogicCatagory>)requestMap.get("termLogicCatagoryEntityList");
+      String _logicCataStr = JSONObject.toJSONString(termLogicCatagories);
+      termLogicCatagories  = JSONObject.parseArray(_logicCataStr,TermLogicCatagory.class);
+      Map<String,String> termLogicCategoryIdMap = new HashMap<>();
       for(TermLogicCatagory termLogicCatagory : termLogicCatagories){
         termLogicCatagoryMapper.insert(termLogicCatagory);
 
@@ -307,7 +310,7 @@ public class TermInfoServiceImpl implements TermInfoService {
             termLogicCatagory2.setCreateTime(new Date());
             termLogicCatagory2.setParentId(termLogicCatagory.getId());
             termLogicCatagoryMapper.insert(termLogicCatagory2);
-            termLogicCategoryIdMap.put(termLogicCatagory2.getId(),tableName);
+            termLogicCategoryIdMap.put(dsTableInfoDB.getId().toString(),dsTableInfoDB.getId()+"_"+termLogicCatagory.getId());
           }
 
         }

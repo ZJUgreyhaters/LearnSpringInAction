@@ -277,7 +277,7 @@ public class MetaDataMgrApiController {
                 throw new Exception("save fail");
             }
             responseMap.put("code",200);
-            responseMap.put("msg","保存成功");
+            responseMap.put("msg","成功");
             return responseMap;
         }catch (Exception e){
             logger.error(e.getMessage());
