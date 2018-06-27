@@ -155,8 +155,8 @@ public class ConditionGroupController {
                     List<Object> responseEntityList = new ArrayList<>();
                     for(Map<String,Object> selectEntityMap : selectList){
                         Map<Object, Object> map1 = new HashMap<>();
-                        map1.put("name",selectEntityMap.get("dataUDCValue"));
-                        map1.put("value",selectEntityMap.get("dataUDCDesc"));
+                        map1.put("name",selectEntityMap.get("dataUDCDesc"));
+                        map1.put("value",selectEntityMap.get("dataUDCValue"));
                         responseEntityList.add(map1);
 
                     }
