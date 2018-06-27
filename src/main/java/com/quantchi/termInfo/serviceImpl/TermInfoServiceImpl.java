@@ -1,7 +1,14 @@
 package com.quantchi.termInfo.serviceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
+import com.quantchi.metadatamgr.data.entity.DSEntityInfoDB;
+import com.quantchi.metadatamgr.data.entity.DSEntityInfoDBExample;
+import com.quantchi.metadatamgr.data.entity.DSTableInfoDB;
+import com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample;
+import com.quantchi.metadatamgr.data.mapper.DSEntityInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
 import com.quantchi.termInfo.mapper.*;
 import com.quantchi.termInfo.pojo.*;
 import com.quantchi.termInfo.service.TermInfoService;
