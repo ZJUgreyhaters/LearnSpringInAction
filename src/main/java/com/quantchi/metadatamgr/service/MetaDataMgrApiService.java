@@ -327,9 +327,10 @@ public class MetaDataMgrApiService {
                 while(it.hasNext()){
                     KeyInfo keyInfo = (KeyInfo) it.next();
                     String foreignFieldId;
-                    isprimary=0;
                     if(keyInfo.getKeyType() == "PK"){
                         isprimary=1;
+                    }else{
+                        isprimary=0;
                     }
                     String tbname = dbName[j-1] +"."+ keyInfo.getTblName();
                     DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
@@ -466,7 +467,13 @@ public class MetaDataMgrApiService {
         dsFieldRelDB.setForeignTableId(jsonParam.getString("to"));
         dsFieldRelDB.setForeignFieldId(jsonParam.getString("to_field"));
         dsFieldRelDB.setRelation(jsonParam.getString("relation"));
-        return dsFieldRelDBMapper.insert(dsFieldRelDB);
+        if(jsonParam.getString("relation_id") == null || jsonParam.getString("relation_id").equals("")){
+            return dsFieldRelDBMapper.insert(dsFieldRelDB);
+        }else{
+            dsFieldRelDB.setRelationId(Integer.parseInt(jsonParam.getString("relation_id")));
+            return dsFieldRelDBMapper.updateByPrimaryKey(dsFieldRelDB);
+        }
+
     }
 
     public int relationDel(String relation_id){
