@@ -554,14 +554,14 @@ public class MetaDataMgrApiService {
         responseMap.put("term_nums",resultJson.getString("data"));
 
         //调用insertTermLogic接口
-        String logicUrl = AppProperties.get("termLogic.url");
-        HttpPost httpPost2 = new HttpPost(logicUrl);
-        CloseableHttpClient httpClient2 = HttpClients.createDefault();
-        StringEntity termLogicEntity = new StringEntity(JSONObject.toJSONString(TermLogicCatagoryTabelList),"utf-8");
-        termLogicEntity.setContentType("UTF-8");
-        termLogicEntity.setContentType("application/json");
-        httpPost2.setEntity(termLogicEntity);
-        HttpResponse termLogicResp = httpClient2.execute(httpPost2);
+//        String logicUrl = AppProperties.get("termLogic.url");
+//        HttpPost httpPost2 = new HttpPost(logicUrl);
+//        CloseableHttpClient httpClient2 = HttpClients.createDefault();
+//        StringEntity termLogicEntity = new StringEntity(JSONObject.toJSONString(TermLogicCatagoryTabelList),"utf-8");
+//        termLogicEntity.setContentType("UTF-8");
+//        termLogicEntity.setContentType("application/json");
+//        httpPost2.setEntity(termLogicEntity);
+//        HttpResponse termLogicResp = httpClient2.execute(httpPost2);
 
         return responseMap;
     }
