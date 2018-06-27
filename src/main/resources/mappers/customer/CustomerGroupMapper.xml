@@ -33,6 +33,7 @@
     </if>
     and delete_status = '0' -- 固定条件：筛选未删除的记录
     and history_status = '0' -- 固定条件：筛选当前版本记录
+    order by create_time DESC
   </select>
 
   <select id="selectCustGroupId" resultType="String">
