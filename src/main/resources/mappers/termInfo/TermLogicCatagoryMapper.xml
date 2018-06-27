@@ -101,7 +101,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.quantchi.termInfo.pojo.TermLogicCatagory" >
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.quantchi.termInfo.pojo.TermLogicCatagory" >
     insert into term_logic_category (id, category_name, parent_id, 
       create_time, logic_table, physical_table
       )

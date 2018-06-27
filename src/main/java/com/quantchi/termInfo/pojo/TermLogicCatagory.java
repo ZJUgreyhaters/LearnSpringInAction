@@ -62,4 +62,24 @@ public class TermLogicCatagory {
     public void setPhysicalTable(String physicalTable) {
         this.physicalTable = physicalTable == null ? null : physicalTable.trim();
     }
+
+    private String dataSourceName;
+
+    public String getDataSourceName() {
+        return dataSourceName;
+    }
+
+    public void setDataSourceName(String dataSourceName) {
+        this.dataSourceName = dataSourceName;
+    }
+
+    private String dataSourceId;
+
+    public String getDataSourceId() {
+        return dataSourceId;
+    }
+
+    public void setDataSourceId(String dataSourceId) {
+        this.dataSourceId = dataSourceId;
+    }
 }

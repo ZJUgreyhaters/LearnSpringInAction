@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by 49537 on 2018/6/20.
@@ -50,9 +51,9 @@ public class TermInfoController {
   //termLogicCategory
   @ResponseBody
   @RequestMapping(value = "/insertTermLogic", method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
-  public String insertTermLogic(@RequestBody ArrayList<TermLogicCatagory> termLogicCatagories){
+  public String insertTermLogic(@RequestBody Map<String,Object> requestMap){
     try {
-      return service.insertTermLogic(termLogicCatagories);
+      return service.insertTermLogic(requestMap);
     }catch (Exception e){
       return JsonResult.errorJson(e.getMessage());
     }

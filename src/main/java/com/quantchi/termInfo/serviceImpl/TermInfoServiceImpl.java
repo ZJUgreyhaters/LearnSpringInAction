@@ -2,34 +2,24 @@ package com.quantchi.termInfo.serviceImpl;
 
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
-import com.quantchi.termInfo.mapper.PhysicalFieldInfoMapper;
-import com.quantchi.termInfo.mapper.PhysicalTableInfoMapper;
-import com.quantchi.termInfo.mapper.TermInfoMapper;
-import com.quantchi.termInfo.mapper.TermLogicCatagoryMapper;
-import com.quantchi.termInfo.mapper.TermLogicFieldDraftMapper;
-import com.quantchi.termInfo.mapper.TermLogicFieldMapper;
-import com.quantchi.termInfo.mapper.TermMainInfoMapper;
-import com.quantchi.termInfo.pojo.PhysicalFieldInfo;
-import com.quantchi.termInfo.pojo.PhysicalTableInfo;
-import com.quantchi.termInfo.pojo.TermGenInfo;
-import com.quantchi.termInfo.pojo.TermInfoPojo;
-import com.quantchi.termInfo.pojo.TermLogicCatagory;
-import com.quantchi.termInfo.pojo.TermLogicField;
-import com.quantchi.termInfo.pojo.TermLogicFieldDraft;
-import com.quantchi.termInfo.pojo.TermMainInfo;
+import com.quantchi.termInfo.mapper.*;
+import com.quantchi.termInfo.pojo.*;
 import com.quantchi.termInfo.service.TermInfoService;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import javax.jdo.annotations.Transactional;
+
+import java.util.*;
+
+import javafx.util.Pair;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.solr.client.solrj.io.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.jdo.annotations.Transactional;
 
 /**
  * Created by 49537 on 2018/6/20.
@@ -57,6 +47,12 @@ public class TermInfoServiceImpl implements TermInfoService {
 
   @Autowired
   TermLogicCatagoryMapper termLogicCatagoryMapper;
+
+  @Autowired
+  DSEntityInfoDBMapper dsEntityInfoDBMapper;
+
+  @Autowired
+  DSTableInfoDBMapper dsTableInfoDBMapper;
 
   private List<String> name = Arrays
       .asList("entityType", "entityId", "entityHash", "entityName", "entityDesc", "logicType",
@@ -279,14 +275,41 @@ public class TermInfoServiceImpl implements TermInfoService {
   }
 
   @Override
-  public String insertTermLogic(ArrayList<TermLogicCatagory> termLogicCatagories) {
-
+  public String insertTermLogic(Map<String,Object> requestMap) {
     try{
+      List<TermMainInfo> termGenInfos = (List)requestMap.get("termGenInfoList");
+      List<TermLogicCatagory> termLogicCatagories = (List<TermLogicCatagory>)requestMap.get("termLogicCatagoryEntityList");
+      String _logicCataStr = JSONObject.toJSONString(termLogicCatagories);
+      termLogicCatagories  = JSONObject.parseArray(_logicCataStr,TermLogicCatagory.class);
+      Map<String,String> termLogicCategoryIdMap = new HashMap<>();
       for(TermLogicCatagory termLogicCatagory : termLogicCatagories){
         termLogicCatagoryMapper.insert(termLogicCatagory);
 
+        DSEntityInfoDBExample dsEntityInfoDBExample = new DSEntityInfoDBExample();
+        dsEntityInfoDBExample.createCriteria().andIdEqualTo(Integer.parseInt(termLogicCatagory.getDataSourceId()));
+        List<DSEntityInfoDB> dsEntityInfoDBList = dsEntityInfoDBMapper.selectByExample(dsEntityInfoDBExample);
+
+        DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
+        dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(termLogicCatagory.getDataSourceName());
+        List<DSTableInfoDB> dsTableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
+
+        for(DSTableInfoDB dsTableInfoDB : dsTableInfoDBList){
+          if(dsEntityInfoDBList.get(0).getMainTable().contains(dsTableInfoDB.getTableEnglishName()) || dsEntityInfoDBList.get(0).getNonMainTable().contains(dsTableInfoDB.getTableEnglishName())){
+            TermLogicCatagory termLogicCatagory2 = new TermLogicCatagory();
+            termLogicCatagory2.setCategoryName("测试");
+            String tableName = dsTableInfoDB.getTableEnglishName().split("\\.")[1];
+            termLogicCatagory2.setLogicTable(tableName);
+            termLogicCatagory2.setPhysicalTable(tableName);
+            termLogicCatagory2.setCreateTime(new Date());
+            termLogicCatagory2.setParentId(termLogicCatagory.getId());
+            termLogicCatagoryMapper.insert(termLogicCatagory2);
+            termLogicCategoryIdMap.put(dsTableInfoDB.getId().toString(),dsTableInfoDB.getId()+"_"+termLogicCatagory.getId());
+          }
+
+        }
+
       }
-      return JsonResult.successJson();
+      return JsonResult.successJson(termLogicCategoryIdMap);
     }catch (Exception e){
       e.printStackTrace();
       return JsonResult.errorJson(e.getMessage());
