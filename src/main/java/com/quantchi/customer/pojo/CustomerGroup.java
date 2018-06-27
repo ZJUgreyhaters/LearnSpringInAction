@@ -22,6 +22,24 @@ public class CustomerGroup {
   private Integer page;
   private Integer page_size;
   private String customer_name;
+  private String field;
+  private String order;
+
+  public String getField() {
+    return field;
+  }
+
+  public void setField(String field) {
+    this.field = field;
+  }
+
+  public String getOrder() {
+    return order;
+  }
+
+  public void setOrder(String order) {
+    this.order = order;
+  }
 
   public String getCustomer_name() {
     return customer_name;

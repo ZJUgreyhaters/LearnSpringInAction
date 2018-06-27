@@ -375,6 +375,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       if (group.getCustomer_name() != null && group.getCustomer_name().length() > 0) {
         sqlQuery = sqlQuery + " where cust.customer_name like '%" + group.getCustomer_name() + "%'";
       }
+      if(group.getField()!=null && group.getOrder()!=null){
+        sqlQuery = sqlQuery  + " order by "+group.getField()+" "+group.getOrder();
+      }
       List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return JsonResult.errorJson("error");
@@ -383,13 +386,20 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       if (group.getPage() != null && group.getPage_size() != null) {
         list = Paging.pagingPlug(list, group.getPage_size(), group.getPage());
       }
-
       PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(list);
-      String str = JsonResult.successJson(total + "", list);
-      return str.replaceAll("customer_no", "客户号")
-          .replaceAll("customer_name", "姓名").replaceAll("fin_balance", "融资负债（万元）")
-          .replaceAll("total_asset", "总资产（万元}").replaceAll("assure_debit_rate", "维保比例")
-          .replaceAll("concentrate", "当前仓位").replaceAll("profit_rate_y", "年度收益率 ");
+      Map<String,Object> result = new LinkedHashMap<>();
+      Map<String,Object> map = new LinkedHashMap<>();
+      map.put("customer_no","客户号");
+      map.put("customer_name","姓名");
+      map.put("fin_balance","融资余额（万元）");
+      map.put("total_asset","总资产（万元）");
+      map.put("assure_debit_rate","维保比例");
+      map.put("concentrate","当前仓位");
+      map.put("profit_rate_y","年度收益率");
+      result.put("title",map);
+      result.put("result",list);
+      String str = JsonResult.successJson(total + "", result);
+      return str;
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("error");
@@ -459,7 +469,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     List<Map<String, Object>> list = new ArrayList<>();
     for (String name : nameList) {
       for (Map<String, Object> map1 : list1) {
-        String dataUDCDesc = map1.get("dataUDCDesc").toString();
+        String dataUDCDesc = map1.get("dataUDCValue").toString();
         String entityId = map1.get("entityId").toString();
         Map<String, Object> map2 = new HashedMap();
         int a = 0;
