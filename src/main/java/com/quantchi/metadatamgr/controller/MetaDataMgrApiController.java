@@ -317,10 +317,10 @@ public class MetaDataMgrApiController {
         Map<String, Object> responseMap = new HashMap<>();
         try{
             JSONObject json = JSONObject.parseObject(bodyString);
-            if(json.getString("data_source_name") == null){
-                throw new Exception("miss data source name");
+            if(json.getString("data_source_id") == null){
+                throw new Exception("miss data source id");
             }
-            responseMap = metaDataMgrApiService.createTerm(json.getString("data_source_name"));
+            responseMap = metaDataMgrApiService.createTerm(json.getString("data_source_id"));
             return responseMap;
         }catch (Exception e){
             logger.error(e.getMessage());
