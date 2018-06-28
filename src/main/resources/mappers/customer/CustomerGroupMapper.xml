@@ -58,7 +58,7 @@
         select condition_statement from dmp.cust_group_header WHERE cust_group_id = #{cust_group_id}
     </select>
   <update id="updateCustomerGroup">
-      update dmp.cust_group_header set last_refresh_time = SYSDATE()
+      update dmp.cust_group_header set last_refresh_time = SYSDATE(),cust_nums =#{cust_nums}
       where cust_group_id = #{cust_group_id}
   </update>
 
