@@ -99,7 +99,12 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       }
       StringBuilder builder = new StringBuilder();
       for (Map<String, Object> map : customerGroupCriteria) {
-        List<String> list = (List<String>) map.get("names");
+        List<String> list = null;
+        if( map.get("names")==null){
+          list = (List<String>) map.get("value");
+        }else {
+          list = (List<String>) map.get("names");
+        }
         String name = map.get("name").toString();
         String obj = String.join(",", list);
         builder.append(name + ":");
