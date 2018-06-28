@@ -263,7 +263,7 @@ public class TermInfoServiceImpl implements TermInfoService {
           _logicField_draft.setChineseName(_tableName+"."+field.getPhysicalField());
           //_logicField_draft.setChineseName(field.getPhysicalFieldDesc()==null?"undefined":field.getPhysicalFieldDesc());
           //等插入表后返回
-          _logicField_draft.setLogicCate(termLogicCategoryIdMap.get(_table.getId()));
+          _logicField_draft.setLogicCate(termLogicCategoryIdMap.get(_tableName));
           _logicField_draft.setTechCriteria(getTechCriteria(field));
           _logicField_draft.setStatus(2);
           _logicField_draft.setLogicOnlineId(0);
@@ -283,7 +283,7 @@ public class TermInfoServiceImpl implements TermInfoService {
           _logicField.setChineseName(_tableName+"."+field.getPhysicalField());
           //_logicField.setChineseName(field.getPhysicalFieldDesc()==null?"undefined":field.getPhysicalFieldDesc());
           //_logicField.setEnglishName(field.getPhysicalField());
-          _logicField.setLogicCate(termLogicCategoryIdMap.get(_table.getId()));
+          _logicField.setLogicCate(termLogicCategoryIdMap.get(_tableName));
           _logicField.setTechCriteria(getTechCriteria(field));
           _logicField.setStatus(2);
           _logicField.setIsSum("false");
@@ -345,7 +345,7 @@ public class TermInfoServiceImpl implements TermInfoService {
             termLogicCatagory2.setCreateTime(new Date());
             termLogicCatagory2.setParentId(termLogicCatagory.getId());
             termLogicCatagoryMapper.insert(termLogicCatagory2);
-            termLogicCategoryIdMap.put(dsTableInfoDB.getId().toString(),termLogicCatagory.getParentId()+"_"+dsTableInfoDB.getId()+"_"+termLogicCatagory.getId());
+            termLogicCategoryIdMap.put(tableName,termLogicCatagory.getParentId()+"_"+dsTableInfoDB.getId()+"_"+termLogicCatagory.getId());
           }
 
         }
