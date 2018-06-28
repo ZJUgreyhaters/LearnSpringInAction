@@ -254,13 +254,13 @@ public class TermInfoServiceImpl implements TermInfoService {
     try {
       for (TermGenInfo termInfo : termGenInfos) {
         PhysicalTableInfo _table = termInfo.getTableInfo();
-        String _tableName = _table.getTableName();
+        String _tableName = _table.getPhysicalTable();
         List<PhysicalFieldInfo> fieldInfos = termInfo.getFieldInfoList();
 
         for (PhysicalFieldInfo field : fieldInfos) {
           TermLogicFieldDraft _logicField_draft = new TermLogicFieldDraft();
-          _logicField_draft.setEnglishName(_table.getTableName()+"."+field.getPhysicalField());
-          _logicField_draft.setChineseName(_table.getTableName()+"."+field.getPhysicalField());
+          _logicField_draft.setEnglishName(_tableName+"."+field.getPhysicalField());
+          _logicField_draft.setChineseName(_tableName+"."+field.getPhysicalField());
           //_logicField_draft.setChineseName(field.getPhysicalFieldDesc()==null?"undefined":field.getPhysicalFieldDesc());
           //等插入表后返回
           _logicField_draft.setLogicCate(termLogicCategoryIdMap.get(_table.getId()));
@@ -270,11 +270,17 @@ public class TermInfoServiceImpl implements TermInfoService {
           _logicField_draft.setIsSum("false");
           _logicField_draft.setIsGroup("false");
           _logicField_draft.setIsUniq("false");
-          termLogicFieldDraftMapper.insert(_logicField_draft);
+          try {
+            termLogicFieldDraftMapper.insert(_logicField_draft);
+          }catch (Exception e){
+            if(e.getMessage().indexOf("Duplicate entry") == -1)
+                throw e;
+          }
+
 
           TermLogicField _logicField = new TermLogicField();
-          _logicField.setEnglishName(_table.getTableName()+"."+field.getPhysicalField());
-          _logicField.setChineseName(_table.getTableName()+"."+field.getPhysicalField());
+          _logicField.setEnglishName(_tableName+"."+field.getPhysicalField());
+          _logicField.setChineseName(_tableName+"."+field.getPhysicalField());
           //_logicField.setChineseName(field.getPhysicalFieldDesc()==null?"undefined":field.getPhysicalFieldDesc());
           //_logicField.setEnglishName(field.getPhysicalField());
           _logicField.setLogicCate(termLogicCategoryIdMap.get(_table.getId()));
@@ -283,8 +289,21 @@ public class TermInfoServiceImpl implements TermInfoService {
           _logicField.setIsSum("false");
           _logicField.setIsGroup("false");
           _logicField.setIsUniq("false");
-          _logicField.setLogicOnlineId(_logicField_draft.getId());
-          termLogicFieldMapper.insert(_logicField);
+
+          if(_logicField_draft.getId() == null){
+            TermLogicFieldDraftExample _ex = new TermLogicFieldDraftExample();
+            _ex.createCriteria().andEnglishNameEqualTo(_tableName+"."+field.getPhysicalField());
+            List<TermLogicFieldDraft> _res = termLogicFieldDraftMapper.selectByExample(_ex);
+            TermLogicFieldDraft _logfield =  _res.get(0);
+            _logicField.setLogicOnlineId(_logfield.getId());
+          }else
+            _logicField.setLogicOnlineId(_logicField_draft.getId());
+          try {
+            termLogicFieldMapper.insert(_logicField);
+          }catch (Exception e){
+            if(e.getMessage().indexOf("Duplicate entry") == -1)
+              throw e;
+          }
 
         }
 
@@ -333,7 +352,7 @@ public class TermInfoServiceImpl implements TermInfoService {
 
       }
       insertFieldIntoOldDB(termGenInfos,termLogicCategoryIdMap);
-      return JsonResult.successJson(termLogicCategoryIdMap);
+      return JsonResult.successJson();
     }catch (Exception e){
       e.printStackTrace();
       return JsonResult.errorJson(e.getMessage());
