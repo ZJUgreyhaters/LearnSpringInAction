@@ -43,7 +43,7 @@ public class TermLogicFieldDraft {
 
     private String techCriteriaParams;
 
-    private Boolean status;
+    private Integer status;
 
     private String commonName;
 
@@ -233,11 +233,11 @@ public class TermLogicFieldDraft {
         this.techCriteriaParams = techCriteriaParams == null ? null : techCriteriaParams.trim();
     }
 
-    public Boolean getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
