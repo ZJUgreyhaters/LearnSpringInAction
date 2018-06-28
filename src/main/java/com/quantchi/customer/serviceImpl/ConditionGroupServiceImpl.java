@@ -124,6 +124,9 @@ public class ConditionGroupServiceImpl implements ConditionGroupService {
                     Map<String, Object> selectMap = (Map<String, Object>)jsondata.get(0).get("physicalField");
                         List<Map<String,Object>> selectList = (List<Map<String,Object>>)selectMap.get("dataUDC");
                         for(Map<String,Object> selectEntityMap : selectList){
+                            if(selectEntityMap.get("dataUDCValue") == null){
+                                continue;
+                            }
                             Map<Object, Object> map1 = new HashMap<>();
                             map1.put("name",selectEntityMap.get("dataUDCDesc"));
                             map1.put("value",selectEntityMap.get("dataUDCValue"));
