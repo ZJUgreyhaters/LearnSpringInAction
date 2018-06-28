@@ -465,8 +465,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       int a = 0;
       for (String name : nameList) {
         for (Map<String, Object> result : Resultlist) {
-          if (entityName.equals(name)&&dataUDCValue.equals(result.get(name))) {
-            result.remove(name);
+          if (entityName.equals(name) && dataUDCValue.equals(result.get(name))) {
             a++;
           }
         }
@@ -476,6 +475,11 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       map2.put("name", dataUDCDesc);
       map2.put("number", a);
       list.add(map2);
+    }
+    for (String name : nameList) {
+      for (Map<String, Object> result : Resultlist) {
+        result.remove(name);
+      }
     }
     String[] split = idsNames.split(",");
     List<Map<String, Object>> list3 = new ArrayList<>();
