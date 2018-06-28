@@ -266,6 +266,7 @@
         LIKE CONCAT(CONCAT('%',#{tableEnglishName}), '%')
       </if>
     </where>
+    ORDER BY id desc
   </select>
   <delete id="delete">
      DELETE  from  ds_table_info where id = #{id}
