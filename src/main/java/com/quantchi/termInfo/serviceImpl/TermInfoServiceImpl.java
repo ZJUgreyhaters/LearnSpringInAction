@@ -257,6 +257,9 @@ public class TermInfoServiceImpl implements TermInfoService {
         String _tableName = _table.getPhysicalTable();
         List<PhysicalFieldInfo> fieldInfos = termInfo.getFieldInfoList();
 
+        if(!termLogicCategoryIdMap.containsKey(_tableName))
+          continue;
+
         for (PhysicalFieldInfo field : fieldInfos) {
           TermLogicFieldDraft _logicField_draft = new TermLogicFieldDraft();
           _logicField_draft.setEnglishName(_tableName+"."+field.getPhysicalField());
@@ -313,7 +316,7 @@ public class TermInfoServiceImpl implements TermInfoService {
     }
 
   }
-
+  @Transactional
   @Override
   public String insertTermLogic(Map<String,Object> requestMap) {
     try{
@@ -338,14 +341,19 @@ public class TermInfoServiceImpl implements TermInfoService {
         for(DSTableInfoDB dsTableInfoDB : dsTableInfoDBList){
           if(dsEntityInfoDBList.get(0).getMainTable().contains(dsTableInfoDB.getTableEnglishName()) || dsEntityInfoDBList.get(0).getNonMainTable().contains(dsTableInfoDB.getTableEnglishName())){
             TermLogicCatagory termLogicCatagory2 = new TermLogicCatagory();
-            termLogicCatagory2.setCategoryName("测试");
+            if(dsTableInfoDB.getTableChineseName() != null){
+              termLogicCatagory2.setCategoryName(dsTableInfoDB.getTableChineseName());
+            }else{
+              termLogicCatagory2.setCategoryName(dsTableInfoDB.getTableEnglishName());
+            }
             String tableName = dsTableInfoDB.getTableEnglishName().split("\\.")[1];
             termLogicCatagory2.setLogicTable(tableName);
             termLogicCatagory2.setPhysicalTable(tableName);
             termLogicCatagory2.setCreateTime(new Date());
             termLogicCatagory2.setParentId(termLogicCatagory.getId());
             termLogicCatagoryMapper.insert(termLogicCatagory2);
-            termLogicCategoryIdMap.put(tableName,termLogicCatagory.getParentId()+"_"+dsTableInfoDB.getId()+"_"+termLogicCatagory.getId());
+            termLogicCategoryIdMap.put(tableName,termLogicCatagory.getParentId()+"_"+termLogicCatagory.getId()+"_"+termLogicCatagory2.getId());
+            //termLogicCategoryIdMap.put(tableName,termLogicCatagory.getParentId()+"_"+dsTableInfoDB.getId()+"_"+termLogicCatagory.getId());
           }
 
         }
