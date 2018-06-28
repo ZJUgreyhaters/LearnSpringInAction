@@ -77,7 +77,7 @@ public class ConditionGroupController {
         try {
             List<Map<String, Object>> CustomerGroupCriteriaDef = (List<Map<String, Object>>) requestMap.get("customer_group_criteria_def");
             for(Map<String, Object> listMap : CustomerGroupCriteriaDef){
-                condition_desc += listMap.get("name") + ":" + String.join(",",(List)listMap.get("value")) + "|";
+                condition_desc += listMap.get("name") + ":" + String.join(",",(List)listMap.get("names")) + "|";
                 condition_desc_id += "id:" + listMap.get("id") + ",type:" + listMap.get("type") +"|";
             }
             requestMap.put("condition_desc", condition_desc);

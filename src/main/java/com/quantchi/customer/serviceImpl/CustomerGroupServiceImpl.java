@@ -99,7 +99,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       }
       StringBuilder builder = new StringBuilder();
       for (Map<String, Object> map : customerGroupCriteria) {
-        List<String> list = (List<String>) map.get("value");
+        List<String> list = (List<String>) map.get("names");
         String name = map.get("name").toString();
         String obj = String.join(",", list);
         builder.append(name + ":");
@@ -108,6 +108,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       group.setCondition_desc(builder.toString());
       group.setCondition_statement(Sql);
       group.setCust_group_id(str);
+      group.setCondition_nums(customerGroupCriteria.size());
       group.setRefresh_status("0");
       group.setDelete_status("0");
       group.setHistory_status("0");
@@ -465,8 +466,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       int a = 0;
       for (String name : nameList) {
         for (Map<String, Object> result : Resultlist) {
-          if (entityName.equals(name)&&dataUDCValue.equals(result.get(name))) {
-            result.remove(name);
+          if (entityName.equals(name) && dataUDCValue.equals(result.get(name))) {
             a++;
           }
         }
@@ -476,6 +476,11 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       map2.put("name", dataUDCDesc);
       map2.put("number", a);
       list.add(map2);
+    }
+    for (String name : nameList) {
+      for (Map<String, Object> result : Resultlist) {
+        result.remove(name);
+      }
     }
     String[] split = idsNames.split(",");
     List<Map<String, Object>> list3 = new ArrayList<>();

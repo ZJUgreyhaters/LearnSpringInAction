@@ -559,7 +559,7 @@ public class MetaDataMgrApiService {
         for(DSEntityInfoDB dsEntityInfoDB : dsEntityInfoDBList){
             TermLogicCatagory termLogicCatagory = new TermLogicCatagory();
             termLogicCatagory.setCreateTime(new Date());
-            termLogicCatagory.setPhysicalTable(dsEntityInfoDB.getMainTable().split("\\.")[1]);
+            //termLogicCatagory.setPhysicalTable(dsEntityInfoDB.getMainTable().split("\\.")[1]);
             termLogicCatagory.setCategoryName(dsEntityInfoDB.getEntityName());
             termLogicCatagory.setParentId(1);
             termLogicCatagory.setDataSourceName(dsEntityInfoDB.getDatasourceId());
