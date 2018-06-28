@@ -426,7 +426,8 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         result.put("msg", "error");
         return result;
       }
-
+      List<Map<String, Object>> list = selectCustomerInfo(sql, group.getCust_group_id());
+      group.setCondition_nums(list.size());
       mapper.updateCustomerGroup(group);
       result.put("code", "200");
       result.put("msg", "ok");
@@ -448,6 +449,15 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
             + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
     sql.append(String).append(sql1);
     return HiveLink.elseHive(sql.toString(), jdbcPool);
+  }
+
+  List<Map<String, Object>> selectCustomerInfo(String sql1, String id){
+    StringBuilder sql = new StringBuilder();
+    String String = "select '" + id
+            + "' as part_group_id, '20160101' as init_date,condition01.customer_no,"
+            + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
+    sql.append(String).append(sql1);
+    return HiveLink.selectHive(sql.toString(), jdbcPool);
   }
 
   List<Map<String, Object>> sub(List<Map<String, Object>> Resultlist) {
