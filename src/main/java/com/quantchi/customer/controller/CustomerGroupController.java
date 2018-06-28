@@ -49,7 +49,6 @@ public class CustomerGroupController {
     List<Map<String, Object>> customerGroupCriteria = (List<Map<String, Object>>) map
         .get("customer_group_criteria");
     List<Map<String, Object>> subcondition = (List<Map<String, Object>>) map.get("subcondition");
-    group.setCondition_nums(customerGroupCriteria.size());
     return service.createCustomerGroup(group, customerGroupCriteria,subcondition);
   }
 

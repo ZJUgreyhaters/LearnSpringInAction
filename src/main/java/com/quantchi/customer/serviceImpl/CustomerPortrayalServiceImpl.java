@@ -129,6 +129,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
   }
 
   Map<String, Object> mapping(List<Map<String, Object>> list) {
+
     Map<String, Object> result = new LinkedHashMap();
     if (list != null && list.size() > 0) {
       Set<String> strings = list.get(0).keySet();
@@ -149,7 +150,9 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
     List<Object> list1 = new ArrayList<>();
     List<Object> list2 = new ArrayList<>();
     List<Object> list3 = new ArrayList<>();
+    DecimalFormat df4 = new DecimalFormat("#0.0000");
     for (Map<String, Object> map : list) {
+      map.put("fin_slo_balance",df4.format(map.get("fin_slo_balance")));
       Object province = map.get("province");
       Object city = map.get("city");
       Object branchName = map.get("branch_name");
@@ -163,14 +166,13 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
         list3.add(branchName);
       }
     }
-    DecimalFormat df4 = new DecimalFormat("#0.0000");
     List<Map<String, Object>> list4 = new ArrayList<>();
     for (Object obj : list1) {
       Double balance = 0.0;
       Map<String, Object> map1 = new HashMap();
       for (Map<String, Object> map : list) {
         if (obj.equals(map.get("province"))) {
-          Double fin_slo_balance = (Double) map.get("fin_slo_balance");
+          Double fin_slo_balance = Double.parseDouble(map.get("fin_slo_balance").toString()) ;
           balance = balance + fin_slo_balance;
         }
       }
@@ -187,7 +189,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
       Map<String, Object> map2 = new HashMap();
       for (Map<String, Object> map : list) {
         if (obj.equals(map.get("city"))) {
-          Double fin_slo_balance = (Double) map.get("fin_slo_balance");
+          Double fin_slo_balance = Double.parseDouble(map.get("fin_slo_balance").toString());
           balance = balance + fin_slo_balance;
           list5.add(map);
         }
