@@ -163,7 +163,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
         list3.add(branchName);
       }
     }
-    DecimalFormat df2 = new DecimalFormat("#0.00");
+    DecimalFormat df4 = new DecimalFormat("#0.0000");
     List<Map<String, Object>> list4 = new ArrayList<>();
     for (Object obj : list1) {
       Double balance = 0.0;
@@ -175,7 +175,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
         }
       }
       map1.put("province", obj);
-      map1.put("fin_slo_balance", df2.format(balance));
+      map1.put("fin_slo_balance", df4.format(balance));
       list4.add(map1);
     }
     List<Map<String, Object>> list6 = new ArrayList<>();
@@ -193,7 +193,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
         }
       }
       map2.put("city", obj);
-      map2.put("fin_slo_balance", df2.format(balance));
+      map2.put("fin_slo_balance", df4.format(balance));
       list7.add(map2);
       map1.put("balanceDate",list5);
       map1.put("cityDate",list7);

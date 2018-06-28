@@ -364,8 +364,8 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       if (group.getCustomer_name() != null && group.getCustomer_name().length() > 0) {
         sqlQuery = sqlQuery + " where cust.customer_name like '%" + group.getCustomer_name() + "%'";
       }
-      if(group.getField()!=null && group.getOrder()!=null){
-        sqlQuery = sqlQuery  + " order by "+group.getField()+" "+group.getOrder();
+      if (group.getField() != null && group.getOrder() != null) {
+        sqlQuery = sqlQuery + " order by " + group.getField() + " " + group.getOrder();
       }
       List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
@@ -376,17 +376,17 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         list = Paging.pagingPlug(list, group.getPage_size(), group.getPage());
       }
       PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(list);
-      Map<String,Object> result = new LinkedHashMap<>();
-      Map<String,Object> map = new LinkedHashMap<>();
-      map.put("customer_no","客户号");
-      map.put("customer_name","姓名");
-      map.put("fin_balance","融资余额（万元）");
-      map.put("total_asset","总资产（万元）");
-      map.put("assure_debit_rate","维保比例");
-      map.put("concentrate","当前仓位");
-      map.put("profit_rate_y","年度收益率");
-      result.put("title",map);
-      result.put("result",list);
+      Map<String, Object> result = new LinkedHashMap<>();
+      Map<String, Object> map = new LinkedHashMap<>();
+      map.put("customer_no", "客户号");
+      map.put("customer_name", "姓名");
+      map.put("fin_balance", "融资余额（万元）");
+      map.put("total_asset", "总资产（万元）");
+      map.put("assure_debit_rate", "维保比例");
+      map.put("concentrate", "当前仓位");
+      map.put("profit_rate_y", "年度收益率");
+      result.put("title", map);
+      result.put("result", list);
       String str = JsonResult.successJson(total + "", result);
       return str;
     } catch (Exception e) {
@@ -456,25 +456,26 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       nameList.add(split[1]);
     }
     List<Map<String, Object>> list = new ArrayList<>();
-    for (String name : nameList) {
-      for (Map<String, Object> map1 : list1) {
-        String dataUDCValue = map1.get("dataUDCValue").toString();
-        String dataUDCDesc = map1.get("dataUDCDesc").toString();
-        String entityId = map1.get("entityId").toString();
-        Map<String, Object> map2 = new HashedMap();
-        int a = 0;
+    for (Map<String, Object> map1 : list1) {
+      String dataUDCValue = map1.get("dataUDCValue").toString();
+      String dataUDCDesc = map1.get("dataUDCDesc").toString();
+      String entityName = map1.get("entityName").toString();
+      String entityId = map1.get("entityId").toString();
+      Map<String, Object> map2 = new HashedMap();
+      int a = 0;
+      for (String name : nameList) {
         for (Map<String, Object> result : Resultlist) {
-          if (dataUDCValue.equals(result.get(name))) {
+          if (entityName.equals(name)&&dataUDCValue.equals(result.get(name))) {
             result.remove(name);
             a++;
           }
         }
-        map2.put("id", entityId);
-        map2.put("value",dataUDCValue);
-        map2.put("name",dataUDCDesc);
-        map2.put("number", a);
-        list.add(map2);
       }
+      map2.put("id", entityId);
+      map2.put("value", dataUDCValue);
+      map2.put("name", dataUDCDesc);
+      map2.put("number", a);
+      list.add(map2);
     }
     String[] split = idsNames.split(",");
     List<Map<String, Object>> list3 = new ArrayList<>();

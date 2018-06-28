@@ -66,6 +66,7 @@
     SELECT
     a.entity_type AS entityType,
     a.entity_id AS entityId,
+    a.entity_name as entityName,
     a.entity_hash AS entityHash,
     c.udc_code AS dataUDCCode,
     c.udc_rule_name AS dataUDCRule,
