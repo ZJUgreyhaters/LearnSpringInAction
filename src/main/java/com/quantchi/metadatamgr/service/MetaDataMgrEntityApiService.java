@@ -5,7 +5,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.quantchi.metadatamgr.data.entity.DSEntityInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSEntityInfoDBExample;
+import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
+import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
 import com.quantchi.metadatamgr.data.mapper.DSEntityInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +23,22 @@ public class MetaDataMgrEntityApiService {
     @Autowired
     private DSEntityInfoDBMapper dsEntityInfoDBMapper;
 
+    @Autowired
+    private DSMetaInfoDBMapper dsMetaInfoDBMapper;
+
     public int createEntity(JSONObject json){
         DSEntityInfoDB dsEntityInfoDB = new DSEntityInfoDB();
         dsEntityInfoDB.setEntityName(json.getString("entity_name"));
         dsEntityInfoDB.setBusiness(json.getString("business"));
-        dsEntityInfoDB.setDatasourceId(json.getString("data_source_name"));
+        String dsName = json.getString("data_source_name");
+        String dsId = json.getString("data_source_id");
+        if(dsName !=null && !dsName.equals("")){
+            DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
+            dsMetaInfoDBExample.createCriteria().andDsNameEqualTo(dsName);
+            List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
+            dsId = dsMetaInfoDBList.get(0).getId().toString();
+        }
+        dsEntityInfoDB.setDatasourceId(dsId);
         dsEntityInfoDB.setMainTable(json.getString("main_table_id"));
         dsEntityInfoDB.setEntityField(json.getString("main_entity_field_id"));
         String nonMainTable = String.join(",", (List)json.get("non_main_table_id"));
@@ -38,7 +52,16 @@ public class MetaDataMgrEntityApiService {
         dsEntityInfoDB.setId(Integer.parseInt(json.getString("entity_id")));
         dsEntityInfoDB.setEntityName(json.getString("entity_name"));
         dsEntityInfoDB.setBusiness(json.getString("business"));
-        dsEntityInfoDB.setDatasourceId(json.getString("data_source_name"));
+
+        String dsName = json.getString("data_source_name");
+        String dsId = json.getString("data_source_id");
+        if(dsName != null && !dsName.equals("")){
+            DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
+            dsMetaInfoDBExample.createCriteria().andDsNameEqualTo(dsName);
+            List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
+            dsId = dsMetaInfoDBList.get(0).getId().toString();
+        }
+        dsEntityInfoDB.setDatasourceId(dsId);
         dsEntityInfoDB.setMainTable(json.getString("main_table_id"));
         dsEntityInfoDB.setEntityField(json.getString("main_entity_field_id"));
         String nonMainTable = String.join(",", (List)json.get("non_main_table_id"));
@@ -70,7 +93,16 @@ public class MetaDataMgrEntityApiService {
             map.put("id",dsEntityInfoDB.getId());
             map.put("entity_name",dsEntityInfoDB.getEntityName());
             map.put("business",dsEntityInfoDB.getBusiness());
-            map.put("data_source_name",dsEntityInfoDB.getDatasourceId());
+
+            String dsId = dsEntityInfoDB.getDatasourceId();
+            if(dsId.matches("^[0-9]*$")){
+                DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
+                dsMetaInfoDBExample.createCriteria().andIdEqualTo(Integer.parseInt(dsId));
+                List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
+                map.put("data_source_name",dsMetaInfoDBList.get(0).getDsName());
+            }else{
+                map.put("data_source_name",dsId);
+            }
             map.put("main_table_id",dsEntityInfoDB.getMainTable());
             map.put("main_entity_field_id",dsEntityInfoDB.getEntityField());
             map.put("non_main_table_id",dsEntityInfoDB.getNonMainTable());

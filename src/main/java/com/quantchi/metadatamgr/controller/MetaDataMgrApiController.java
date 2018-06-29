@@ -134,17 +134,11 @@ public class MetaDataMgrApiController {
 
             JSONObject json = JSONObject.parseObject(bodyString);
 
-            if(json.getString("data_source_name") == null)
-                throw new Exception("miss data source connection info");
-            else{
-                String dsName = json.getString("data_source_name");
-
-                boolean _ret = metaDataMgrApiService.delMetaInfo(dsName);
-                if(_ret)
-                    return util.genRet(200,_ret,"删除成功",0);
-                else
-                    return util.genRet(201,_ret,"删除失败",0);
-            }
+            boolean _ret = metaDataMgrApiService.delMetaInfo(json);
+            if(_ret)
+                return util.genRet(200,_ret,"删除成功",0);
+            else
+                return util.genRet(201,_ret,"删除失败",0);
         }catch (Exception e){
             logger.error("deleteDataSource func err:",e.getMessage());
             return util.genRet(500,null,e.getMessage(),0);
@@ -211,22 +205,14 @@ public class MetaDataMgrApiController {
 
             JSONObject json = JSONObject.parseObject(bodyString);
 
-            if(json.getString("data_source_name") == null)
-                throw new Exception("miss data source name");
-
-            if(json.get("table_names") == null)
-                throw new Exception("miss tables name info");
-
-            String dsName = json.getString("data_source_name");
-            List<String> tbs = (List) json.get("table_names");
-            boolean _ret = metaDataMgrApiService.saveTablesAndFields(dsName,tbs);
+            boolean _ret = metaDataMgrApiService.saveTablesAndFields(json);
             if(_ret)
                 return util.genRet(200,_ret,"成功",0);
             else
                 return util.genRet(201,_ret,"失败",0);
         }catch (Exception e){
             logger.error("extractTables func err:",e.getMessage());
-            return util.genRet(500,null,e.getMessage(),0);
+            return util.genRet(500,null,"保存失败",0);
         }
     }
 
@@ -236,12 +222,7 @@ public class MetaDataMgrApiController {
         Map<String, Object> responseMap = new HashMap<>();
         try{
             JSONObject json = JSONObject.parseObject(bodyString);
-            if(json.getString("data_source_name") == null){
-                throw new Exception("miss data source name");
-            }
-            String dsName = json.getString("data_source_name");
-            List<String> tbList = (List<String>) json.get("table_list");
-            Map<String,Object> map = metaDataMgrApiService.relationList(dsName, tbList);
+            Map<String,Object> map = metaDataMgrApiService.relationList(json);
             responseMap.put("data",map);
             responseMap.put("code",200);
             responseMap.put("msg","查询成功");
@@ -261,9 +242,6 @@ public class MetaDataMgrApiController {
         Map<String, Object> responseMap = new HashMap<>();
         try{
             JSONObject json = JSONObject.parseObject(bodyString);
-            if(json.getString("data_source_name") == null){
-                throw new Exception("miss data source name");
-            }
             if(json.getString("from") == null){
                 throw new Exception("miss from");
             }

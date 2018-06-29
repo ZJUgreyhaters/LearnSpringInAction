@@ -3,11 +3,9 @@ package com.quantchi.metadatamgr.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.quantchi.common.JsonResult;
-import com.quantchi.metadatamgr.data.entity.DSFieldRelDB;
-import com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample;
-import com.quantchi.metadatamgr.data.entity.DSTableInfoDB;
-import com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample;
+import com.quantchi.metadatamgr.data.entity.*;
 import com.quantchi.metadatamgr.data.mapper.DSFieldRelDBMapper;
+import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
 
 import java.util.ArrayList;
@@ -26,6 +24,8 @@ public class MetaDataMgrTableApiService {
   DSFieldRelDBMapper dsFieldRelDBMapper;
   @Autowired
   DSTableInfoDBMapper mapper;
+  @Autowired
+  DSMetaInfoDBMapper dsMetaInfoDBMapper;
   private static final Logger logger = LoggerFactory.getLogger(MetaDataMgrTableApiService.class);
 
   public String search(DSTableInfoDB tableInfo) {
@@ -37,7 +37,18 @@ public class MetaDataMgrTableApiService {
       List<DSTableInfoDB> search = mapper.search(tableInfo);
       // 取分页信息
       PageInfo<DSTableInfoDB> pageInfo = new PageInfo<>(search);
-      return JsonResult.successJson(pageInfo.getTotal()+"",pageInfo.getList());
+
+      List<DSTableInfoDB> dsTableInfoDBList = new ArrayList<>();
+      for(DSTableInfoDB dsTableInfoDB : pageInfo.getList()){
+        if(dsTableInfoDB.getDatasourceId().matches("^[0-9]*$")){
+          DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
+          dsMetaInfoDBExample.createCriteria().andIdEqualTo(Integer.parseInt(dsTableInfoDB.getDatasourceId()));
+          List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
+          dsTableInfoDB.setDatasourceId(dsMetaInfoDBList.get(0).getDsName());
+        }
+        dsTableInfoDBList.add(dsTableInfoDB);
+      }
+      return JsonResult.successJson(pageInfo.getTotal()+"",dsTableInfoDBList);
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("search tableInfo error");
