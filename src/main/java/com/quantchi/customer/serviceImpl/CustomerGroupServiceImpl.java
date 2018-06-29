@@ -427,7 +427,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         return result;
       }
       List<Map<String, Object>> list = selectCustomerInfo(sql, group.getCust_group_id());
-      group.setCondition_nums(list.size());
+      group.setCust_nums(list.size());
       mapper.updateCustomerGroup(group);
       result.put("code", "200");
       result.put("msg", "ok");
