@@ -25,4 +25,6 @@ public interface CustomerGroupMapper {
   List<Map<String,Object>> selectUdc(@Param("entityIds") String entityIds);
 
   List<Map<String,Object>> selectName(CustomerGroup customerGroup);
+
+  List<Map<String, Object>> selectIdAndNames(@Param("ids")String ids);
 }

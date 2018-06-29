@@ -100,9 +100,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       StringBuilder builder = new StringBuilder();
       for (Map<String, Object> map : customerGroupCriteria) {
         List<String> list = null;
-        if( map.get("names")==null){
+        if (map.get("names") == null) {
           list = (List<String>) map.get("value");
-        }else {
+        } else {
           list = (List<String>) map.get("names");
         }
         String name = map.get("name").toString();
@@ -308,25 +308,13 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       List<Map<String, Object>> assemble = assemble(condition);
       String jointSql = jointSql(assemble);
       StringBuilder sql = new StringBuilder();
-      String names = sqlQueryConfig.getSEL_NAMES();
-      String string = null;
-      if (names != null && names.length() > 0) {
-        string =
-            "select " + names
-                + "condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y from (";
-      } else {
-        string =
-            "select condition01.customer_no,cust.customer_name,round(nvl(main_data.fin_balance/10000,0),2) as fin_balance,round(nvl(main_data.total_asset/10000,0),2) as total_asset,round(nvl(main_data.assure_debit_rate,0)*100,2) as assure_debit_rate,round(nvl(main_data.concentrate,0)*100,2) as concentrate,0 as profit_rate_y from (";
-      }
-      sql.append(string);
-      String z = " left join mtoi.dim_customer cust on condition01.customer_no=cust.customer_no";
-      String w = " left join (select * from mtoi.agg_cust_statistics where part_date = 20160101) main_data on condition01.customer_no=main_data.customer_no ";
-      String sqls = sqlQueryConfig.getSEL_SQLS();
-      if (sqls != null && sqls.length() > 0) {
-        sql.append(jointSql).append(z).append(w).append(sqls);
-      } else {
-        sql.append(jointSql).append(z).append(w);
-      }
+      Map<String, Object> configuration = configuration();
+      String names = configuration.get("names").toString();
+      String sqlop = sqlQueryConfig.getSEL_SQL_TOP();
+      sqlop = MessageFormat.format(sqlop, names);
+      sql.append(sqlop);
+      String sqlBottom = sqlQueryConfig.getSEL_SQL_BOTTOM();
+      sql.append(jointSql).append(" ").append(sqlBottom).append(configuration.get("sqls"));
       List<Map<String, Object>> Resultlist = HiveLink.selectHive(sql.toString(), jdbcPool);
       List<Map<String, Object>> sub = sub(Resultlist);
       if (Resultlist.toString().contains("select error")) {
@@ -354,12 +342,9 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
 
   int insertCustomerInfo(String sql1, String str) {
     StringBuilder sql = new StringBuilder();
-    String String =
-        "insert overwrite table mtoi.cust_group_detail partition (part_group_id = '" + str
-            + "',PART_DATE = 20160103) select '" + str
-            + "' as part_group_id, '20160101' as init_date,condition01.customer_no,"
-            + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
-    sql.append(String).append(sql1);
+    String string = sqlQueryConfig.getSEL_INSERT_SQL_TOP();
+    string = MessageFormat.format(string, str);
+    sql.append(string).append(sql1);
     return HiveLink.elseHive(sql.toString(), jdbcPool);
   }
 
@@ -420,7 +405,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
         result.put("msg", "条件不能为空！");
         return result;
       }
-      int a = updateCustomerInfo(sql, group.getCust_group_id());
+      int a = insertCustomerInfo(sql, group.getCust_group_id());
       if (a < -400) {
         result.put("code", "500");
         result.put("msg", "error");
@@ -440,31 +425,24 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     }
   }
 
-  int updateCustomerInfo(String sql1, String id) {
+  List<Map<String, Object>> selectCustomerInfo(String sql1, String id) {
     StringBuilder sql = new StringBuilder();
-    String String =
-        "insert overwrite table mtoi.cust_group_detail partition (part_group_id = '" + id
-            + "',PART_DATE = 20160103) select '" + id
-            + "' as part_group_id, '20160101' as init_date,condition01.customer_no,"
-            + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
-    sql.append(String).append(sql1);
-    return HiveLink.elseHive(sql.toString(), jdbcPool);
-  }
-
-  List<Map<String, Object>> selectCustomerInfo(String sql1, String id){
-    StringBuilder sql = new StringBuilder();
-    String String = "select '" + id
-            + "' as part_group_id, '20160101' as init_date,condition01.customer_no,"
-            + "'Customer Group Service' as audit_date,from_unixtime(unix_timestamp(),'yyyy-MM-dd HH:mm:ss') as audit_time from (";
-    sql.append(String).append(sql1);
+    String string = sqlQueryConfig.getSEL_SEL_SQL();
+    string = MessageFormat.format(string, id);
+    sql.append(string).append(sql1);
     return HiveLink.selectHive(sql.toString(), jdbcPool);
   }
 
   List<Map<String, Object>> sub(List<Map<String, Object>> Resultlist) {
     String ids = sqlQueryConfig.getSEL_IDS();
+    List<Map<String, Object>> list3 = new ArrayList<>();
+    if (ids.length() == 0 || ids == null) {
+      return list3;
+    }
+    Map<String, Object> configuration = configuration();
     List<Map<String, Object>> list1 = mapper.selectUdc(ids);
-    String idsNames = sqlQueryConfig.getSEL_IDS_NAMES();
-    String names = sqlQueryConfig.getSEL_NAMES();
+    String idsNames = configuration.get("idNames").toString();
+    String names = configuration.get("names").toString();
     String[] split2 = names.split(",");
     List<String> nameList = new ArrayList<>();
     for (String sp : split2) {
@@ -498,7 +476,6 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       }
     }
     String[] split = idsNames.split(",");
-    List<Map<String, Object>> list3 = new ArrayList<>();
     for (String idName : split) {
       String[] split1 = idName.split(":");
       Map<String, Object> map = new HashedMap();
@@ -516,5 +493,53 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     return list3;
   }
 
+
+  public Map<String, Object> configuration() {
+    Map<String, Object> map = new HashMap<>();
+    StringBuilder idNames = new StringBuilder();
+    StringBuilder Names = new StringBuilder();
+    StringBuilder sqls = new StringBuilder();
+    String ids = sqlQueryConfig.getSEL_IDS();
+    if (ids.length() == 0 || ids == null) {
+      map.put("sqls", sqls);
+      map.put("names", Names);
+      map.put("idNames", idNames);
+      return map;
+    }
+    List<Map<String, Object>> list4 = mapper.selectIdAndNames(ids);
+    List<Map<String, Object>> listData = new ArrayList<>();
+    List<String> listkey = new ArrayList<>();
+    for (Map<String, Object> map1 : list4) {
+      StringBuilder dataBase = new StringBuilder();
+      Map<String, Object> mapData = new HashMap<>();
+      idNames.append(map1.get("entityId")).append(":").append(map1.get("entityDesc")).append(",");
+      dataBase.append(map1.get("physicalDB")).append(".").append(map1.get("physicalTable"));
+      if ((dataBase.toString()).equals("mtoi.dim_customer")) {
+        Names.append("cust.").append(map1.get("entityName")).append(",");
+      } else {
+        if (!listkey.contains(dataBase.toString())) {
+          listkey.add(dataBase.toString());
+        }
+        mapData.put(dataBase.toString(), map1.get("entityName"));
+        listData.add(mapData);
+      }
+    }
+    for (int i = 0; i < listkey.size(); i++) {
+      int j = i + 1;
+      sqls.append(" left join ").append(listkey.get(i)).append(" cust0" + j)
+          .append(" on condition01.customer_no = ").append(" cust0" + j)
+          .append(".customer_no ");
+      for (Map<String, Object> map1 : listData) {
+        if (map1.get(listkey.get(i)) != null) {
+          Names.append(" cust0" + j).append(".")
+              .append(map1.get(listkey.get(i))).append(",");
+        }
+      }
+    }
+    map.put("sqls", sqls);
+    map.put("names", Names);
+    map.put("idNames", idNames);
+    return map;
+  }
 
 }
