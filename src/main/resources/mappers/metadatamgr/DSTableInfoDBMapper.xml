@@ -12,6 +12,7 @@
     <result column="status" property="status" jdbcType="INTEGER"/>
     <result column="nums" property="nums" jdbcType="VARCHAR"/>
     <result column="foreignNums" property="foreignNums" jdbcType="INTEGER"/>
+    <result column="table_type" property="tableType" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -73,7 +74,7 @@
   </sql>
   <sql id="Base_Column_List" >
     id, table_english_name, table_chinese_name, datasource_id, primary_key, business,
-    status
+    status,table_type
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample" >
     select
@@ -111,10 +112,10 @@
   <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
     insert into ds_table_info (id, table_english_name, table_chinese_name,
     datasource_id, primary_key, business,
-    status)
+    status,table_type)
     values (#{id,jdbcType=INTEGER}, #{tableEnglishName,jdbcType=VARCHAR}, #{tableChineseName,jdbcType=VARCHAR},
     #{datasourceId,jdbcType=VARCHAR}, #{primaryKey,jdbcType=VARCHAR}, #{business,jdbcType=VARCHAR},
-    #{status,jdbcType=INTEGER})
+    #{status,jdbcType=INTEGER}, #{tableType,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDB" >
     insert into ds_table_info
@@ -140,6 +141,9 @@
       <if test="status != null" >
         status,
       </if>
+      <if test="tableType != null" >
+        table_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -162,6 +166,9 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="tableType != null" >
+        #{tableType,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -189,6 +196,9 @@
       <if test="record.status != null" >
         status = #{record.status,jdbcType=INTEGER},
       </if>
+      <if test="record.tableType != null" >
+        table_type = #{record.tableType,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -202,7 +212,8 @@
     datasource_id = #{record.datasourceId,jdbcType=VARCHAR},
     primary_key = #{record.primaryKey,jdbcType=VARCHAR},
     business = #{record.business,jdbcType=VARCHAR},
-    status = #{record.status,jdbcType=INTEGER}
+    status = #{record.status,jdbcType=INTEGER},
+    table_type = #{record.tableType,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -225,6 +236,9 @@
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
       </if>
+      <if test="tableType != null" >
+        table_type = #{tableType,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
     and table_english_name = #{tableEnglishName,jdbcType=VARCHAR}
@@ -235,10 +249,13 @@
       datasource_id = #{datasourceId,jdbcType=VARCHAR},
       primary_key = #{primaryKey,jdbcType=VARCHAR},
       business = #{business,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER}
+      status = #{status,jdbcType=INTEGER},
+      table_type = #{tableType,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
       and table_english_name = #{tableEnglishName,jdbcType=VARCHAR}
   </update>
+
+  <!--新加内容-->
   <select id="search" resultMap="BaseResultMap">
     SELECT
     id,
@@ -289,12 +306,14 @@
     <insert id="insertTables" parameterType="java.util.List">
         INSERT INTO ds_table_info(
         table_english_name,
-        datasource_id
+        datasource_id,
+        table_type
         )VALUES
         <foreach collection="list" item="list" index="index" separator=",">
             (
             #{list.table_english_name},
-            #{list.datasource_id}
+            #{list.datasource_id},
+            #{list.table_type}
             )
         </foreach>
     </insert>

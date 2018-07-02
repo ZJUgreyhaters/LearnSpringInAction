@@ -111,4 +111,14 @@ public class DSTableInfoDB {
   public void setPrimaryKey(String primaryKey) {
     this.primaryKey = primaryKey;
   }
+
+  private String tableType;
+
+  public String getTableType() {
+    return tableType;
+  }
+
+  public void setTableType(String tableType) {
+    this.tableType = tableType;
+  }
 }

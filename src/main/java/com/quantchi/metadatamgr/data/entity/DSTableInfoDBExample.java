@@ -573,6 +573,75 @@ public class DSTableInfoDBExample {
             addCriterion("status not between", value1, value2, "status");
             return (Criteria) this;
         }
+        public Criteria andTableTypeIsNull() {
+            addCriterion("table_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeIsNotNull() {
+            addCriterion("table_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeEqualTo(String value) {
+            addCriterion("table_type =", value, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeNotEqualTo(String value) {
+            addCriterion("table_type <>", value, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeGreaterThan(String value) {
+            addCriterion("table_type >", value, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("table_type >=", value, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeLessThan(String value) {
+            addCriterion("table_type <", value, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeLessThanOrEqualTo(String value) {
+            addCriterion("table_type <=", value, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeLike(String value) {
+            addCriterion("table_type like", value, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeNotLike(String value) {
+            addCriterion("table_type not like", value, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeIn(List<String> values) {
+            addCriterion("table_type in", values, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeNotIn(List<String> values) {
+            addCriterion("table_type not in", values, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeBetween(String value1, String value2) {
+            addCriterion("table_type between", value1, value2, "tableType");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableTypeNotBetween(String value1, String value2) {
+            addCriterion("table_type not between", value1, value2, "tableType");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

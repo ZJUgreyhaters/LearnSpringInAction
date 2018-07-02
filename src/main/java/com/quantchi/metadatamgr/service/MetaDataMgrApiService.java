@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MetaDataMgrApiService {
@@ -208,14 +209,14 @@ public class MetaDataMgrApiService {
 
 
 
-                List<String> tbs = _extract.getTables(database,_keyword);
+                List<Map<String,String>> tbs = _extract.getTables(database,_keyword);
                 List<Map<String,String>> _childs = new ArrayList<>();
 
-                for(String table:tbs){
+                for(Map<String,String> table:tbs){
                     Map<String,String> _tableMap = new HashMap<>();
                     _tableMap.put("id",database+"."+table);
-                    _tableMap.put("name",table);
-                    _tableMap.put("type","table");
+                    _tableMap.put("name",table.get("TBL_NAME"));
+                    _tableMap.put("type",table.get("TBL_TYPE"));
                     _childs.add(_tableMap);
                 }
 
@@ -255,6 +256,7 @@ public class MetaDataMgrApiService {
         return _extract;
     }
 
+    @Transactional
     public boolean saveTablesAndFields(JSONObject json) throws Exception{
         boolean _ret = true;
 
@@ -296,7 +298,8 @@ public class MetaDataMgrApiService {
             Map<String,String> tableMap = new HashMap<>();
             tableMap.put("table_english_name",tableName);
             tableMap.put("datasource_id",dsId);
-
+            List<Map<String,String>> tbs = getExtractObj(dsName).getTables(tableName.split("\\.")[0],tableName.split("\\.")[1]);
+            tableMap.put("table_type",tbs.get(0).get("TBL_TYPE"));
             tableList.add(tableMap);
         }
 
@@ -544,6 +547,7 @@ public class MetaDataMgrApiService {
             physicalTableInfo.setPrimaryKey(dsTableInfoDB.getPrimaryKey());
             String db = dsTableInfoDB.getTableEnglishName().split("\\.")[0];
             String tableName = dsTableInfoDB.getTableEnglishName().split("\\.")[1];
+            physicalTableInfo.setTableType(dsTableInfoDB.getTableType());
             physicalTableInfo.setPhysicalDb(db);
             physicalTableInfo.setPhysicalTable(tableName);
             physicalTableInfo.setPrimaryKey(dsTableInfoDB.getPrimaryKey());

@@ -3,10 +3,7 @@ package com.quantchi.metadatamgr.extract;
 import com.quantchi.metadatamgr.data.*;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class HiveExtractImp {
 
@@ -105,21 +102,24 @@ public class HiveExtractImp {
     }
 
     //    根据库名返回库所有的表
-    public List<String> getTables(String database,String keyword) throws Exception{
-        List<String> tblList = new ArrayList<>();
+    public List<Map<String,String>> getTables(String database,String keyword) throws Exception{
+        List<Map<String,String>> tblList = new ArrayList<>();
 
         Connection conn = getMysqlConnection();
 
-        String sql = "SELECT a.TBL_NAME FROM TBLS a, DBS b WHERE a.DB_ID = b.DB_ID AND b.`NAME` = '" + database + "'";
+        String sql = "SELECT a.TBL_NAME,a.TBL_TYPE FROM TBLS a, DBS b WHERE a.DB_ID = b.DB_ID AND b.`NAME` = '" + database + "'";
         if(keyword != null)
-            sql = "SELECT a.TBL_NAME FROM TBLS a, DBS b WHERE a.DB_ID = b.DB_ID AND b.`NAME` = '" + database + "' AND a.TBL_NAME like '%"+keyword+"%'";
+            sql = "SELECT a.TBL_NAME,a.TBL_TYPE FROM TBLS a, DBS b WHERE a.DB_ID = b.DB_ID AND b.`NAME` = '" + database + "' AND a.TBL_NAME like '%"+keyword+"%'";
 
 
         try{
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
-                tblList.add(resultSet.getString("TBL_NAME"));
+                Map<String,String> map = new HashMap<>();
+                map.put("TBL_NAME",resultSet.getString("TBL_NAME"));
+                map.put("TBL_TYPE",resultSet.getString("TBL_TYPE"));
+                tblList.add(map);
             }
             conn.close();
         }catch (SQLException e){
