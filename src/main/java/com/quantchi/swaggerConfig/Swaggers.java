@@ -1,33 +1,45 @@
 package com.quantchi.swaggerConfig;
 
-import io.swagger.annotations.ApiOperation;
+import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
+import com.mangofactory.swagger.models.dto.ApiInfo;
+import com.mangofactory.swagger.plugin.EnableSwagger;
+import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
-@EnableSwagger2
+@EnableSwagger
+@EnableWebMvc
+@ComponentScan(basePackages = "com.quantchi.*.controller")
 public class Swaggers {
 
-  public static final String SWAGGER_SCAN_BASE_PACKAGE = "com.quantchi";
+  private SpringSwaggerConfig springSwaggerConfig;
 
-  @Bean
-  public Docket createRestApi() {
-//        return new Docket(DocumentationType.SWAGGER_2).pathMapping("/").apiInfo(apiInfo()).select().apis(RequestHandlerSelectors.basePackage(SWAGGER_SCAN_BASE_PACKAGE)).paths(PathSelectors.any()).build();
-    return new Docket(DocumentationType.SWAGGER_2).pathMapping("/").apiInfo(apiInfo()).select()
-        .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class)).build();
+  @Autowired
+  public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {
+    this.springSwaggerConfig = springSwaggerConfig;
   }
 
+  @Bean
+  public SwaggerSpringMvcPlugin customImplementation() {
+    return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+        .apiInfo(apiInfo())
+        .includePatterns(".*?");
+  }
+
+
   private ApiInfo apiInfo() {
-    return new ApiInfoBuilder().title("Dmp数据分析平台").description("业务数据处理项目接口说明")
-        .termsOfServiceUrl("http://localhost:8081/search/").contact("杭州量知数据科技有限公司").version("1.0")
-        .build();
+    ApiInfo apiInfo = new ApiInfo(
+        "DMP-接口文档",
+        "DMP-接口文档",
+        "My Apps API terms of service",
+        "534560449@qq.com",
+        "web app",
+        "My Apps API License URL");
+    return apiInfo;
   }
 
 }

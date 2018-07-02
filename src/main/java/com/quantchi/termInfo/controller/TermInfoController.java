@@ -3,19 +3,26 @@ package com.quantchi.termInfo.controller;
 import com.quantchi.common.JsonResult;
 import com.quantchi.termInfo.pojo.TermGenInfo;
 import com.quantchi.termInfo.pojo.TermInfoPojo;
-import com.quantchi.termInfo.pojo.TermLogicCatagory;
 import com.quantchi.termInfo.service.TermInfoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import java.util.ArrayList;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Created by 49537 on 2018/6/20.
  */
 @Controller
+@Api(value = "TermInfoController")
+@RequestMapping(value = "/term")
 public class TermInfoController {
 
 
@@ -24,8 +31,11 @@ public class TermInfoController {
 
   //查询
   @ResponseBody
+  @ApiOperation(value = "根据用户名获取用户对象", httpMethod = "GET", response = TermInfoPojo.class, notes = "根据用户名获取用户对象")
   @RequestMapping(value = "/term", method = {RequestMethod.GET},produces = "application/json;charset=UTF-8")
-  public String selectTermAll(TermInfoPojo termInfoPojo) {
+  public String selectTermAll(@ApiParam(
+      value = "dateType <--- D"
+  )TermInfoPojo termInfoPojo) {
     return service.selectTermAll(termInfoPojo);
   }
 
