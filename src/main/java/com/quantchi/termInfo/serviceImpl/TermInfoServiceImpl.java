@@ -261,25 +261,6 @@ public class TermInfoServiceImpl implements TermInfoService {
           continue;
 
         for (PhysicalFieldInfo field : fieldInfos) {
-          TermLogicFieldDraft _logicField_draft = new TermLogicFieldDraft();
-          _logicField_draft.setEnglishName(_tableName+"."+field.getPhysicalField());
-          _logicField_draft.setChineseName(_tableName+"."+field.getPhysicalField());
-          //_logicField_draft.setChineseName(field.getPhysicalFieldDesc()==null?"undefined":field.getPhysicalFieldDesc());
-          //等插入表后返回
-          _logicField_draft.setLogicCate(termLogicCategoryIdMap.get(_tableName));
-          _logicField_draft.setTechCriteria(getTechCriteria(field));
-          _logicField_draft.setStatus(2);
-          _logicField_draft.setLogicOnlineId(0);
-          _logicField_draft.setIsSum("false");
-          _logicField_draft.setIsGroup("false");
-          _logicField_draft.setIsUniq("false");
-          try {
-            termLogicFieldDraftMapper.insert(_logicField_draft);
-          }catch (Exception e){
-            if(e.getMessage().indexOf("Duplicate entry") == -1)
-                throw e;
-          }
-
 
           TermLogicField _logicField = new TermLogicField();
           _logicField.setEnglishName(_tableName+"."+field.getPhysicalField());
@@ -288,25 +269,62 @@ public class TermInfoServiceImpl implements TermInfoService {
           //_logicField.setEnglishName(field.getPhysicalField());
           _logicField.setLogicCate(termLogicCategoryIdMap.get(_tableName));
           _logicField.setTechCriteria(getTechCriteria(field));
+          _logicField.setLogicOnlineId(0);
           _logicField.setStatus(2);
           _logicField.setIsSum("false");
           _logicField.setIsGroup("false");
           _logicField.setIsUniq("false");
 
-          if(_logicField_draft.getId() == null){
+          /*if(_logicField_draft.getId() == null){
             TermLogicFieldDraftExample _ex = new TermLogicFieldDraftExample();
             _ex.createCriteria().andEnglishNameEqualTo(_tableName+"."+field.getPhysicalField());
             List<TermLogicFieldDraft> _res = termLogicFieldDraftMapper.selectByExample(_ex);
             TermLogicFieldDraft _logfield =  _res.get(0);
             _logicField.setLogicOnlineId(_logfield.getId());
           }else
-            _logicField.setLogicOnlineId(_logicField_draft.getId());
+            _logicField.setLogicOnlineId(_logicField_draft.getId());*/
           try {
             termLogicFieldMapper.insert(_logicField);
           }catch (Exception e){
             if(e.getMessage().indexOf("Duplicate entry") == -1)
               throw e;
           }
+
+            TermLogicFieldDraft _logicField_draft = new TermLogicFieldDraft();
+            _logicField_draft.setEnglishName(_tableName+"."+field.getPhysicalField());
+            _logicField_draft.setChineseName(_tableName+"."+field.getPhysicalField());
+            //_logicField_draft.setChineseName(field.getPhysicalFieldDesc()==null?"undefined":field.getPhysicalFieldDesc());
+            //等插入表后返回
+            _logicField_draft.setLogicCate(termLogicCategoryIdMap.get(_tableName));
+            _logicField_draft.setTechCriteria(getTechCriteria(field));
+            _logicField_draft.setStatus(2);
+            //_logicField_draft.setLogicOnlineId(0);
+            _logicField_draft.setIsSum("false");
+            _logicField_draft.setIsGroup("false");
+            _logicField_draft.setIsUniq("false");
+
+
+            if(_logicField.getId() == null){
+                TermLogicFieldExample _ex = new TermLogicFieldExample();
+                _ex.createCriteria().andEnglishNameEqualTo(_tableName+"."+field.getPhysicalField());
+                List<TermLogicField> _res = termLogicFieldMapper.selectByExample(_ex);
+                TermLogicField _logfield =  _res.get(0);
+                _logicField_draft.setLogicOnlineId(_logfield.getId());
+            }else
+                _logicField_draft.setLogicOnlineId(_logicField.getId());
+            try {
+                termLogicFieldDraftMapper.insert(_logicField_draft);
+            }catch (Exception e){
+                if(e.getMessage().indexOf("Duplicate entry") == -1)
+                    throw e;
+            }
+
+            try {
+                termLogicFieldDraftMapper.insert(_logicField_draft);
+            }catch (Exception e){
+                if(e.getMessage().indexOf("Duplicate entry") == -1)
+                    throw e;
+            }
 
         }
 

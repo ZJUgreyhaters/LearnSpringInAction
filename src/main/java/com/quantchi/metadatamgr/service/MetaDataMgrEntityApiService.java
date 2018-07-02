@@ -27,7 +27,9 @@ public class MetaDataMgrEntityApiService {
         dsEntityInfoDB.setDatasourceId(json.getString("data_source_name"));
         dsEntityInfoDB.setMainTable(json.getString("main_table_id"));
         dsEntityInfoDB.setEntityField(json.getString("main_entity_field_id"));
-        String nonMainTable = String.join(",", (List)json.get("non_main_table_id"));
+        String nonMainTable = "";
+        if(json.get("non_main_table_id") != null)
+            nonMainTable = String.join(",", (List)json.get("non_main_table_id"));
         dsEntityInfoDB.setNonMainTable(nonMainTable);
 
         return dsEntityInfoDBMapper.insert(dsEntityInfoDB);
