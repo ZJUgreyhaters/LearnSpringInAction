@@ -135,11 +135,20 @@ public class MetaDataMgrApiService {
         return _ret;
     }
 
-    public boolean delMetaInfo(String dsName){
+    public boolean delMetaInfo(JSONObject json) throws Exception{
         boolean ret = false;
+
+        String data_source_name = json.getString("data_source_name");
+        String data_source_id = json.getString("data_source_id");
+        if(data_source_name != null && !data_source_name.equals("")){
+            DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
+            dsMetaInfoDBExample.createCriteria().andDsNameEqualTo(data_source_name);
+            List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
+            data_source_id = dsMetaInfoDBList.get(0).getId().toString();
+        }
         //获取数据源表
         DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-        dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsName);
+        dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(data_source_id);
         List<DSTableInfoDB> dsTableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
         if(dsTableInfoDBList.size() != 0){
             for(DSTableInfoDB dsTableInfoDB : dsTableInfoDBList){
@@ -158,7 +167,7 @@ public class MetaDataMgrApiService {
         }
 
         DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
-        _ex.createCriteria().andDsNameEqualTo(dsName);
+        _ex.createCriteria().andIdEqualTo(Integer.parseInt(data_source_id));
         int _activeRows = dsMetaInfoDBMapper.deleteByExample(_ex);
         if(_activeRows > 0 )
             ret = true;
@@ -246,8 +255,29 @@ public class MetaDataMgrApiService {
         return _extract;
     }
 
-    public boolean saveTablesAndFields(String dsName,List<String> tables) throws Exception{
+    public boolean saveTablesAndFields(JSONObject json) throws Exception{
         boolean _ret = true;
+
+        String dsId = json.getString("data_source_id");
+        String dsName = json.getString("data_source_name");
+        List<String> tables = (List) json.get("table_names");
+        if(tables == null) {
+            throw new Exception("miss tables name info");
+        }
+        if(dsName == null && dsId == null){
+            throw new Exception("input data_source_name or data_source_id ");
+        }
+        if(dsName != null && !dsName.equals("")){
+            DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
+            dsMetaInfoDBExample.createCriteria().andDsNameEqualTo(dsName);
+            List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
+            dsId = dsMetaInfoDBList.get(0).getId().toString();
+        }else{
+            DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
+            dsMetaInfoDBExample.createCriteria().andIdEqualTo(Integer.parseInt(dsId));
+            List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
+            dsName = dsMetaInfoDBList.get(0).getDsName();
+        }
         List<Map<String,Object>> mapList = new ArrayList<>();
 
         HiveExtractImp hiveExtractImp = getExtractObj(dsName);
@@ -257,7 +287,7 @@ public class MetaDataMgrApiService {
         String oldTable="";
         for(String tableName : tables){
             DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-            dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableName).andDatasourceIdEqualTo(dsName);
+            dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableName).andDatasourceIdEqualTo(dsId);
             List<DSTableInfoDB> dsTableInfoDBSList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
             if(dsTableInfoDBSList.size() > 0) {
                 oldTable += tableName;
@@ -265,7 +295,7 @@ public class MetaDataMgrApiService {
             }
             Map<String,String> tableMap = new HashMap<>();
             tableMap.put("table_english_name",tableName);
-            tableMap.put("datasource_id",dsName);
+            tableMap.put("datasource_id",dsId);
 
             tableList.add(tableMap);
         }
@@ -285,9 +315,9 @@ public class MetaDataMgrApiService {
             List<FieldEntity> fieldList = hiveExtractImp.getFields(dbTableName[0], dbTableName[1]);
             for(FieldEntity fieldEntity : fieldList){
                 Map<String, Object> fieldMap = new HashMap<>();
-                fieldMap.put("datasource_id",dsName);
+                fieldMap.put("datasource_id",dsId);
                 DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-                dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableMap.get("table_english_name")).andDatasourceIdEqualTo(dsName);
+                dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableMap.get("table_english_name")).andDatasourceIdEqualTo(dsId);
                 List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
                 fieldMap.put("table_id",list.get(0).getId());
                 fieldMap.put("field_english_name",fieldEntity.getName());
@@ -396,16 +426,27 @@ public class MetaDataMgrApiService {
         return _ret;
     }
 
-    public Map<String, Object> relationList(String dsName, List<String> tbList){
+    public Map<String, Object> relationList(JSONObject json) throws Exception{
 
         Map<String,Object> responseMap = new HashMap<>();
         List<Object> tableInfo = new ArrayList<>();
         List<Object> tableRelation = new ArrayList<>();
+
+        String dsId = json.getString("data_source_id");
+        String dsName = json.getString("data_source_name");
+        if(dsName != null && !dsName.equals("")){
+            DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
+            dsMetaInfoDBExample.createCriteria().andDsNameEqualTo(dsName);
+            List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
+            dsId = dsMetaInfoDBList.get(0).getId().toString();
+        }
+        List<String> tbList = (List<String>) json.get("table_list");
+
         if(tbList == null){
             tbList = new ArrayList<>();
             //获取dsName对应得所有表
             DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-            dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsName);
+            dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsId);
             List<DSTableInfoDB> tableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
             for(DSTableInfoDB dsTableInfoDB : tableInfoDBList){
                 tbList.add(dsTableInfoDB.getTableEnglishName());
@@ -415,14 +456,14 @@ public class MetaDataMgrApiService {
             Map<String, Object> fieldMap = new HashMap<>();
             //获取表id
             DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-            dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsName).andTableEnglishNameEqualTo(tbList.get(i));
+            dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsId).andTableEnglishNameEqualTo(tbList.get(i));
             List<DSTableInfoDB> tableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
             fieldMap.put("id",tableInfoDBList.get(0).getId());
             fieldMap.put("name",tbList.get(i));
 
             //获取表列
             DSFieldInfoDBExample dsFieldInfoDBExample = new DSFieldInfoDBExample();
-            dsFieldInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsName).andTableIdEqualTo(tableInfoDBList.get(0).getId().toString());
+            dsFieldInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsId).andTableIdEqualTo(tableInfoDBList.get(0).getId().toString());
             List<DSFieldInfoDB> fieldList = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
 
             List<Map<String,String>> resultList = new ArrayList<>();
@@ -438,7 +479,7 @@ public class MetaDataMgrApiService {
             //获取表列关联关系
             for(int j=0; j<tbList.size(); j++){
                 DSTableInfoDBExample ds = new DSTableInfoDBExample();
-                ds.createCriteria().andDatasourceIdEqualTo(dsName).andTableEnglishNameEqualTo(tbList.get(j));
+                ds.createCriteria().andDatasourceIdEqualTo(dsId).andTableEnglishNameEqualTo(tbList.get(j));
                 List<DSTableInfoDB> foreignTableInfoDBList = dsTableInfoDBMapper.selectByExample(ds);
 
                 DSFieldRelDBExample dsFieldRelDBExample = new DSFieldRelDBExample();

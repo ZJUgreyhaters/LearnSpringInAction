@@ -28,7 +28,7 @@
 
     <select id="listCustomerGroupCriterias" resultMap="listMap">
 --         SELECT * FROM cust_group_condition
-        SELECT cust_condition_id,cust_condition_name,condition_desc FROM cust_group_condition
+        SELECT cust_condition_id,cust_condition_name,condition_desc FROM cust_group_condition ORDER BY cust_condition_id DESC
     </select>
 
     <delete id="deleteCustomerGroup" parameterType="string">
