@@ -4,8 +4,6 @@ import com.quantchi.common.ExportUtil;
 import com.quantchi.customer.pojo.CustomerGroup;
 import com.quantchi.customer.service.CustomerGroupService;
 import com.quantchi.customer.service.CustomerPortrayalService;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("api")
-@Api(value = "CustomerGroupController")
 public class CustomerGroupController {
 
   @Autowired
@@ -33,7 +30,6 @@ public class CustomerGroupController {
   private CustomerPortrayalService customerPortrayalService;
 
   //客群列表查看
-  @ApiOperation(value = "机构现状", notes = "机构现状", produces = "application/json")
   @ResponseBody
   @RequestMapping(value = "/listCustomerGroups", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
