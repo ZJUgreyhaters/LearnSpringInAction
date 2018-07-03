@@ -26,6 +26,7 @@ public class MetaDataMgrTableApiService {
   DSTableInfoDBMapper mapper;
   @Autowired
   DSMetaInfoDBMapper dsMetaInfoDBMapper;
+
   private static final Logger logger = LoggerFactory.getLogger(MetaDataMgrTableApiService.class);
 
   public String search(DSTableInfoDB tableInfo) {
@@ -34,6 +35,13 @@ public class MetaDataMgrTableApiService {
         PageHelper.startPage(tableInfo.getPage(), tableInfo.getPage_size());
       }
       // 执行查询
+//      String data_source = tableInfo.getDatasourceId();
+//      if(data_source.matches("^[0-9]*$")){
+//        DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
+//        dsMetaInfoDBExample.createCriteria().andIdEqualTo(Integer.parseInt(data_source));
+//        List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
+//        tableInfo.setDatasourceId(dsMetaInfoDBList.get(0).getDsName());
+//      }
       List<DSTableInfoDB> search = mapper.search(tableInfo);
       // 取分页信息
       PageInfo<DSTableInfoDB> pageInfo = new PageInfo<>(search);
