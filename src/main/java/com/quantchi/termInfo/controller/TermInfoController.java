@@ -80,8 +80,9 @@ public class TermInfoController {
    * @apiParam {String} [tableInfo.partitionFlag]
    * @apiParam {String} [tableInfo.primaryKey]
    * @apiParam {String} [tableInfo.foreignKey]
-   * @apiSuccess {String} firstname Firstname of the User.
-   * @apiSuccess {String} lastname  Lastname of the User.
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} data  返回数据
+   * @apiSuccess {String} msg  成功或者错误信息
    */
   //插入
   @ResponseBody
