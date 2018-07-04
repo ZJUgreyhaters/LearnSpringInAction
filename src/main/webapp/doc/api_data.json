@@ -3,6 +3,12 @@
     "type": "post",
     "url": "/term",
     "title": "术语添加接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/term"
+      }
+    ],
     "name": "TermInfoController",
     "group": "TermInfoController",
     "parameter": {
@@ -283,7 +289,620 @@
         ]
       }
     },
-    "version": "0.0.0",
+    "filename": "../java/com/quantchi/termInfo/controller/TermInfoController.java",
+    "groupTitle": "TermInfoController"
+  },
+  {
+    "type": "get",
+    "url": "/term/:Entityid",
+    "title": "按id术语查询接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/term/"
+      }
+    ],
+    "name": "selectTerm",
+    "group": "TermInfoController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": true,
+            "field": "Entityid",
+            "description": "<p>术语id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityType",
+            "description": "<p>实体类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityId",
+            "description": "<p>实体id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityHash",
+            "description": "<p>实体hash码</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityName",
+            "description": "<p>实体名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityDesc",
+            "description": "<p>实体描述</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityAlias",
+            "description": "<p>实体别名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.businessRule",
+            "description": "<p>规范描述</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.techniqueRule",
+            "description": "<p>sql语句</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityStatus",
+            "description": "<p>实体状态</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.controlDept",
+            "description": "<p>管理部门</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.assistDept",
+            "description": "<p>分配部门</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.devPolicy",
+            "description": "<p>个人信息分类</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.regulatory",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.logicType",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.displayType",
+            "description": "<p>数据显示类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.physicalField",
+            "description": "<p>物理字段</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.entityId",
+            "description": "<p>实体id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.physicalFieldHash",
+            "description": "<p>物理字段hash码</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.physicalFieldId",
+            "description": "<p>物理字段id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.physicalFieldDesc",
+            "description": "<p>物理字段描述</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.physicalTable",
+            "description": "<p>物理表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.physicalDB",
+            "description": "<p>物理数据库</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataType",
+            "description": "<p>数据类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataLength",
+            "description": "<p>数据长度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataPattern",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataUnit",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.fieldPartition",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.physicalField.dataUDC",
+            "description": "<p>条件数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataUDC.dataUDCCode",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataUDC.dataUDCDesc",
+            "description": "<p>数据描述</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataUDC.dataUDCRule",
+            "description": "<p>数据规范</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataUDC.dataUDCValue",
+            "description": "<p>数据值</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataUDC.entityHash",
+            "description": "<p>数据hash码</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataUDC.entityId",
+            "description": "<p>数据id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.physicalField.dataUDC.entityType",
+            "description": "<p>数据类型</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../java/com/quantchi/termInfo/controller/TermInfoController.java",
+    "groupTitle": "TermInfoController"
+  },
+  {
+    "type": "get",
+    "url": "/term",
+    "title": "术语查询接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/term"
+      }
+    ],
+    "name": "term",
+    "group": "TermInfoController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": true,
+            "field": "nums",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "entityDesc",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "entitys",
+            "description": "<p>实体信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.entityType",
+            "description": "<p>实体类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.entityId",
+            "description": "<p>实体id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.entityHash",
+            "description": "<p>实体hash码</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.entityName",
+            "description": "<p>实体名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.entityDesc",
+            "description": "<p>实体描述</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.entityAlias",
+            "description": "<p>实体别名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.businessRule",
+            "description": "<p>规范描述</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.techniqueRule",
+            "description": "<p>sql语句</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.entityStatus",
+            "description": "<p>实体状态</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.controlDept",
+            "description": "<p>管理部门</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.assistDept",
+            "description": "<p>分配部门</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.devPolicy",
+            "description": "<p>个人信息分类</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.regulatory",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.logicType",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.displayType",
+            "description": "<p>数据显示类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.entitys.physicalField",
+            "description": "<p>物理字段</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.entityId",
+            "description": "<p>实体id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.physicalFieldHash",
+            "description": "<p>物理字段hash码</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.physicalFieldId",
+            "description": "<p>物理字段id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.physicalFieldDesc",
+            "description": "<p>物理字段描述</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.physicalTable",
+            "description": "<p>物理表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.physicalDB",
+            "description": "<p>物理数据库</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataType",
+            "description": "<p>数据类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataLength",
+            "description": "<p>数据长度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataPattern",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataUnit",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.fieldPartition",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataUDC",
+            "description": "<p>条件数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataUDC.dataUDCCode",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataUDC.dataUDCDesc",
+            "description": "<p>数据描述</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataUDC.dataUDCRule",
+            "description": "<p>数据规范</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataUDC.dataUDCValue",
+            "description": "<p>数据值</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataUDC.entityHash",
+            "description": "<p>数据hash码</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataUDC.entityId",
+            "description": "<p>数据id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entitys.physicalField.dataUDC.entityType",
+            "description": "<p>数据类型</p>"
+          }
+        ]
+      }
+    },
     "filename": "../java/com/quantchi/termInfo/controller/TermInfoController.java",
     "groupTitle": "TermInfoController"
   }
