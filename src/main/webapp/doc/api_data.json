@@ -1,7 +1,7 @@
 [
   {
     "type": "post",
-    "url": "/term/:id",
+    "url": "/term",
     "title": "术语添加接口",
     "name": "TermInfoController",
     "group": "TermInfoController",
@@ -20,77 +20,77 @@
             "type": "PhysicalFieldInfo[]",
             "optional": false,
             "field": "fieldInfoList",
-            "description": ""
+            "description": "<p>字段信息列表</p>"
           },
           {
             "group": "Parameter",
             "type": "Integer",
             "optional": true,
             "field": "fieldInfoList.id",
-            "description": ""
+            "description": "<p>字段id</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "fieldInfoList.entityId",
-            "description": ""
+            "description": "<p>实体id</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "fieldInfoList.physicalFieldHash",
-            "description": ""
+            "description": "<p>物理字段hash码</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "fieldInfoList.physicalField",
-            "description": ""
+            "description": "<p>物理字段名</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "fieldInfoList.physicalFieldDesc",
-            "description": ""
+            "description": "<p>物理字段描述</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "fieldInfoList.physicalTable",
-            "description": ""
+            "description": "<p>对应物理表</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "fieldInfoList.physicalDb",
-            "description": ""
+            "description": "<p>对应物理数据库</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "fieldInfoList.dataType",
-            "description": ""
+            "description": "<p>字段数据类型</p>"
           },
           {
             "group": "Parameter",
             "type": "Integer",
             "optional": true,
             "field": "fieldInfoList.dataLength",
-            "description": ""
+            "description": "<p>字段数据类型长度</p>"
           },
           {
             "group": "Parameter",
             "type": "Integer",
             "optional": true,
             "field": "fieldInfoList.dataPrecision",
-            "description": ""
+            "description": "<p>字段数据精准度</p>"
           },
           {
             "group": "Parameter",
@@ -174,63 +174,63 @@
             "type": "PhysicalTableInfo",
             "optional": false,
             "field": "tableInfo",
-            "description": ""
+            "description": "<p>表信息</p>"
           },
           {
             "group": "Parameter",
             "type": "Integer",
             "optional": true,
             "field": "tableInfo.id",
-            "description": ""
+            "description": "<p>表id</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "tableInfo.physicalTableHash",
-            "description": ""
+            "description": "<p>物理表hash码</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "tableInfo.physicalTable",
-            "description": ""
+            "description": "<p>物理表名</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "tableInfo.physicalDb",
-            "description": ""
+            "description": "<p>表的物理数据库名</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "tableInfo.tableType",
-            "description": ""
+            "description": "<p>表类型</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "tableInfo.tableName",
-            "description": ""
+            "description": "<p>表名</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "tableInfo.tableDesc",
-            "description": ""
+            "description": "<p>表描述</p>"
           },
           {
             "group": "Parameter",
             "type": "Date",
             "optional": true,
             "field": "tableInfo.lastModifiedTime",
-            "description": ""
+            "description": "<p>表最后修改时间</p>"
           },
           {
             "group": "Parameter",
@@ -244,14 +244,14 @@
             "type": "String",
             "optional": true,
             "field": "tableInfo.primaryKey",
-            "description": ""
+            "description": "<p>表的主键</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "tableInfo.foreignKey",
-            "description": ""
+            "description": "<p>表的外键</p>"
           }
         ]
       }
