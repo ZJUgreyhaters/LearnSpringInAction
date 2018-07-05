@@ -260,7 +260,14 @@
             "description": "<p>表的外键</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "[{\n \"fieldInfoList\": [\n {\n \"dataType\": \"string\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"init_date\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"median_fund_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"var_fund_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"avg_secu_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"max_secu_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"min_secu_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"median_secu_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"var_secu_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"avg_opfund_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"max_opfund_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"min_opfund_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"median_opfund_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"var_opfund_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"avg_total_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"max_total_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"min_total_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"median_total_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"var_total_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n }\n ],\n \"tableInfo\": {\n \"physicalDb\": \"cust_mining\",\n \"physicalTable\": \"agg_cust_balance_feature_test\",\n \"tableType\": \"\"\n }\n }]",
+          "type": "json"
+        }
+      ]
     },
     "success": {
       "fields": {
@@ -287,7 +294,14 @@
             "description": "<p>成功或者错误信息</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n {\n\"code\": \"200\",\n\"data\": 18,\n\"msg\": \"success\"\n}",
+          "type": "json"
+        }
+      ]
     },
     "filename": "../java/com/quantchi/termInfo/controller/TermInfoController.java",
     "groupTitle": "TermInfoController"

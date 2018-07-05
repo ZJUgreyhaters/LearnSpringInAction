@@ -179,9 +179,134 @@ public class TermInfoController {
    * @apiParam {String} [tableInfo.partitionFlag]
    * @apiParam {String} [tableInfo.primaryKey] 表的主键
    * @apiParam {String} [tableInfo.foreignKey] 表的外键
+   * @apiParamExample {json} Request-example:
+   * [{
+   *  "fieldInfoList": [
+   *  {
+   *  "dataType": "string",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "init_date",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "median_fund_asset",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "var_fund_asset",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "avg_secu_market_value",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "max_secu_market_value",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "min_secu_market_value",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "median_secu_market_value",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "var_secu_market_value",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "avg_opfund_market_value",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "max_opfund_market_value",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "min_opfund_market_value",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "median_opfund_market_value",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "var_opfund_market_value",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "avg_total_asset",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "max_total_asset",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "min_total_asset",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "median_total_asset",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  },
+   *  {
+   *  "dataType": "double",
+   *  "physicalDb": "cust_mining",
+   *  "physicalField": "var_total_asset",
+   *  "physicalTable": "agg_cust_balance_feature_test"
+   *  }
+   *  ],
+   *  "tableInfo": {
+   *  "physicalDb": "cust_mining",
+   *  "physicalTable": "agg_cust_balance_feature_test",
+   *  "tableType": ""
+   *  }
+   *  }]
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} data  返回数据
    * @apiSuccess {String} msg  成功或者错误信息
+   *  * @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *    "code": "200",
+   *    "data": 18,
+   *    "msg": "success"
+   *    }
    */
   //插入
   @ResponseBody
