@@ -26,6 +26,7 @@ public class TermInfoController {
 
   /**
   * @api {get} /term 术语查询接口
+  * @apiPermission none
   * @apiVersion 1.0.0
   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/term
   * @apiName term

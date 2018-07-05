@@ -596,6 +596,11 @@
     "type": "get",
     "url": "/term",
     "title": "术语查询接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
     "version": "1.0.0",
     "sampleRequest": [
       {
