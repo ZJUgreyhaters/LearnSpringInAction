@@ -9,6 +9,8 @@ public class TermGenInfo {
 
     private List<PhysicalFieldInfo> fieldInfoList;
 
+    private TermMainInfo termMainInfo;
+
     public PhysicalTableInfo getTableInfo() {
         return tableInfo;
     }
@@ -25,4 +27,11 @@ public class TermGenInfo {
         this.fieldInfoList = fieldInfoList;
     }
 
+    public TermMainInfo getTermMainInfo() {
+        return termMainInfo;
+    }
+
+    public void setTermMainInfo(TermMainInfo termMainInfo) {
+        this.termMainInfo = termMainInfo;
+    }
 }

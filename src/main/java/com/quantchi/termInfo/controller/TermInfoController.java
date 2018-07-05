@@ -179,6 +179,26 @@ public class TermInfoController {
    * @apiParam {String} [tableInfo.partitionFlag]
    * @apiParam {String} [tableInfo.primaryKey] 表的主键
    * @apiParam {String} [tableInfo.foreignKey] 表的外键
+   * @apiParam {TermMainInfo} termMainInfo 术语主信息 如果有传入值，则是前端录入，如果没有则是后端录入
+   * @apiParam {String} [termMainInfo.entityType] 实体类型
+   * @apiParam {String} [termMainInfo.entityId] 实体ID
+   * @apiParam {String} [termMainInfo.entityHash] 实体MD5校验值
+   * @apiParam {String} [termMainInfo.entityName] 实体英文名称
+   * @apiParam {String} [termMainInfo.entityDesc] 实体中文名称
+   * @apiParam {String} [termMainInfo.entityStatus] 实体状态
+   * @apiParam {Date} [termMainInfo.createTime] 发布时间
+   * @apiParam {Date} [termMainInfo.offlineTime] 失效时间
+   * @apiParam {Integer} [termMainInfo.creator] 创建人ID
+   * @apiParam {String} [termMainInfo.controlDept] 主管部门
+   * @apiParam {String} [termMainInfo.assistDept] 协办部门
+   * @apiParam {String} [termMainInfo.regulatory] 是否监管
+   * @apiParam {String} [termMainInfo.logicType] 逻辑类型
+   * @apiParam {String} [termMainInfo.displayType] 显示类型
+   * @apiParam {String} [termMainInfo.entityAlias] 常用名称
+   * @apiParam {String} [termMainInfo.businessRule] 业务定义
+   * @apiParam {String} [termMainInfo.techniqueRule] 技术口径（SQL）
+   * @apiParam {String} [termMainInfo.devPolicy] 制定依据
+   *
    * @apiParamExample {json} Request-example:
    * [{
    *  "fieldInfoList": [
@@ -295,6 +315,26 @@ public class TermInfoController {
    *  "physicalDb": "cust_mining",
    *  "physicalTable": "agg_cust_balance_feature_test",
    *  "tableType": ""
+   *  },
+   *  "termMainInfo":{
+   *    "entityType": "1",
+   *    "entityId": "PT000001",
+   *    "entityHash":"55e4e1b391831960d8b7e4b61fdfaf7c",
+   *    "entityName": "gender",
+   *    "entityDesc": "客户性别",
+   *    "entityAlias": "性别",
+   *    "businessRule": "记录个人客户的性别状况，如“男”、“女”等。",
+   *    "techniqueRule": "select gender from dim_customer",
+   *    "entityStatus": "正常",
+   *    "createTime": "2017-01-02T00:00:00.000Z",
+   *    "offlineTime": "",
+   *    "creator": "dmp_admin",
+   *    "controlDept": "机构管理部",
+   *    "assistDept": "信息管理中心",
+   *    "devPolicy": "1.GB/T2261.1-2003个人基本信息分类与代码第1部分:人的性别代码",
+   *    "regulatory": "是",
+   *    "logicType": "代码",
+   *    "displayType": "CheckBox",
    *  }
    *  }]
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误

@@ -203,28 +203,33 @@ public class TermInfoServiceImpl implements TermInfoService {
         physicalFieldInfoMapper.insertFields(termGenInfo.getFieldInfoList());
 
         //术语主信息插入
+        if(termGenInfo.getTermMainInfo() != null){
+            termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
+        }else{
+            for (PhysicalFieldInfo field : termGenInfo.getFieldInfoList()) {
+                TermMainInfo _term = new TermMainInfo();
+                //from insert field entity_id
+                _term.setEntityId(_entityIdMap.get(field.getPhysicalDb()+"."+field.getPhysicalTable()+"."+field.getPhysicalField()));
+                _term.setEntityType(ENTITY_TYPE);
+                _term.setEntityName(field.getPhysicalField());
+                _term.setEntityDesc(field.getPhysicalFieldDesc());
+                _term.setTechniqueRule(getTechCriteria(field));
+                _term.setEntityStatus("正常");
+                _term.setCreateTime(new Date());
 
-        for (PhysicalFieldInfo field : termGenInfo.getFieldInfoList()) {
-          TermMainInfo _term = new TermMainInfo();
-          //from insert field entity_id
-          _term.setEntityId(_entityIdMap.get(field.getPhysicalDb()+"."+field.getPhysicalTable()+"."+field.getPhysicalField()));
-          _term.setEntityType(ENTITY_TYPE);
-          _term.setEntityName(field.getPhysicalField());
-          _term.setEntityDesc(field.getPhysicalFieldDesc());
-          _term.setTechniqueRule(getTechCriteria(field));
-          _term.setEntityStatus("正常");
-          _term.setCreateTime(new Date());
+                //getLogicTypeAndDisplayType(field.getDataType())
+                String _type = getDisplayType(field.getDataType());
+                String _logicType = _TypeMap.get(_type);
+                _term.setDisplayType(_type);
+                _term.setLogicType(_logicType);
+                _termlist.add(_term);
+            }
 
-          //getLogicTypeAndDisplayType(field.getDataType())
-            String _type = getDisplayType(field.getDataType());
-            String _logicType = _TypeMap.get(_type);
-            _term.setDisplayType(_type);
-            _term.setLogicType(_logicType);
-            _termlist.add(_term);
+            if(_termlist.size() > 0)
+                termMainInfoMapper.insertTerms(_termlist);
         }
 
-        if(_termlist.size() > 0)
-            termMainInfoMapper.insertTerms(_termlist);
+
 
 
 
