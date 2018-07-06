@@ -513,8 +513,10 @@ public class MetaDataMgrApiService {
                     relationResultMap.put("to", dsFieldRelDB.getForeignTableId());
                     relationResultMap.put("relation_id", dsFieldRelDB.getRelationId().toString());
                     relationResultMap.put("relation", dsFieldRelDB.getRelation());
-                    relationResultMap.put("from_field", dsFieldRelDB.getFieldId());
-                    relationResultMap.put("to_field", dsFieldRelDB.getForeignFieldId());
+                    DSFieldInfoDB dsFieldInfoDB = dsFieldInfoDBMapper.selectByPrimaryKey(Integer.parseInt(dsFieldRelDB.getFieldId()));
+                    relationResultMap.put("from_field", dsFieldInfoDB.getFieldEnglishName());
+                    DSFieldInfoDB ForeignDsFieldInfoDB = dsFieldInfoDBMapper.selectByPrimaryKey(Integer.parseInt(dsFieldRelDB.getForeignFieldId()));
+                    relationResultMap.put("to_field", ForeignDsFieldInfoDB.getFieldEnglishName());
                     tableRelation.add(relationResultMap);
                 }
             }
