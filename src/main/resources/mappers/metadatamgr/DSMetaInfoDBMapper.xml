@@ -78,7 +78,7 @@
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="map" >
     select a.*,IFNULL(b.table_num,0) as table_num from ds_meta_info a LEFT JOIN (select count(*)table_num,datasource_id from ds_table_info GROUP
-    BY datasource_id) b on a.ds_name=b.datasource_id
+    BY datasource_id) b on a.id=b.datasource_id
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -92,7 +92,7 @@
   </select>
   <select id="selectAllByExample" resultMap="BaseResultMap" parameterType="map" >
     select a.*,IFNULL(b.table_num,0) as table_num from ds_meta_info a LEFT JOIN (select count(*)table_num,datasource_id from ds_table_info GROUP
-    BY datasource_id) b on a.ds_name=b.datasource_id
+    BY datasource_id) b on a.id=b.datasource_id
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -148,8 +148,8 @@
         username,
       </if>
       <if test="password != null" >
-        password,
-      </if>
+      password,
+    </if>
       <if test="hiveMetaMysqlUrl != null" >
         hive_meta_mysql_url,
       </if>

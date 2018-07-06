@@ -272,4 +272,12 @@
     </foreach>
   </insert>
 
+  <select id="selectAll" resultType="map">
+    SELECT CONCAT(table_id,'.',field_english_name) as 'key', id as 'value'
+    FROM ds_field_info
+    WHERE table_id IN
+    <foreach item="list" collection="list" open="(" separator="," close=")">
+      #{list.table_id}
+    </foreach>
+  </select>
 </mapper>

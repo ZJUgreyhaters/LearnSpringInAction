@@ -87,7 +87,7 @@ public class TermInfoController {
   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/term/
   * @apiName  selectTerm
   * @apiGroup TermInfoController
-  * @apiParam {Integer} [Entityid] 术语id
+  * @apiParam {String} [Entityid] 术语id
   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
   * @apiSuccess {String} msg  成功或者错误信息
   * @apiSuccess {List} [data] 返回数据

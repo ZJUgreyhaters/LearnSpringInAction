@@ -2,6 +2,7 @@ package com.quantchi.metadatamgr.data.mapper;
 
 import com.quantchi.metadatamgr.data.entity.DSFieldInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSFieldInfoDBExample;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -29,4 +30,7 @@ public interface DSFieldInfoDBMapper {
     int updateByPrimaryKey(DSFieldInfoDB record);
 
     int insertFields(List<Map<String,Object>> list);
+
+    @MapKey("key")
+    Map<String,Object> selectAll(List<Map<String,Object>> list);
 }
