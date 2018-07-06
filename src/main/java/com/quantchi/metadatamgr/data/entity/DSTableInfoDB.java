@@ -121,4 +121,14 @@ public class DSTableInfoDB {
   public void setTableType(String tableType) {
     this.tableType = tableType;
   }
+
+  private String dataSourceId;
+
+  public String getDataSourceId() {
+    return dataSourceId;
+  }
+
+  public void setDataSourceId(String dataSourceId) {
+    this.dataSourceId = dataSourceId;
+  }
 }

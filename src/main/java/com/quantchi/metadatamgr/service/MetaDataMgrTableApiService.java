@@ -31,32 +31,29 @@ public class MetaDataMgrTableApiService {
 
   public String search(DSTableInfoDB tableInfo) {
     try {
+      // 执行查询
+      String data_source_id = tableInfo.getDataSourceId();
+      if(data_source_id != null){
+        tableInfo.setDatasourceId(data_source_id);
+      }
       if (tableInfo.getPage() != null && tableInfo.getPage_size() != null) {
         PageHelper.startPage(tableInfo.getPage(), tableInfo.getPage_size());
       }
-      // 执行查询
-//      String data_source = tableInfo.getDatasourceId();
-//      if(data_source.matches("^[0-9]*$")){
-//        DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
-//        dsMetaInfoDBExample.createCriteria().andIdEqualTo(Integer.parseInt(data_source));
-//        List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
-//        tableInfo.setDatasourceId(dsMetaInfoDBList.get(0).getDsName());
-//      }
       List<DSTableInfoDB> search = mapper.search(tableInfo);
       // 取分页信息
       PageInfo<DSTableInfoDB> pageInfo = new PageInfo<>(search);
 
-      List<DSTableInfoDB> dsTableInfoDBList = new ArrayList<>();
-      for(DSTableInfoDB dsTableInfoDB : pageInfo.getList()){
-        if(dsTableInfoDB.getDatasourceId().matches("^[0-9]*$")){
-          DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
-          dsMetaInfoDBExample.createCriteria().andIdEqualTo(Integer.parseInt(dsTableInfoDB.getDatasourceId()));
-          List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
-          dsTableInfoDB.setDatasourceId(dsMetaInfoDBList.get(0).getDsName());
-        }
-        dsTableInfoDBList.add(dsTableInfoDB);
-      }
-      return JsonResult.successJson(pageInfo.getTotal()+"",dsTableInfoDBList);
+//      List<DSTableInfoDB> dsTableInfoDBList = new ArrayList<>();
+//      for(DSTableInfoDB dsTableInfoDB : pageInfo.getList()){
+//        if(!dsTableInfoDB.getDatasourceId().matches("^[0-9]*$")){
+//          DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
+//          dsMetaInfoDBExample.createCriteria().andIdEqualTo(Integer.parseInt(dsTableInfoDB.getDatasourceId()));
+//          List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper.selectAllByExample(dsMetaInfoDBExample);
+//          dsTableInfoDB.setDatasourceId(dsMetaInfoDBList.get(0).getId().toString());
+//        }
+//        dsTableInfoDBList.add(dsTableInfoDB);
+//      }
+      return JsonResult.successJson(pageInfo.getTotal()+"",pageInfo.getList());
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("search tableInfo error");
