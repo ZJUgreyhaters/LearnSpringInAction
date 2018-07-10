@@ -319,11 +319,9 @@
    datasource_id = (select id  from
     ds_meta_info where ds_name = #{dsName})
   </select>
-  <select id="selectFieldsByName" resultMap="java.util.Map">
+  <select id="selectFieldsByName" resultType="java.util.Map">
      SELECT * FROM ds_field_info
      WHERE
-     table_id = (SELECT id FROM ds_table_info
-     WHERE table_english_name = #{tableEnglishName})
-
+     table_id = #{id}
   </select>
 </mapper>

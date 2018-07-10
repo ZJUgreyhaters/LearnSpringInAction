@@ -37,5 +37,5 @@ public interface DSMetaInfoDBMapper {
 
  List<Map<String, Object>> loadSheet(@Param("dsName") String dsName);
 
-  List<Map<String, Object>> selectFieldsByName(@Param("tableEnglishName") String tableEnglishName);
+  List<Map<String, Object>> selectFieldsByName(@Param("id") String id);
 }

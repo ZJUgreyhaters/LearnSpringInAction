@@ -768,16 +768,99 @@ public class MetaDataMgrApiService {
   public String updatefield(Map<String, Object> map) {
     try {
       String tableEnglishName = map.get("tableEnglishName").toString();
-      String[] split = tableEnglishName.split(",");
-      HiveExtractImp hiveExtract = new HiveExtractImp();
+      String id = map.get("id").toString();
+      String dataSourceId = map.get("data_source_id").toString();
+      String[] split = tableEnglishName.split("\\.");
+      HiveExtractImp hiveExtract = getConnectById(dataSourceId);
       List<FieldEntity> fields = hiveExtract
           .getFields(split[0], split[1]);
-      dsMetaInfoDBMapper.selectFieldsByName(tableEnglishName);
-      return JsonResult.successJson(fields);
+      List<Map<String, Object>> list = dsMetaInfoDBMapper.selectFieldsByName(id);
+      List<String> list1 = new ArrayList<>();
+      List<Map<String,Object>> list2 = new ArrayList<>();
+      List<String> list3 = new ArrayList<>();
+      for (FieldEntity fieldEntity : fields) {
+        int i = 0;
+        for (Map<String, Object> map1 : list) {
+          if (fieldEntity.getName().equals(map1.get("field_english_name"))) {
+            list1.add(map1.get("field_english_name").toString());
+            i = 0;
+            break;
+          }
+          i = 1;
+        }
+        if (i == 1) {
+          Map<String,Object> map2 = new HashMap<>();
+          map2.put("name",fieldEntity.getName());
+          map2.put("type",fieldEntity.getType());
+          list2.add(map2);
+        }
+      }
+      for (Map<String, Object> map1 : list) {
+        int i = 0;
+        for (FieldEntity fieldEntity : fields) {
+          if (fieldEntity.getName().equals(map1.get("field_english_name"))) {
+            i = 0;
+            break;
+          }
+          i = 1;
+        }
+        if (i == 1) {
+          list3.add(map1.get("field_english_name").toString());
+        }
+      }
+      Map<String, Object> map1 = new HashMap<>();
+      map1.put("same", list1);
+      map1.put("newDifferent", list2);
+      map1.put("oldDifferent", list3);
+      return JsonResult.successJson(map1);
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("error");
     }
   }
 
+  private HiveExtractImp getConnectById(String id) {
+    HiveExtractImp _extract = null;
+
+    //需要确定当ds信息还没入库时，抽取表的
+     int ids = Integer.parseInt(id);
+    DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
+    _ex.createCriteria().andIdEqualTo(ids);
+    List<DSMetaInfoDB> _sqlRet = dsMetaInfoDBMapper
+        .selectByExample(_ex, defaultSqlStart, defaultPageSize);
+    if (_sqlRet.size() > 0) {
+      DSMetaInfoDB _info_from_db = _sqlRet.get(0);
+
+      DSMetaInfo _info = new DSMetaInfo();
+      HiveMetaInfo _meta = new HiveMetaInfo();
+      _meta.setMysqlUrl(_info_from_db.getHiveMetaMysqlUrl());
+      _meta.setMysqlUser(_info_from_db.getHiveMetaUsername());
+      _meta.setMysqlPass(util.DecodePassword(_info_from_db.getHiveMetaPswd()));
+      _info.setHiveMetaInfo(_meta);
+      _extract = new HiveExtractImp(_info);
+    }
+    return _extract;
+  }
+
+  public String selectField(Map<String, Object> map) {
+    try {
+      String id = map.get("id").toString();
+      List<Map<String, Object>> list = dsMetaInfoDBMapper.selectFieldsByName(id);
+      return JsonResult.successJson(list);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("error");
+    }
+  }
+  public String insertField(Map<String, Object> map){
+    try {
+      String id = map.get("id").toString();
+      List<Map<String, Object>> operationField = (List<Map<String, Object>>) map.get("operationField");
+
+      return JsonResult.successJson(operationField);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("error");
+    }
+  }
 }
