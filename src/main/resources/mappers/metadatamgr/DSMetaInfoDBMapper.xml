@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper" >
-  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.DSMetaInfoDB" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="ds_name" property="dsName" jdbcType="VARCHAR" />
-    <result column="ds_type" property="dsType" jdbcType="VARCHAR" />
-    <result column="host" property="host" jdbcType="VARCHAR" />
-    <result column="port" property="port" jdbcType="VARCHAR" />
-    <result column="username" property="username" jdbcType="VARCHAR" />
-    <result column="password" property="password" jdbcType="VARCHAR" />
-    <result column="hive_meta_mysql_url" property="hiveMetaMysqlUrl" jdbcType="VARCHAR" />
-    <result column="hive_meta_username" property="hiveMetaUsername" jdbcType="VARCHAR" />
-    <result column="hive_meta_pswd" property="hiveMetaPswd" jdbcType="VARCHAR" />
-    <result column="create_user_id" property="createUserId" jdbcType="VARCHAR" />
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper">
+  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.DSMetaInfoDB">
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="ds_name" property="dsName" jdbcType="VARCHAR"/>
+    <result column="ds_type" property="dsType" jdbcType="VARCHAR"/>
+    <result column="host" property="host" jdbcType="VARCHAR"/>
+    <result column="port" property="port" jdbcType="VARCHAR"/>
+    <result column="username" property="username" jdbcType="VARCHAR"/>
+    <result column="password" property="password" jdbcType="VARCHAR"/>
+    <result column="hive_meta_mysql_url" property="hiveMetaMysqlUrl" jdbcType="VARCHAR"/>
+    <result column="hive_meta_username" property="hiveMetaUsername" jdbcType="VARCHAR"/>
+    <result column="hive_meta_pswd" property="hiveMetaPswd" jdbcType="VARCHAR"/>
+    <result column="create_user_id" property="createUserId" jdbcType="VARCHAR"/>
   </resultMap>
-  <sql id="Example_Where_Clause" >
-    <where >
-      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" suffix=")" prefixOverrides="and">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
                   and ${criterion.condition}
                 </when>
-                <when test="criterion.singleValue" >
+                <when test="criterion.singleValue">
                   and ${criterion.condition} #{criterion.value}
                 </when>
-                <when test="criterion.betweenValue" >
+                <when test="criterion.betweenValue">
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
-                <when test="criterion.listValue" >
+                <when test="criterion.listValue">
                   and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                    separator=",">
                     #{listItem}
                   </foreach>
                 </when>
@@ -43,25 +45,26 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Update_By_Example_Where_Clause" >
-    <where >
-      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" suffix=")" prefixOverrides="and">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
                   and ${criterion.condition}
                 </when>
-                <when test="criterion.singleValue" >
+                <when test="criterion.singleValue">
                   and ${criterion.condition} #{criterion.value}
                 </when>
-                <when test="criterion.betweenValue" >
+                <when test="criterion.betweenValue">
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
-                <when test="criterion.listValue" >
+                <when test="criterion.listValue">
                   and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                    separator=",">
                     #{listItem}
                   </foreach>
                 </when>
@@ -72,17 +75,18 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     id, ds_name, ds_type, host, port, username, password, hive_meta_mysql_url, hive_meta_username, 
     hive_meta_pswd, create_user_id
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="map" >
-    select a.*,IFNULL(b.table_num,0) as table_num from ds_meta_info a LEFT JOIN (select count(*)table_num,datasource_id from ds_table_info GROUP
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="map">
+    select a.*,IFNULL(b.table_num,0) as table_num from ds_meta_info a LEFT JOIN (select
+    count(*)table_num,datasource_id from ds_table_info GROUP
     BY datasource_id) b on a.id=b.datasource_id
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
     </if>
-    <if test="example.orderByClause != null" >
+    <if test="example.orderByClause != null">
       order by ${example.orderByClause} DESC
     </if>
     <if test="example.start != null">
@@ -90,33 +94,34 @@
     </if>
 
   </select>
-  <select id="selectAllByExample" resultMap="BaseResultMap" parameterType="map" >
-    select a.*,IFNULL(b.table_num,0) as table_num from ds_meta_info a LEFT JOIN (select count(*)table_num,datasource_id from ds_table_info GROUP
+  <select id="selectAllByExample" resultMap="BaseResultMap" parameterType="map">
+    select a.*,IFNULL(b.table_num,0) as table_num from ds_meta_info a LEFT JOIN (select
+    count(*)table_num,datasource_id from ds_table_info GROUP
     BY datasource_id) b on a.id=b.datasource_id
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
     </if>
-    <if test="example.orderByClause != null" >
+    <if test="example.orderByClause != null">
       order by ${example.orderByClause} DESC
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_List"/>
     from ds_meta_info
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from ds_meta_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="map" >
+  <delete id="deleteByExample" parameterType="map">
     delete from ds_meta_info
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
     </if>
   </delete>
-  <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.DSMetaInfoDB" >
+  <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.DSMetaInfoDB">
     insert into ds_meta_info (id, ds_name, ds_type, 
       host, port, username, 
       password, hive_meta_mysql_url, hive_meta_username, 
@@ -126,174 +131,175 @@
       #{password,jdbcType=VARCHAR}, #{hiveMetaMysqlUrl,jdbcType=VARCHAR}, #{hiveMetaUsername,jdbcType=VARCHAR}, 
       #{hiveMetaPswd,jdbcType=VARCHAR}, #{createUserId,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.DSMetaInfoDB" >
+  <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.DSMetaInfoDB">
     insert into ds_meta_info
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="dsName != null" >
+      <if test="dsName != null">
         ds_name,
       </if>
-      <if test="dsType != null" >
+      <if test="dsType != null">
         ds_type,
       </if>
-      <if test="host != null" >
+      <if test="host != null">
         host,
       </if>
-      <if test="port != null" >
+      <if test="port != null">
         port,
       </if>
-      <if test="username != null" >
+      <if test="username != null">
         username,
       </if>
-      <if test="password != null" >
-      password,
-    </if>
-      <if test="hiveMetaMysqlUrl != null" >
+      <if test="password != null">
+        password,
+      </if>
+      <if test="hiveMetaMysqlUrl != null">
         hive_meta_mysql_url,
       </if>
-      <if test="hiveMetaUsername != null" >
+      <if test="hiveMetaUsername != null">
         hive_meta_username,
       </if>
-      <if test="hiveMetaPswd != null" >
+      <if test="hiveMetaPswd != null">
         hive_meta_pswd,
       </if>
-      <if test="createUserId != null" >
+      <if test="createUserId != null">
         create_user_id,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="dsName != null" >
+      <if test="dsName != null">
         #{dsName,jdbcType=VARCHAR},
       </if>
-      <if test="dsType != null" >
+      <if test="dsType != null">
         #{dsType,jdbcType=VARCHAR},
       </if>
-      <if test="host != null" >
+      <if test="host != null">
         #{host,jdbcType=VARCHAR},
       </if>
-      <if test="port != null" >
+      <if test="port != null">
         #{port,jdbcType=VARCHAR},
       </if>
-      <if test="username != null" >
+      <if test="username != null">
         #{username,jdbcType=VARCHAR},
       </if>
-      <if test="password != null" >
+      <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
-      <if test="hiveMetaMysqlUrl != null" >
+      <if test="hiveMetaMysqlUrl != null">
         #{hiveMetaMysqlUrl,jdbcType=VARCHAR},
       </if>
-      <if test="hiveMetaUsername != null" >
+      <if test="hiveMetaUsername != null">
         #{hiveMetaUsername,jdbcType=VARCHAR},
       </if>
-      <if test="hiveMetaPswd != null" >
+      <if test="hiveMetaPswd != null">
         #{hiveMetaPswd,jdbcType=VARCHAR},
       </if>
-      <if test="createUserId != null" >
+      <if test="createUserId != null">
         #{createUserId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByExampleSelective" parameterType="map" >
+  <update id="updateByExampleSelective" parameterType="map">
     update ds_meta_info
-    <set >
-      <if test="record.id != null" >
+    <set>
+      <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.dsName != null" >
+      <if test="record.dsName != null">
         ds_name = #{record.dsName,jdbcType=VARCHAR},
       </if>
-      <if test="record.dsType != null" >
+      <if test="record.dsType != null">
         ds_type = #{record.dsType,jdbcType=VARCHAR},
       </if>
-      <if test="record.host != null" >
+      <if test="record.host != null">
         host = #{record.host,jdbcType=VARCHAR},
       </if>
-      <if test="record.port != null" >
+      <if test="record.port != null">
         port = #{record.port,jdbcType=VARCHAR},
       </if>
-      <if test="record.username != null" >
+      <if test="record.username != null">
         username = #{record.username,jdbcType=VARCHAR},
       </if>
-      <if test="record.password != null" >
+      <if test="record.password != null">
         password = #{record.password,jdbcType=VARCHAR},
       </if>
-      <if test="record.hiveMetaMysqlUrl != null" >
+      <if test="record.hiveMetaMysqlUrl != null">
         hive_meta_mysql_url = #{record.hiveMetaMysqlUrl,jdbcType=VARCHAR},
       </if>
-      <if test="record.hiveMetaUsername != null" >
+      <if test="record.hiveMetaUsername != null">
         hive_meta_username = #{record.hiveMetaUsername,jdbcType=VARCHAR},
       </if>
-      <if test="record.hiveMetaPswd != null" >
+      <if test="record.hiveMetaPswd != null">
         hive_meta_pswd = #{record.hiveMetaPswd,jdbcType=VARCHAR},
       </if>
-      <if test="record.createUserId != null" >
+      <if test="record.createUserId != null">
         create_user_id = #{record.createUserId,jdbcType=VARCHAR},
       </if>
     </set>
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
+  <update id="updateByExample" parameterType="map">
     update ds_meta_info
     set id = #{record.id,jdbcType=INTEGER},
-      ds_name = #{record.dsName,jdbcType=VARCHAR},
-      ds_type = #{record.dsType,jdbcType=VARCHAR},
-      host = #{record.host,jdbcType=VARCHAR},
-      port = #{record.port,jdbcType=VARCHAR},
-      username = #{record.username,jdbcType=VARCHAR},
-      password = #{record.password,jdbcType=VARCHAR},
-      hive_meta_mysql_url = #{record.hiveMetaMysqlUrl,jdbcType=VARCHAR},
-      hive_meta_username = #{record.hiveMetaUsername,jdbcType=VARCHAR},
-      hive_meta_pswd = #{record.hiveMetaPswd,jdbcType=VARCHAR},
-      create_user_id = #{record.createUserId,jdbcType=VARCHAR}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
+    ds_name = #{record.dsName,jdbcType=VARCHAR},
+    ds_type = #{record.dsType,jdbcType=VARCHAR},
+    host = #{record.host,jdbcType=VARCHAR},
+    port = #{record.port,jdbcType=VARCHAR},
+    username = #{record.username,jdbcType=VARCHAR},
+    password = #{record.password,jdbcType=VARCHAR},
+    hive_meta_mysql_url = #{record.hiveMetaMysqlUrl,jdbcType=VARCHAR},
+    hive_meta_username = #{record.hiveMetaUsername,jdbcType=VARCHAR},
+    hive_meta_pswd = #{record.hiveMetaPswd,jdbcType=VARCHAR},
+    create_user_id = #{record.createUserId,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.metadatamgr.data.entity.DSMetaInfoDB" >
+  <update id="updateByPrimaryKeySelective"
+    parameterType="com.quantchi.metadatamgr.data.entity.DSMetaInfoDB">
     update ds_meta_info
-    <set >
-      <if test="dsName != null" >
+    <set>
+      <if test="dsName != null">
         ds_name = #{dsName,jdbcType=VARCHAR},
       </if>
-      <if test="dsType != null" >
+      <if test="dsType != null">
         ds_type = #{dsType,jdbcType=VARCHAR},
       </if>
-      <if test="host != null" >
+      <if test="host != null">
         host = #{host,jdbcType=VARCHAR},
       </if>
-      <if test="port != null" >
+      <if test="port != null">
         port = #{port,jdbcType=VARCHAR},
       </if>
-      <if test="username != null" >
+      <if test="username != null">
         username = #{username,jdbcType=VARCHAR},
       </if>
-      <if test="password != null" >
+      <if test="password != null">
         password = #{password,jdbcType=VARCHAR},
       </if>
-      <if test="hiveMetaMysqlUrl != null" >
+      <if test="hiveMetaMysqlUrl != null">
         hive_meta_mysql_url = #{hiveMetaMysqlUrl,jdbcType=VARCHAR},
       </if>
-      <if test="hiveMetaUsername != null" >
+      <if test="hiveMetaUsername != null">
         hive_meta_username = #{hiveMetaUsername,jdbcType=VARCHAR},
       </if>
-      <if test="hiveMetaPswd != null" >
+      <if test="hiveMetaPswd != null">
         hive_meta_pswd = #{hiveMetaPswd,jdbcType=VARCHAR},
       </if>
-      <if test="createUserId != null" >
+      <if test="createUserId != null">
         create_user_id = #{createUserId,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.quantchi.metadatamgr.data.entity.DSMetaInfoDB" >
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.metadatamgr.data.entity.DSMetaInfoDB">
     update ds_meta_info
     set ds_name = #{dsName,jdbcType=VARCHAR},
       ds_type = #{dsType,jdbcType=VARCHAR},
@@ -308,6 +314,16 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <select id="loadSheet" resultType="java.util.Map">
+   select * from ds_table_info WHERE
+   datasource_id = (select id  from
+    ds_meta_info where ds_name = #{dsName})
+  </select>
+  <select id="selectFieldsByName" resultMap="java.util.Map">
+     SELECT * FROM ds_field_info
+     WHERE
+     table_id = (SELECT id FROM ds_table_info
+     WHERE table_english_name = #{tableEnglishName})
 
-
+  </select>
 </mapper>
