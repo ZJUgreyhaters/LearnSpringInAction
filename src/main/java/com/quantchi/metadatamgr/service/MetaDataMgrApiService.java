@@ -610,7 +610,7 @@ public class MetaDataMgrApiService {
 
     DSFieldInfoDBExample dsforeign = new DSFieldInfoDBExample();
     dsforeign.createCriteria().andTableIdEqualTo(to).andFieldEnglishNameEqualTo(to_field);
-    List<DSFieldInfoDB> dsforeignList = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
+    List<DSFieldInfoDB> dsforeignList = dsFieldInfoDBMapper.selectByExample(dsforeign);
     dsFieldRelDB.setForeignFieldId(dsforeignList.get(0).getId().toString());
     dsFieldRelDB.setRelation(jsonParam.getString("relation"));
     if (jsonParam.getString("relation_id") == null || jsonParam.getString("relation_id")
@@ -858,7 +858,7 @@ public class MetaDataMgrApiService {
       List<Map<String, Object>> operationField = (List<Map<String, Object>>) map.get("operationField");
 
       return JsonResult.successJson(operationField);
-    } catch (Exception e) {
+    } catch (Exception e){
       e.printStackTrace();
       return JsonResult.errorJson("error");
     }
