@@ -353,40 +353,28 @@ public class MetaDataMgrApiController {
    * @apiParam {String} [data_source_id] 数据源id
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
-   * @apiSuccess {List} [data] 返回数据
+   * @apiSuccess {Map} [data] 返回数据
    * @apiSuccess {List} [data.same] 以存在字段
    * @apiSuccess {Map} [data.newDifferent] 新增或者改名的字段
    * @apiSuccess {String} [data.newDifferent.name] 新增或者改名的字段名称
    * @apiSuccess {String} [data.newDifferent.type] 新增或者改名的字段类型
-   * @apiSuccess {List} [data.oldDifferent] 可能删除的字段
+   * @apiSuccess {Map} [data.oldDifferent] 可能删除的字段
+   * @apiSuccess {String} [data.newDifferent.name] 可能删除的字段名称
+   * @apiSuccess {String} [data.newDifferent.id] 可能删除的字段id
    * @apiContentType application/json
+   * @apiSuccessExample {json}
+   * "data":{
+   *  "newDifferent": [{"name":"","type":""}],
+   *  "oldDifferent": [{"name":"","id":""}],
+   *  "same":["branch_no",customer_no"]
+   *  }
+   *
    */
   @ResponseBody
   @RequestMapping(value = "/updateField", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String updatefield(@RequestBody Map<String, Object> map) {
     return metaDataMgrApiService.updatefield(map);
-  }
-
-  //查询字段
-
-  /**
-   * @api {POST} /api/metadata/selectField 查询字段接口
-   * @apiVersion 1.0.0
-   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/metadata/selectField
-   * @apiGroup MetaDataMgrApiController
-   * @apiParam {String} [id] 表id值
-   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
-   * @apiSuccess {String} msg  成功或者错误信息
-   * @apiSuccess {List} [data] 返回数据
-   * @apiSuccess {String} [data.field_english_name] 字段名
-   * @apiContentType application/json
-   */
-  @ResponseBody
-  @RequestMapping(value = "/selectField", method = {
-      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String selectField(@RequestBody Map<String, Object> map) {
-    return metaDataMgrApiService.selectField(map);
   }
 
   //操作字段
@@ -396,12 +384,14 @@ public class MetaDataMgrApiController {
    * @apiVersion 1.0.0
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/metadata/insertField
    * @apiGroup MetaDataMgrApiController
-   * @apiParam {String} [id] 表id值
-   * @apiParam {List} [operationField] 操作字段
-   * @apiParam {String} [operationField.fieldName] 字段名称
-   * @apiParam {String} operationField.oldName 原字段名称（新增和删除可不填，更新必填）
-   * @apiParam {String} [operationField.operate] 具体操作（insert代表新增，update代表更新，delete代表删除）
-   * @apiParam {String} operationField.type 字段类型（更新和删除可不填，新增必填）
+   * @apiParam {String} id 表id值
+   * @apiParam {String} data_source_id 数据源id
+   * @apiParam {List} operationField 操作字段
+   * @apiParam {String} operationField.fieldName 字段名称
+   * @apiParam {String} [operationField.oldName] 原字段名称（新增和删除可不填，更新必填）
+   * @apiParam {String} operationField.operate 具体操作（insert代表新增，update代表更新，delete代表删除）
+   * @apiParam {String} [operationField.type] 字段类型（更新和删除可不填，新增必填）
+   * @apiParam {String} [operationField.oldNameId] 字段id（新增可不填，更新和删除必填）
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    * @apiContentType application/json
