@@ -757,7 +757,7 @@ public class MetaDataMgrApiService {
   public String loadSheet(Map<String, Object> map) {
     try {
       List<Map<String, Object>> list = dsMetaInfoDBMapper
-          .loadSheet(map.get("data_source_name").toString());
+          .loadSheet(map.get("data_source_id").toString());
       return JsonResult.successJson(list);
     } catch (Exception e) {
       e.printStackTrace();
@@ -776,8 +776,8 @@ public class MetaDataMgrApiService {
           .getFields(split[0], split[1]);
       List<Map<String, Object>> list = dsMetaInfoDBMapper.selectFieldsByName(id);
       List<String> list1 = new ArrayList<>();
-      List<Map<String,Object>> list2 = new ArrayList<>();
-      List<String> list3 = new ArrayList<>();
+      List<Map<String, Object>> list2 = new ArrayList<>();
+      List<Map<String, Object>> list3 = new ArrayList<>();
       for (FieldEntity fieldEntity : fields) {
         int i = 0;
         for (Map<String, Object> map1 : list) {
@@ -789,9 +789,9 @@ public class MetaDataMgrApiService {
           i = 1;
         }
         if (i == 1) {
-          Map<String,Object> map2 = new HashMap<>();
-          map2.put("name",fieldEntity.getName());
-          map2.put("type",fieldEntity.getType());
+          Map<String, Object> map2 = new HashMap<>();
+          map2.put("name", fieldEntity.getName());
+          map2.put("type", fieldEntity.getType());
           list2.add(map2);
         }
       }
@@ -805,7 +805,10 @@ public class MetaDataMgrApiService {
           i = 1;
         }
         if (i == 1) {
-          list3.add(map1.get("field_english_name").toString());
+          Map<String, Object> map2 = new HashMap<>();
+          map2.put("name", map1.get("field_english_name"));
+          map2.put("id", map1.get("id"));
+          list3.add(map2);
         }
       }
       Map<String, Object> map1 = new HashMap<>();
@@ -823,7 +826,7 @@ public class MetaDataMgrApiService {
     HiveExtractImp _extract = null;
 
     //需要确定当ds信息还没入库时，抽取表的
-     int ids = Integer.parseInt(id);
+    int ids = Integer.parseInt(id);
     DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
     _ex.createCriteria().andIdEqualTo(ids);
     List<DSMetaInfoDB> _sqlRet = dsMetaInfoDBMapper
@@ -842,23 +845,41 @@ public class MetaDataMgrApiService {
     return _extract;
   }
 
-  public String selectField(Map<String, Object> map) {
-    try {
-      String id = map.get("id").toString();
-      List<Map<String, Object>> list = dsMetaInfoDBMapper.selectFieldsByName(id);
-      return JsonResult.successJson(list);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return JsonResult.errorJson("error");
-    }
-  }
-  public String insertField(Map<String, Object> map){
-    try {
-      String id = map.get("id").toString();
-      List<Map<String, Object>> operationField = (List<Map<String, Object>>) map.get("operationField");
 
-      return JsonResult.successJson(operationField);
-    } catch (Exception e){
+  public String insertField(Map<String, Object> map) {
+    try {
+      String id = map.get("id").toString();
+      List<Map<String, Object>> operationField = (List<Map<String, Object>>) map
+          .get("operationField");
+      for (Map<String, Object> map1 : operationField) {
+        String fieldName = map1.get("fieldName").toString();
+        Object operate = map1.get("operate");
+        if (operate.equals("update")) {
+          String fieldId = map1.get("oldNameId").toString();
+          dsMetaInfoDBMapper
+              .updateField(fieldName, fieldId);
+        } else if (operate.equals("delete")) {
+          String fieldId = map1.get("oldNameId").toString();
+          dsMetaInfoDBMapper.deleteField(fieldId);
+        } else {
+          String type = map1.get("type").toString();
+          String dataSourceId = map.get("data_source_id").toString();
+          String length = null;
+          if (type.substring(0, 7).equals("varchar")) {
+            length = type.substring(8, type.length() - 1);
+          }
+          Map<String, String> map2 = new HashMap<>();
+          map2.put("fieldName", fieldName);
+          map2.put("dataSourceId", dataSourceId);
+          map2.put("isterm", "1");
+          map2.put("type", type);
+          map2.put("id", id);
+          map2.put("length", length);
+          dsMetaInfoDBMapper.insertField(map2);
+        }
+      }
+      return JsonResult.successJson();
+    } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("error");
     }

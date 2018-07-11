@@ -35,7 +35,14 @@ public interface DSMetaInfoDBMapper {
 
   int updateByPrimaryKey(DSMetaInfoDB record);
 
- List<Map<String, Object>> loadSheet(@Param("dsName") String dsName);
+  List<Map<String, Object>> loadSheet(@Param("id") String id);
 
   List<Map<String, Object>> selectFieldsByName(@Param("id") String id);
+
+  void insertField(Map<String, String> map);
+
+  void deleteField(String fieldId);
+
+  void updateField(@Param("fieldName") String fieldName, @Param("fieldId") String fieldId);
+
 }

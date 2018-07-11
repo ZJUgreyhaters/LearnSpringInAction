@@ -316,12 +316,23 @@
 
   <select id="loadSheet" resultType="java.util.Map">
    select * from ds_table_info WHERE
-   datasource_id = (select id  from
-    ds_meta_info where ds_name = #{dsName})
+   datasource_id = #{id}
   </select>
   <select id="selectFieldsByName" resultType="java.util.Map">
-     SELECT * FROM ds_field_info
-     WHERE
-     table_id = #{id}
+    SELECT * FROM ds_field_info
+    WHERE
+    table_id = #{id} and status !=1
   </select>
+  <insert id="insertField">
+    INSERT  into  ds_field_info
+    (field_english_name,table_id,datasource_id,field_type,field_length,isterm,status)
+    VALUES
+    (#{fieldName},#{id},#{dataSourceId},#{type},#{length},#{isterm},0)
+  </insert>
+  <update id="updateField">
+    update ds_field_info set field_english_name = #{fieldName} where id = #{fieldId}
+  </update>
+  <delete id="deleteField">
+    update ds_field_info set status = 1 where id = #{fieldId}
+  </delete>
 </mapper>
