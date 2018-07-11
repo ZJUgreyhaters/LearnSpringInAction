@@ -1,5 +1,299 @@
 define({ "api": [
   {
+    "type": "POST",
+    "url": "/api/metadata/insertField",
+    "title": "操作字段接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/metadata/insertField"
+      }
+    ],
+    "group": "MetaDataMgrApiController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>表id值</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data_source_id",
+            "description": "<p>数据源id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "List",
+            "optional": false,
+            "field": "operationField",
+            "description": "<p>操作字段</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "operationField.fieldName",
+            "description": "<p>字段名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "operationField.oldName",
+            "description": "<p>原字段名称（新增和删除可不填，更新必填）</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "operationField.operate",
+            "description": "<p>具体操作（insert代表新增，update代表更新，delete代表删除）</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "operationField.type",
+            "description": "<p>字段类型（更新和删除可不填，新增必填）</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "operationField.oldNameId",
+            "description": "<p>字段id（新增可不填，更新和删除必填）</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          }
+        ]
+      }
+    },
+    "contentType": "application/json",
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataMgrApiController.java",
+    "groupTitle": "MetaDataMgrApiController",
+    "name": "PostApiMetadataInsertfield"
+  },
+  {
+    "type": "POST",
+    "url": "/api/metadata/loadSheet",
+    "title": "加载数据表回显表接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/metadata/loadSheet"
+      }
+    ],
+    "group": "MetaDataMgrApiController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "data_source_id",
+            "description": "<p>数据源id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.id",
+            "description": "<p>id值</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.datasource_id",
+            "description": "<p>数据源id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.table_english_name",
+            "description": "<p>数据表英文名</p>"
+          }
+        ]
+      }
+    },
+    "contentType": "application/json",
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataMgrApiController.java",
+    "groupTitle": "MetaDataMgrApiController",
+    "name": "PostApiMetadataLoadsheet"
+  },
+  {
+    "type": "POST",
+    "url": "/api/metadata/updateField",
+    "title": "更新字段接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/metadata/updatefield"
+      }
+    ],
+    "group": "MetaDataMgrApiController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "tableEnglishName",
+            "description": "<p>表英文名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "id",
+            "description": "<p>表id值</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "data_source_id",
+            "description": "<p>数据源id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Map",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.same",
+            "description": "<p>以存在字段</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Map",
+            "optional": true,
+            "field": "data.newDifferent",
+            "description": "<p>新增或者改名的字段</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.newDifferent.name",
+            "description": "<p>新增或者改名的字段名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.newDifferent.type",
+            "description": "<p>新增或者改名的字段类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Map",
+            "optional": true,
+            "field": "data.oldDifferent",
+            "description": "<p>可能删除的字段</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.newDifferent.id",
+            "description": "<p>可能删除的字段id</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "\"data\":{",
+          "content": "\"data\":{\n \"newDifferent\": [{\"name\":\"\",\"type\":\"\"}],\n \"oldDifferent\": [{\"name\":\"\",\"id\":\"\"}],\n \"same\":[\"branch_no\",customer_no\"]\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "contentType": "application/json",
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataMgrApiController.java",
+    "groupTitle": "MetaDataMgrApiController",
+    "name": "PostApiMetadataUpdatefield"
+  },
+  {
     "type": "post",
     "url": "/term",
     "title": "术语添加接口",
@@ -436,7 +730,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "../java/com/quantchi/termInfo/controller/TermInfoController.java",
+    "filename": "../../java/com/quantchi/termInfo/controller/TermInfoController.java",
     "groupTitle": "TermInfoController"
   },
   {
@@ -736,7 +1030,7 @@ define({ "api": [
         ]
       }
     },
-    "filename": "../java/com/quantchi/termInfo/controller/TermInfoController.java",
+    "filename": "../../java/com/quantchi/termInfo/controller/TermInfoController.java",
     "groupTitle": "TermInfoController"
   },
   {
@@ -1055,7 +1349,7 @@ define({ "api": [
         ]
       }
     },
-    "filename": "../java/com/quantchi/termInfo/controller/TermInfoController.java",
+    "filename": "../../java/com/quantchi/termInfo/controller/TermInfoController.java",
     "groupTitle": "TermInfoController"
   }
 ] });

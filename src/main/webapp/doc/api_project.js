@@ -1,13 +1,14 @@
 define({
-  "name": "",
+  "name": "DMP",
   "version": "0.0.0",
-  "description": "",
+  "description": "Dmp接口文档",
+  "title": "DMP接口文档",
   "sampleUrl": false,
   "defaultVersion": "0.0.0",
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2018-07-06T02:09:48.677Z",
+    "time": "2018-07-11T01:32:45.509Z",
     "url": "http://apidocjs.com",
     "version": "0.17.6"
   }
