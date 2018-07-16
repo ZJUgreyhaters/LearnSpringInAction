@@ -321,11 +321,11 @@
   <select id="selectFieldsByName" resultType="java.util.Map">
     SELECT * FROM ds_field_info
     WHERE
-    table_id = #{id} and status !=1
+    table_id = #{id} and state =0
   </select>
   <insert id="insertField">
     INSERT  into  ds_field_info
-    (field_english_name,table_id,datasource_id,field_type,field_length,isterm,status)
+    (field_english_name,table_id,datasource_id,field_type,field_length,isterm,state)
     VALUES
     (#{fieldName},#{id},#{dataSourceId},#{type},#{length},#{isterm},0)
   </insert>
@@ -333,6 +333,6 @@
     update ds_field_info set field_english_name = #{fieldName} where id = #{fieldId}
   </update>
   <delete id="deleteField">
-    update ds_field_info set status = 1 where id = #{fieldId}
+    update ds_field_info set state = 1 where id = #{fieldId}
   </delete>
 </mapper>
