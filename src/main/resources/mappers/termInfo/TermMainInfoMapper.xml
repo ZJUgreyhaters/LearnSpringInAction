@@ -140,7 +140,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.quantchi.termInfo.pojo.TermMainInfo" >
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.quantchi.termInfo.pojo.TermMainInfo" >
     insert into md_term_main_info (id, entity_type, entity_id, 
       entity_hash, entity_name, entity_desc, 
       entity_status, create_time, offline_time, 

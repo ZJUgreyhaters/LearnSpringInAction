@@ -194,6 +194,7 @@ public class TermInfoServiceImpl implements TermInfoService {
   public String insertTerm(ArrayList<TermGenInfo> termGenInfos) {
     try {
       List<TermMainInfo> _termlist = new ArrayList<TermMainInfo>();
+      List<Integer> ids = new ArrayList<>();
       for (TermGenInfo termGenInfo : termGenInfos) {
         /*if (termGenInfo.getTableInfo() == null
                 || termGenInfo.getFieldInfoList() == null)
@@ -218,7 +219,10 @@ public class TermInfoServiceImpl implements TermInfoService {
         }
         //术语主信息插入
         if (termGenInfo.getTermMainInfo() != null) {
-          termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
+          String _uuid = UUID.randomUUID().toString().replace("-", "");
+          termGenInfo.getTermMainInfo().setEntityId(_uuid);
+          int insert = termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
+          ids.add(insert);
         } else {
           for (PhysicalFieldInfo field : termGenInfo.getFieldInfoList()) {
             TermMainInfo _term = new TermMainInfo();
@@ -248,7 +252,7 @@ public class TermInfoServiceImpl implements TermInfoService {
 
 
       }
-      return JsonResult.successJson(_termlist.size());
+      return JsonResult.successJson(ids);
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson(e.getMessage());
