@@ -66,7 +66,7 @@
   </select>
 
   <select id="selectTerm" resultType="java.util.Map">
-    SELECT
+    SELECT DISTINCT
     a.entity_type AS entityType,
     a.entity_id AS entityId,
     a.entity_hash AS entityHash,
