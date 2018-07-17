@@ -194,7 +194,7 @@ public class TermInfoServiceImpl implements TermInfoService {
   public String insertTerm(ArrayList<TermGenInfo> termGenInfos) {
     try {
       List<TermMainInfo> _termlist = new ArrayList<TermMainInfo>();
-      List<Integer> ids = new ArrayList<>();
+      List<String> ids = new ArrayList<>();
       for (TermGenInfo termGenInfo : termGenInfos) {
         /*if (termGenInfo.getTableInfo() == null
                 || termGenInfo.getFieldInfoList() == null)
@@ -222,7 +222,7 @@ public class TermInfoServiceImpl implements TermInfoService {
           String _uuid = UUID.randomUUID().toString().replace("-", "");
           termGenInfo.getTermMainInfo().setEntityId(_uuid);
           int insert = termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
-          ids.add(termGenInfo.getTermMainInfo().getId());
+          ids.add(termGenInfo.getTermMainInfo().getEntityId());
         } else {
           for (PhysicalFieldInfo field : termGenInfo.getFieldInfoList()) {
             TermMainInfo _term = new TermMainInfo();
