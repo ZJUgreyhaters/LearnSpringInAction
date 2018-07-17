@@ -121,11 +121,11 @@
   LEFT JOIN md_physical_field_info b ON a.entity_id = b.entity_id
   LEFT JOIN md_physical_table_info c ON b.physical_table = c.physical_table
   LEFT JOIN md_term_external_info d ON a.entity_id = d.entity_id
-  <where>
+  where  c.physical_table_hash <![CDATA[<>]]> ' '
     <if test="entityId!=null and entityId.toString().length()>0">
-      a.entity_id = #{entityId}
+     and a.entity_id = #{entityId}
     </if>
-  </where>
+
   </select>
 
   <select id="selectTermUdbc" resultType="java.util.Map">

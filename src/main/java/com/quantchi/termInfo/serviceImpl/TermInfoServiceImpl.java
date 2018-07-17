@@ -222,7 +222,7 @@ public class TermInfoServiceImpl implements TermInfoService {
           String _uuid = UUID.randomUUID().toString().replace("-", "");
           termGenInfo.getTermMainInfo().setEntityId(_uuid);
           int insert = termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
-          ids.add(insert);
+          ids.add(termGenInfo.getTermMainInfo().getId());
         } else {
           for (PhysicalFieldInfo field : termGenInfo.getFieldInfoList()) {
             TermMainInfo _term = new TermMainInfo();
