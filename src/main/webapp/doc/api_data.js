@@ -709,45 +709,10 @@ define({ "api": [
           },
           {
             "group": "Parameter",
-            "type": "termExternalInfo",
-            "optional": false,
-            "field": "termExternalInfo",
-            "description": ""
-          },
-          {
-            "group": "Parameter",
             "type": "String",
             "optional": true,
-            "field": "termMainInfo.levelName",
-            "description": "<p>术语类型</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "termMainInfo.themeName",
-            "description": "<p>数据治理分类一级名</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "termMainInfo.category1",
-            "description": "<p>数据治理分类二级名</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "termMainInfo.category2",
-            "description": "<p>数据治理分类三级级名</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "termMainInfo.category3",
-            "description": "<p>数据治理分类四级级名</p>"
+            "field": "termMainInfo.frequency",
+            "description": "<p>统计频率</p>"
           }
         ]
       },
