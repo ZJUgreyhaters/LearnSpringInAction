@@ -1,6 +1,5 @@
 package com.quantchi.termInfo.pojo;
 
-import java.util.Date;
 import java.util.List;
 
 public class TermGenInfo {
@@ -10,6 +9,16 @@ public class TermGenInfo {
     private List<PhysicalFieldInfo> fieldInfoList;
 
     private TermMainInfo termMainInfo;
+
+    private MdTermExternalInfo termExternalInfo;
+
+    public MdTermExternalInfo getTermExternalInfo() {
+        return termExternalInfo;
+    }
+
+    public void setTermExternalInfo(MdTermExternalInfo termExternalInfo) {
+        this.termExternalInfo = termExternalInfo;
+    }
 
     public PhysicalTableInfo getTableInfo() {
         return tableInfo;

@@ -35,4 +35,6 @@ public interface TermMainInfoMapper {
     int updateByPrimaryKeyWithBLOBs(TermMainInfo record);
 
     int updateByPrimaryKey(TermMainInfo record);
+
+    void update(TermMainInfo record);
 }

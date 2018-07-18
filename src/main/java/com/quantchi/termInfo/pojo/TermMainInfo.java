@@ -37,9 +37,29 @@ public class TermMainInfo {
 
     private String businessRule;
 
+    private String entityCategory;
+
+    private String businessDesc;
+
     private String techniqueRule;
 
     private String devPolicy;
+
+    public String getEntityCategory() {
+        return entityCategory;
+    }
+
+    public void setEntityCategory(String entityCategory) {
+        this.entityCategory = entityCategory;
+    }
+
+    public String getBusinessDesc() {
+        return businessDesc;
+    }
+
+    public void setBusinessDesc(String businessDesc) {
+        this.businessDesc = businessDesc;
+    }
 
     public Integer getId() {
         return id;

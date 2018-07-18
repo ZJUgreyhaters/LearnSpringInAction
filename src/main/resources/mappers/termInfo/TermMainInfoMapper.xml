@@ -523,4 +523,28 @@
       )
     </foreach>
   </insert>
+
+  <update id="update">
+update md_term_main_info
+    set entity_type = #{entityType,jdbcType=VARCHAR},
+      entity_category = #{entityHash,jdbcType=VARCHAR},
+      entity_hash = #{entityHash,jdbcType=VARCHAR},
+      entity_name = #{entityName,jdbcType=VARCHAR},
+      entity_desc = #{entityDesc,jdbcType=VARCHAR},
+      entity_alias = #{createTime,jdbcType=LONGVARCHAR},
+      business_desc = #{offlineTime,jdbcType=LONGVARCHAR},
+      business_rule = #{creator,jdbcType=LONGVARCHAR},
+      technique_rule = #{controlDept,jdbcType=LONGVARCHAR},
+      entity_status = #{assistDept,jdbcType=VARCHAR},
+      create_time = #{regulatory,jdbcType=TIMESTAMP},
+      offline_time = #{logicType,jdbcType=TIMESTAMP},
+      creator = #{displayType,jdbcType=INTEGER},
+      control_dept = #{entityAlias,jdbcType=VARCHAR},
+      assist_dept = #{businessRule,jdbcType=VARCHAR},
+      dev_policy = #{techniqueRule,jdbcType=LONGVARCHAR},
+      regulatory = #{devPolicy,jdbcType=VARCHAR}
+      logic_type = #{techniqueRule,jdbcType=VARCHAR},
+      display_type = #{devPolicy,jdbcType=VARCHAR}
+    where entity_id = #{entityId,jdbcType=VARCHAR}
+  </update>
 </mapper>

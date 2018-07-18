@@ -168,7 +168,7 @@ public class TermInfoController {
    * @apiParam {String} [fieldInfoList.distribution]
    * @apiParam {String} [fieldInfoList.enumeration]
    * @apiParam {PhysicalTableInfo} tableInfo 表信息
-   * @apiParam {Integer} [tableInfo.id] 表id
+   * @apiParam {Integer} [tableInfo.id] 表id（）
    * @apiParam {String} [tableInfo.physicalTableHash] 物理表hash码
    * @apiParam {String} [tableInfo.physicalTable] 物理表名
    * @apiParam {String} [tableInfo.physicalDb] 表的物理数据库名
@@ -186,18 +186,28 @@ public class TermInfoController {
    * @apiParam {String} [termMainInfo.entityName] 实体英文名称
    * @apiParam {String} [termMainInfo.entityDesc] 实体中文名称
    * @apiParam {String} [termMainInfo.entityStatus] 实体状态
-   * @apiParam {Date} [termMainInfo.createTime] 发布时间
+   * @apiParam {Date} [termMainInfo.createTime] 生效时间
    * @apiParam {Date} [termMainInfo.offlineTime] 失效时间
    * @apiParam {Integer} [termMainInfo.creator] 创建人ID
    * @apiParam {String} [termMainInfo.controlDept] 主管部门
    * @apiParam {String} [termMainInfo.assistDept] 协办部门
+   * @apiParam {String} [termMainInfo.businessDesc] 业务定义
+   * @apiParam {String} [termMainInfo.entityCategory] 逻辑分类
    * @apiParam {String} [termMainInfo.regulatory] 是否监管
-   * @apiParam {String} [termMainInfo.logicType] 逻辑类型
-   * @apiParam {String} [termMainInfo.displayType] 显示类型
+   * @apiParam {String} [termMainInfo.logicType] 术语值类型
+   * @apiParam {String} [termMainInfo.displayType] 显示英文类型
    * @apiParam {String} [termMainInfo.entityAlias] 常用名称
-   * @apiParam {String} [termMainInfo.businessRule] 业务定义
+   * @apiParam {String} [termMainInfo.businessRule] 业务口径
    * @apiParam {String} [termMainInfo.techniqueRule] 技术口径（SQL）
    * @apiParam {String} [termMainInfo.devPolicy] 制定依据
+   * @apiParam {String} [termMainInfo.remark] 备注
+   * @apiParam {termExternalInfo} termExternalInfo
+   * @apiParam {String} [termMainInfo.entityId] 实体ID
+   * @apiParam {String} [termMainInfo.levelName] 术语类型
+   * @apiParam {String} [termMainInfo.themeName] 数据治理分类一级名
+   * @apiParam {String} [termMainInfo.category1] 数据治理分类二级名
+   * @apiParam {String} [termMainInfo.category2] 数据治理分类三级级名
+   * @apiParam {String} [termMainInfo.category3] 数据治理分类四级级名
    *
    * @apiParamExample {json} Request-example:
    * [{

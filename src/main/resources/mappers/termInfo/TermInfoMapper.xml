@@ -117,13 +117,13 @@
     d.category3 AS category3,
     d.suitable_type AS suitableType,
     d.suitable_condition AS suitableCondition
-  FROM md_term_main_info a
-  LEFT JOIN md_physical_field_info b ON a.entity_id = b.entity_id
-  LEFT JOIN md_physical_table_info c ON b.physical_table = c.physical_table
-  LEFT JOIN md_term_external_info d ON a.entity_id = d.entity_id
-  where  c.physical_table_hash <![CDATA[<>]]> ' '
+    FROM md_term_main_info a
+    LEFT JOIN md_physical_field_info b ON a.entity_id = b.entity_id
+    LEFT JOIN md_physical_table_info c ON b.physical_table = c.physical_table
+    LEFT JOIN md_term_external_info d ON a.entity_id = d.entity_id
+    where
     <if test="entityId!=null and entityId.toString().length()>0">
-     and a.entity_id = #{entityId}
+      a.entity_id = #{entityId}
     </if>
 
   </select>
