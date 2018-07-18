@@ -202,7 +202,8 @@ public class TermInfoServiceImpl implements TermInfoService {
 
         if(termGenInfo.getTermMainInfo().getEntityId()!=null){
           termMainInfoMapper.update(termGenInfo.getTermMainInfo());
-          return JsonResult.successJson();
+          ids.add(termGenInfo.getTermMainInfo().getEntityId());
+          return JsonResult.successJson(ids);
         }
 
 
@@ -227,8 +228,10 @@ public class TermInfoServiceImpl implements TermInfoService {
         if (termGenInfo.getTermMainInfo() != null) {
           String _uuid = UUID.randomUUID().toString().replace("-", "");
           termGenInfo.getTermMainInfo().setEntityId(_uuid);
-          int insert = termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
-          ids.add(termGenInfo.getTermMainInfo().getEntityId());
+          termGenInfo.getTermMainInfo().setEntityStatus("正常");
+          termGenInfo.getTermMainInfo().setEntityHash(_uuid);
+          termMainInfoMapper.insert(termGenInfo.getTermMainInfo());
+          ids.add(_uuid);
         } else {
           for (PhysicalFieldInfo field : termGenInfo.getFieldInfoList()) {
             TermMainInfo _term = new TermMainInfo();

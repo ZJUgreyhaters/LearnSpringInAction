@@ -127,7 +127,6 @@ public class TermInfoController {
   * @apiSuccess {String} [data.physicalField.dataUDC.entityId] 数据id
   * @apiSuccess {String} [data.physicalField.dataUDC.entityType] 数据类型
   *
-  *
   * */
   //查询
   @ResponseBody
@@ -201,13 +200,7 @@ public class TermInfoController {
    * @apiParam {String} [termMainInfo.techniqueRule] 技术口径（SQL）
    * @apiParam {String} [termMainInfo.devPolicy] 制定依据
    * @apiParam {String} [termMainInfo.remark] 备注
-   * @apiParam {termExternalInfo} termExternalInfo
-   * @apiParam {String} [termMainInfo.entityId] 实体ID
-   * @apiParam {String} [termMainInfo.levelName] 术语类型
-   * @apiParam {String} [termMainInfo.themeName] 数据治理分类一级名
-   * @apiParam {String} [termMainInfo.category1] 数据治理分类二级名
-   * @apiParam {String} [termMainInfo.category2] 数据治理分类三级级名
-   * @apiParam {String} [termMainInfo.category3] 数据治理分类四级级名
+   * @apiParam {String} [termMainInfo.frequency] 统计频率
    *
    * @apiParamExample {json} Request-example:
    * [{

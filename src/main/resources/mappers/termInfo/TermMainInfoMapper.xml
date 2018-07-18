@@ -1,48 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.quantchi.termInfo.mapper.TermMainInfoMapper" >
-  <resultMap id="BaseResultMap" type="com.quantchi.termInfo.pojo.TermMainInfo" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="entity_type" property="entityType" jdbcType="VARCHAR" />
-    <result column="entity_id" property="entityId" jdbcType="VARCHAR" />
-    <result column="entity_hash" property="entityHash" jdbcType="VARCHAR" />
-    <result column="entity_name" property="entityName" jdbcType="VARCHAR" />
-    <result column="entity_desc" property="entityDesc" jdbcType="VARCHAR" />
-    <result column="entity_status" property="entityStatus" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="offline_time" property="offlineTime" jdbcType="TIMESTAMP" />
-    <result column="creator" property="creator" jdbcType="INTEGER" />
-    <result column="control_dept" property="controlDept" jdbcType="VARCHAR" />
-    <result column="assist_dept" property="assistDept" jdbcType="VARCHAR" />
-    <result column="regulatory" property="regulatory" jdbcType="VARCHAR" />
-    <result column="logic_type" property="logicType" jdbcType="VARCHAR" />
-    <result column="display_type" property="displayType" jdbcType="VARCHAR" />
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.termInfo.mapper.TermMainInfoMapper">
+  <resultMap id="BaseResultMap" type="com.quantchi.termInfo.pojo.TermMainInfo">
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="entity_type" property="entityType" jdbcType="VARCHAR"/>
+    <result column="entity_id" property="entityId" jdbcType="VARCHAR"/>
+    <result column="entity_hash" property="entityHash" jdbcType="VARCHAR"/>
+    <result column="entity_name" property="entityName" jdbcType="VARCHAR"/>
+    <result column="entity_desc" property="entityDesc" jdbcType="VARCHAR"/>
+    <result column="entity_status" property="entityStatus" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="offline_time" property="offlineTime" jdbcType="TIMESTAMP"/>
+    <result column="creator" property="creator" jdbcType="INTEGER"/>
+    <result column="control_dept" property="controlDept" jdbcType="VARCHAR"/>
+    <result column="assist_dept" property="assistDept" jdbcType="VARCHAR"/>
+    <result column="regulatory" property="regulatory" jdbcType="VARCHAR"/>
+    <result column="logic_type" property="logicType" jdbcType="VARCHAR"/>
+    <result column="display_type" property="displayType" jdbcType="VARCHAR"/>
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.quantchi.termInfo.pojo.TermMainInfo" extends="BaseResultMap" >
-    <result column="entity_alias" property="entityAlias" jdbcType="LONGVARCHAR" />
-    <result column="business_rule" property="businessRule" jdbcType="LONGVARCHAR" />
-    <result column="technique_rule" property="techniqueRule" jdbcType="LONGVARCHAR" />
-    <result column="dev_policy" property="devPolicy" jdbcType="LONGVARCHAR" />
+  <resultMap id="ResultMapWithBLOBs" type="com.quantchi.termInfo.pojo.TermMainInfo"
+    extends="BaseResultMap">
+    <result column="entity_alias" property="entityAlias" jdbcType="LONGVARCHAR"/>
+    <result column="business_rule" property="businessRule" jdbcType="LONGVARCHAR"/>
+    <result column="technique_rule" property="techniqueRule" jdbcType="LONGVARCHAR"/>
+    <result column="dev_policy" property="devPolicy" jdbcType="LONGVARCHAR"/>
   </resultMap>
-  <sql id="Example_Where_Clause" >
-    <where >
-      <foreach collection="oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" suffix=")" prefixOverrides="and">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
                   and ${criterion.condition}
                 </when>
-                <when test="criterion.singleValue" >
+                <when test="criterion.singleValue">
                   and ${criterion.condition} #{criterion.value}
                 </when>
-                <when test="criterion.betweenValue" >
+                <when test="criterion.betweenValue">
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
-                <when test="criterion.listValue" >
+                <when test="criterion.listValue">
                   and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                    separator=",">
                     #{listItem}
                   </foreach>
                 </when>
@@ -53,25 +56,26 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Update_By_Example_Where_Clause" >
-    <where >
-      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" suffix=")" prefixOverrides="and">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
                   and ${criterion.condition}
                 </when>
-                <when test="criterion.singleValue" >
+                <when test="criterion.singleValue">
                   and ${criterion.condition} #{criterion.value}
                 </when>
-                <when test="criterion.betweenValue" >
+                <when test="criterion.betweenValue">
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
-                <when test="criterion.listValue" >
+                <when test="criterion.listValue">
                   and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                    separator=",">
                     #{listItem}
                   </foreach>
                 </when>
@@ -82,373 +86,379 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     id, entity_type, entity_id, entity_hash, entity_name, entity_desc, entity_status, 
     create_time, offline_time, creator, control_dept, assist_dept, regulatory, logic_type, 
     display_type
   </sql>
-  <sql id="Blob_Column_List" >
+  <sql id="Blob_Column_List">
     entity_alias, business_rule, technique_rule, dev_policy
   </sql>
-  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.quantchi.termInfo.pojo.TermMainInfoExample" >
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs"
+    parameterType="com.quantchi.termInfo.pojo.TermMainInfoExample">
     select
-    <if test="distinct" >
+    <if test="distinct">
       distinct
     </if>
     'false' as QUERYID,
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List"/>
     ,
-    <include refid="Blob_Column_List" />
+    <include refid="Blob_Column_List"/>
     from md_term_main_info
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
     </if>
-    <if test="orderByClause != null" >
+    <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.termInfo.pojo.TermMainInfoExample" >
+  <select id="selectByExample" resultMap="BaseResultMap"
+    parameterType="com.quantchi.termInfo.pojo.TermMainInfoExample">
     select
-    <if test="distinct" >
+    <if test="distinct">
       distinct
     </if>
     'false' as QUERYID,
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List"/>
     from md_term_main_info
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
     </if>
-    <if test="orderByClause != null" >
+    <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_List"/>
     ,
-    <include refid="Blob_Column_List" />
+    <include refid="Blob_Column_List"/>
     from md_term_main_info
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from md_term_main_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.quantchi.termInfo.pojo.TermMainInfoExample" >
+  <delete id="deleteByExample" parameterType="com.quantchi.termInfo.pojo.TermMainInfoExample">
     delete from md_term_main_info
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
     </if>
   </delete>
-  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.quantchi.termInfo.pojo.TermMainInfo" >
-    insert into md_term_main_info (id, entity_type, entity_id, 
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+    parameterType="com.quantchi.termInfo.pojo.TermMainInfo">
+    insert into md_term_main_info (entity_type, entity_id,
       entity_hash, entity_name, entity_desc, 
       entity_status, create_time, offline_time, 
       creator, control_dept, assist_dept, 
       regulatory, logic_type, display_type, 
       entity_alias, business_rule, technique_rule, 
-      dev_policy)
-    values (#{id,jdbcType=INTEGER}, #{entityType,jdbcType=VARCHAR}, #{entityId,jdbcType=VARCHAR}, 
+      dev_policy,business_desc,frequency,remark,entity_category)
+    values (#{entityType,jdbcType=VARCHAR}, #{entityId,jdbcType=VARCHAR},
       #{entityHash,jdbcType=VARCHAR}, #{entityName,jdbcType=VARCHAR}, #{entityDesc,jdbcType=VARCHAR}, 
-      #{entityStatus,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{offlineTime,jdbcType=TIMESTAMP}, 
+      #{entityStatus,jdbcType=VARCHAR}, SYSDATE(), #{offlineTime,jdbcType=TIMESTAMP},
       #{creator,jdbcType=INTEGER}, #{controlDept,jdbcType=VARCHAR}, #{assistDept,jdbcType=VARCHAR}, 
       #{regulatory,jdbcType=VARCHAR}, #{logicType,jdbcType=VARCHAR}, #{displayType,jdbcType=VARCHAR}, 
       #{entityAlias,jdbcType=LONGVARCHAR}, #{businessRule,jdbcType=LONGVARCHAR}, #{techniqueRule,jdbcType=LONGVARCHAR}, 
-      #{devPolicy,jdbcType=LONGVARCHAR})
+      #{devPolicy,jdbcType=LONGVARCHAR},#{businessDesc,jdbcType=LONGVARCHAR},
+      #{frequency,jdbcType=VARCHAR},#{remark,jdbcType=LONGVARCHAR},
+      #{entityCategory,jdbcType=VARCHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.quantchi.termInfo.pojo.TermMainInfo" >
+  <insert id="insertSelective" parameterType="com.quantchi.termInfo.pojo.TermMainInfo">
     insert into md_term_main_info
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="entityType != null" >
+      <if test="entityType != null">
         entity_type,
       </if>
-      <if test="entityId != null" >
+      <if test="entityId != null">
         entity_id,
       </if>
-      <if test="entityHash != null" >
+      <if test="entityHash != null">
         entity_hash,
       </if>
-      <if test="entityName != null" >
+      <if test="entityName != null">
         entity_name,
       </if>
-      <if test="entityDesc != null" >
+      <if test="entityDesc != null">
         entity_desc,
       </if>
-      <if test="entityStatus != null" >
+      <if test="entityStatus != null">
         entity_status,
       </if>
-      <if test="createTime != null" >
+      <if test="createTime != null">
         create_time,
       </if>
-      <if test="offlineTime != null" >
+      <if test="offlineTime != null">
         offline_time,
       </if>
-      <if test="creator != null" >
+      <if test="creator != null">
         creator,
       </if>
-      <if test="controlDept != null" >
+      <if test="controlDept != null">
         control_dept,
       </if>
-      <if test="assistDept != null" >
+      <if test="assistDept != null">
         assist_dept,
       </if>
-      <if test="regulatory != null" >
+      <if test="regulatory != null">
         regulatory,
       </if>
-      <if test="logicType != null" >
+      <if test="logicType != null">
         logic_type,
       </if>
-      <if test="displayType != null" >
+      <if test="displayType != null">
         display_type,
       </if>
-      <if test="entityAlias != null" >
+      <if test="entityAlias != null">
         entity_alias,
       </if>
-      <if test="businessRule != null" >
+      <if test="businessRule != null">
         business_rule,
       </if>
-      <if test="techniqueRule != null" >
+      <if test="techniqueRule != null">
         technique_rule,
       </if>
-      <if test="devPolicy != null" >
+      <if test="devPolicy != null">
         dev_policy,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="entityType != null" >
+      <if test="entityType != null">
         #{entityType,jdbcType=VARCHAR},
       </if>
-      <if test="entityId != null" >
+      <if test="entityId != null">
         #{entityId,jdbcType=VARCHAR},
       </if>
-      <if test="entityHash != null" >
+      <if test="entityHash != null">
         #{entityHash,jdbcType=VARCHAR},
       </if>
-      <if test="entityName != null" >
+      <if test="entityName != null">
         #{entityName,jdbcType=VARCHAR},
       </if>
-      <if test="entityDesc != null" >
+      <if test="entityDesc != null">
         #{entityDesc,jdbcType=VARCHAR},
       </if>
-      <if test="entityStatus != null" >
+      <if test="entityStatus != null">
         #{entityStatus,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
+      <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="offlineTime != null" >
+      <if test="offlineTime != null">
         #{offlineTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="creator != null" >
+      <if test="creator != null">
         #{creator,jdbcType=INTEGER},
       </if>
-      <if test="controlDept != null" >
+      <if test="controlDept != null">
         #{controlDept,jdbcType=VARCHAR},
       </if>
-      <if test="assistDept != null" >
+      <if test="assistDept != null">
         #{assistDept,jdbcType=VARCHAR},
       </if>
-      <if test="regulatory != null" >
+      <if test="regulatory != null">
         #{regulatory,jdbcType=VARCHAR},
       </if>
-      <if test="logicType != null" >
+      <if test="logicType != null">
         #{logicType,jdbcType=VARCHAR},
       </if>
-      <if test="displayType != null" >
+      <if test="displayType != null">
         #{displayType,jdbcType=VARCHAR},
       </if>
-      <if test="entityAlias != null" >
+      <if test="entityAlias != null">
         #{entityAlias,jdbcType=LONGVARCHAR},
       </if>
-      <if test="businessRule != null" >
+      <if test="businessRule != null">
         #{businessRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="techniqueRule != null" >
+      <if test="techniqueRule != null">
         #{techniqueRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="devPolicy != null" >
+      <if test="devPolicy != null">
         #{devPolicy,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByExampleSelective" parameterType="map" >
+  <update id="updateByExampleSelective" parameterType="map">
     update md_term_main_info
-    <set >
-      <if test="record.id != null" >
+    <set>
+      <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.entityType != null" >
+      <if test="record.entityType != null">
         entity_type = #{record.entityType,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityId != null" >
+      <if test="record.entityId != null">
         entity_id = #{record.entityId,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityHash != null" >
+      <if test="record.entityHash != null">
         entity_hash = #{record.entityHash,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityName != null" >
+      <if test="record.entityName != null">
         entity_name = #{record.entityName,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityDesc != null" >
+      <if test="record.entityDesc != null">
         entity_desc = #{record.entityDesc,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityStatus != null" >
+      <if test="record.entityStatus != null">
         entity_status = #{record.entityStatus,jdbcType=VARCHAR},
       </if>
-      <if test="record.createTime != null" >
+      <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.offlineTime != null" >
+      <if test="record.offlineTime != null">
         offline_time = #{record.offlineTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.creator != null" >
+      <if test="record.creator != null">
         creator = #{record.creator,jdbcType=INTEGER},
       </if>
-      <if test="record.controlDept != null" >
+      <if test="record.controlDept != null">
         control_dept = #{record.controlDept,jdbcType=VARCHAR},
       </if>
-      <if test="record.assistDept != null" >
+      <if test="record.assistDept != null">
         assist_dept = #{record.assistDept,jdbcType=VARCHAR},
       </if>
-      <if test="record.regulatory != null" >
+      <if test="record.regulatory != null">
         regulatory = #{record.regulatory,jdbcType=VARCHAR},
       </if>
-      <if test="record.logicType != null" >
+      <if test="record.logicType != null">
         logic_type = #{record.logicType,jdbcType=VARCHAR},
       </if>
-      <if test="record.displayType != null" >
+      <if test="record.displayType != null">
         display_type = #{record.displayType,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityAlias != null" >
+      <if test="record.entityAlias != null">
         entity_alias = #{record.entityAlias,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.businessRule != null" >
+      <if test="record.businessRule != null">
         business_rule = #{record.businessRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.techniqueRule != null" >
+      <if test="record.techniqueRule != null">
         technique_rule = #{record.techniqueRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.devPolicy != null" >
+      <if test="record.devPolicy != null">
         dev_policy = #{record.devPolicy,jdbcType=LONGVARCHAR},
       </if>
     </set>
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
     </if>
   </update>
-  <update id="updateByExampleWithBLOBs" parameterType="map" >
+  <update id="updateByExampleWithBLOBs" parameterType="map">
     update md_term_main_info
     set id = #{record.id,jdbcType=INTEGER},
-      entity_type = #{record.entityType,jdbcType=VARCHAR},
-      entity_id = #{record.entityId,jdbcType=VARCHAR},
-      entity_hash = #{record.entityHash,jdbcType=VARCHAR},
-      entity_name = #{record.entityName,jdbcType=VARCHAR},
-      entity_desc = #{record.entityDesc,jdbcType=VARCHAR},
-      entity_status = #{record.entityStatus,jdbcType=VARCHAR},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      offline_time = #{record.offlineTime,jdbcType=TIMESTAMP},
-      creator = #{record.creator,jdbcType=INTEGER},
-      control_dept = #{record.controlDept,jdbcType=VARCHAR},
-      assist_dept = #{record.assistDept,jdbcType=VARCHAR},
-      regulatory = #{record.regulatory,jdbcType=VARCHAR},
-      logic_type = #{record.logicType,jdbcType=VARCHAR},
-      display_type = #{record.displayType,jdbcType=VARCHAR},
-      entity_alias = #{record.entityAlias,jdbcType=LONGVARCHAR},
-      business_rule = #{record.businessRule,jdbcType=LONGVARCHAR},
-      technique_rule = #{record.techniqueRule,jdbcType=LONGVARCHAR},
-      dev_policy = #{record.devPolicy,jdbcType=LONGVARCHAR}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
+    entity_type = #{record.entityType,jdbcType=VARCHAR},
+    entity_id = #{record.entityId,jdbcType=VARCHAR},
+    entity_hash = #{record.entityHash,jdbcType=VARCHAR},
+    entity_name = #{record.entityName,jdbcType=VARCHAR},
+    entity_desc = #{record.entityDesc,jdbcType=VARCHAR},
+    entity_status = #{record.entityStatus,jdbcType=VARCHAR},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    offline_time = #{record.offlineTime,jdbcType=TIMESTAMP},
+    creator = #{record.creator,jdbcType=INTEGER},
+    control_dept = #{record.controlDept,jdbcType=VARCHAR},
+    assist_dept = #{record.assistDept,jdbcType=VARCHAR},
+    regulatory = #{record.regulatory,jdbcType=VARCHAR},
+    logic_type = #{record.logicType,jdbcType=VARCHAR},
+    display_type = #{record.displayType,jdbcType=VARCHAR},
+    entity_alias = #{record.entityAlias,jdbcType=LONGVARCHAR},
+    business_rule = #{record.businessRule,jdbcType=LONGVARCHAR},
+    technique_rule = #{record.techniqueRule,jdbcType=LONGVARCHAR},
+    dev_policy = #{record.devPolicy,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
     </if>
   </update>
-  <update id="updateByExample" parameterType="map" >
+  <update id="updateByExample" parameterType="map">
     update md_term_main_info
     set id = #{record.id,jdbcType=INTEGER},
-      entity_type = #{record.entityType,jdbcType=VARCHAR},
-      entity_id = #{record.entityId,jdbcType=VARCHAR},
-      entity_hash = #{record.entityHash,jdbcType=VARCHAR},
-      entity_name = #{record.entityName,jdbcType=VARCHAR},
-      entity_desc = #{record.entityDesc,jdbcType=VARCHAR},
-      entity_status = #{record.entityStatus,jdbcType=VARCHAR},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      offline_time = #{record.offlineTime,jdbcType=TIMESTAMP},
-      creator = #{record.creator,jdbcType=INTEGER},
-      control_dept = #{record.controlDept,jdbcType=VARCHAR},
-      assist_dept = #{record.assistDept,jdbcType=VARCHAR},
-      regulatory = #{record.regulatory,jdbcType=VARCHAR},
-      logic_type = #{record.logicType,jdbcType=VARCHAR},
-      display_type = #{record.displayType,jdbcType=VARCHAR}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
+    entity_type = #{record.entityType,jdbcType=VARCHAR},
+    entity_id = #{record.entityId,jdbcType=VARCHAR},
+    entity_hash = #{record.entityHash,jdbcType=VARCHAR},
+    entity_name = #{record.entityName,jdbcType=VARCHAR},
+    entity_desc = #{record.entityDesc,jdbcType=VARCHAR},
+    entity_status = #{record.entityStatus,jdbcType=VARCHAR},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    offline_time = #{record.offlineTime,jdbcType=TIMESTAMP},
+    creator = #{record.creator,jdbcType=INTEGER},
+    control_dept = #{record.controlDept,jdbcType=VARCHAR},
+    assist_dept = #{record.assistDept,jdbcType=VARCHAR},
+    regulatory = #{record.regulatory,jdbcType=VARCHAR},
+    logic_type = #{record.logicType,jdbcType=VARCHAR},
+    display_type = #{record.displayType,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.termInfo.pojo.TermMainInfo" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.termInfo.pojo.TermMainInfo">
     update md_term_main_info
-    <set >
-      <if test="entityType != null" >
+    <set>
+      <if test="entityType != null">
         entity_type = #{entityType,jdbcType=VARCHAR},
       </if>
-      <if test="entityId != null" >
+      <if test="entityId != null">
         entity_id = #{entityId,jdbcType=VARCHAR},
       </if>
-      <if test="entityHash != null" >
+      <if test="entityHash != null">
         entity_hash = #{entityHash,jdbcType=VARCHAR},
       </if>
-      <if test="entityName != null" >
+      <if test="entityName != null">
         entity_name = #{entityName,jdbcType=VARCHAR},
       </if>
-      <if test="entityDesc != null" >
+      <if test="entityDesc != null">
         entity_desc = #{entityDesc,jdbcType=VARCHAR},
       </if>
-      <if test="entityStatus != null" >
+      <if test="entityStatus != null">
         entity_status = #{entityStatus,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
+      <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="offlineTime != null" >
+      <if test="offlineTime != null">
         offline_time = #{offlineTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="creator != null" >
+      <if test="creator != null">
         creator = #{creator,jdbcType=INTEGER},
       </if>
-      <if test="controlDept != null" >
+      <if test="controlDept != null">
         control_dept = #{controlDept,jdbcType=VARCHAR},
       </if>
-      <if test="assistDept != null" >
+      <if test="assistDept != null">
         assist_dept = #{assistDept,jdbcType=VARCHAR},
       </if>
-      <if test="regulatory != null" >
+      <if test="regulatory != null">
         regulatory = #{regulatory,jdbcType=VARCHAR},
       </if>
-      <if test="logicType != null" >
+      <if test="logicType != null">
         logic_type = #{logicType,jdbcType=VARCHAR},
       </if>
-      <if test="displayType != null" >
+      <if test="displayType != null">
         display_type = #{displayType,jdbcType=VARCHAR},
       </if>
-      <if test="entityAlias != null" >
+      <if test="entityAlias != null">
         entity_alias = #{entityAlias,jdbcType=LONGVARCHAR},
       </if>
-      <if test="businessRule != null" >
+      <if test="businessRule != null">
         business_rule = #{businessRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="techniqueRule != null" >
+      <if test="techniqueRule != null">
         technique_rule = #{techniqueRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="devPolicy != null" >
+      <if test="devPolicy != null">
         dev_policy = #{devPolicy,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.quantchi.termInfo.pojo.TermMainInfo" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.quantchi.termInfo.pojo.TermMainInfo">
     update md_term_main_info
     set entity_type = #{entityType,jdbcType=VARCHAR},
       entity_id = #{entityId,jdbcType=VARCHAR},
@@ -470,7 +480,7 @@
       dev_policy = #{devPolicy,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.quantchi.termInfo.pojo.TermMainInfo" >
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.termInfo.pojo.TermMainInfo">
     update md_term_main_info
     set entity_type = #{entityType,jdbcType=VARCHAR},
       entity_id = #{entityId,jdbcType=VARCHAR},
@@ -525,26 +535,28 @@
   </insert>
 
   <update id="update">
-update md_term_main_info
-    set entity_type = #{entityType,jdbcType=VARCHAR},
-      entity_category = #{entityHash,jdbcType=VARCHAR},
+     update md_term_main_info
+       set entity_type = #{entityType,jdbcType=VARCHAR},
+      entity_category = #{entityCategory,jdbcType=VARCHAR},
       entity_hash = #{entityHash,jdbcType=VARCHAR},
       entity_name = #{entityName,jdbcType=VARCHAR},
       entity_desc = #{entityDesc,jdbcType=VARCHAR},
-      entity_alias = #{createTime,jdbcType=LONGVARCHAR},
-      business_desc = #{offlineTime,jdbcType=LONGVARCHAR},
-      business_rule = #{creator,jdbcType=LONGVARCHAR},
-      technique_rule = #{controlDept,jdbcType=LONGVARCHAR},
-      entity_status = #{assistDept,jdbcType=VARCHAR},
-      create_time = #{regulatory,jdbcType=TIMESTAMP},
-      offline_time = #{logicType,jdbcType=TIMESTAMP},
-      creator = #{displayType,jdbcType=INTEGER},
-      control_dept = #{entityAlias,jdbcType=VARCHAR},
-      assist_dept = #{businessRule,jdbcType=VARCHAR},
-      dev_policy = #{techniqueRule,jdbcType=LONGVARCHAR},
-      regulatory = #{devPolicy,jdbcType=VARCHAR}
-      logic_type = #{techniqueRule,jdbcType=VARCHAR},
-      display_type = #{devPolicy,jdbcType=VARCHAR}
+      entity_alias = #{entityAlias,jdbcType=LONGVARCHAR},
+      business_desc = #{businessDesc,jdbcType=LONGVARCHAR},
+      business_rule = #{businessRule,jdbcType=LONGVARCHAR},
+      technique_rule = #{techniqueRule,jdbcType=LONGVARCHAR},
+      entity_status = #{entityStatus,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      offline_time = #{offlineTime,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=INTEGER},
+      control_dept = #{controlDept,jdbcType=VARCHAR},
+      assist_dept = #{assistDept,jdbcType=VARCHAR},
+      dev_policy = #{devPolicy,jdbcType=LONGVARCHAR},
+      regulatory = #{regulatory,jdbcType=VARCHAR},
+      logic_type = #{logicType,jdbcType=VARCHAR},
+      display_type = #{displayType,jdbcType=VARCHAR},
+      frequency = #{frequency,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=LONGVARCHAR}
     where entity_id = #{entityId,jdbcType=VARCHAR}
   </update>
 </mapper>

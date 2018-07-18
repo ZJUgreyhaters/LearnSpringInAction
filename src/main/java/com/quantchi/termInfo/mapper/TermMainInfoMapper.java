@@ -3,9 +3,8 @@ package com.quantchi.termInfo.mapper;
 
 import com.quantchi.termInfo.pojo.TermMainInfo;
 import com.quantchi.termInfo.pojo.TermMainInfoExample;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface TermMainInfoMapper {
     int deleteByExample(TermMainInfoExample example);
@@ -37,4 +36,5 @@ public interface TermMainInfoMapper {
     int updateByPrimaryKey(TermMainInfo record);
 
     void update(TermMainInfo record);
+
 }

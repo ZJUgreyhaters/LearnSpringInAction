@@ -45,6 +45,26 @@ public class TermMainInfo {
 
     private String devPolicy;
 
+    private String frequency;
+
+    private String remark;
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     public String getEntityCategory() {
         return entityCategory;
     }
