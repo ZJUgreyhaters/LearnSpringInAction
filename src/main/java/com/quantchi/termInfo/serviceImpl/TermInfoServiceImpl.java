@@ -74,7 +74,7 @@ public class TermInfoServiceImpl implements TermInfoService {
 
   private List<String> name = Arrays
       .asList("entityType", "entityId", "entityHash", "entityName", "entityDesc", "logicType",
-          "displayType");
+          "displayType", "entityCategory", "offlineTime", "controlDept", "businessRule");
   private List<String> physicalField = Arrays
       .asList("entityId", "physicalFieldHash", "physicalFieldId", "physicalFieldDesc",
           "physicalTable", "physicalDB", "dataType", "dataLength", "dataPrecision", "dataPattern",
@@ -132,7 +132,8 @@ public class TermInfoServiceImpl implements TermInfoService {
         ResultList.add(map1);
       }
       if (termInfoPojo.getPage() != null && termInfoPojo.getPage_size() != null) {
-        ResultList = Paging.pagingPlug(ResultList, termInfoPojo.getPage_size(), termInfoPojo.getPage());
+        ResultList = Paging
+            .pagingPlug(ResultList, termInfoPojo.getPage_size(), termInfoPojo.getPage());
       }
 
       Map<String, Object> result = new HashedMap();
@@ -200,16 +201,15 @@ public class TermInfoServiceImpl implements TermInfoService {
                 || termGenInfo.getFieldInfoList() == null)
           throw new Exception("miss table or field or term info");*/
 
-        if(termGenInfo.getTermMainInfo().getEntityId()!=null){
+        if (termGenInfo.getTermMainInfo().getEntityId() != null) {
           termMainInfoMapper.update(termGenInfo.getTermMainInfo());
           ids.add(termGenInfo.getTermMainInfo().getEntityId());
           return JsonResult.successJson(ids);
         }
 
-
         Map<String, String> _entityIdMap = new HashMap<>();
 
-        if (termGenInfo.getFieldInfoList()!=null) {
+        if (termGenInfo.getFieldInfoList() != null) {
           for (PhysicalFieldInfo fieldInfo : termGenInfo.getFieldInfoList()) {
             String _uuid = UUID.randomUUID().toString().replace("-", "");
             fieldInfo.setEntityId(_uuid);
