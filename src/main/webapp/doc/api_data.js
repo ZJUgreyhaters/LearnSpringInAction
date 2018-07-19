@@ -718,8 +718,8 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Request-example:",
-          "content": "[{\n \"fieldInfoList\": [\n {\n \"dataType\": \"string\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"init_date\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"median_fund_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"var_fund_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"avg_secu_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"max_secu_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"min_secu_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"median_secu_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"var_secu_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"avg_opfund_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"max_opfund_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"min_opfund_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"median_opfund_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"var_opfund_market_value\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"avg_total_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"max_total_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"min_total_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"median_total_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n },\n {\n \"dataType\": \"double\",\n \"physicalDb\": \"cust_mining\",\n \"physicalField\": \"var_total_asset\",\n \"physicalTable\": \"agg_cust_balance_feature_test\"\n }\n ],\n \"tableInfo\": {\n \"physicalDb\": \"cust_mining\",\n \"physicalTable\": \"agg_cust_balance_feature_test\",\n \"tableType\": \"\"\n },\n \"termMainInfo\":{\n   \"entityType\": \"1\",\n   \"entityId\": \"PT000001\",\n   \"entityHash\":\"55e4e1b391831960d8b7e4b61fdfaf7c\",\n   \"entityName\": \"gender\",\n   \"entityDesc\": \"客户性别\",\n   \"entityAlias\": \"性别\",\n   \"businessRule\": \"记录个人客户的性别状况，如“男”、“女”等。\",\n   \"techniqueRule\": \"select gender from dim_customer\",\n   \"entityStatus\": \"正常\",\n   \"createTime\": \"2017-01-02T00:00:00.000Z\",\n   \"offlineTime\": \"\",\n   \"creator\": \"dmp_admin\",\n   \"controlDept\": \"机构管理部\",\n   \"assistDept\": \"信息管理中心\",\n   \"devPolicy\": \"1.GB/T2261.1-2003个人基本信息分类与代码第1部分:人的性别代码\",\n   \"regulatory\": \"是\",\n   \"logicType\": \"代码\",\n   \"displayType\": \"CheckBox\",\n }\n }]",
+          "title": "Request-example: [{ \"fieldInfoList\": [ { \"dataType\": \"string\",",
+          "content": "\"physicalDb\": \"cust_mining\", \"physicalField\": \"init_date\", \"physicalTable\":\n\"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\": \"cust_mining\",\n\"physicalField\": \"median_fund_asset\", \"physicalTable\": \"agg_cust_balance_feature_test\" }, {\n\"dataType\": \"double\", \"physicalDb\": \"cust_mining\", \"physicalField\": \"var_fund_asset\",\n\"physicalTable\": \"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\":\n\"cust_mining\", \"physicalField\": \"avg_secu_market_value\", \"physicalTable\":\n\"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\": \"cust_mining\",\n\"physicalField\": \"max_secu_market_value\", \"physicalTable\": \"agg_cust_balance_feature_test\" }, {\n\"dataType\": \"double\", \"physicalDb\": \"cust_mining\", \"physicalField\": \"min_secu_market_value\",\n\"physicalTable\": \"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\":\n\"cust_mining\", \"physicalField\": \"median_secu_market_value\", \"physicalTable\":\n\"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\": \"cust_mining\",\n\"physicalField\": \"var_secu_market_value\", \"physicalTable\": \"agg_cust_balance_feature_test\" }, {\n\"dataType\": \"double\", \"physicalDb\": \"cust_mining\", \"physicalField\": \"avg_opfund_market_value\",\n\"physicalTable\": \"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\":\n\"cust_mining\", \"physicalField\": \"max_opfund_market_value\", \"physicalTable\":\n\"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\": \"cust_mining\",\n\"physicalField\": \"min_opfund_market_value\", \"physicalTable\": \"agg_cust_balance_feature_test\" },\n{ \"dataType\": \"double\", \"physicalDb\": \"cust_mining\", \"physicalField\":\n\"median_opfund_market_value\", \"physicalTable\": \"agg_cust_balance_feature_test\" }, { \"dataType\":\n\"double\", \"physicalDb\": \"cust_mining\", \"physicalField\": \"var_opfund_market_value\",\n\"physicalTable\": \"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\":\n\"cust_mining\", \"physicalField\": \"avg_total_asset\", \"physicalTable\":\n\"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\": \"cust_mining\",\n\"physicalField\": \"max_total_asset\", \"physicalTable\": \"agg_cust_balance_feature_test\" }, {\n\"dataType\": \"double\", \"physicalDb\": \"cust_mining\", \"physicalField\": \"min_total_asset\",\n\"physicalTable\": \"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\":\n\"cust_mining\", \"physicalField\": \"median_total_asset\", \"physicalTable\":\n\"agg_cust_balance_feature_test\" }, { \"dataType\": \"double\", \"physicalDb\": \"cust_mining\",\n\"physicalField\": \"var_total_asset\", \"physicalTable\": \"agg_cust_balance_feature_test\" } ],\n\"tableInfo\": { \"physicalDb\": \"cust_mining\", \"physicalTable\": \"agg_cust_balance_feature_test\",\n\"tableType\": \"\" }, \"termMainInfo\":{ \"entityType\": \"1\", \"entityId\": \"PT000001\",\n\"entityHash\":\"55e4e1b391831960d8b7e4b61fdfaf7c\", \"entityName\": \"gender\", \"entityDesc\": \"客户性别\",\n\"entityAlias\": \"性别\", \"businessRule\": \"记录个人客户的性别状况，如“男”、“女”等。\", \"techniqueRule\": \"select gender\nfrom dim_customer\", \"entityStatus\": \"正常\", \"createTime\": \"2017-01-02T00:00:00.000Z\",\n\"offlineTime\": \"\", \"creator\": \"dmp_admin\", \"controlDept\": \"机构管理部\", \"assistDept\": \"信息管理中心\",\n\"devPolicy\": \"1.GB/T2261.1-2003个人基本信息分类与代码第1部分:人的性别代码\", \"regulatory\": \"是\", \"logicType\": \"代码\",\n\"displayType\": \"CheckBox\", } }]",
           "type": "json"
         }
       ]
@@ -746,17 +746,10 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "msg",
-            "description": "<p>成功或者错误信息</p>"
+            "description": "<p>成功或者错误信息 * @apiSuccessExample {json} Success-Response: HTTP/1.1 200 OK { &quot;code&quot;: &quot;200&quot;, &quot;data&quot;: 18, &quot;msg&quot;: &quot;success&quot; }</p>"
           }
         ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n {\n\"code\": \"200\",\n\"data\": 18,\n\"msg\": \"success\"\n}",
-          "type": "json"
-        }
-      ]
+      }
     },
     "filename": "../../java/com/quantchi/termInfo/controller/TermInfoController.java",
     "groupTitle": "TermInfoController"
@@ -1085,15 +1078,29 @@ define({ "api": [
             "group": "Parameter",
             "type": "Integer",
             "optional": true,
-            "field": "nums",
-            "description": ""
+            "field": "page",
+            "description": "<p>页数</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": true,
+            "field": "page_size",
+            "description": "<p>每页数据数</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "entityCategory",
+            "description": "<p>逻辑分类ID</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "entityDesc",
-            "description": ""
+            "description": "<p>实体描述</p>"
           }
         ]
       }

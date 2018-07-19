@@ -49,6 +49,16 @@ public class TermInfoPojo {
 
   private Integer page_size;
 
+  private String entityCategory;
+
+  public String getEntityCategory() {
+    return entityCategory;
+  }
+
+  public void setEntityCategory(String entityCategory) {
+    this.entityCategory = entityCategory;
+  }
+
   public Integer getPage() {
     return page;
   }

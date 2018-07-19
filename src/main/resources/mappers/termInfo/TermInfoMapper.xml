@@ -29,6 +29,7 @@
     entity_hash as entityHash,
     entity_name as entityName,
     entity_desc as entityDesc,
+    entity_category as entityCategory,
     logic_type as logicType,
     display_type as displayType,
     physical_field_hash as physicalFieldHash,
@@ -47,6 +48,9 @@
     <where>
       <if test="entityDesc!=null and entityDesc.toString().length()>0">
         entity_desc LIKE CONCAT(CONCAT('%',#{entityDesc}), '%')
+      </if>
+      <if test="entityCategory!=null and entityCategory.toString().length()>0">
+        and entityCategory = #{entityCategory}
       </if>
     </where>
   </select>

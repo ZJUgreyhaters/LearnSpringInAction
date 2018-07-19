@@ -33,6 +33,7 @@ public class TermInfoController {
    * @apiGroup TermInfoController
    * @apiParam {Integer} [page] 页数
    * @apiParam {Integer} [page_size] 每页数据数
+   * @apiParam {String} [entityCategory] 逻辑分类ID
    * @apiParam {String} [entityDesc] 实体描述
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
