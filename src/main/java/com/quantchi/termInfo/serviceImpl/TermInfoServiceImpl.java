@@ -74,7 +74,7 @@ public class TermInfoServiceImpl implements TermInfoService {
 
   private List<String> name = Arrays
       .asList("entityType", "entityId", "entityHash", "entityName", "entityDesc", "logicType",
-          "displayType", "entityCategory", "offlineTime", "controlDept", "businessRule");
+          "displayType", "entityCategory", "offlineTime", "controlDept", "businessRule","businessDesc");
   private List<String> physicalField = Arrays
       .asList("entityId", "physicalFieldHash", "physicalFieldId", "physicalFieldDesc",
           "physicalTable", "physicalDB", "dataType", "dataLength", "dataPrecision", "dataPattern",
@@ -153,7 +153,7 @@ public class TermInfoServiceImpl implements TermInfoService {
 
       Map<String, Object> result = new HashedMap();
       result.put("entitys", ResultList);
-      return JsonResult.successJson(result);
+      return JsonResult.successJson(list.size()+"",result);
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("search tableInfo error");

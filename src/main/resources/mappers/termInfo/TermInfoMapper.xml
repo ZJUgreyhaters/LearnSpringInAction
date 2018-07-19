@@ -30,6 +30,7 @@
     entity_name as entityName,
     entity_desc as entityDesc,
     entity_category as entityCategory,
+    ifnull(create_time,'') as createTime,
     ifnull(offline_time,'') as offlineTime,
     control_dept as controlDept,
     business_rule as businessRule,
@@ -57,6 +58,7 @@
         and entity_category = #{entityCategory}
       </if>
     </where>
+    order by create_time DESC
   </select>
 
   <select id="selectUdc" resultType="java.util.Map">
