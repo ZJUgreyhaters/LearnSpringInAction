@@ -865,7 +865,7 @@ public class MetaDataMgrApiService {
           String type = map1.get("type").toString();
           String dataSourceId = map.get("data_source_id").toString();
           String length = null;
-          if (type.substring(0, 7).equals("varchar")) {
+          if (type.contains("varchar")) {
             length = type.substring(8, type.length() - 1);
           }
           Map<String, String> map2 = new HashMap<>();

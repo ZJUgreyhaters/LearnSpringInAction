@@ -30,6 +30,7 @@
     entity_name as entityName,
     entity_desc as entityDesc,
     entity_category as entityCategory,
+    offline_time as offlineTime,
     logic_type as logicType,
     display_type as displayType,
     physical_field_hash as physicalFieldHash,
@@ -50,7 +51,7 @@
         entity_desc LIKE CONCAT(CONCAT('%',#{entityDesc}), '%')
       </if>
       <if test="entityCategory!=null and entityCategory.toString().length()>0">
-        and entityCategory = #{entityCategory}
+        and entity_category = #{entityCategory}
       </if>
     </where>
   </select>
