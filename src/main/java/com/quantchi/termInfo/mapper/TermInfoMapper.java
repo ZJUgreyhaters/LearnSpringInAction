@@ -19,4 +19,6 @@ public interface TermInfoMapper {
   List<Map<String,Object>> selectTermUdbc(@Param("entityId") String str1);
 
   List<Map<String,Object>> selectTermPhysical(@Param("physicalTable") String str1);
+
+  String selectEntityCategory(@Param("ids")String id);
 }

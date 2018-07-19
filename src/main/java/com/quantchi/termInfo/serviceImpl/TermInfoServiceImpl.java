@@ -116,7 +116,21 @@ public class TermInfoServiceImpl implements TermInfoService {
         Map<String, Object> map1 = new LinkedHashMap<>();
         Map<String, Object> physical = new LinkedHashMap<>();
         for (String str : name) {
-          map1.put(str, map.get(str));
+          if("entityCategory".equals(str) && map.get(str)!=null){
+            String[] split = map.get(str).toString().split("_");
+            StringBuilder v = new StringBuilder();
+            for(int i = 0;i<split.length;i++){
+            String category = mapper.selectEntityCategory(split[i]);
+             if(i==0){
+               v.append(category);
+             }else{
+               v.append("->").append(category);
+             }
+            }
+            map1.put(str, v);
+          }else {
+            map1.put(str, map.get(str));
+          }
         }
         for (String str : physicalField) {
           physical.put(str, map.get(str));
@@ -173,8 +187,10 @@ public class TermInfoServiceImpl implements TermInfoService {
         for (String str : physicalTable) {
           physicalTables.put(str, map.get(str));
         }
-        List<Map<String, Object>> list2 = mapper
-            .selectTermPhysical(map.get("physicalTable").toString());
+        List<Map<String, Object>> list2 = new ArrayList<>();
+        if(map.get("physicalTable")!=null){
+          list2 = mapper.selectTermPhysical(map.get("physicalTable").toString());
+        }
         physicalTables.put("partitionInfo", list2);
         entitys.put("physicalTable", physicalTables);
         for (String str : externalInfo) {
