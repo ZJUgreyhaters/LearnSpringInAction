@@ -33,6 +33,7 @@
     ifnull(offline_time,'') as offlineTime,
     control_dept as controlDept,
     business_rule as businessRule,
+    business_desc as businessDesc,
     logic_type as logicType,
     display_type as displayType,
     physical_field_hash as physicalFieldHash,
