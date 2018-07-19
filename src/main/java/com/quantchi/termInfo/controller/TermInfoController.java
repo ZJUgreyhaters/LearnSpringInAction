@@ -25,54 +25,55 @@ public class TermInfoController {
   private TermInfoService service;
 
   /**
-  * @api {get} /term 术语查询接口
-  * @apiPermission none
-  * @apiVersion 1.0.0
-  * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/term
-  * @apiName term
-  * @apiGroup TermInfoController
-  * @apiParam {Integer} [nums]
-  * @apiParam {String} [entityDesc]
-  * @apiSuccess {String} code 成功或者错误代码200成功，500错误
-  * @apiSuccess {String} msg  成功或者错误信息
-  * @apiSuccess {List} [data] 返回数据
-  * @apiSuccess {List} [entitys] 实体信息
-  * @apiSuccess {String} [data.entitys.entityType] 实体类型
-  * @apiSuccess {String} [data.entitys.entityId] 实体id
-  * @apiSuccess {String} [data.entitys.entityHash] 实体hash码
-  * @apiSuccess {String} [data.entitys.entityName] 实体名
-  * @apiSuccess {String} [data.entitys.entityDesc] 实体描述
-  * @apiSuccess {String} [data.entitys.entityAlias] 实体别名
-  * @apiSuccess {String} [data.entitys.businessRule] 规范描述
-  * @apiSuccess {String} [data.entitys.techniqueRule] sql语句
-  * @apiSuccess {String} [data.entitys.entityStatus] 实体状态
-  * @apiSuccess {String} [data.entitys.controlDept] 管理部门
-  * @apiSuccess {String} [data.entitys.assistDept] 分配部门
-  * @apiSuccess {String} [data.entitys.devPolicy] 个人信息分类
-  * @apiSuccess {String} [data.entitys.regulatory]
-  * @apiSuccess {String} [data.entitys.logicType]
-  * @apiSuccess {String} [data.entitys.displayType] 数据显示类型
-  * @apiSuccess {List} [data.entitys.physicalField] 物理字段
-  * @apiSuccess {String} [data.entitys.physicalField.entityId] 实体id
-  * @apiSuccess {String} [data.entitys.physicalField.physicalFieldHash] 物理字段hash码
-  * @apiSuccess {String} [data.entitys.physicalField.physicalFieldId] 物理字段id
-  * @apiSuccess {String} [data.entitys.physicalField.physicalFieldDesc] 物理字段描述
-  * @apiSuccess {String} [data.entitys.physicalField.physicalTable] 物理表
-  * @apiSuccess {String} [data.entitys.physicalField.physicalDB] 物理数据库
-  * @apiSuccess {String} [data.entitys.physicalField.dataType] 数据类型
-  * @apiSuccess {String} [data.entitys.physicalField.dataLength] 数据长度
-  * @apiSuccess {String} [data.entitys.physicalField.dataPattern]
-  * @apiSuccess {String} [data.entitys.physicalField.dataUnit]
-  * @apiSuccess {String} [data.entitys.physicalField.fieldPartition]
-  * @apiSuccess {List} [data.entitys.physicalField.dataUDC] 条件数据
-  * @apiSuccess {String} [data.entitys.physicalField.dataUDC.dataUDCCode]
-  * @apiSuccess {String} [data.entitys.physicalField.dataUDC.dataUDCDesc] 数据描述
-  * @apiSuccess {String} [data.entitys.physicalField.dataUDC.dataUDCRule] 数据规范
-  * @apiSuccess {String} [data.entitys.physicalField.dataUDC.dataUDCValue] 数据值
-  * @apiSuccess {String} [data.entitys.physicalField.dataUDC.entityHash] 数据hash码
-  * @apiSuccess {String} [data.entitys.physicalField.dataUDC.entityId] 数据id
-  * @apiSuccess {String} [data.entitys.physicalField.dataUDC.entityType] 数据类型
-  * */
+   * @api {get} /term 术语查询接口
+   * @apiPermission none
+   * @apiVersion 1.0.0
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/term
+   * @apiName term
+   * @apiGroup TermInfoController
+   * @apiParam {Integer} [page] 页数
+   * @apiParam {Integer} [page_size] 每页数据数
+   * @apiParam {String} [entityDesc] 实体描述
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} msg  成功或者错误信息
+   * @apiSuccess {List} [data] 返回数据
+   * @apiSuccess {List} [entitys] 实体信息
+   * @apiSuccess {String} [data.entitys.entityType] 实体类型
+   * @apiSuccess {String} [data.entitys.entityId] 实体id
+   * @apiSuccess {String} [data.entitys.entityHash] 实体hash码
+   * @apiSuccess {String} [data.entitys.entityName] 实体名
+   * @apiSuccess {String} [data.entitys.entityDesc] 实体描述
+   * @apiSuccess {String} [data.entitys.entityAlias] 实体别名
+   * @apiSuccess {String} [data.entitys.businessRule] 规范描述
+   * @apiSuccess {String} [data.entitys.techniqueRule] sql语句
+   * @apiSuccess {String} [data.entitys.entityStatus] 实体状态
+   * @apiSuccess {String} [data.entitys.controlDept] 管理部门
+   * @apiSuccess {String} [data.entitys.assistDept] 分配部门
+   * @apiSuccess {String} [data.entitys.devPolicy] 个人信息分类
+   * @apiSuccess {String} [data.entitys.regulatory]
+   * @apiSuccess {String} [data.entitys.logicType]
+   * @apiSuccess {String} [data.entitys.displayType] 数据显示类型
+   * @apiSuccess {List} [data.entitys.physicalField] 物理字段
+   * @apiSuccess {String} [data.entitys.physicalField.entityId] 实体id
+   * @apiSuccess {String} [data.entitys.physicalField.physicalFieldHash] 物理字段hash码
+   * @apiSuccess {String} [data.entitys.physicalField.physicalFieldId] 物理字段id
+   * @apiSuccess {String} [data.entitys.physicalField.physicalFieldDesc] 物理字段描述
+   * @apiSuccess {String} [data.entitys.physicalField.physicalTable] 物理表
+   * @apiSuccess {String} [data.entitys.physicalField.physicalDB] 物理数据库
+   * @apiSuccess {String} [data.entitys.physicalField.dataType] 数据类型
+   * @apiSuccess {String} [data.entitys.physicalField.dataLength] 数据长度
+   * @apiSuccess {String} [data.entitys.physicalField.dataPattern]
+   * @apiSuccess {String} [data.entitys.physicalField.dataUnit]
+   * @apiSuccess {String} [data.entitys.physicalField.fieldPartition]
+   * @apiSuccess {List} [data.entitys.physicalField.dataUDC] 条件数据
+   * @apiSuccess {String} [data.entitys.physicalField.dataUDC.dataUDCCode]
+   * @apiSuccess {String} [data.entitys.physicalField.dataUDC.dataUDCDesc] 数据描述
+   * @apiSuccess {String} [data.entitys.physicalField.dataUDC.dataUDCRule] 数据规范
+   * @apiSuccess {String} [data.entitys.physicalField.dataUDC.dataUDCValue] 数据值
+   * @apiSuccess {String} [data.entitys.physicalField.dataUDC.entityHash] 数据hash码
+   * @apiSuccess {String} [data.entitys.physicalField.dataUDC.entityId] 数据id
+   * @apiSuccess {String} [data.entitys.physicalField.dataUDC.entityType] 数据类型
+   */
   //查询
   @ResponseBody
   @RequestMapping(value = "/term", method = {
@@ -82,52 +83,51 @@ public class TermInfoController {
   }
 
   /**
-  * @api {get} /term/{EntityId} 按id术语查询接口
-  * @apiVersion 1.0.0
-  * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/term/
-  * @apiName  selectTerm
-  * @apiGroup TermInfoController
-  * @apiParam {String} [Entityid] 术语id
-  * @apiSuccess {String} code 成功或者错误代码200成功，500错误
-  * @apiSuccess {String} msg  成功或者错误信息
-  * @apiSuccess {List} [data] 返回数据
-  * @apiSuccess {String} [data.entityType] 实体类型
-  * @apiSuccess {String} [data.entityId] 实体id
-  * @apiSuccess {String} [data.entityHash] 实体hash码
-  * @apiSuccess {String} [data.entityName] 实体名
-  * @apiSuccess {String} [data.entityDesc] 实体描述
-  * @apiSuccess {String} [data.entityAlias] 实体别名
-  * @apiSuccess {String} [data.businessRule] 规范描述
-  * @apiSuccess {String} [data.techniqueRule] sql语句
-  * @apiSuccess {String} [data.entityStatus] 实体状态
-  * @apiSuccess {String} [data.controlDept] 管理部门
-  * @apiSuccess {String} [data.assistDept] 分配部门
-  * @apiSuccess {String} [data.devPolicy] 个人信息分类
-  * @apiSuccess {String} [data.regulatory]
-  * @apiSuccess {String} [data.logicType]
-  * @apiSuccess {String} [data.displayType] 数据显示类型
-  * @apiSuccess {List} [data.physicalField] 物理字段
-  * @apiSuccess {String} [data.physicalField.entityId] 实体id
-  * @apiSuccess {String} [data.physicalField.physicalFieldHash] 物理字段hash码
-  * @apiSuccess {String} [data.physicalField.physicalFieldId] 物理字段id
-  * @apiSuccess {String} [data.physicalField.physicalFieldDesc] 物理字段描述
-  * @apiSuccess {String} [data.physicalField.physicalTable] 物理表
-  * @apiSuccess {String} [data.physicalField.physicalDB] 物理数据库
-  * @apiSuccess {String} [data.physicalField.dataType] 数据类型
-  * @apiSuccess {String} [data.physicalField.dataLength] 数据长度
-  * @apiSuccess {String} [data.physicalField.dataPattern]
-  * @apiSuccess {String} [data.physicalField.dataUnit]
-  * @apiSuccess {String} [data.physicalField.fieldPartition]
-  * @apiSuccess {List} [data.physicalField.dataUDC] 条件数据
-  * @apiSuccess {String} [data.physicalField.dataUDC.dataUDCCode]
-  * @apiSuccess {String} [data.physicalField.dataUDC.dataUDCDesc] 数据描述
-  * @apiSuccess {String} [data.physicalField.dataUDC.dataUDCRule] 数据规范
-  * @apiSuccess {String} [data.physicalField.dataUDC.dataUDCValue] 数据值
-  * @apiSuccess {String} [data.physicalField.dataUDC.entityHash] 数据hash码
-  * @apiSuccess {String} [data.physicalField.dataUDC.entityId] 数据id
-  * @apiSuccess {String} [data.physicalField.dataUDC.entityType] 数据类型
-  *
-  * */
+   * @api {get} /term/{EntityId} 按id术语查询接口
+   * @apiVersion 1.0.0
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/term/
+   * @apiName selectTerm
+   * @apiGroup TermInfoController
+   * @apiParam {String} [Entityid] 术语id
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} msg  成功或者错误信息
+   * @apiSuccess {List} [data] 返回数据
+   * @apiSuccess {String} [data.entityType] 实体类型
+   * @apiSuccess {String} [data.entityId] 实体id
+   * @apiSuccess {String} [data.entityHash] 实体hash码
+   * @apiSuccess {String} [data.entityName] 实体名
+   * @apiSuccess {String} [data.entityDesc] 实体描述
+   * @apiSuccess {String} [data.entityAlias] 实体别名
+   * @apiSuccess {String} [data.businessRule] 规范描述
+   * @apiSuccess {String} [data.techniqueRule] sql语句
+   * @apiSuccess {String} [data.entityStatus] 实体状态
+   * @apiSuccess {String} [data.controlDept] 管理部门
+   * @apiSuccess {String} [data.assistDept] 分配部门
+   * @apiSuccess {String} [data.devPolicy] 个人信息分类
+   * @apiSuccess {String} [data.regulatory]
+   * @apiSuccess {String} [data.logicType]
+   * @apiSuccess {String} [data.displayType] 数据显示类型
+   * @apiSuccess {List} [data.physicalField] 物理字段
+   * @apiSuccess {String} [data.physicalField.entityId] 实体id
+   * @apiSuccess {String} [data.physicalField.physicalFieldHash] 物理字段hash码
+   * @apiSuccess {String} [data.physicalField.physicalFieldId] 物理字段id
+   * @apiSuccess {String} [data.physicalField.physicalFieldDesc] 物理字段描述
+   * @apiSuccess {String} [data.physicalField.physicalTable] 物理表
+   * @apiSuccess {String} [data.physicalField.physicalDB] 物理数据库
+   * @apiSuccess {String} [data.physicalField.dataType] 数据类型
+   * @apiSuccess {String} [data.physicalField.dataLength] 数据长度
+   * @apiSuccess {String} [data.physicalField.dataPattern]
+   * @apiSuccess {String} [data.physicalField.dataUnit]
+   * @apiSuccess {String} [data.physicalField.fieldPartition]
+   * @apiSuccess {List} [data.physicalField.dataUDC] 条件数据
+   * @apiSuccess {String} [data.physicalField.dataUDC.dataUDCCode]
+   * @apiSuccess {String} [data.physicalField.dataUDC.dataUDCDesc] 数据描述
+   * @apiSuccess {String} [data.physicalField.dataUDC.dataUDCRule] 数据规范
+   * @apiSuccess {String} [data.physicalField.dataUDC.dataUDCValue] 数据值
+   * @apiSuccess {String} [data.physicalField.dataUDC.entityHash] 数据hash码
+   * @apiSuccess {String} [data.physicalField.dataUDC.entityId] 数据id
+   * @apiSuccess {String} [data.physicalField.dataUDC.entityType] 数据类型
+   */
   //查询
   @ResponseBody
   @RequestMapping(value = "/term/{EntityId}", method = {
@@ -201,155 +201,49 @@ public class TermInfoController {
    * @apiParam {String} [termMainInfo.devPolicy] 制定依据
    * @apiParam {String} [termMainInfo.remark] 备注
    * @apiParam {String} [termMainInfo.frequency] 统计频率
-   *
-   * @apiParamExample {json} Request-example:
-   * [{
-   *  "fieldInfoList": [
-   *  {
-   *  "dataType": "string",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "init_date",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "median_fund_asset",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "var_fund_asset",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "avg_secu_market_value",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "max_secu_market_value",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "min_secu_market_value",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "median_secu_market_value",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "var_secu_market_value",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "avg_opfund_market_value",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "max_opfund_market_value",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "min_opfund_market_value",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "median_opfund_market_value",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "var_opfund_market_value",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "avg_total_asset",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "max_total_asset",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "min_total_asset",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "median_total_asset",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  },
-   *  {
-   *  "dataType": "double",
-   *  "physicalDb": "cust_mining",
-   *  "physicalField": "var_total_asset",
-   *  "physicalTable": "agg_cust_balance_feature_test"
-   *  }
-   *  ],
-   *  "tableInfo": {
-   *  "physicalDb": "cust_mining",
-   *  "physicalTable": "agg_cust_balance_feature_test",
-   *  "tableType": ""
-   *  },
-   *  "termMainInfo":{
-   *    "entityType": "1",
-   *    "entityId": "PT000001",
-   *    "entityHash":"55e4e1b391831960d8b7e4b61fdfaf7c",
-   *    "entityName": "gender",
-   *    "entityDesc": "客户性别",
-   *    "entityAlias": "性别",
-   *    "businessRule": "记录个人客户的性别状况，如“男”、“女”等。",
-   *    "techniqueRule": "select gender from dim_customer",
-   *    "entityStatus": "正常",
-   *    "createTime": "2017-01-02T00:00:00.000Z",
-   *    "offlineTime": "",
-   *    "creator": "dmp_admin",
-   *    "controlDept": "机构管理部",
-   *    "assistDept": "信息管理中心",
-   *    "devPolicy": "1.GB/T2261.1-2003个人基本信息分类与代码第1部分:人的性别代码",
-   *    "regulatory": "是",
-   *    "logicType": "代码",
-   *    "displayType": "CheckBox",
-   *  }
-   *  }]
+   * @apiParamExample {json} Request-example: [{ "fieldInfoList": [ { "dataType": "string",
+   * "physicalDb": "cust_mining", "physicalField": "init_date", "physicalTable":
+   * "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb": "cust_mining",
+   * "physicalField": "median_fund_asset", "physicalTable": "agg_cust_balance_feature_test" }, {
+   * "dataType": "double", "physicalDb": "cust_mining", "physicalField": "var_fund_asset",
+   * "physicalTable": "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb":
+   * "cust_mining", "physicalField": "avg_secu_market_value", "physicalTable":
+   * "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb": "cust_mining",
+   * "physicalField": "max_secu_market_value", "physicalTable": "agg_cust_balance_feature_test" }, {
+   * "dataType": "double", "physicalDb": "cust_mining", "physicalField": "min_secu_market_value",
+   * "physicalTable": "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb":
+   * "cust_mining", "physicalField": "median_secu_market_value", "physicalTable":
+   * "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb": "cust_mining",
+   * "physicalField": "var_secu_market_value", "physicalTable": "agg_cust_balance_feature_test" }, {
+   * "dataType": "double", "physicalDb": "cust_mining", "physicalField": "avg_opfund_market_value",
+   * "physicalTable": "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb":
+   * "cust_mining", "physicalField": "max_opfund_market_value", "physicalTable":
+   * "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb": "cust_mining",
+   * "physicalField": "min_opfund_market_value", "physicalTable": "agg_cust_balance_feature_test" },
+   * { "dataType": "double", "physicalDb": "cust_mining", "physicalField":
+   * "median_opfund_market_value", "physicalTable": "agg_cust_balance_feature_test" }, { "dataType":
+   * "double", "physicalDb": "cust_mining", "physicalField": "var_opfund_market_value",
+   * "physicalTable": "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb":
+   * "cust_mining", "physicalField": "avg_total_asset", "physicalTable":
+   * "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb": "cust_mining",
+   * "physicalField": "max_total_asset", "physicalTable": "agg_cust_balance_feature_test" }, {
+   * "dataType": "double", "physicalDb": "cust_mining", "physicalField": "min_total_asset",
+   * "physicalTable": "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb":
+   * "cust_mining", "physicalField": "median_total_asset", "physicalTable":
+   * "agg_cust_balance_feature_test" }, { "dataType": "double", "physicalDb": "cust_mining",
+   * "physicalField": "var_total_asset", "physicalTable": "agg_cust_balance_feature_test" } ],
+   * "tableInfo": { "physicalDb": "cust_mining", "physicalTable": "agg_cust_balance_feature_test",
+   * "tableType": "" }, "termMainInfo":{ "entityType": "1", "entityId": "PT000001",
+   * "entityHash":"55e4e1b391831960d8b7e4b61fdfaf7c", "entityName": "gender", "entityDesc": "客户性别",
+   * "entityAlias": "性别", "businessRule": "记录个人客户的性别状况，如“男”、“女”等。", "techniqueRule": "select gender
+   * from dim_customer", "entityStatus": "正常", "createTime": "2017-01-02T00:00:00.000Z",
+   * "offlineTime": "", "creator": "dmp_admin", "controlDept": "机构管理部", "assistDept": "信息管理中心",
+   * "devPolicy": "1.GB/T2261.1-2003个人基本信息分类与代码第1部分:人的性别代码", "regulatory": "是", "logicType": "代码",
+   * "displayType": "CheckBox", } }]
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} data  返回数据
-   * @apiSuccess {String} msg  成功或者错误信息
-   *  * @apiSuccessExample {json} Success-Response:
-   *     HTTP/1.1 200 OK
-   *     {
-   *    "code": "200",
-   *    "data": 18,
-   *    "msg": "success"
-   *    }
+   * @apiSuccess {String} msg  成功或者错误信息 * @apiSuccessExample {json} Success-Response: HTTP/1.1 200
+   * OK { "code": "200", "data": 18, "msg": "success" }
    */
   //插入
   @ResponseBody

@@ -131,8 +131,8 @@ public class TermInfoServiceImpl implements TermInfoService {
         map1.put("physicalField", physical);
         ResultList.add(map1);
       }
-      if (termInfoPojo.getNums() != null) {
-        ResultList = Paging.pagingPlug(ResultList, termInfoPojo.getNums(), 1);
+      if (termInfoPojo.getPage() != null && termInfoPojo.getPage_size() != null) {
+        ResultList = Paging.pagingPlug(ResultList, termInfoPojo.getPage_size(), termInfoPojo.getPage());
       }
 
       Map<String, Object> result = new HashedMap();

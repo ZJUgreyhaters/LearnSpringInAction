@@ -125,7 +125,6 @@
     <if test="entityId!=null and entityId.toString().length()>0">
       a.entity_id = #{entityId}
     </if>
-
   </select>
 
   <select id="selectTermUdbc" resultType="java.util.Map">

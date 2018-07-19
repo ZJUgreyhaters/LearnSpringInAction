@@ -45,14 +45,24 @@ public class TermInfoPojo {
 
   private String displayType;
 
-  private Integer nums;
+  private Integer page;
 
-  public Integer getNums() {
-    return nums;
+  private Integer page_size;
+
+  public Integer getPage() {
+    return page;
   }
 
-  public void setNums(Integer nums) {
-    this.nums = nums;
+  public void setPage(Integer page) {
+    this.page = page;
+  }
+
+  public Integer getPage_size() {
+    return page_size;
+  }
+
+  public void setPage_size(Integer page_size) {
+    this.page_size = page_size;
   }
 
   /****************

@@ -1,6 +1,7 @@
 package com.quantchi.termInfo.pojo;
 
 import java.util.Date;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class TermMainInfo {
     private Integer id;
@@ -17,8 +18,10 @@ public class TermMainInfo {
 
     private String entityStatus;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date offlineTime;
 
     private Integer creator;
