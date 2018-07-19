@@ -83,7 +83,8 @@ public class TermInfoServiceImpl implements TermInfoService {
   private List<String> entity = Arrays
       .asList("entityType", "entityId", "entityHash", "entityName", "entityDesc", "entityAlias",
           "businessRule", "techniqueRule", "entityStatus", "createTime", "offlineTime", "creator",
-          "controlDept", "assistDept", "devPolicy", "regulatory", "logicType", "displayType");
+          "controlDept", "assistDept", "devPolicy", "regulatory", "logicType", "displayType",
+          "entityCategory","frequency","remark","businessDesc");
   private List<String> physicalFieldStatistics = Arrays
       .asList("physicalFieldId", "entityId", "physicalTable", "physicalDB", "dataMax", "dataAvg",
           "dataMin", "dataDistribution", "dataEnumeration", "dataNull");
