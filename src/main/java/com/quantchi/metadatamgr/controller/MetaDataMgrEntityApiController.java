@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "api/metadata/entity")
-public class MetaDataMgrEntityApiController {
+public class  MetaDataMgrEntityApiController {
 
     private static final Logger logger = LoggerFactory.getLogger(MetaDataMgrEntityApiController.class);
 
