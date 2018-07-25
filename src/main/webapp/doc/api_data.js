@@ -294,6 +294,68 @@ define({ "api": [
     "name": "PostApiMetadataUpdatefield"
   },
   {
+    "type": "get",
+    "url": "/term/import",
+    "title": "文件上传接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/term/import"
+      }
+    ],
+    "name": "importExcel",
+    "group": "TermFileController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "MultipartFile",
+            "optional": false,
+            "field": "file",
+            "description": "<p>文件</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "typeOne",
+            "description": "<p>类型1（标准：standard，指标：target）</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "typeTwo",
+            "description": "<p>类型2（映射：mapping,普通：common）</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/termInfo/controller/TermFileController.java",
+    "groupTitle": "TermFileController"
+  },
+  {
     "type": "post",
     "url": "/term",
     "title": "术语添加接口",
