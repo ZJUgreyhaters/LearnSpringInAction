@@ -53,6 +53,17 @@ public class SQLQueryConfig {
   @Value("${sel.hive.customer.preference}")
   private String SEL_HIVE_COUNTRY_PREFERENCE;
 
+  @Value("${sel.db.mapping}")
+  private String SEL_DB_MAPPING;
+
+  public String getSEL_DB_MAPPING() {
+    return SEL_DB_MAPPING;
+  }
+
+  public void setSEL_DB_MAPPING(String SEL_DB_MAPPING) {
+    this.SEL_DB_MAPPING = SEL_DB_MAPPING;
+  }
+
   public String getSEL_HIVE_COUNTRY_RATIO() {
     return SEL_HIVE_COUNTRY_RATIO;
   }
