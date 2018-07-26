@@ -19,6 +19,8 @@ public class StandardMainInfo {
 
     private String according;
 
+    private String defPrinciple;
+
     private String supervision;
 
     private String entityType;
@@ -39,6 +41,8 @@ public class StandardMainInfo {
 
     private String udcCode;
 
+    private String udcPrinciple;
+
     private String systemFrom;
 
     private String systemUsed;
@@ -50,6 +54,8 @@ public class StandardMainInfo {
     private String frequency;
 
     private String controlDept;
+
+    private String coSector;
 
     private String entityStatus;
 
@@ -135,6 +141,14 @@ public class StandardMainInfo {
         this.according = according == null ? null : according.trim();
     }
 
+    public String getDefPrinciple() {
+        return defPrinciple;
+    }
+
+    public void setDefPrinciple(String defPrinciple) {
+        this.defPrinciple = defPrinciple == null ? null : defPrinciple.trim();
+    }
+
     public String getSupervision() {
         return supervision;
     }
@@ -215,6 +229,14 @@ public class StandardMainInfo {
         this.udcCode = udcCode == null ? null : udcCode.trim();
     }
 
+    public String getUdcPrinciple() {
+        return udcPrinciple;
+    }
+
+    public void setUdcPrinciple(String udcPrinciple) {
+        this.udcPrinciple = udcPrinciple == null ? null : udcPrinciple.trim();
+    }
+
     public String getSystemFrom() {
         return systemFrom;
     }
@@ -261,6 +283,14 @@ public class StandardMainInfo {
 
     public void setControlDept(String controlDept) {
         this.controlDept = controlDept == null ? null : controlDept.trim();
+    }
+
+    public String getCoSector() {
+        return coSector;
+    }
+
+    public void setCoSector(String coSector) {
+        this.coSector = coSector == null ? null : coSector.trim();
     }
 
     public String getEntityStatus() {

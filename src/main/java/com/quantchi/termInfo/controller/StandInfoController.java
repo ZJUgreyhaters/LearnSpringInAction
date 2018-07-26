@@ -60,7 +60,7 @@ public class StandInfoController {
     @ResponseBody
     @RequestMapping(value = "/standard", method = {
             RequestMethod.GET}, produces = "application/json;charset=UTF-8")
-    public String selectTermAll(StandardMainInfo standardMainInfo) {
+    public String list(StandardMainInfo standardMainInfo) {
         return "";
     }
 

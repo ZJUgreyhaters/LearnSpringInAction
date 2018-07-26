@@ -2,7 +2,7 @@ package com.quantchi.lineage.controller;
 
 
 import com.quantchi.common.util;
-import com.quantchi.lineage.service.LineAgeService;
+import com.quantchi.lineage.service.LineageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +16,12 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "api")
-public class LineAgeController {
+public class LineageController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LineAgeController.class);
+    private static final Logger logger = LoggerFactory.getLogger(LineageController.class);
 
     @Autowired
-    private LineAgeService lineAgeService;
+    private LineageService lineageService;
 
 
     /**
