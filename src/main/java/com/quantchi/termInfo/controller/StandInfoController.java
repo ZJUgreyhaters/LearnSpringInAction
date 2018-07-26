@@ -16,8 +16,8 @@ public class StandInfoController {
      * @api {get} /api/standard 标准查询接口
      * @apiVersion 1.0.0
      * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/standard
-     * @apiName term
-     * @apiGroup TermInfoController
+     * @apiName standard
+     * @apiGroup StandInfoController
      * @apiParam {Integer} [page] 页数
      * @apiParam {Integer} [page_size] 每页数据数
      * @apiParam {String} [keyword] 标准名称关键字
@@ -64,5 +64,30 @@ public class StandInfoController {
         return "";
     }
 
+    /**
+     * @api {get} /api/standardCategory 标准类目获得
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/standardCategory
+     * @apiName standardCategory
+     * @apiGroup StandInfoController
+     * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+     * @apiSuccess {String} msg  成功或者错误信息
+     * @apiSuccess {String} total  返回记录总数
+     * @apiSuccess {List} [data] 返回数据 标准信息列表
+     * @apiSuccess {String} [data.id] 标准类目id
+     * @apiSuccess {String} [data.name] 标准类目名称
+     * @apiSuccess {String} [data.description]  标准类目描述
+     * @apiSuccess {String} [data.level] 标准类目分类
+     * @apiSuccess {String} [data.domain] 标准主题
+     * @apiSuccess {List} [data.children] 标准类目的孩子节点
+     * @apiSuccess {String} [data.children.name] 标准类目名称
+     * @apiSuccess {String} [data.children.id] 标准类目id
+     */
+    @ResponseBody
+    @RequestMapping(value = "/standardCategory", method = {
+            RequestMethod.GET}, produces = "application/json;charset=UTF-8")
+    public String listCategory(StandardMainInfo standardMainInfo) {
+        return "";
+    }
 
 }
