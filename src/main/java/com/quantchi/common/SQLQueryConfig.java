@@ -53,15 +53,48 @@ public class SQLQueryConfig {
   @Value("${sel.hive.customer.preference}")
   private String SEL_HIVE_COUNTRY_PREFERENCE;
 
-  @Value("${sel.db.mapping}")
-  private String SEL_DB_MAPPING;
+  @Value("${sel.db.standard.common}")
+  private String SEL_DB_STANDARD_COMMON;
 
-  public String getSEL_DB_MAPPING() {
-    return SEL_DB_MAPPING;
+  @Value("${sel.db.standard.mapping}")
+  private String SEL_DB_STANDARD_MAPPING;
+
+  @Value("${sel.db.target.common}")
+  private String SEL_DB_TARGET_COMMON;
+
+  @Value("${sel.db.target.mapping}")
+  private String SEL_DB_TARGET_MAPPING;
+
+  public String getSEL_DB_STANDARD_COMMON() {
+    return SEL_DB_STANDARD_COMMON;
   }
 
-  public void setSEL_DB_MAPPING(String SEL_DB_MAPPING) {
-    this.SEL_DB_MAPPING = SEL_DB_MAPPING;
+  public void setSEL_DB_STANDARD_COMMON(String SEL_DB_STANDARD_COMMON) {
+    this.SEL_DB_STANDARD_COMMON = SEL_DB_STANDARD_COMMON;
+  }
+
+  public String getSEL_DB_STANDARD_MAPPING() {
+    return SEL_DB_STANDARD_MAPPING;
+  }
+
+  public void setSEL_DB_STANDARD_MAPPING(String SEL_DB_STANDARD_MAPPING) {
+    this.SEL_DB_STANDARD_MAPPING = SEL_DB_STANDARD_MAPPING;
+  }
+
+  public String getSEL_DB_TARGET_COMMON() {
+    return SEL_DB_TARGET_COMMON;
+  }
+
+  public void setSEL_DB_TARGET_COMMON(String SEL_DB_TARGET_COMMON) {
+    this.SEL_DB_TARGET_COMMON = SEL_DB_TARGET_COMMON;
+  }
+
+  public String getSEL_DB_TARGET_MAPPING() {
+    return SEL_DB_TARGET_MAPPING;
+  }
+
+  public void setSEL_DB_TARGET_MAPPING(String SEL_DB_TARGET_MAPPING) {
+    this.SEL_DB_TARGET_MAPPING = SEL_DB_TARGET_MAPPING;
   }
 
   public String getSEL_HIVE_COUNTRY_RATIO() {

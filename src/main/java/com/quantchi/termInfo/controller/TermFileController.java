@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,15 +51,7 @@ public class TermFileController {
       @RequestParam(value = "file", required = false) MultipartFile file, String typeOne,
       String typeTwo
   ) {
-    String mapping = sqlQueryConfig.getSEL_DB_MAPPING();
-    String[] split = mapping.split(",");
-    Map<String, String> map = new HashMap<String, String>();
-    for (String str : split) {
-      String[] split1 = str.split(":");
-      map.put(split1[0], split1[1]);
-    }
     List<String[]> result;
-
     try {
       result = ExcelUtil.readExcel(file);
     } catch (Exception e) {
@@ -66,6 +59,22 @@ public class TermFileController {
           .errorJson(ResultCode.FILE_FORMAT_ERROR, "excel格式错误，上传的模板文件请另存为新的xlsx文件后上传");
     }
 
+    String mapping = null;
+    if("standard".equals(typeOne) && "mapping".equals(typeTwo)){
+      mapping = sqlQueryConfig.getSEL_DB_STANDARD_MAPPING();
+    }else if("target".equals(typeOne) && "mapping".equals(typeTwo)){
+      mapping = sqlQueryConfig.getSEL_DB_TARGET_MAPPING();
+    }else if("standard".equals(typeOne) && "common".equals(typeTwo)){
+      mapping = sqlQueryConfig.getSEL_DB_STANDARD_COMMON();
+    }else if("target".equals(typeOne) && "common".equals(typeTwo)){
+      mapping = sqlQueryConfig.getSEL_DB_TARGET_COMMON();
+    }
+    String[] split = mapping.split(",");
+    Map<String, String> map = new HashMap<String, String>();
+    for (String str : split) {
+      String[] split1 = str.split(":");
+      map.put(split1[0], split1[1]);
+    }
     try {
       String[] strings = result.get(0);
       List<String> list = new LinkedList<>();
@@ -128,10 +137,10 @@ public class TermFileController {
             map1.put("entityCategory", entityCategory.get("cid"));
           }
           List<Map<String, Object>> standardMain = termFileService.selectStandardMain(map1);
-          if (map1.get("dataPrecision") == "") {
+          if (Objects.equals(map1.get("dataPrecision"), "")) {
             map1.put("dataPrecision", null);
           }
-          if (map1.get("dataLength") == "") {
+          if (Objects.equals(map1.get("dataLength"), "")) {
             map1.put("dataLength", null);
           }
           if (standardMain.isEmpty() || standardMain == null) {
@@ -151,10 +160,10 @@ public class TermFileController {
           String domainId = termFileService.selectDomainByName(map1);
           map1.put("domainId", domainId);
           List<Map<String, Object>> targetMain = termFileService.selectTargetMain(map1);
-          if (map1.get("dataPrecision") == "") {
+          if (Objects.equals(map1.get("dataPrecision"), "")) {
             map1.put("dataPrecision", null);
           }
-          if (map1.get("dataLength") == "") {
+          if (Objects.equals(map1.get("dataLength"), "")) {
             map1.put("dataLength", null);
           }
           if (targetMain.isEmpty() || targetMain == null) {
