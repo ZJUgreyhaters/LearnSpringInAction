@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.termInfo.mapper.TermFileMapper">
+  <insert id="insertStandard">
+  INSERT INTO term_standard_relation (entity_id,standard_id)
+  VALUES (#{entityId},#{standardId})
+  </insert>
+  <select id="selectStandard" resultType="java.util.Map">
+     select * from term_standard_relation
+     where standard_id = #{standardId}
+  </select>
+  <update id="updateStandard">
+    update term_standard_relation set entity_id = #{entity_id}
+    <if test="entity_version !=null">
+      ,entity_version = #{entityVersion}
+    </if>
+    <if test="standard_version !=null">
+      ,standard_version=#{entityVersion}
+    </if>
+    where standard_id = #{standardId}
+  </update>
+  <select id="selectPhysicalInfo" resultType="java.util.Map">
+   select * from  md_physical_field_info
+   where
+   physical_table = #{physicalTable} and physical_field = #{physicalField}
+  </select>
+
+  <select id="selectPhysicalFile" resultType="java.util.Map">
+    select * FROM  term_field_relation
+    where  entity_id =#{entityId} and field_id = #{fieldId}
+  </select>
+
+  <update id="updatePhysicalFile">
+    update term_field_relation
+    <set>
+      <if test="main_flag != null">
+        main_flag = #{mainFlag},
+      </if>
+      <if test="status !=null">
+        status=#{status}
+      </if>
+    </set>
+    where entity_id =#{entityId} and field_id = #{fieldId}
+  </update>
+
+  <insert id="insertPhysicalFile">
+   INSERT INTO term_field_relation (entity_id,field_id,main_flag) VALUES
+   (#{entityId},#{fieldId},0)
+  </insert>
+  <select id="selectDomainByName" resultType="String">
+    select domain_id from md_domain_info where domain_name = #{domainName}
+  </select>
+  <select id="selectStandardCategory" resultType="String">
+    SELECT cid  FROM (
+     SELECT
+     a.id AS aid,
+     a.name AS aname,
+     a.parent_id AS aparent_id,
+     a.domainId AS adomainId,
+     b.id AS bid,
+     b.name AS bname,
+     b.parent_id AS bparent_id,
+     b.domainId AS bdomainId,
+     c.id AS cid,
+     c.name AS cname,
+     c.parent_id AS cparent_id,
+     c.domainId AS cdomainId
+     FROM standard_category_info a
+     LEFT JOIN standard_category_info b ON  a.id = b.parent_id
+     LEFT JOIN standard_category_info c ON b.id = c.parent_id
+     WHERE a.name = #{one} AND b.name = #{two} AND c.name = #{three} AND a.domainId = #{domainId} ) d
+  </select>
+  
+  <select id="selectStandardMain" resultType="java.util.Map">
+    select * from standard_main_info
+    where entity_id = #{standardId}
+  </select>
+  <insert id="insertStandardMain">
+   insert into standard_main_info (entity_id,entity_name,entity_desc,entity_alias,
+   entity_category,entity_domain_id,standard_level,business_definition,according,
+   def_principle,supervision,entity_type,data_type,data_length,data_pattern,data_unit,
+   data_area,data_precision,udc_rule_name,udc_code,udc_principle,business_rule,
+   technique_rule,oral_technique_rule,system_from,system_used,display_type,logic_type,
+   frequency,control_dept,co_sector,entity_status,effective_time,offline_time,remark,
+   checking_rule,data_category
+   ) VALUES
+    (#{standardId},#{entityName},#{entityDesc},#{entityAlias},
+   #{entityCategory},#{domainId},#{standardLevel},#{businessDefinition},#{according},
+   #{defPrinciple},#{supervision},#{entityType},#{dataType},#{dataLength},#{dataPattern},#{dataUnit},
+   #{dataArea},#{dataPrecision},#{udcRuleName},#{udcCode},#{udcPrinciple},#{businessRule},
+   #{techniqueRule},#{oralTechniqueRule},#{systemFrom},#{systemUsed},#{displayType},#{logicType},
+   #{frequency},#{controlDept},#{coSector},#{entityStatus},#{effectiveTime},#{offlineTime},#{remark},
+   #{checkingRule},#{dataCategory})
+  </insert>
+  <update id="updateStandardMain">
+   update standard_main_info set
+   entity_name = #{entityName},
+   entity_desc = #{entityDesc},
+   entity_alias = #{entityAlias},
+   entity_category = #{entityCategory},
+   entity_domain_id = #{domainId},
+   standard_level = #{standardLevel},
+   business_definition = #{businessDefinition},
+   according = #{according},
+   def_principle =#{defPrinciple},
+   supervision = #{supervision},
+   entity_type = #{entityType},
+   data_type =#{dataType},
+   data_length = #{dataLength},
+   data_pattern = #{dataPattern},
+   data_unit = #{dataUnit},
+   data_area = #{dataArea},
+   data_precision = #{dataPrecision},
+   udc_rule_name = #{udcRuleName},
+   udc_code =#{udcCode},
+   udc_principle = #{udcPrinciple},
+   business_rule = #{businessRule},
+   technique_rule = #{techniqueRule},
+   oral_technique_rule = #{oralTechniqueRule},
+   system_from =#{systemFrom},
+   system_used = #{systemUsed},
+   display_type = #{displayType},
+   logic_type = #{logicType},
+   frequency = #{frequency},
+   control_dept = #{controlDept},
+   co_sector = #{coSector},
+   entity_status = #{entityStatus},
+   effective_time = #{effectiveTime},
+   offline_time = #{offlineTime},
+   remark =#{remark},
+   checking_rule = #{checkingRule},
+   data_category =#{dataCategory}
+   where
+   entity_id = #{standardId}
+  </update>
+</mapper>
