@@ -53,6 +53,8 @@ public class TermMainInfo {
 
   private String remark;
 
+
+
   public String getFrequency() {
     return frequency;
   }
