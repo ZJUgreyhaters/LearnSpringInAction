@@ -6,6 +6,9 @@ import com.quantchi.lineage.metric.MetricLineageNode;
 
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class LineageService {
 
     public void test() throws SQLException {

@@ -1,66 +1,63 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.quantchi.termInfo.mapper.StandardMainInfoMapper">
-  <resultMap id="BaseResultMap" type="com.quantchi.termInfo.pojo.StandardMainInfo">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="entity_id" jdbcType="VARCHAR" property="entityId" />
-    <result column="entity_name" jdbcType="VARCHAR" property="entityName" />
-    <result column="entity_desc" jdbcType="VARCHAR" property="entityDesc" />
-    <result column="entity_category" jdbcType="VARCHAR" property="entityCategory" />
-    <result column="entity_domain_id" jdbcType="VARCHAR" property="entityDomainId" />
-    <result column="standard_level" jdbcType="VARCHAR" property="standardLevel" />
-    <result column="according" jdbcType="VARCHAR" property="according" />
-    <result column="def_principle" jdbcType="VARCHAR" property="defPrinciple" />
-    <result column="supervision" jdbcType="VARCHAR" property="supervision" />
-    <result column="entity_type" jdbcType="VARCHAR" property="entityType" />
-    <result column="data_type" jdbcType="VARCHAR" property="dataType" />
-    <result column="data_length" jdbcType="INTEGER" property="dataLength" />
-    <result column="data_pattern" jdbcType="VARCHAR" property="dataPattern" />
-    <result column="data_unit" jdbcType="VARCHAR" property="dataUnit" />
-    <result column="data_area" jdbcType="VARCHAR" property="dataArea" />
-    <result column="data_precision" jdbcType="INTEGER" property="dataPrecision" />
-    <result column="udc_rule_name" jdbcType="VARCHAR" property="udcRuleName" />
-    <result column="udc_code" jdbcType="VARCHAR" property="udcCode" />
-    <result column="udc_principle" jdbcType="VARCHAR" property="udcPrinciple" />
-    <result column="system_from" jdbcType="VARCHAR" property="systemFrom" />
-    <result column="system_used" jdbcType="VARCHAR" property="systemUsed" />
-    <result column="display_type" jdbcType="VARCHAR" property="displayType" />
-    <result column="logic_type" jdbcType="VARCHAR" property="logicType" />
-    <result column="frequency" jdbcType="VARCHAR" property="frequency" />
-    <result column="control_dept" jdbcType="VARCHAR" property="controlDept" />
-    <result column="co_sector" jdbcType="VARCHAR" property="coSector" />
-    <result column="entity_status" jdbcType="VARCHAR" property="entityStatus" />
-    <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
-    <result column="offline_time" jdbcType="TIMESTAMP" property="offlineTime" />
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.termInfo.mapper.StandardMainInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.termInfo.pojo.StandardMainInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="entity_id" property="entityId" jdbcType="VARCHAR" />
+    <result column="entity_name" property="entityName" jdbcType="VARCHAR" />
+    <result column="entity_desc" property="entityDesc" jdbcType="VARCHAR" />
+    <result column="entity_category" property="entityCategory" jdbcType="VARCHAR" />
+    <result column="entity_domain_id" property="entityDomainId" jdbcType="VARCHAR" />
+    <result column="standard_level" property="standardLevel" jdbcType="VARCHAR" />
+    <result column="according" property="according" jdbcType="VARCHAR" />
+    <result column="supervision" property="supervision" jdbcType="VARCHAR" />
+    <result column="entity_type" property="entityType" jdbcType="VARCHAR" />
+    <result column="data_type" property="dataType" jdbcType="VARCHAR" />
+    <result column="data_length" property="dataLength" jdbcType="INTEGER" />
+    <result column="data_pattern" property="dataPattern" jdbcType="VARCHAR" />
+    <result column="data_unit" property="dataUnit" jdbcType="VARCHAR" />
+    <result column="data_area" property="dataArea" jdbcType="VARCHAR" />
+    <result column="data_precision" property="dataPrecision" jdbcType="INTEGER" />
+    <result column="udc_rule_name" property="udcRuleName" jdbcType="VARCHAR" />
+    <result column="udc_code" property="udcCode" jdbcType="VARCHAR" />
+    <result column="system_from" property="systemFrom" jdbcType="VARCHAR" />
+    <result column="system_used" property="systemUsed" jdbcType="VARCHAR" />
+    <result column="display_type" property="displayType" jdbcType="VARCHAR" />
+    <result column="logic_type" property="logicType" jdbcType="VARCHAR" />
+    <result column="frequency" property="frequency" jdbcType="VARCHAR" />
+    <result column="control_dept" property="controlDept" jdbcType="VARCHAR" />
+    <result column="entity_status" property="entityStatus" jdbcType="VARCHAR" />
+    <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+    <result column="offline_time" property="offlineTime" jdbcType="TIMESTAMP" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.quantchi.termInfo.pojo.StandardMainInfo">
-    <result column="entity_alias" jdbcType="LONGVARCHAR" property="entityAlias" />
-    <result column="business_definition" jdbcType="LONGVARCHAR" property="businessDefinition" />
-    <result column="business_rule" jdbcType="LONGVARCHAR" property="businessRule" />
-    <result column="technique_rule" jdbcType="LONGVARCHAR" property="techniqueRule" />
-    <result column="oral_technique_rule" jdbcType="LONGVARCHAR" property="oralTechniqueRule" />
-    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
-    <result column="version" jdbcType="LONGVARCHAR" property="version" />
+  <resultMap id="ResultMapWithBLOBs" type="com.quantchi.termInfo.pojo.StandardMainInfo" extends="BaseResultMap" >
+    <result column="entity_alias" property="entityAlias" jdbcType="LONGVARCHAR" />
+    <result column="business_definition" property="businessDefinition" jdbcType="LONGVARCHAR" />
+    <result column="business_rule" property="businessRule" jdbcType="LONGVARCHAR" />
+    <result column="technique_rule" property="techniqueRule" jdbcType="LONGVARCHAR" />
+    <result column="oral_technique_rule" property="oralTechniqueRule" jdbcType="LONGVARCHAR" />
+    <result column="remark" property="remark" jdbcType="LONGVARCHAR" />
+    <result column="version" property="version" jdbcType="LONGVARCHAR" />
   </resultMap>
-  <sql id="Example_Where_Clause">
-    <where>
-      <foreach collection="oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
                   and ${criterion.condition}
                 </when>
-                <when test="criterion.singleValue">
+                <when test="criterion.singleValue" >
                   and ${criterion.condition} #{criterion.value}
                 </when>
-                <when test="criterion.betweenValue">
+                <when test="criterion.betweenValue" >
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
-                <when test="criterion.listValue">
+                <when test="criterion.listValue" >
                   and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
                     #{listItem}
                   </foreach>
                 </when>
@@ -71,25 +68,25 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Update_By_Example_Where_Clause">
-    <where>
-      <foreach collection="example.oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
                   and ${criterion.condition}
                 </when>
-                <when test="criterion.singleValue">
+                <when test="criterion.singleValue" >
                   and ${criterion.condition} #{criterion.value}
                 </when>
-                <when test="criterion.betweenValue">
+                <when test="criterion.betweenValue" >
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
-                <when test="criterion.listValue">
+                <when test="criterion.listValue" >
                   and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
                     #{listItem}
                   </foreach>
                 </when>
@@ -100,20 +97,19 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Base_Column_List">
+  <sql id="Base_Column_List" >
     id, entity_id, entity_name, entity_desc, entity_category, entity_domain_id, standard_level, 
-    according, def_principle, supervision, entity_type, data_type, data_length, data_pattern, 
-    data_unit, data_area, data_precision, udc_rule_name, udc_code, udc_principle, system_from, 
-    system_used, display_type, logic_type, frequency, control_dept, co_sector, entity_status, 
-    effective_time, offline_time
+    according, supervision, entity_type, data_type, data_length, data_pattern, data_unit, 
+    data_area, data_precision, udc_rule_name, udc_code, system_from, system_used, display_type, 
+    logic_type, frequency, control_dept, entity_status, effective_time, offline_time
   </sql>
-  <sql id="Blob_Column_List">
+  <sql id="Blob_Column_List" >
     entity_alias, business_definition, business_rule, technique_rule, oral_technique_rule, 
     remark, version
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.quantchi.termInfo.pojo.StandardMainInfoExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.quantchi.termInfo.pojo.StandardMainInfoExample" >
     select
-    <if test="distinct">
+    <if test="distinct" >
       distinct
     </if>
     'false' as QUERYID,
@@ -121,29 +117,29 @@
     ,
     <include refid="Blob_Column_List" />
     from standard_main_info
-    <if test="_parameter != null">
+    <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
+    <if test="orderByClause != null" >
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="com.quantchi.termInfo.pojo.StandardMainInfoExample" resultMap="BaseResultMap">
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.termInfo.pojo.StandardMainInfoExample" >
     select
-    <if test="distinct">
+    <if test="distinct" >
       distinct
     </if>
     'false' as QUERYID,
     <include refid="Base_Column_List" />
     from standard_main_info
-    <if test="_parameter != null">
+    <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
-    <if test="orderByClause != null">
+    <if test="orderByClause != null" >
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     ,
@@ -151,393 +147,364 @@
     from standard_main_info
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from standard_main_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.quantchi.termInfo.pojo.StandardMainInfoExample">
+  <delete id="deleteByExample" parameterType="com.quantchi.termInfo.pojo.StandardMainInfoExample" >
     delete from standard_main_info
-    <if test="_parameter != null">
+    <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo">
+  <insert id="insert" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo" >
     insert into standard_main_info (id, entity_id, entity_name, 
       entity_desc, entity_category, entity_domain_id, 
-      standard_level, according, def_principle, 
-      supervision, entity_type, data_type, 
-      data_length, data_pattern, data_unit, 
-      data_area, data_precision, udc_rule_name, 
-      udc_code, udc_principle, system_from, 
-      system_used, display_type, logic_type, 
-      frequency, control_dept, co_sector, 
+      standard_level, according, supervision, 
+      entity_type, data_type, data_length, 
+      data_pattern, data_unit, data_area, 
+      data_precision, udc_rule_name, udc_code, 
+      system_from, system_used, display_type, 
+      logic_type, frequency, control_dept, 
       entity_status, effective_time, offline_time, 
       entity_alias, business_definition, 
       business_rule, technique_rule, oral_technique_rule, 
       remark, version)
     values (#{id,jdbcType=INTEGER}, #{entityId,jdbcType=VARCHAR}, #{entityName,jdbcType=VARCHAR}, 
       #{entityDesc,jdbcType=VARCHAR}, #{entityCategory,jdbcType=VARCHAR}, #{entityDomainId,jdbcType=VARCHAR}, 
-      #{standardLevel,jdbcType=VARCHAR}, #{according,jdbcType=VARCHAR}, #{defPrinciple,jdbcType=VARCHAR}, 
-      #{supervision,jdbcType=VARCHAR}, #{entityType,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, 
-      #{dataLength,jdbcType=INTEGER}, #{dataPattern,jdbcType=VARCHAR}, #{dataUnit,jdbcType=VARCHAR}, 
-      #{dataArea,jdbcType=VARCHAR}, #{dataPrecision,jdbcType=INTEGER}, #{udcRuleName,jdbcType=VARCHAR}, 
-      #{udcCode,jdbcType=VARCHAR}, #{udcPrinciple,jdbcType=VARCHAR}, #{systemFrom,jdbcType=VARCHAR}, 
-      #{systemUsed,jdbcType=VARCHAR}, #{displayType,jdbcType=VARCHAR}, #{logicType,jdbcType=VARCHAR}, 
-      #{frequency,jdbcType=VARCHAR}, #{controlDept,jdbcType=VARCHAR}, #{coSector,jdbcType=VARCHAR}, 
+      #{standardLevel,jdbcType=VARCHAR}, #{according,jdbcType=VARCHAR}, #{supervision,jdbcType=VARCHAR}, 
+      #{entityType,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, #{dataLength,jdbcType=INTEGER}, 
+      #{dataPattern,jdbcType=VARCHAR}, #{dataUnit,jdbcType=VARCHAR}, #{dataArea,jdbcType=VARCHAR}, 
+      #{dataPrecision,jdbcType=INTEGER}, #{udcRuleName,jdbcType=VARCHAR}, #{udcCode,jdbcType=VARCHAR}, 
+      #{systemFrom,jdbcType=VARCHAR}, #{systemUsed,jdbcType=VARCHAR}, #{displayType,jdbcType=VARCHAR}, 
+      #{logicType,jdbcType=VARCHAR}, #{frequency,jdbcType=VARCHAR}, #{controlDept,jdbcType=VARCHAR}, 
       #{entityStatus,jdbcType=VARCHAR}, #{effectiveTime,jdbcType=TIMESTAMP}, #{offlineTime,jdbcType=TIMESTAMP}, 
       #{entityAlias,jdbcType=LONGVARCHAR}, #{businessDefinition,jdbcType=LONGVARCHAR}, 
       #{businessRule,jdbcType=LONGVARCHAR}, #{techniqueRule,jdbcType=LONGVARCHAR}, #{oralTechniqueRule,jdbcType=LONGVARCHAR}, 
       #{remark,jdbcType=LONGVARCHAR}, #{version,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo">
+  <insert id="insertSelective" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo" >
     insert into standard_main_info
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
         id,
       </if>
-      <if test="entityId != null">
+      <if test="entityId != null" >
         entity_id,
       </if>
-      <if test="entityName != null">
+      <if test="entityName != null" >
         entity_name,
       </if>
-      <if test="entityDesc != null">
+      <if test="entityDesc != null" >
         entity_desc,
       </if>
-      <if test="entityCategory != null">
+      <if test="entityCategory != null" >
         entity_category,
       </if>
-      <if test="entityDomainId != null">
+      <if test="entityDomainId != null" >
         entity_domain_id,
       </if>
-      <if test="standardLevel != null">
+      <if test="standardLevel != null" >
         standard_level,
       </if>
-      <if test="according != null">
+      <if test="according != null" >
         according,
       </if>
-      <if test="defPrinciple != null">
-        def_principle,
-      </if>
-      <if test="supervision != null">
+      <if test="supervision != null" >
         supervision,
       </if>
-      <if test="entityType != null">
+      <if test="entityType != null" >
         entity_type,
       </if>
-      <if test="dataType != null">
+      <if test="dataType != null" >
         data_type,
       </if>
-      <if test="dataLength != null">
+      <if test="dataLength != null" >
         data_length,
       </if>
-      <if test="dataPattern != null">
+      <if test="dataPattern != null" >
         data_pattern,
       </if>
-      <if test="dataUnit != null">
+      <if test="dataUnit != null" >
         data_unit,
       </if>
-      <if test="dataArea != null">
+      <if test="dataArea != null" >
         data_area,
       </if>
-      <if test="dataPrecision != null">
+      <if test="dataPrecision != null" >
         data_precision,
       </if>
-      <if test="udcRuleName != null">
+      <if test="udcRuleName != null" >
         udc_rule_name,
       </if>
-      <if test="udcCode != null">
+      <if test="udcCode != null" >
         udc_code,
       </if>
-      <if test="udcPrinciple != null">
-        udc_principle,
-      </if>
-      <if test="systemFrom != null">
+      <if test="systemFrom != null" >
         system_from,
       </if>
-      <if test="systemUsed != null">
+      <if test="systemUsed != null" >
         system_used,
       </if>
-      <if test="displayType != null">
+      <if test="displayType != null" >
         display_type,
       </if>
-      <if test="logicType != null">
+      <if test="logicType != null" >
         logic_type,
       </if>
-      <if test="frequency != null">
+      <if test="frequency != null" >
         frequency,
       </if>
-      <if test="controlDept != null">
+      <if test="controlDept != null" >
         control_dept,
       </if>
-      <if test="coSector != null">
-        co_sector,
-      </if>
-      <if test="entityStatus != null">
+      <if test="entityStatus != null" >
         entity_status,
       </if>
-      <if test="effectiveTime != null">
+      <if test="effectiveTime != null" >
         effective_time,
       </if>
-      <if test="offlineTime != null">
+      <if test="offlineTime != null" >
         offline_time,
       </if>
-      <if test="entityAlias != null">
+      <if test="entityAlias != null" >
         entity_alias,
       </if>
-      <if test="businessDefinition != null">
+      <if test="businessDefinition != null" >
         business_definition,
       </if>
-      <if test="businessRule != null">
+      <if test="businessRule != null" >
         business_rule,
       </if>
-      <if test="techniqueRule != null">
+      <if test="techniqueRule != null" >
         technique_rule,
       </if>
-      <if test="oralTechniqueRule != null">
+      <if test="oralTechniqueRule != null" >
         oral_technique_rule,
       </if>
-      <if test="remark != null">
+      <if test="remark != null" >
         remark,
       </if>
-      <if test="version != null">
+      <if test="version != null" >
         version,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="entityId != null">
+      <if test="entityId != null" >
         #{entityId,jdbcType=VARCHAR},
       </if>
-      <if test="entityName != null">
+      <if test="entityName != null" >
         #{entityName,jdbcType=VARCHAR},
       </if>
-      <if test="entityDesc != null">
+      <if test="entityDesc != null" >
         #{entityDesc,jdbcType=VARCHAR},
       </if>
-      <if test="entityCategory != null">
+      <if test="entityCategory != null" >
         #{entityCategory,jdbcType=VARCHAR},
       </if>
-      <if test="entityDomainId != null">
+      <if test="entityDomainId != null" >
         #{entityDomainId,jdbcType=VARCHAR},
       </if>
-      <if test="standardLevel != null">
+      <if test="standardLevel != null" >
         #{standardLevel,jdbcType=VARCHAR},
       </if>
-      <if test="according != null">
+      <if test="according != null" >
         #{according,jdbcType=VARCHAR},
       </if>
-      <if test="defPrinciple != null">
-        #{defPrinciple,jdbcType=VARCHAR},
-      </if>
-      <if test="supervision != null">
+      <if test="supervision != null" >
         #{supervision,jdbcType=VARCHAR},
       </if>
-      <if test="entityType != null">
+      <if test="entityType != null" >
         #{entityType,jdbcType=VARCHAR},
       </if>
-      <if test="dataType != null">
+      <if test="dataType != null" >
         #{dataType,jdbcType=VARCHAR},
       </if>
-      <if test="dataLength != null">
+      <if test="dataLength != null" >
         #{dataLength,jdbcType=INTEGER},
       </if>
-      <if test="dataPattern != null">
+      <if test="dataPattern != null" >
         #{dataPattern,jdbcType=VARCHAR},
       </if>
-      <if test="dataUnit != null">
+      <if test="dataUnit != null" >
         #{dataUnit,jdbcType=VARCHAR},
       </if>
-      <if test="dataArea != null">
+      <if test="dataArea != null" >
         #{dataArea,jdbcType=VARCHAR},
       </if>
-      <if test="dataPrecision != null">
+      <if test="dataPrecision != null" >
         #{dataPrecision,jdbcType=INTEGER},
       </if>
-      <if test="udcRuleName != null">
+      <if test="udcRuleName != null" >
         #{udcRuleName,jdbcType=VARCHAR},
       </if>
-      <if test="udcCode != null">
+      <if test="udcCode != null" >
         #{udcCode,jdbcType=VARCHAR},
       </if>
-      <if test="udcPrinciple != null">
-        #{udcPrinciple,jdbcType=VARCHAR},
-      </if>
-      <if test="systemFrom != null">
+      <if test="systemFrom != null" >
         #{systemFrom,jdbcType=VARCHAR},
       </if>
-      <if test="systemUsed != null">
+      <if test="systemUsed != null" >
         #{systemUsed,jdbcType=VARCHAR},
       </if>
-      <if test="displayType != null">
+      <if test="displayType != null" >
         #{displayType,jdbcType=VARCHAR},
       </if>
-      <if test="logicType != null">
+      <if test="logicType != null" >
         #{logicType,jdbcType=VARCHAR},
       </if>
-      <if test="frequency != null">
+      <if test="frequency != null" >
         #{frequency,jdbcType=VARCHAR},
       </if>
-      <if test="controlDept != null">
+      <if test="controlDept != null" >
         #{controlDept,jdbcType=VARCHAR},
       </if>
-      <if test="coSector != null">
-        #{coSector,jdbcType=VARCHAR},
-      </if>
-      <if test="entityStatus != null">
+      <if test="entityStatus != null" >
         #{entityStatus,jdbcType=VARCHAR},
       </if>
-      <if test="effectiveTime != null">
+      <if test="effectiveTime != null" >
         #{effectiveTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="offlineTime != null">
+      <if test="offlineTime != null" >
         #{offlineTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="entityAlias != null">
+      <if test="entityAlias != null" >
         #{entityAlias,jdbcType=LONGVARCHAR},
       </if>
-      <if test="businessDefinition != null">
+      <if test="businessDefinition != null" >
         #{businessDefinition,jdbcType=LONGVARCHAR},
       </if>
-      <if test="businessRule != null">
+      <if test="businessRule != null" >
         #{businessRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="techniqueRule != null">
+      <if test="techniqueRule != null" >
         #{techniqueRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="oralTechniqueRule != null">
+      <if test="oralTechniqueRule != null" >
         #{oralTechniqueRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="remark != null">
+      <if test="remark != null" >
         #{remark,jdbcType=LONGVARCHAR},
       </if>
-      <if test="version != null">
+      <if test="version != null" >
         #{version,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByExampleSelective" parameterType="map">
+  <update id="updateByExampleSelective" parameterType="map" >
     update standard_main_info
-    <set>
-      <if test="record.id != null">
+    <set >
+      <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.entityId != null">
+      <if test="record.entityId != null" >
         entity_id = #{record.entityId,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityName != null">
+      <if test="record.entityName != null" >
         entity_name = #{record.entityName,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityDesc != null">
+      <if test="record.entityDesc != null" >
         entity_desc = #{record.entityDesc,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityCategory != null">
+      <if test="record.entityCategory != null" >
         entity_category = #{record.entityCategory,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityDomainId != null">
+      <if test="record.entityDomainId != null" >
         entity_domain_id = #{record.entityDomainId,jdbcType=VARCHAR},
       </if>
-      <if test="record.standardLevel != null">
+      <if test="record.standardLevel != null" >
         standard_level = #{record.standardLevel,jdbcType=VARCHAR},
       </if>
-      <if test="record.according != null">
+      <if test="record.according != null" >
         according = #{record.according,jdbcType=VARCHAR},
       </if>
-      <if test="record.defPrinciple != null">
-        def_principle = #{record.defPrinciple,jdbcType=VARCHAR},
-      </if>
-      <if test="record.supervision != null">
+      <if test="record.supervision != null" >
         supervision = #{record.supervision,jdbcType=VARCHAR},
       </if>
-      <if test="record.entityType != null">
+      <if test="record.entityType != null" >
         entity_type = #{record.entityType,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataType != null">
+      <if test="record.dataType != null" >
         data_type = #{record.dataType,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataLength != null">
+      <if test="record.dataLength != null" >
         data_length = #{record.dataLength,jdbcType=INTEGER},
       </if>
-      <if test="record.dataPattern != null">
+      <if test="record.dataPattern != null" >
         data_pattern = #{record.dataPattern,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataUnit != null">
+      <if test="record.dataUnit != null" >
         data_unit = #{record.dataUnit,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataArea != null">
+      <if test="record.dataArea != null" >
         data_area = #{record.dataArea,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataPrecision != null">
+      <if test="record.dataPrecision != null" >
         data_precision = #{record.dataPrecision,jdbcType=INTEGER},
       </if>
-      <if test="record.udcRuleName != null">
+      <if test="record.udcRuleName != null" >
         udc_rule_name = #{record.udcRuleName,jdbcType=VARCHAR},
       </if>
-      <if test="record.udcCode != null">
+      <if test="record.udcCode != null" >
         udc_code = #{record.udcCode,jdbcType=VARCHAR},
       </if>
-      <if test="record.udcPrinciple != null">
-        udc_principle = #{record.udcPrinciple,jdbcType=VARCHAR},
-      </if>
-      <if test="record.systemFrom != null">
+      <if test="record.systemFrom != null" >
         system_from = #{record.systemFrom,jdbcType=VARCHAR},
       </if>
-      <if test="record.systemUsed != null">
+      <if test="record.systemUsed != null" >
         system_used = #{record.systemUsed,jdbcType=VARCHAR},
       </if>
-      <if test="record.displayType != null">
+      <if test="record.displayType != null" >
         display_type = #{record.displayType,jdbcType=VARCHAR},
       </if>
-      <if test="record.logicType != null">
+      <if test="record.logicType != null" >
         logic_type = #{record.logicType,jdbcType=VARCHAR},
       </if>
-      <if test="record.frequency != null">
+      <if test="record.frequency != null" >
         frequency = #{record.frequency,jdbcType=VARCHAR},
       </if>
-      <if test="record.controlDept != null">
+      <if test="record.controlDept != null" >
         control_dept = #{record.controlDept,jdbcType=VARCHAR},
       </if>
-      <if test="record.coSector != null">
-        co_sector = #{record.coSector,jdbcType=VARCHAR},
-      </if>
-      <if test="record.entityStatus != null">
+      <if test="record.entityStatus != null" >
         entity_status = #{record.entityStatus,jdbcType=VARCHAR},
       </if>
-      <if test="record.effectiveTime != null">
+      <if test="record.effectiveTime != null" >
         effective_time = #{record.effectiveTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.offlineTime != null">
+      <if test="record.offlineTime != null" >
         offline_time = #{record.offlineTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.entityAlias != null">
+      <if test="record.entityAlias != null" >
         entity_alias = #{record.entityAlias,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.businessDefinition != null">
+      <if test="record.businessDefinition != null" >
         business_definition = #{record.businessDefinition,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.businessRule != null">
+      <if test="record.businessRule != null" >
         business_rule = #{record.businessRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.techniqueRule != null">
+      <if test="record.techniqueRule != null" >
         technique_rule = #{record.techniqueRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.oralTechniqueRule != null">
+      <if test="record.oralTechniqueRule != null" >
         oral_technique_rule = #{record.oralTechniqueRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.remark != null">
+      <if test="record.remark != null" >
         remark = #{record.remark,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.version != null">
+      <if test="record.version != null" >
         version = #{record.version,jdbcType=LONGVARCHAR},
       </if>
     </set>
-    <if test="_parameter != null">
+    <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExampleWithBLOBs" parameterType="map">
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
     update standard_main_info
     set id = #{record.id,jdbcType=INTEGER},
       entity_id = #{record.entityId,jdbcType=VARCHAR},
@@ -547,787 +514,6 @@
       entity_domain_id = #{record.entityDomainId,jdbcType=VARCHAR},
       standard_level = #{record.standardLevel,jdbcType=VARCHAR},
       according = #{record.according,jdbcType=VARCHAR},
-      def_principle = #{record.defPrinciple,jdbcType=VARCHAR},
-      supervision = #{record.supervision,jdbcType=VARCHAR},
-      entity_type = #{record.entityType,jdbcType=VARCHAR},
-      data_type = #{record.dataType,jdbcType=VARCHAR},
-      data_length = #{record.dataLength,jdbcType=INTEGER},
-      data_pattern = #{record.dataPattern,jdbcType=VARCHAR},
-      data_unit = #{record.dataUnit,jdbcType=VARCHAR},
-      data_area = #{record.dataArea,jdbcType=VARCHAR},
-      data_precision = #{record.dataPrecision,jdbcType=INTEGER},
-      udc_rule_name = #{record.udcRuleName,jdbcType=VARCHAR},
-      udc_code = #{record.udcCode,jdbcType=VARCHAR},
-      udc_principle = #{record.udcPrinciple,jdbcType=VARCHAR},
-      system_from = #{record.systemFrom,jdbcType=VARCHAR},
-      system_used = #{record.systemUsed,jdbcType=VARCHAR},
-      display_type = #{record.displayType,jdbcType=VARCHAR},
-      logic_type = #{record.logicType,jdbcType=VARCHAR},
-      frequency = #{record.frequency,jdbcType=VARCHAR},
-      control_dept = #{record.controlDept,jdbcType=VARCHAR},
-      co_sector = #{record.coSector,jdbcType=VARCHAR},
-      entity_status = #{record.entityStatus,jdbcType=VARCHAR},
-      effective_time = #{record.effectiveTime,jdbcType=TIMESTAMP},
-      offline_time = #{record.offlineTime,jdbcType=TIMESTAMP},
-      entity_alias = #{record.entityAlias,jdbcType=LONGVARCHAR},
-      business_definition = #{record.businessDefinition,jdbcType=LONGVARCHAR},
-      business_rule = #{record.businessRule,jdbcType=LONGVARCHAR},
-      technique_rule = #{record.techniqueRule,jdbcType=LONGVARCHAR},
-      oral_technique_rule = #{record.oralTechniqueRule,jdbcType=LONGVARCHAR},
-      remark = #{record.remark,jdbcType=LONGVARCHAR},
-      version = #{record.version,jdbcType=LONGVARCHAR}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    update standard_main_info
-    set id = #{record.id,jdbcType=INTEGER},
-      entity_id = #{record.entityId,jdbcType=VARCHAR},
-      entity_name = #{record.entityName,jdbcType=VARCHAR},
-      entity_desc = #{record.entityDesc,jdbcType=VARCHAR},
-      entity_category = #{record.entityCategory,jdbcType=VARCHAR},
-      entity_domain_id = #{record.entityDomainId,jdbcType=VARCHAR},
-      standard_level = #{record.standardLevel,jdbcType=VARCHAR},
-      according = #{record.according,jdbcType=VARCHAR},
-      def_principle = #{record.defPrinciple,jdbcType=VARCHAR},
-      supervision = #{record.supervision,jdbcType=VARCHAR},
-      entity_type = #{record.entityType,jdbcType=VARCHAR},
-      data_type = #{record.dataType,jdbcType=VARCHAR},
-      data_length = #{record.dataLength,jdbcType=INTEGER},
-      data_pattern = #{record.dataPattern,jdbcType=VARCHAR},
-      data_unit = #{record.dataUnit,jdbcType=VARCHAR},
-      data_area = #{record.dataArea,jdbcType=VARCHAR},
-      data_precision = #{record.dataPrecision,jdbcType=INTEGER},
-      udc_rule_name = #{record.udcRuleName,jdbcType=VARCHAR},
-      udc_code = #{record.udcCode,jdbcType=VARCHAR},
-      udc_principle = #{record.udcPrinciple,jdbcType=VARCHAR},
-      system_from = #{record.systemFrom,jdbcType=VARCHAR},
-      system_used = #{record.systemUsed,jdbcType=VARCHAR},
-      display_type = #{record.displayType,jdbcType=VARCHAR},
-      logic_type = #{record.logicType,jdbcType=VARCHAR},
-      frequency = #{record.frequency,jdbcType=VARCHAR},
-      control_dept = #{record.controlDept,jdbcType=VARCHAR},
-      co_sector = #{record.coSector,jdbcType=VARCHAR},
-      entity_status = #{record.entityStatus,jdbcType=VARCHAR},
-      effective_time = #{record.effectiveTime,jdbcType=TIMESTAMP},
-      offline_time = #{record.offlineTime,jdbcType=TIMESTAMP}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo">
-    update standard_main_info
-    <set>
-      <if test="entityId != null">
-        entity_id = #{entityId,jdbcType=VARCHAR},
-      </if>
-      <if test="entityName != null">
-        entity_name = #{entityName,jdbcType=VARCHAR},
-      </if>
-      <if test="entityDesc != null">
-        entity_desc = #{entityDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="entityCategory != null">
-        entity_category = #{entityCategory,jdbcType=VARCHAR},
-      </if>
-      <if test="entityDomainId != null">
-        entity_domain_id = #{entityDomainId,jdbcType=VARCHAR},
-      </if>
-      <if test="standardLevel != null">
-        standard_level = #{standardLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="according != null">
-        according = #{according,jdbcType=VARCHAR},
-      </if>
-      <if test="defPrinciple != null">
-        def_principle = #{defPrinciple,jdbcType=VARCHAR},
-      </if>
-      <if test="supervision != null">
-        supervision = #{supervision,jdbcType=VARCHAR},
-      </if>
-      <if test="entityType != null">
-        entity_type = #{entityType,jdbcType=VARCHAR},
-      </if>
-      <if test="dataType != null">
-        data_type = #{dataType,jdbcType=VARCHAR},
-      </if>
-      <if test="dataLength != null">
-        data_length = #{dataLength,jdbcType=INTEGER},
-      </if>
-      <if test="dataPattern != null">
-        data_pattern = #{dataPattern,jdbcType=VARCHAR},
-      </if>
-      <if test="dataUnit != null">
-        data_unit = #{dataUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="dataArea != null">
-        data_area = #{dataArea,jdbcType=VARCHAR},
-      </if>
-      <if test="dataPrecision != null">
-        data_precision = #{dataPrecision,jdbcType=INTEGER},
-      </if>
-      <if test="udcRuleName != null">
-        udc_rule_name = #{udcRuleName,jdbcType=VARCHAR},
-      </if>
-      <if test="udcCode != null">
-        udc_code = #{udcCode,jdbcType=VARCHAR},
-      </if>
-      <if test="udcPrinciple != null">
-        udc_principle = #{udcPrinciple,jdbcType=VARCHAR},
-      </if>
-      <if test="systemFrom != null">
-        system_from = #{systemFrom,jdbcType=VARCHAR},
-      </if>
-      <if test="systemUsed != null">
-        system_used = #{systemUsed,jdbcType=VARCHAR},
-      </if>
-      <if test="displayType != null">
-        display_type = #{displayType,jdbcType=VARCHAR},
-      </if>
-      <if test="logicType != null">
-        logic_type = #{logicType,jdbcType=VARCHAR},
-      </if>
-      <if test="frequency != null">
-        frequency = #{frequency,jdbcType=VARCHAR},
-      </if>
-      <if test="controlDept != null">
-        control_dept = #{controlDept,jdbcType=VARCHAR},
-      </if>
-      <if test="coSector != null">
-        co_sector = #{coSector,jdbcType=VARCHAR},
-      </if>
-      <if test="entityStatus != null">
-        entity_status = #{entityStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="effectiveTime != null">
-        effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="offlineTime != null">
-        offline_time = #{offlineTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="entityAlias != null">
-        entity_alias = #{entityAlias,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="businessDefinition != null">
-        business_definition = #{businessDefinition,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="businessRule != null">
-        business_rule = #{businessRule,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="techniqueRule != null">
-        technique_rule = #{techniqueRule,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="oralTechniqueRule != null">
-        oral_technique_rule = #{oralTechniqueRule,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="remark != null">
-        remark = #{remark,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="version != null">
-        version = #{version,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo">
-    update standard_main_info
-    set entity_id = #{entityId,jdbcType=VARCHAR},
-      entity_name = #{entityName,jdbcType=VARCHAR},
-      entity_desc = #{entityDesc,jdbcType=VARCHAR},
-      entity_category = #{entityCategory,jdbcType=VARCHAR},
-      entity_domain_id = #{entityDomainId,jdbcType=VARCHAR},
-      standard_level = #{standardLevel,jdbcType=VARCHAR},
-      according = #{according,jdbcType=VARCHAR},
-      def_principle = #{defPrinciple,jdbcType=VARCHAR},
-      supervision = #{supervision,jdbcType=VARCHAR},
-      entity_type = #{entityType,jdbcType=VARCHAR},
-      data_type = #{dataType,jdbcType=VARCHAR},
-      data_length = #{dataLength,jdbcType=INTEGER},
-      data_pattern = #{dataPattern,jdbcType=VARCHAR},
-      data_unit = #{dataUnit,jdbcType=VARCHAR},
-      data_area = #{dataArea,jdbcType=VARCHAR},
-      data_precision = #{dataPrecision,jdbcType=INTEGER},
-      udc_rule_name = #{udcRuleName,jdbcType=VARCHAR},
-      udc_code = #{udcCode,jdbcType=VARCHAR},
-      udc_principle = #{udcPrinciple,jdbcType=VARCHAR},
-      system_from = #{systemFrom,jdbcType=VARCHAR},
-      system_used = #{systemUsed,jdbcType=VARCHAR},
-      display_type = #{displayType,jdbcType=VARCHAR},
-      logic_type = #{logicType,jdbcType=VARCHAR},
-      frequency = #{frequency,jdbcType=VARCHAR},
-      control_dept = #{controlDept,jdbcType=VARCHAR},
-      co_sector = #{coSector,jdbcType=VARCHAR},
-      entity_status = #{entityStatus,jdbcType=VARCHAR},
-      effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
-      offline_time = #{offlineTime,jdbcType=TIMESTAMP},
-      entity_alias = #{entityAlias,jdbcType=LONGVARCHAR},
-      business_definition = #{businessDefinition,jdbcType=LONGVARCHAR},
-      business_rule = #{businessRule,jdbcType=LONGVARCHAR},
-      technique_rule = #{techniqueRule,jdbcType=LONGVARCHAR},
-      oral_technique_rule = #{oralTechniqueRule,jdbcType=LONGVARCHAR},
-      remark = #{remark,jdbcType=LONGVARCHAR},
-      version = #{version,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo">
-    update standard_main_info
-    set entity_id = #{entityId,jdbcType=VARCHAR},
-      entity_name = #{entityName,jdbcType=VARCHAR},
-      entity_desc = #{entityDesc,jdbcType=VARCHAR},
-      entity_category = #{entityCategory,jdbcType=VARCHAR},
-      entity_domain_id = #{entityDomainId,jdbcType=VARCHAR},
-      standard_level = #{standardLevel,jdbcType=VARCHAR},
-      according = #{according,jdbcType=VARCHAR},
-      def_principle = #{defPrinciple,jdbcType=VARCHAR},
-      supervision = #{supervision,jdbcType=VARCHAR},
-      entity_type = #{entityType,jdbcType=VARCHAR},
-      data_type = #{dataType,jdbcType=VARCHAR},
-      data_length = #{dataLength,jdbcType=INTEGER},
-      data_pattern = #{dataPattern,jdbcType=VARCHAR},
-      data_unit = #{dataUnit,jdbcType=VARCHAR},
-      data_area = #{dataArea,jdbcType=VARCHAR},
-      data_precision = #{dataPrecision,jdbcType=INTEGER},
-      udc_rule_name = #{udcRuleName,jdbcType=VARCHAR},
-      udc_code = #{udcCode,jdbcType=VARCHAR},
-      udc_principle = #{udcPrinciple,jdbcType=VARCHAR},
-      system_from = #{systemFrom,jdbcType=VARCHAR},
-      system_used = #{systemUsed,jdbcType=VARCHAR},
-      display_type = #{displayType,jdbcType=VARCHAR},
-      logic_type = #{logicType,jdbcType=VARCHAR},
-      frequency = #{frequency,jdbcType=VARCHAR},
-      control_dept = #{controlDept,jdbcType=VARCHAR},
-      co_sector = #{coSector,jdbcType=VARCHAR},
-      entity_status = #{entityStatus,jdbcType=VARCHAR},
-      effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
-      offline_time = #{offlineTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <resultMap id="BaseResultMap" type="com.quantchi.termInfo.pojo.StandardMainInfo">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="entity_id" jdbcType="VARCHAR" property="entityId" />
-    <result column="entity_name" jdbcType="VARCHAR" property="entityName" />
-    <result column="entity_desc" jdbcType="VARCHAR" property="entityDesc" />
-    <result column="entity_category" jdbcType="VARCHAR" property="entityCategory" />
-    <result column="entity_domain_id" jdbcType="VARCHAR" property="entityDomainId" />
-    <result column="standard_level" jdbcType="VARCHAR" property="standardLevel" />
-    <result column="according" jdbcType="VARCHAR" property="according" />
-    <result column="def_principle" jdbcType="VARCHAR" property="defPrinciple" />
-    <result column="supervision" jdbcType="VARCHAR" property="supervision" />
-    <result column="entity_type" jdbcType="VARCHAR" property="entityType" />
-    <result column="data_type" jdbcType="VARCHAR" property="dataType" />
-    <result column="data_length" jdbcType="INTEGER" property="dataLength" />
-    <result column="data_pattern" jdbcType="VARCHAR" property="dataPattern" />
-    <result column="data_unit" jdbcType="VARCHAR" property="dataUnit" />
-    <result column="data_area" jdbcType="VARCHAR" property="dataArea" />
-    <result column="data_precision" jdbcType="INTEGER" property="dataPrecision" />
-    <result column="udc_rule_name" jdbcType="VARCHAR" property="udcRuleName" />
-    <result column="udc_code" jdbcType="VARCHAR" property="udcCode" />
-    <result column="system_from" jdbcType="VARCHAR" property="systemFrom" />
-    <result column="system_used" jdbcType="VARCHAR" property="systemUsed" />
-    <result column="display_type" jdbcType="VARCHAR" property="displayType" />
-    <result column="logic_type" jdbcType="VARCHAR" property="logicType" />
-    <result column="frequency" jdbcType="VARCHAR" property="frequency" />
-    <result column="control_dept" jdbcType="VARCHAR" property="controlDept" />
-    <result column="entity_status" jdbcType="VARCHAR" property="entityStatus" />
-    <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
-    <result column="offline_time" jdbcType="TIMESTAMP" property="offlineTime" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.quantchi.termInfo.pojo.StandardMainInfo">
-    <result column="entity_alias" jdbcType="LONGVARCHAR" property="entityAlias" />
-    <result column="business_definition" jdbcType="LONGVARCHAR" property="businessDefinition" />
-    <result column="business_rule" jdbcType="LONGVARCHAR" property="businessRule" />
-    <result column="technique_rule" jdbcType="LONGVARCHAR" property="techniqueRule" />
-    <result column="oral_technique_rule" jdbcType="LONGVARCHAR" property="oralTechniqueRule" />
-    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
-    <result column="version" jdbcType="LONGVARCHAR" property="version" />
-  </resultMap>
-  <sql id="Example_Where_Clause">
-    <where>
-      <foreach collection="oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
-            </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Update_By_Example_Where_Clause">
-    <where>
-      <foreach collection="example.oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
-            </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Base_Column_List">
-    id, entity_id, entity_name, entity_desc, entity_category, entity_domain_id, standard_level, 
-    according, def_principle, supervision, entity_type, data_type, data_length, data_pattern, 
-    data_unit, data_area, data_precision, udc_rule_name, udc_code, system_from, system_used, 
-    display_type, logic_type, frequency, control_dept, entity_status, effective_time, 
-    offline_time
-  </sql>
-  <sql id="Blob_Column_List">
-    entity_alias, business_definition, business_rule, technique_rule, oral_technique_rule, 
-    remark, version
-  </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.quantchi.termInfo.pojo.StandardMainInfoExample" resultMap="ResultMapWithBLOBs">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    'false' as QUERYID,
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from standard_main_info
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
-  <select id="selectByExample" parameterType="com.quantchi.termInfo.pojo.StandardMainInfoExample" resultMap="BaseResultMap">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    'false' as QUERYID,
-    <include refid="Base_Column_List" />
-    from standard_main_info
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from standard_main_info
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from standard_main_info
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <delete id="deleteByExample" parameterType="com.quantchi.termInfo.pojo.StandardMainInfoExample">
-    delete from standard_main_info
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </delete>
-  <insert id="insert" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo">
-    insert into standard_main_info (id, entity_id, entity_name, 
-      entity_desc, entity_category, entity_domain_id, 
-      standard_level, according, def_principle, 
-      supervision, entity_type, data_type, 
-      data_length, data_pattern, data_unit, 
-      data_area, data_precision, udc_rule_name, 
-      udc_code, system_from, system_used, 
-      display_type, logic_type, frequency, 
-      control_dept, entity_status, effective_time, 
-      offline_time, entity_alias, business_definition, 
-      business_rule, technique_rule, oral_technique_rule, 
-      remark, version)
-    values (#{id,jdbcType=INTEGER}, #{entityId,jdbcType=VARCHAR}, #{entityName,jdbcType=VARCHAR}, 
-      #{entityDesc,jdbcType=VARCHAR}, #{entityCategory,jdbcType=VARCHAR}, #{entityDomainId,jdbcType=VARCHAR}, 
-      #{standardLevel,jdbcType=VARCHAR}, #{according,jdbcType=VARCHAR}, #{defPrinciple,jdbcType=VARCHAR}, 
-      #{supervision,jdbcType=VARCHAR}, #{entityType,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, 
-      #{dataLength,jdbcType=INTEGER}, #{dataPattern,jdbcType=VARCHAR}, #{dataUnit,jdbcType=VARCHAR}, 
-      #{dataArea,jdbcType=VARCHAR}, #{dataPrecision,jdbcType=INTEGER}, #{udcRuleName,jdbcType=VARCHAR}, 
-      #{udcCode,jdbcType=VARCHAR}, #{systemFrom,jdbcType=VARCHAR}, #{systemUsed,jdbcType=VARCHAR}, 
-      #{displayType,jdbcType=VARCHAR}, #{logicType,jdbcType=VARCHAR}, #{frequency,jdbcType=VARCHAR}, 
-      #{controlDept,jdbcType=VARCHAR}, #{entityStatus,jdbcType=VARCHAR}, #{effectiveTime,jdbcType=TIMESTAMP}, 
-      #{offlineTime,jdbcType=TIMESTAMP}, #{entityAlias,jdbcType=LONGVARCHAR}, #{businessDefinition,jdbcType=LONGVARCHAR}, 
-      #{businessRule,jdbcType=LONGVARCHAR}, #{techniqueRule,jdbcType=LONGVARCHAR}, #{oralTechniqueRule,jdbcType=LONGVARCHAR}, 
-      #{remark,jdbcType=LONGVARCHAR}, #{version,jdbcType=LONGVARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo">
-    insert into standard_main_info
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="entityId != null">
-        entity_id,
-      </if>
-      <if test="entityName != null">
-        entity_name,
-      </if>
-      <if test="entityDesc != null">
-        entity_desc,
-      </if>
-      <if test="entityCategory != null">
-        entity_category,
-      </if>
-      <if test="entityDomainId != null">
-        entity_domain_id,
-      </if>
-      <if test="standardLevel != null">
-        standard_level,
-      </if>
-      <if test="according != null">
-        according,
-      </if>
-      <if test="defPrinciple != null">
-        def_principle,
-      </if>
-      <if test="supervision != null">
-        supervision,
-      </if>
-      <if test="entityType != null">
-        entity_type,
-      </if>
-      <if test="dataType != null">
-        data_type,
-      </if>
-      <if test="dataLength != null">
-        data_length,
-      </if>
-      <if test="dataPattern != null">
-        data_pattern,
-      </if>
-      <if test="dataUnit != null">
-        data_unit,
-      </if>
-      <if test="dataArea != null">
-        data_area,
-      </if>
-      <if test="dataPrecision != null">
-        data_precision,
-      </if>
-      <if test="udcRuleName != null">
-        udc_rule_name,
-      </if>
-      <if test="udcCode != null">
-        udc_code,
-      </if>
-      <if test="systemFrom != null">
-        system_from,
-      </if>
-      <if test="systemUsed != null">
-        system_used,
-      </if>
-      <if test="displayType != null">
-        display_type,
-      </if>
-      <if test="logicType != null">
-        logic_type,
-      </if>
-      <if test="frequency != null">
-        frequency,
-      </if>
-      <if test="controlDept != null">
-        control_dept,
-      </if>
-      <if test="entityStatus != null">
-        entity_status,
-      </if>
-      <if test="effectiveTime != null">
-        effective_time,
-      </if>
-      <if test="offlineTime != null">
-        offline_time,
-      </if>
-      <if test="entityAlias != null">
-        entity_alias,
-      </if>
-      <if test="businessDefinition != null">
-        business_definition,
-      </if>
-      <if test="businessRule != null">
-        business_rule,
-      </if>
-      <if test="techniqueRule != null">
-        technique_rule,
-      </if>
-      <if test="oralTechniqueRule != null">
-        oral_technique_rule,
-      </if>
-      <if test="remark != null">
-        remark,
-      </if>
-      <if test="version != null">
-        version,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="entityId != null">
-        #{entityId,jdbcType=VARCHAR},
-      </if>
-      <if test="entityName != null">
-        #{entityName,jdbcType=VARCHAR},
-      </if>
-      <if test="entityDesc != null">
-        #{entityDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="entityCategory != null">
-        #{entityCategory,jdbcType=VARCHAR},
-      </if>
-      <if test="entityDomainId != null">
-        #{entityDomainId,jdbcType=VARCHAR},
-      </if>
-      <if test="standardLevel != null">
-        #{standardLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="according != null">
-        #{according,jdbcType=VARCHAR},
-      </if>
-      <if test="defPrinciple != null">
-        #{defPrinciple,jdbcType=VARCHAR},
-      </if>
-      <if test="supervision != null">
-        #{supervision,jdbcType=VARCHAR},
-      </if>
-      <if test="entityType != null">
-        #{entityType,jdbcType=VARCHAR},
-      </if>
-      <if test="dataType != null">
-        #{dataType,jdbcType=VARCHAR},
-      </if>
-      <if test="dataLength != null">
-        #{dataLength,jdbcType=INTEGER},
-      </if>
-      <if test="dataPattern != null">
-        #{dataPattern,jdbcType=VARCHAR},
-      </if>
-      <if test="dataUnit != null">
-        #{dataUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="dataArea != null">
-        #{dataArea,jdbcType=VARCHAR},
-      </if>
-      <if test="dataPrecision != null">
-        #{dataPrecision,jdbcType=INTEGER},
-      </if>
-      <if test="udcRuleName != null">
-        #{udcRuleName,jdbcType=VARCHAR},
-      </if>
-      <if test="udcCode != null">
-        #{udcCode,jdbcType=VARCHAR},
-      </if>
-      <if test="systemFrom != null">
-        #{systemFrom,jdbcType=VARCHAR},
-      </if>
-      <if test="systemUsed != null">
-        #{systemUsed,jdbcType=VARCHAR},
-      </if>
-      <if test="displayType != null">
-        #{displayType,jdbcType=VARCHAR},
-      </if>
-      <if test="logicType != null">
-        #{logicType,jdbcType=VARCHAR},
-      </if>
-      <if test="frequency != null">
-        #{frequency,jdbcType=VARCHAR},
-      </if>
-      <if test="controlDept != null">
-        #{controlDept,jdbcType=VARCHAR},
-      </if>
-      <if test="entityStatus != null">
-        #{entityStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="effectiveTime != null">
-        #{effectiveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="offlineTime != null">
-        #{offlineTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="entityAlias != null">
-        #{entityAlias,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="businessDefinition != null">
-        #{businessDefinition,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="businessRule != null">
-        #{businessRule,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="techniqueRule != null">
-        #{techniqueRule,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="oralTechniqueRule != null">
-        #{oralTechniqueRule,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="remark != null">
-        #{remark,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="version != null">
-        #{version,jdbcType=LONGVARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByExampleSelective" parameterType="map">
-    update standard_main_info
-    <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
-      </if>
-      <if test="record.entityId != null">
-        entity_id = #{record.entityId,jdbcType=VARCHAR},
-      </if>
-      <if test="record.entityName != null">
-        entity_name = #{record.entityName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.entityDesc != null">
-        entity_desc = #{record.entityDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="record.entityCategory != null">
-        entity_category = #{record.entityCategory,jdbcType=VARCHAR},
-      </if>
-      <if test="record.entityDomainId != null">
-        entity_domain_id = #{record.entityDomainId,jdbcType=VARCHAR},
-      </if>
-      <if test="record.standardLevel != null">
-        standard_level = #{record.standardLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="record.according != null">
-        according = #{record.according,jdbcType=VARCHAR},
-      </if>
-      <if test="record.defPrinciple != null">
-        def_principle = #{record.defPrinciple,jdbcType=VARCHAR},
-      </if>
-      <if test="record.supervision != null">
-        supervision = #{record.supervision,jdbcType=VARCHAR},
-      </if>
-      <if test="record.entityType != null">
-        entity_type = #{record.entityType,jdbcType=VARCHAR},
-      </if>
-      <if test="record.dataType != null">
-        data_type = #{record.dataType,jdbcType=VARCHAR},
-      </if>
-      <if test="record.dataLength != null">
-        data_length = #{record.dataLength,jdbcType=INTEGER},
-      </if>
-      <if test="record.dataPattern != null">
-        data_pattern = #{record.dataPattern,jdbcType=VARCHAR},
-      </if>
-      <if test="record.dataUnit != null">
-        data_unit = #{record.dataUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="record.dataArea != null">
-        data_area = #{record.dataArea,jdbcType=VARCHAR},
-      </if>
-      <if test="record.dataPrecision != null">
-        data_precision = #{record.dataPrecision,jdbcType=INTEGER},
-      </if>
-      <if test="record.udcRuleName != null">
-        udc_rule_name = #{record.udcRuleName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.udcCode != null">
-        udc_code = #{record.udcCode,jdbcType=VARCHAR},
-      </if>
-      <if test="record.systemFrom != null">
-        system_from = #{record.systemFrom,jdbcType=VARCHAR},
-      </if>
-      <if test="record.systemUsed != null">
-        system_used = #{record.systemUsed,jdbcType=VARCHAR},
-      </if>
-      <if test="record.displayType != null">
-        display_type = #{record.displayType,jdbcType=VARCHAR},
-      </if>
-      <if test="record.logicType != null">
-        logic_type = #{record.logicType,jdbcType=VARCHAR},
-      </if>
-      <if test="record.frequency != null">
-        frequency = #{record.frequency,jdbcType=VARCHAR},
-      </if>
-      <if test="record.controlDept != null">
-        control_dept = #{record.controlDept,jdbcType=VARCHAR},
-      </if>
-      <if test="record.entityStatus != null">
-        entity_status = #{record.entityStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="record.effectiveTime != null">
-        effective_time = #{record.effectiveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.offlineTime != null">
-        offline_time = #{record.offlineTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.entityAlias != null">
-        entity_alias = #{record.entityAlias,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="record.businessDefinition != null">
-        business_definition = #{record.businessDefinition,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="record.businessRule != null">
-        business_rule = #{record.businessRule,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="record.techniqueRule != null">
-        technique_rule = #{record.techniqueRule,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="record.oralTechniqueRule != null">
-        oral_technique_rule = #{record.oralTechniqueRule,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="record.remark != null">
-        remark = #{record.remark,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="record.version != null">
-        version = #{record.version,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExampleWithBLOBs" parameterType="map">
-    update standard_main_info
-    set id = #{record.id,jdbcType=INTEGER},
-      entity_id = #{record.entityId,jdbcType=VARCHAR},
-      entity_name = #{record.entityName,jdbcType=VARCHAR},
-      entity_desc = #{record.entityDesc,jdbcType=VARCHAR},
-      entity_category = #{record.entityCategory,jdbcType=VARCHAR},
-      entity_domain_id = #{record.entityDomainId,jdbcType=VARCHAR},
-      standard_level = #{record.standardLevel,jdbcType=VARCHAR},
-      according = #{record.according,jdbcType=VARCHAR},
-      def_principle = #{record.defPrinciple,jdbcType=VARCHAR},
       supervision = #{record.supervision,jdbcType=VARCHAR},
       entity_type = #{record.entityType,jdbcType=VARCHAR},
       data_type = #{record.dataType,jdbcType=VARCHAR},
@@ -1354,11 +540,11 @@
       oral_technique_rule = #{record.oralTechniqueRule,jdbcType=LONGVARCHAR},
       remark = #{record.remark,jdbcType=LONGVARCHAR},
       version = #{record.version,jdbcType=LONGVARCHAR}
-    <if test="_parameter != null">
+    <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map">
+  <update id="updateByExample" parameterType="map" >
     update standard_main_info
     set id = #{record.id,jdbcType=INTEGER},
       entity_id = #{record.entityId,jdbcType=VARCHAR},
@@ -1368,7 +554,6 @@
       entity_domain_id = #{record.entityDomainId,jdbcType=VARCHAR},
       standard_level = #{record.standardLevel,jdbcType=VARCHAR},
       according = #{record.according,jdbcType=VARCHAR},
-      def_principle = #{record.defPrinciple,jdbcType=VARCHAR},
       supervision = #{record.supervision,jdbcType=VARCHAR},
       entity_type = #{record.entityType,jdbcType=VARCHAR},
       data_type = #{record.dataType,jdbcType=VARCHAR},
@@ -1388,119 +573,116 @@
       entity_status = #{record.entityStatus,jdbcType=VARCHAR},
       effective_time = #{record.effectiveTime,jdbcType=TIMESTAMP},
       offline_time = #{record.offlineTime,jdbcType=TIMESTAMP}
-    <if test="_parameter != null">
+    <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo">
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo" >
     update standard_main_info
-    <set>
-      <if test="entityId != null">
+    <set >
+      <if test="entityId != null" >
         entity_id = #{entityId,jdbcType=VARCHAR},
       </if>
-      <if test="entityName != null">
+      <if test="entityName != null" >
         entity_name = #{entityName,jdbcType=VARCHAR},
       </if>
-      <if test="entityDesc != null">
+      <if test="entityDesc != null" >
         entity_desc = #{entityDesc,jdbcType=VARCHAR},
       </if>
-      <if test="entityCategory != null">
+      <if test="entityCategory != null" >
         entity_category = #{entityCategory,jdbcType=VARCHAR},
       </if>
-      <if test="entityDomainId != null">
+      <if test="entityDomainId != null" >
         entity_domain_id = #{entityDomainId,jdbcType=VARCHAR},
       </if>
-      <if test="standardLevel != null">
+      <if test="standardLevel != null" >
         standard_level = #{standardLevel,jdbcType=VARCHAR},
       </if>
-      <if test="according != null">
+      <if test="according != null" >
         according = #{according,jdbcType=VARCHAR},
       </if>
-      <if test="defPrinciple != null">
-        def_principle = #{defPrinciple,jdbcType=VARCHAR},
-      </if>
-      <if test="supervision != null">
+      <if test="supervision != null" >
         supervision = #{supervision,jdbcType=VARCHAR},
       </if>
-      <if test="entityType != null">
+      <if test="entityType != null" >
         entity_type = #{entityType,jdbcType=VARCHAR},
       </if>
-      <if test="dataType != null">
+      <if test="dataType != null" >
         data_type = #{dataType,jdbcType=VARCHAR},
       </if>
-      <if test="dataLength != null">
+      <if test="dataLength != null" >
         data_length = #{dataLength,jdbcType=INTEGER},
       </if>
-      <if test="dataPattern != null">
+      <if test="dataPattern != null" >
         data_pattern = #{dataPattern,jdbcType=VARCHAR},
       </if>
-      <if test="dataUnit != null">
+      <if test="dataUnit != null" >
         data_unit = #{dataUnit,jdbcType=VARCHAR},
       </if>
-      <if test="dataArea != null">
+      <if test="dataArea != null" >
         data_area = #{dataArea,jdbcType=VARCHAR},
       </if>
-      <if test="dataPrecision != null">
+      <if test="dataPrecision != null" >
         data_precision = #{dataPrecision,jdbcType=INTEGER},
       </if>
-      <if test="udcRuleName != null">
+      <if test="udcRuleName != null" >
         udc_rule_name = #{udcRuleName,jdbcType=VARCHAR},
       </if>
-      <if test="udcCode != null">
+      <if test="udcCode != null" >
         udc_code = #{udcCode,jdbcType=VARCHAR},
       </if>
-      <if test="systemFrom != null">
+      <if test="systemFrom != null" >
         system_from = #{systemFrom,jdbcType=VARCHAR},
       </if>
-      <if test="systemUsed != null">
+      <if test="systemUsed != null" >
         system_used = #{systemUsed,jdbcType=VARCHAR},
       </if>
-      <if test="displayType != null">
+      <if test="displayType != null" >
         display_type = #{displayType,jdbcType=VARCHAR},
       </if>
-      <if test="logicType != null">
+      <if test="logicType != null" >
         logic_type = #{logicType,jdbcType=VARCHAR},
       </if>
-      <if test="frequency != null">
+      <if test="frequency != null" >
         frequency = #{frequency,jdbcType=VARCHAR},
       </if>
-      <if test="controlDept != null">
+      <if test="controlDept != null" >
         control_dept = #{controlDept,jdbcType=VARCHAR},
       </if>
-      <if test="entityStatus != null">
+      <if test="entityStatus != null" >
         entity_status = #{entityStatus,jdbcType=VARCHAR},
       </if>
-      <if test="effectiveTime != null">
+      <if test="effectiveTime != null" >
         effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="offlineTime != null">
+      <if test="offlineTime != null" >
         offline_time = #{offlineTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="entityAlias != null">
+      <if test="entityAlias != null" >
         entity_alias = #{entityAlias,jdbcType=LONGVARCHAR},
       </if>
-      <if test="businessDefinition != null">
+      <if test="businessDefinition != null" >
         business_definition = #{businessDefinition,jdbcType=LONGVARCHAR},
       </if>
-      <if test="businessRule != null">
+      <if test="businessRule != null" >
         business_rule = #{businessRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="techniqueRule != null">
+      <if test="techniqueRule != null" >
         technique_rule = #{techniqueRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="oralTechniqueRule != null">
+      <if test="oralTechniqueRule != null" >
         oral_technique_rule = #{oralTechniqueRule,jdbcType=LONGVARCHAR},
       </if>
-      <if test="remark != null">
+      <if test="remark != null" >
         remark = #{remark,jdbcType=LONGVARCHAR},
       </if>
-      <if test="version != null">
+      <if test="version != null" >
         version = #{version,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo">
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo" >
     update standard_main_info
     set entity_id = #{entityId,jdbcType=VARCHAR},
       entity_name = #{entityName,jdbcType=VARCHAR},
@@ -1509,7 +691,6 @@
       entity_domain_id = #{entityDomainId,jdbcType=VARCHAR},
       standard_level = #{standardLevel,jdbcType=VARCHAR},
       according = #{according,jdbcType=VARCHAR},
-      def_principle = #{defPrinciple,jdbcType=VARCHAR},
       supervision = #{supervision,jdbcType=VARCHAR},
       entity_type = #{entityType,jdbcType=VARCHAR},
       data_type = #{dataType,jdbcType=VARCHAR},
@@ -1538,7 +719,7 @@
       version = #{version,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo">
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.termInfo.pojo.StandardMainInfo" >
     update standard_main_info
     set entity_id = #{entityId,jdbcType=VARCHAR},
       entity_name = #{entityName,jdbcType=VARCHAR},
@@ -1547,7 +728,6 @@
       entity_domain_id = #{entityDomainId,jdbcType=VARCHAR},
       standard_level = #{standardLevel,jdbcType=VARCHAR},
       according = #{according,jdbcType=VARCHAR},
-      def_principle = #{defPrinciple,jdbcType=VARCHAR},
       supervision = #{supervision,jdbcType=VARCHAR},
       entity_type = #{entityType,jdbcType=VARCHAR},
       data_type = #{dataType,jdbcType=VARCHAR},
