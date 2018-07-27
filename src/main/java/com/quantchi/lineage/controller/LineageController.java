@@ -50,6 +50,7 @@ public class LineageController {
     @ResponseBody
     Map<String, Object> list(@RequestBody String bodyString) {
         try{
+            lineageService.test();
             return util.genRet(200, null, "", 0);
         }catch (Exception e){
             return util.genRet(500, null, e.getMessage(), 0);
