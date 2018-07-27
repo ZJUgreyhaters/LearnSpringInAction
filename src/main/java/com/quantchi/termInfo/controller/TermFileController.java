@@ -107,7 +107,8 @@ public class TermFileController {
           if (PhysicalFile.isEmpty() || PhysicalFile == null) {
             termFileService.insertPhysicalFile(map1);
           } else {
-            termFileService.updatePhysicalFile(map1);
+            //termFileService.updatePhysicalFile(map1);
+            continue;
           }
         }
         return JsonResult.successJson("上传成功！");
@@ -127,11 +128,11 @@ public class TermFileController {
             map1.put("entityCategory", entityCategory.get("cid"));
           }
           List<Map<String, Object>> standardMain = termFileService.selectStandardMain(map1);
-          if(map1.get("dataPrecision")==""){
-            map1.put("dataPrecision",null);
+          if (map1.get("dataPrecision") == "") {
+            map1.put("dataPrecision", null);
           }
-          if(map1.get("dataLength")==""){
-            map1.put("dataLength",null);
+          if (map1.get("dataLength") == "") {
+            map1.put("dataLength", null);
           }
           if (standardMain.isEmpty() || standardMain == null) {
             termFileService.insertStandardMain(map1);
@@ -140,19 +141,32 @@ public class TermFileController {
           }
         }
         return JsonResult.successJson("上传成功！");
-      }else if ("target".equals(typeOne) && "common".equals(typeTwo)){
+      } else if ("target".equals(typeOne) && "common".equals(typeTwo)) {
         for (int i = 1; i < result.size(); i++) {
           String[] values = result.get(i);
           Map<String, Object> map1 = new HashMap<>();
           for (int j = 0; j < values.length; j++) {
             map1.put(list.get(j), values[j]);
           }
-         /* termFileService.selectTargetMain(map1);
-          termFileService.insertTargetMain(map1);
-          termFileService.updateTargetMain(map1);*/
+          String domainId = termFileService.selectDomainByName(map1);
+          map1.put("domainId", domainId);
+          List<Map<String, Object>> targetMain = termFileService.selectTargetMain(map1);
+          if (map1.get("dataPrecision") == "") {
+            map1.put("dataPrecision", null);
+          }
+          if (map1.get("dataLength") == "") {
+            map1.put("dataLength", null);
+          }
+          if (targetMain.isEmpty() || targetMain == null) {
+            termFileService.insertTargetMain(map1);
+          } else {
+            termFileService.updateTargetMain(map1);
+          }
         }
+        return JsonResult.successJson("上传成功！");
+      } else {
+        return JsonResult.errorJson("上传失败！");
       }
-      return JsonResult.successJson("上传失败！");
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("上传失败！");
