@@ -24,7 +24,7 @@ public interface TermFileMapper {
 
   String selectDomainByName(Map<String, Object> map);
 
-  String selectStandardCategory(Map<String, Object> map);
+  Map<String, Object> selectStandardCategory(Map<String, Object> map);
 
   List<Map<String, Object>> selectStandardMain(Map<String, Object> map);
 

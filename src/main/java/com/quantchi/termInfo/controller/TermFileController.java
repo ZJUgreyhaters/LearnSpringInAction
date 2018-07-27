@@ -118,11 +118,21 @@ public class TermFileController {
           for (int j = 0; j < values.length; j++) {
             map1.put(list.get(j), values[j]);
           }
-          String domainId = termFileService.selectDomainByName(map1);
-          map1.put("domainId", domainId);
-          String entityCategory = termFileService.selectStandardCategory(map1);
-          map1.put("entityCategory", entityCategory);
+          Map<String, Object> entityCategory = termFileService.selectStandardCategory(map1);
+          if (entityCategory == null || entityCategory.isEmpty()) {
+            map1.put("domainId", null);
+            map1.put("entityCategory", null);
+          } else {
+            map1.put("domainId", entityCategory.get("domainId"));
+            map1.put("entityCategory", entityCategory.get("cid"));
+          }
           List<Map<String, Object>> standardMain = termFileService.selectStandardMain(map1);
+          if(map1.get("dataPrecision")==""){
+            map1.put("dataPrecision",null);
+          }
+          if(map1.get("dataLength")==""){
+            map1.put("dataLength",null);
+          }
           if (standardMain.isEmpty() || standardMain == null) {
             termFileService.insertStandardMain(map1);
           } else {
@@ -130,6 +140,17 @@ public class TermFileController {
           }
         }
         return JsonResult.successJson("上传成功！");
+      }else if ("target".equals(typeOne) && "common".equals(typeTwo)){
+        for (int i = 1; i < result.size(); i++) {
+          String[] values = result.get(i);
+          Map<String, Object> map1 = new HashMap<>();
+          for (int j = 0; j < values.length; j++) {
+            map1.put(list.get(j), values[j]);
+          }
+         /* termFileService.selectTargetMain(map1);
+          termFileService.insertTargetMain(map1);
+          termFileService.updateTargetMain(map1);*/
+        }
       }
       return JsonResult.successJson("上传失败！");
     } catch (Exception e) {

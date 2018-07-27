@@ -57,7 +57,7 @@ public class TermFileServiceImpl implements TermFileService {
   }
 
   @Override
-  public String selectStandardCategory(Map<String, Object> map) {
+  public Map<String, Object> selectStandardCategory(Map<String, Object> map) {
     return termFileMapper.selectStandardCategory(map);
   }
 
