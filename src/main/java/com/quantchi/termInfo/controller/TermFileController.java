@@ -140,6 +140,17 @@ public class TermFileController {
           }
         }
         return JsonResult.successJson("上传成功！");
+      }else if ("target".equals(typeOne) && "common".equals(typeTwo)){
+        for (int i = 1; i < result.size(); i++) {
+          String[] values = result.get(i);
+          Map<String, Object> map1 = new HashMap<>();
+          for (int j = 0; j < values.length; j++) {
+            map1.put(list.get(j), values[j]);
+          }
+         /* termFileService.selectTargetMain(map1);
+          termFileService.insertTargetMain(map1);
+          termFileService.updateTargetMain(map1);*/
+        }
       }
       return JsonResult.successJson("上传失败！");
     } catch (Exception e) {
