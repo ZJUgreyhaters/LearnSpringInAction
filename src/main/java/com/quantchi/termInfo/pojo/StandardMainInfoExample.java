@@ -655,6 +655,76 @@ public class StandardMainInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andDefPrincipleIsNull() {
+            addCriterion("def_principle is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleIsNotNull() {
+            addCriterion("def_principle is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleEqualTo(String value) {
+            addCriterion("def_principle =", value, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleNotEqualTo(String value) {
+            addCriterion("def_principle <>", value, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleGreaterThan(String value) {
+            addCriterion("def_principle >", value, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleGreaterThanOrEqualTo(String value) {
+            addCriterion("def_principle >=", value, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleLessThan(String value) {
+            addCriterion("def_principle <", value, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleLessThanOrEqualTo(String value) {
+            addCriterion("def_principle <=", value, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleLike(String value) {
+            addCriterion("def_principle like", value, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleNotLike(String value) {
+            addCriterion("def_principle not like", value, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleIn(List<String> values) {
+            addCriterion("def_principle in", values, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleNotIn(List<String> values) {
+            addCriterion("def_principle not in", values, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleBetween(String value1, String value2) {
+            addCriterion("def_principle between", value1, value2, "defPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andDefPrincipleNotBetween(String value1, String value2) {
+            addCriterion("def_principle not between", value1, value2, "defPrinciple");
+            return (Criteria) this;
+        }
+
         public Criteria andSupervisionIsNull() {
             addCriterion("supervision is null");
             return (Criteria) this;
@@ -1335,6 +1405,76 @@ public class StandardMainInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andUdcPrincipleIsNull() {
+            addCriterion("udc_principle is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleIsNotNull() {
+            addCriterion("udc_principle is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleEqualTo(String value) {
+            addCriterion("udc_principle =", value, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleNotEqualTo(String value) {
+            addCriterion("udc_principle <>", value, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleGreaterThan(String value) {
+            addCriterion("udc_principle >", value, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleGreaterThanOrEqualTo(String value) {
+            addCriterion("udc_principle >=", value, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleLessThan(String value) {
+            addCriterion("udc_principle <", value, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleLessThanOrEqualTo(String value) {
+            addCriterion("udc_principle <=", value, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleLike(String value) {
+            addCriterion("udc_principle like", value, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleNotLike(String value) {
+            addCriterion("udc_principle not like", value, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleIn(List<String> values) {
+            addCriterion("udc_principle in", values, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleNotIn(List<String> values) {
+            addCriterion("udc_principle not in", values, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleBetween(String value1, String value2) {
+            addCriterion("udc_principle between", value1, value2, "udcPrinciple");
+            return (Criteria) this;
+        }
+
+        public Criteria andUdcPrincipleNotBetween(String value1, String value2) {
+            addCriterion("udc_principle not between", value1, value2, "udcPrinciple");
+            return (Criteria) this;
+        }
+
         public Criteria andSystemFromIsNull() {
             addCriterion("system_from is null");
             return (Criteria) this;
@@ -1752,6 +1892,76 @@ public class StandardMainInfoExample {
 
         public Criteria andControlDeptNotBetween(String value1, String value2) {
             addCriterion("control_dept not between", value1, value2, "controlDept");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorIsNull() {
+            addCriterion("co_sector is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorIsNotNull() {
+            addCriterion("co_sector is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorEqualTo(String value) {
+            addCriterion("co_sector =", value, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorNotEqualTo(String value) {
+            addCriterion("co_sector <>", value, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorGreaterThan(String value) {
+            addCriterion("co_sector >", value, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorGreaterThanOrEqualTo(String value) {
+            addCriterion("co_sector >=", value, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorLessThan(String value) {
+            addCriterion("co_sector <", value, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorLessThanOrEqualTo(String value) {
+            addCriterion("co_sector <=", value, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorLike(String value) {
+            addCriterion("co_sector like", value, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorNotLike(String value) {
+            addCriterion("co_sector not like", value, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorIn(List<String> values) {
+            addCriterion("co_sector in", values, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorNotIn(List<String> values) {
+            addCriterion("co_sector not in", values, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorBetween(String value1, String value2) {
+            addCriterion("co_sector between", value1, value2, "coSector");
+            return (Criteria) this;
+        }
+
+        public Criteria andCoSectorNotBetween(String value1, String value2) {
+            addCriterion("co_sector not between", value1, value2, "coSector");
             return (Criteria) this;
         }
 
