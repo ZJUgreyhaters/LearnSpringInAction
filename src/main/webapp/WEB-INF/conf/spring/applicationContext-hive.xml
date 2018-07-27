@@ -2,10 +2,10 @@
 <!DOCTYPE beans PUBLIC
         "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-<bean id="hiveJdbcPool" class="com.quantchi.tianshu.common.JdbcPool" destroy-method="close">
-    <constructor-arg index="0" value="jdbc:hive2://192.168.2.57:10000/default;auth=noSasl" type="java.lang.String"/>
-    <constructor-arg index="1" value="root" type="java.lang.String"/>
-    <constructor-arg index="2" value="root" type="java.lang.String"/>
-    <constructor-arg index="3" value="org.apache.hive.jdbc.HiveDriver" type="java.lang.String"/>
+<bean id="hiveJdbcPool" class="com.quantchi.common.JdbcPoolFactoryBean">
+    <property name="url" value="jdbc:hive2://192.168.2.57:10000/default;auth=noSasl"/>
+    <property name="username" value="hive"/>
+    <property name="password" value="hive"/>
+    <property name="jdbcDriver" value="org.apache.hive.jdbc.HiveDriver"/>
 </bean>
 </beans>

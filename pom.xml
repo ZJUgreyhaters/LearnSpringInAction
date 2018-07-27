@@ -13,6 +13,21 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
   </properties>
+    <repositories>
+        <repository>
+            <id>insigma</id>
+            <name>insigma Mirror</name>
+            <url>http://192.168.1.27:9903/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>insigma</id>
+            <name>insigma Mirror</name>
+            <url>http://192.168.1.27:9903/nexus/content/groups/public</url>
+        </pluginRepository>
+    </pluginRepositories>
+
   <dependencies>
 
 
@@ -262,21 +277,35 @@
       <groupId>com.quantchi</groupId>
       <artifactId>intelquery</artifactId>
       <version>1.0.8-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>common</artifactId>
+          <groupId>com.quantchi</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>com.quantchi</groupId>
-      <artifactId>common</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
-    </dependency>
 
     <dependency>
       <groupId>com.quantchi</groupId>
       <artifactId>lineage</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.3-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>tianshu-common</artifactId>
+          <groupId>com.quantchi</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
-    <dependency>
+      <dependency>
+          <groupId>com.quantchi</groupId>
+          <artifactId>tianshu-common</artifactId>
+          <version>0.0.3-SNAPSHOT</version>
+      </dependency>
+
+
+      <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>druid</artifactId>
       <version>1.1.9</version>
