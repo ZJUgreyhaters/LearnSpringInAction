@@ -75,4 +75,19 @@ public class TermFileServiceImpl implements TermFileService {
   public void updateStandardMain(Map<String, Object> map) {
     termFileMapper.updateStandardMain(map);
   }
+
+  @Override
+  public List<Map<String, Object>> selectTargetMain(Map<String, Object> map) {
+    return termFileMapper.selectTargetMain(map);
+  }
+
+  @Override
+  public void insertTargetMain(Map<String, Object> map) {
+    termFileMapper.insertTargetMain(map);
+  }
+
+  @Override
+  public void updateTargetMain(Map<String, Object> map) {
+    termFileMapper.updateTargetMain(map);
+  }
 }

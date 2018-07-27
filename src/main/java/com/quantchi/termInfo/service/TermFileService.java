@@ -32,4 +32,10 @@ public interface TermFileService {
 
   void updateStandardMain(Map<String, Object> map);
 
+  List<Map<String, Object>> selectTargetMain(Map<String, Object> map);
+
+  void insertTargetMain(Map<String, Object> map);
+
+  void updateTargetMain(Map<String, Object> map);
+
 }
