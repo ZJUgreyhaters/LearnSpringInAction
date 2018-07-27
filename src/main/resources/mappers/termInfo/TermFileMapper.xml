@@ -51,25 +51,15 @@
   <select id="selectDomainByName" resultType="String">
     select domain_id from md_domain_info where domain_name = #{domainName}
   </select>
-  <select id="selectStandardCategory" resultType="String">
-    SELECT cid  FROM (
+  <select id="selectStandardCategory" resultType="java.util.Map">
      SELECT
-     a.id AS aid,
-     a.name AS aname,
-     a.parent_id AS aparent_id,
-     a.domainId AS adomainId,
-     b.id AS bid,
-     b.name AS bname,
-     b.parent_id AS bparent_id,
-     b.domainId AS bdomainId,
      c.id AS cid,
-     c.name AS cname,
-     c.parent_id AS cparent_id,
-     c.domainId AS cdomainId
+     d.domain_id AS domainId
      FROM standard_category_info a
      LEFT JOIN standard_category_info b ON  a.id = b.parent_id
      LEFT JOIN standard_category_info c ON b.id = c.parent_id
-     WHERE a.name = #{one} AND b.name = #{two} AND c.name = #{three} AND a.domainId = #{domainId} ) d
+     LEFT JOIN md_domain_info d ON d.domain_id = a.domainId
+     WHERE a.name = #{one} AND b.name = #{two} AND c.name = #{three} AND d.domain_name = #{domainName}
   </select>
   
   <select id="selectStandardMain" resultType="java.util.Map">

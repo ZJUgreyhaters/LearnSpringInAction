@@ -1,5 +1,128 @@
 define({ "api": [
   {
+    "type": "get",
+    "url": "/api/lineage",
+    "title": "血缘关系查询接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/appi/lineage"
+      }
+    ],
+    "name": "lineage",
+    "group": "LineAgeController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "termId",
+            "description": "<p>指标编号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "type",
+            "description": "<p>查询类型:ALL 代表全链路</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回血缘数据列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.metricId",
+            "description": "<p>指标id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.metricName",
+            "description": "<p>指标名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.phsicalFieldId",
+            "description": "<p>物理字段id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.phsicalFieldName",
+            "description": "<p>物理字段名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.hasChild",
+            "description": "<p>是否有孩子节点</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.edges",
+            "description": "<p>边信息列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.edges.source",
+            "description": "<p>边源节点id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.edges.target",
+            "description": "<p>边目标节点id</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/lineage/controller/LineAgeController.java",
+    "groupTitle": "LineAgeController"
+  },
+  {
     "type": "POST",
     "url": "/api/metadata/insertField",
     "title": "操作字段接口",
@@ -294,7 +417,7 @@ define({ "api": [
     "name": "PostApiMetadataUpdatefield"
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "/term/import",
     "title": "文件上传接口",
     "version": "1.0.0",
@@ -1114,6 +1237,285 @@ define({ "api": [
       }
     },
     "filename": "../../java/com/quantchi/termInfo/controller/TermInfoController.java",
+    "groupTitle": "TermInfoController"
+  },
+  {
+    "type": "get",
+    "url": "/api/standard",
+    "title": "标准查询接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/standard"
+      }
+    ],
+    "name": "term",
+    "group": "TermInfoController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": true,
+            "field": "page",
+            "description": "<p>页数</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": true,
+            "field": "page_size",
+            "description": "<p>每页数据数</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "keyword",
+            "description": "<p>标准名称关键字</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "total",
+            "description": "<p>返回记录总数</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据 标准信息列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityId",
+            "description": "<p>标准id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityName",
+            "description": "<p>标准名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityDesc",
+            "description": "<p>标准描述</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityDomainId",
+            "description": "<p>标准主题id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityCategory",
+            "description": "<p>标准分类</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.standardLevel",
+            "description": "<p>标准层次</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.business_definition",
+            "description": "<p>业务定义</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.according",
+            "description": "<p>制定依据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.supervision",
+            "description": "<p>监管标志</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.udcRuleName",
+            "description": "<p>编码规则</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityType",
+            "description": "<p>指标类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.businessRule",
+            "description": "<p>业务口径</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.displayType",
+            "description": "<p>常用维度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.frequency",
+            "description": "<p>统计频率</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.dataType",
+            "description": "<p>数据类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.dataUnit",
+            "description": "<p>度量单位</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.dataLength",
+            "description": "<p>数据长度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.dataPrecision",
+            "description": "<p>数据精度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.dataArea",
+            "description": "<p>取值范围</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.udcCode",
+            "description": "<p>引用代码</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.systemUsed",
+            "description": "<p>落地系统</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.techniqueRule",
+            "description": "<p>技术口径</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.systemFrom",
+            "description": "<p>来源系统</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.oralTechniqueRule",
+            "description": "<p>源系统技术口径</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.controlDept",
+            "description": "<p>管理部门</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.entityStatus",
+            "description": "<p>发布状态</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.effectiveTime",
+            "description": "<p>生效日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.offlineTime",
+            "description": "<p>失效日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.remark",
+            "description": "<p>备注</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/termInfo/controller/StandInfoController.java",
     "groupTitle": "TermInfoController"
   },
   {
