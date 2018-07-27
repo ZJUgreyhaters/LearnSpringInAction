@@ -23,7 +23,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>16.0.1</version>
+      <version>25.0-jre</version>
     </dependency>
 
 
@@ -268,6 +268,12 @@
       <groupId>com.quantchi</groupId>
       <artifactId>common</artifactId>
       <version>0.0.2-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.quantchi</groupId>
+      <artifactId>lineage</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
