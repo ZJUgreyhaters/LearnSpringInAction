@@ -139,10 +139,8 @@ public class TermFileController {
           }
           Map<String, Object> entityCategory = termFileService.selectStandardCategory(map1);
           if (entityCategory == null || entityCategory.isEmpty()) {
-            map1.put("domainId", null);
             map1.put("entityCategory", null);
           } else {
-            map1.put("domainId", entityCategory.get("domainId"));
             map1.put("entityCategory", entityCategory.get("cid"));
           }
           List<Map<String, Object>> standardMain = termFileService.selectStandardMain(map1);

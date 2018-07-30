@@ -54,10 +54,11 @@ public class StandInfoServiceImpl implements StandInfoService {
               map2.put("children", mapChilden);
             }
           }
-          domain.put("name", map.get("domainName"));
+          domain.put("name", map.get("domainId"));
           domain.put("id", map.get("domainId"));
           domain.put("children",map2);
           level.put("name",map.get("levels"));
+          level.put("id",map.get("levels"));
           level.put("children",domain);
           listMap.add(level);
         }
