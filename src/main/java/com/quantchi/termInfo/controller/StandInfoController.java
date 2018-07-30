@@ -209,10 +209,9 @@ public class StandInfoController {
    * @apiSuccess {String} total  返回记录总数
    * @apiSuccess {List} [data] 返回数据 业务分类列表
    * @apiSuccess {String} [data.id] 业务分类id
-   * @apiSuccess {String} [data.name] 业务分类名称
-   * @apiSuccess {List} [data.children] 业务分类子节点
-   * @apiSuccess {String} [data.children.name] 标准类目名称
-   * @apiSuccess {String} [data.children.id] 标准类目id
+   * @apiSuccess {String} [data.businessName] 业务线名称
+   * @apiSuccess {String} [data.domainName] 业务主体名称
+   * @apiSuccess {String} [data.tableName] 表名称
    */
   @ResponseBody
   @RequestMapping(value = "/metricCategory", method = {
