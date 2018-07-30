@@ -68,15 +68,42 @@ public class StandInfoServiceImpl implements StandInfoService {
   @Override
   public String selectList(StandardMainInfo standardMainInfo) {
     try {
+      if (standardMainInfo.getEntityCategory() != null
+          && standardMainInfo.getEntityCategory().length() > 0) {
+        StringBuilder ids = new StringBuilder();
+        ids.append("'").append(standardMainInfo.getEntityCategory()).append("'");
+        String id = selectThreeId(ids.toString());
+        standardMainInfo.setEntityCategory(id);
+      }
       List<Map<String, Object>> resultList = standInfoMapper.selectList(standardMainInfo);
+      String total =resultList.size()+"";
       if (standardMainInfo.getPage_size() != null && standardMainInfo.getPage() != null) {
         resultList = Paging
             .pagingPlug(resultList, standardMainInfo.getPage_size(), standardMainInfo.getPage());
       }
-      return JsonResult.successJson(resultList);
+      return JsonResult.successJson(total,resultList);
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("select error！");
     }
   }
+
+  String selectThreeId(String id) {
+    List<Map<String, Object>> list = standInfoMapper.selectThreeId(id);
+    String s = id;
+    if (list != null && !list.isEmpty()) {
+      StringBuilder ids = new StringBuilder();
+      int a = 0;
+      for (Map<String, Object> map : list) {
+        if(a == 0){
+          ids.append("'").append(map.get("id")).append("'");
+        }else{
+          ids.append(",").append("'").append(map.get("id")).append("'");
+        }
+        a++;
+      }
+      s = selectThreeId(ids.toString());
+    }
+    return s;
   }
+}

@@ -3,30 +3,38 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.quantchi.termInfo.mapper.StandInfoMapper">
 
-<select id="selectListCategory" resultType="java.util.Map">
- SELECT
- a.id AS id,
- a.name AS name,
- a.parent_id AS parentId,
- a.domainId AS domainId,
- b.domain_name AS domainName
- FROM standard_category_info a
- LEFT JOIN md_domain_info b
- ON a.domainId = b.domain_id
-</select>
-<select id="selectList" resultType="java.util.Map">
-select * from standard_main_info
-<where>
-  <if test="entityName !=null and entityName.toString().length()>0">
-    entity_name LIKE CONCAT(CONCAT('%',#{entityName}), '%')
-    or entity_desc LIKE CONCAT(CONCAT('%',#{entityName}), '%')
-  </if>
-  <if test="entityId !=null and entityId.toString().length()>0">
-    and entity_id = #{entityId}
-  </if>
-  <if test="entityCategory !=null and entityCategory.toString().length()>0">
-   and entityCategory in (#{entityCategory})
-   </if>
-</where>
-</select>
+  <select id="selectListCategory" resultType="java.util.Map">
+    SELECT
+    a.id AS id,
+    a.name AS name,
+    a.parent_id AS parentId,
+    a.domainId AS domainId,
+    b.domain_name AS domainName
+    FROM standard_category_info a
+    LEFT JOIN md_domain_info b
+    ON a.domainId = b.domain_id
+  </select>
+
+  <select id="selectList" resultType="java.util.Map">
+    select * from standard_main_info
+    <where>
+      <if test="entityName !=null and entityName.toString().length()>0">
+        entity_name LIKE CONCAT(CONCAT('%',#{entityName}), '%')
+        or entity_desc LIKE CONCAT(CONCAT('%',#{entityName}), '%')
+      </if>
+      <if test="entityId !=null and entityId.toString().length()>0">
+        and entity_id = #{entityId}
+      </if>
+      <if test="entityCategory !=null and entityCategory.toString().length()>0">
+        and entity_category in (${entityCategory})
+      </if>
+      <if test="entityDomainId !=null and entityDomainId.toString().length()>0">
+        and entity_domain_id = #{entityDomainId}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectThreeId" resultType="java.util.Map">
+    SELECT * FROM standard_category_info where parent_id in (${id})
+  </select>
 </mapper>

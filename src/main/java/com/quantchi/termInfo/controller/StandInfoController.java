@@ -4,6 +4,7 @@ import com.quantchi.termInfo.pojo.StandardMainInfo;
 import com.quantchi.termInfo.service.StandInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -63,7 +64,7 @@ public class StandInfoController {
   @ResponseBody
   @RequestMapping(value = "/standard", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String list(StandardMainInfo standardMainInfo) {
+  public String list(@RequestBody StandardMainInfo standardMainInfo) {
     return standInfoService.selectList(standardMainInfo);
   }
 
