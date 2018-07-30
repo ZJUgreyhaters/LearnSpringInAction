@@ -20,8 +20,8 @@ public class LineageService {
 
     private static final Logger logger = LoggerFactory.getLogger(LineageService.class);
     private static final String FETCH_ALL_NODE_TYPE = "ALL";
-    @Autowired
-    private LineageMapper lineageMapper;
+    /*@Autowired
+    private LineageMapper lineageMapper;*/
 
     public Map<String,Object> getNodesInfo(String metricId,String type) throws Exception{
         if(FETCH_ALL_NODE_TYPE.equals(type))
