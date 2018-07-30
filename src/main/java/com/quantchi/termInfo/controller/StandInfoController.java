@@ -4,6 +4,7 @@ import com.quantchi.termInfo.pojo.StandardMainInfo;
 import com.quantchi.termInfo.service.StandInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -63,7 +64,7 @@ public class StandInfoController {
   @ResponseBody
   @RequestMapping(value = "/standard", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String list(StandardMainInfo standardMainInfo) {
+  public String list(@RequestBody StandardMainInfo standardMainInfo) {
     return standInfoService.selectList(standardMainInfo);
   }
 
@@ -102,14 +103,18 @@ public class StandInfoController {
    * @apiGroup StandInfoController
    * @apiParam {Integer} [page] 页数
    * @apiParam {Integer} [page_size] 每页数据数
-   * @apiParam {String} [keyword] 标准名称关键字
+   * @apiParam {String} [entityName] 标准名称关键字
+   * @apiParam {String} [entityId] 标准编码
+   * @apiParam {String} [entityCategory] 标准分类Id
+   * @apiParam {String} [entityDomainId] 主题id
+   * @apiParam {String} [standardLevel] 标准层次
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    * @apiSuccess {String} total  返回记录总数
    * @apiSuccess {List} [data] 返回数据 标准信息列表
    * @apiSuccess {String} [data.entityId] 标准id
-   * @apiSuccess {String} [data.entityName] 标准名称
-   * @apiSuccess {String} [data.entityDesc] 标准描述
+   * @apiSuccess {String} [data.entityName] 标准英文名
+   * @apiSuccess {String} [data.entityDesc] 标准中文名
    * @apiSuccess {String} [data.entityDomainId] 标准主题id
    * @apiSuccess {String} [data.entityCategory] 标准分类
    * @apiSuccess {String} [data.standardLevel] 标准层次

@@ -78,13 +78,18 @@ public class TermFileController {
     try {
       String[] strings = result.get(0);
       List<String> list = new LinkedList<>();
+      List<String> listStrings = new LinkedList<>();
       for (String str : strings) {
+        if(str.length()==0){
+          continue;
+        }
+        listStrings.add(str);
         if (map.get(str) != null) {
           list.add(map.get(str));
         }
       }
 
-      if (list.size() != strings.length) {
+      if (list.size() != listStrings.size()) {
         return JsonResult.errorJson("配置字段与传入字段不匹配");
       }
 
@@ -107,11 +112,15 @@ public class TermFileController {
         for (int i = 1; i < result.size(); i++) {
           String[] values = result.get(i);
           Map<String, Object> map1 = new HashMap<>();
-          for (int j = 0; j < values.length; j++) {
+          for (int j = 0; j <listStrings.size(); j++) {
             map1.put(list.get(j), values[j]);
           }
           List<Map<String, Object>> PhysicalInfo = termFileService.selectPhysicalInfo(map1);
-          map1.put("fieldId", PhysicalInfo.get(0).get("entity_id"));
+          if(PhysicalInfo!=null && !PhysicalInfo.isEmpty()){
+            map1.put("fieldId", PhysicalInfo.get(0).get("entity_id"));
+          }else {
+            map1.put("fieldId", null);
+          }
           List<Map<String, Object>> PhysicalFile = termFileService.selectPhysicalFile(map1);
           if (PhysicalFile.isEmpty() || PhysicalFile == null) {
             termFileService.insertPhysicalFile(map1);
