@@ -31,11 +31,11 @@ public class StandInfoServiceImpl implements StandInfoService {
         if (map.get("parentId") != null && map.get("parentId").toString().length() > 0) {
           continue;
         } else {
+          Map<String, Object> level = new HashMap();
+          Map<String, Object> domain = new HashMap();
           Map<String, Object> map2 = new HashMap();
           map2.put("id", map.get("id"));
           map2.put("name", map.get("name"));
-          map2.put("domainName", map.get("domainName"));
-          map2.put("domainId", map.get("domainId"));
           for (Map<String, Object> map1 : list) {
             if (Objects.equals(map1.get("parentId"), map.get("id").toString())) {
               Map<String, Object> mapChilden = new HashMap();
@@ -54,7 +54,12 @@ public class StandInfoServiceImpl implements StandInfoService {
               map2.put("children", mapChilden);
             }
           }
-          listMap.add(map2);
+          domain.put("name", map.get("domainName"));
+          domain.put("id", map.get("domainId"));
+          domain.put("children",map2);
+          level.put("name",map.get("levels"));
+          level.put("children",domain);
+          listMap.add(level);
         }
       }
       return JsonResult.successJson(listMap);

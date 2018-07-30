@@ -9,6 +9,7 @@
     a.name AS name,
     a.parent_id AS parentId,
     a.domainId AS domainId,
+    a.level AS levels,
     b.domain_name AS domainName
     FROM standard_category_info a
     LEFT JOIN md_domain_info b
@@ -16,7 +17,47 @@
   </select>
 
   <select id="selectList" resultType="java.util.Map">
-    select * from standard_main_info
+    select
+    id AS id,
+    entity_id AS entityId,
+    entity_name AS entityName,
+    entity_desc AS entityDesc,
+    entity_alias AS entityAlias,
+    entity_category AS entityCategory,
+    entity_domain_id AS entityDomainId,
+    standard_level AS standardLevel,
+    business_definition AS businessDefinition,
+    according AS according,
+    def_principle AS defPrinciple,
+    supervision AS supervision,
+    entity_type AS entityType,
+    data_type AS dataType,
+    data_length AS datalength,
+    data_pattern AS dataPattern,
+    data_unit AS dataUnit,
+    data_area AS dataArea,
+    data_precision AS dataPrecision,
+    udc_rule_name AS udcRuleName,
+    udc_code AS udcCode,
+    udc_principle AS udcPrinciple,
+    business_rule AS businessRule,
+    technique_rule AS techniqueRule,
+    oral_technique_rule AS oralTechniqueRule,
+    system_from AS systemFrom,
+    system_used AS systemUsed,
+    display_type AS displayType,
+    logic_type AS logicType,
+    frequency AS frequency,
+    control_dept AS controlDept,
+    co_sector AS coSector,
+    entity_status AS entityStatus,
+    effective_time AS effectiveTime,
+    offline_time AS offlineTime,
+    remark AS remark,
+    version AS version,
+    checking_rule AS checkingRule,
+    data_category AS dataCategory
+    from standard_main_info
     <where>
       <if test="entityName !=null and entityName.toString().length()>0">
         entity_name LIKE CONCAT(CONCAT('%',#{entityName}), '%')
@@ -30,6 +71,9 @@
       </if>
       <if test="entityDomainId !=null and entityDomainId.toString().length()>0">
         and entity_domain_id = #{entityDomainId}
+      </if>
+      <if test="standardLevel !=null and standardLevel.toString().length()>0">
+        and standard_level = #{standardLevel}
       </if>
     </where>
   </select>
