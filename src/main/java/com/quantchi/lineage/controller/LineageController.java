@@ -37,10 +37,10 @@ public class LineageController {
      * @apiSuccess {String} [data.nodes.metricId] 指标id
      * @apiSuccess {String} [data.nodes.metricName] 指标名称
      * @apiSuccess {String} [data.nodes.phsicalFieldName] 物理字段名称
-     * @apiSuccess {String} [data.isOpen] 是否可点击
+     * @apiSuccess {String} [data.nodes.isOpen] 是否可点击
      * @apiSuccess {List} [data.edges] 边信息列表
-     * @apiSuccess {List} [data.edges.source] 边源节点id
-     * @apiSuccess {List} [data.edges.target] 边目标节点id
+     * @apiSuccess {String} [data.edges.source] 边源节点id
+     * @apiSuccess {String} [data.edges.target] 边目标节点id
      */
     @RequestMapping(value = "/lineage", method = {RequestMethod.GET})
     public
