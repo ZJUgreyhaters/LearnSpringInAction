@@ -18,6 +18,10 @@ public interface StandInfoMapper {
 
   List<Map<String, Object>> selectMetric(StandardMainInfo standardMainInfo);
 
-  List<Map<String, Object>> selectCodeDefinition(Map<String,Object> map);
+  List<Map<String, Object>> selectCodeDefinition(Map<String, Object> map);
+
+  List<Map<String, Object>> selectBusiness(Map<String, Object> map);
+
+  List<Map<String, Object>> selectPhysicalProperty(Map<String, Object> map);
 
 }

@@ -1,8 +1,11 @@
 package com.quantchi.termInfo.controller;
 
+import com.quantchi.common.JsonResult;
 import com.quantchi.termInfo.pojo.StandardMainInfo;
 import com.quantchi.termInfo.service.StandInfoService;
+import com.quantchi.termInfo.service.TermFileService;
 import java.util.Map;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +19,9 @@ public class StandInfoController {
 
   @Autowired
   private StandInfoService standInfoService;
+
+  @Autowired
+  private TermFileService termFileService;
 
   /**
    * @api {post} /api/standard 标准查询接口
@@ -40,7 +46,7 @@ public class StandInfoController {
    * @apiSuccess {String} [data.entityDomainId] 标准主题id
    * @apiSuccess {String} [data.entityCategory] 标准分类
    * @apiSuccess {String} [data.standardLevel] 标准层次
-   * @apiSuccess {String} [data.business_definition] 业务定义
+   * @apiSuccess {String} [data.businessDefinition] 业务定义
    * @apiSuccess {String} [data.according] 制定依据
    * @apiSuccess {String} [data.supervision] 监管标志
    * @apiSuccess {String} [data.udcRuleName] 编码规则
@@ -123,7 +129,7 @@ public class StandInfoController {
    * @apiSuccess {String} [data.entityDomainId] 标准主题id
    * @apiSuccess {String} [data.entityCategory] 标准分类
    * @apiSuccess {String} [data.standardLevel] 标准层次
-   * @apiSuccess {String} [data.business_definition] 业务定义
+   * @apiSuccess {String} [data.businessDefinition] 业务定义
    * @apiSuccess {String} [data.according] 制定依据
    * @apiSuccess {String} [data.supervision] 监管标志
    * @apiSuccess {String} [data.udcRuleName] 编码规则
@@ -198,16 +204,27 @@ public class StandInfoController {
   @ResponseBody
   @RequestMapping(value = "/insertMetric", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String insertMetric(StandardMainInfo standardMainInfo) {
-
-    return standInfoService.selectListCategory(standardMainInfo);
+  public String insertMetric(@RequestBody Map<String, Object> map) {
+    try {
+      if(map.get("entityId")==null||map.get("entityId").toString().length()==0){
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        map.put("entityId",uuid);
+        termFileService.insertTargetMain(map);
+      }else{
+        termFileService.updateStandardMain(map);
+      }
+      return JsonResult.successJson();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("insert error");
+    }
   }
 
   /**
-   * @api {get} /api/metricCategory 指标新增接口
+   * @api {post} /api/selectBusiness 业务线查询接口
    * @apiVersion 1.0.0
-   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/metricCategory
-   * @apiName metricCategory
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/selectBusiness
+   * @apiName selectBusiness
    * @apiGroup StandInfoController
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
@@ -219,19 +236,43 @@ public class StandInfoController {
    * @apiSuccess {String} [data.tableName] 表名称
    */
   @ResponseBody
-  @RequestMapping(value = "/metricCategory", method = {
-          RequestMethod.GET}, produces = "application/json;charset=UTF-8")
-  public String getMetricCategory(StandardMainInfo standardMainInfo) {
-
-    return standInfoService.selectListCategory(standardMainInfo);
+  @RequestMapping(value = "/selectBusiness", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String selectBusiness(@RequestBody Map<String, Object> map) {
+    return standInfoService.selectBusiness(map);
   }
+
   //查询代码定义
   @ResponseBody
   @RequestMapping(value = "/codeDefinition", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String codeDefinition(@RequestBody Map<String,Object> map) {
+  public String codeDefinition(@RequestBody Map<String, Object> map) {
 
     return standInfoService.selectCodeDefinition(map);
+  }
+  /**
+   * @api {post} /api/selectPhysicalProperty 查询指标物理字段信息
+   * @apiVersion 1.0.0
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/selectPhysicalProperty
+   * @apiName selectPhysicalProperty
+   * @apiGroup StandInfoController
+   * @apiParam {String} [entityId] 指标编号
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} msg  成功或者错误信息
+   * @apiSuccess {List} [data] 返回数据 物理信息列表
+   * @apiSuccess {String} [data.fieldId] 字段编号
+   * @apiSuccess {String} [data.entityId] 指标编号
+   * @apiSuccess {String} [data.physicalTable] 表名
+   * @apiSuccess {String} [data.physicalDb] 数据源
+   * @apiSuccess {String} [data.physicalField] 字段名
+   */
+  //查询指标物理属性
+  @ResponseBody
+  @RequestMapping(value = "/selectPhysicalProperty ", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String selectPhysicalProperty(@RequestBody Map<String, Object> map) {
+
+    return standInfoService.selectPhysicalProperty(map);
   }
 
 }

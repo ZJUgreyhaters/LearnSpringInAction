@@ -14,5 +14,9 @@ public interface StandInfoService {
 
   String selectMetric(StandardMainInfo standardMainInfo);
 
-  String selectCodeDefinition(Map<String,Object> map);
+  String selectCodeDefinition(Map<String, Object> map);
+
+  String selectBusiness(Map<String, Object> map);
+
+  String selectPhysicalProperty(Map<String, Object> map);
 }

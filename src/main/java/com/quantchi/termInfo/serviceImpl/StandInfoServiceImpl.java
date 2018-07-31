@@ -169,4 +169,26 @@ public class StandInfoServiceImpl implements StandInfoService {
     }
   }
 
+  @Override
+  public String selectBusiness(Map<String, Object> map) {
+    try {
+      List<Map<String, Object>> list = standInfoMapper.selectBusiness(map);
+      return JsonResult.successJson(list);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("select error！");
+    }
+  }
+
+  @Override
+  public String selectPhysicalProperty(Map<String, Object> map) {
+    try {
+      List<Map<String, Object>> list = standInfoMapper.selectPhysicalProperty(map);
+      return JsonResult.successJson(list);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("select error！");
+    }
+  }
+
 }
