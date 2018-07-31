@@ -27,41 +27,69 @@ public class StandInfoServiceImpl implements StandInfoService {
     try {
       List<Map<String, Object>> list = standInfoMapper.selectListCategory(standardMainInfo);
       List<Map<String, Object>> listMap = new ArrayList<>();
+      List<Object> domainNameList = new ArrayList<>();
+      List<Object> levelNameList = new ArrayList<>();
       for (Map<String, Object> map : list) {
-        if (map.get("parentId") != null && map.get("parentId").toString().length() > 0) {
-          continue;
-        } else {
-          Map<String, Object> level = new HashMap();
+        if (!domainNameList.contains(map.get("domainId"))) {
+          domainNameList.add(map.get("domainId"));
+        }
+        if (!levelNameList.contains(map.get("levels"))) {
+          levelNameList.add(map.get("levels"));
+        }
+      }
+      for (Object levelName : levelNameList) {
+        List<Map<String, Object>> levelList = new ArrayList<>();
+        Map<String, Object> level = new HashMap();
+        level.put("name", levelName);
+        level.put("id", levelName);
+        for (Object dominName : domainNameList) {
+          List<Map<String, Object>> domainList = new ArrayList<>();
           Map<String, Object> domain = new HashMap();
-          Map<String, Object> map2 = new HashMap();
-          map2.put("id", map.get("id"));
-          map2.put("name", map.get("name"));
-          for (Map<String, Object> map1 : list) {
-            if (Objects.equals(map1.get("parentId"), map.get("id").toString())) {
-              Map<String, Object> mapChilden = new HashMap();
-              mapChilden.put("id", map1.get("id"));
-              mapChilden.put("name", map1.get("name"));
-              mapChilden.put("parentId", map1.get("parentId"));
-              for (Map<String, Object> map3 : list) {
-                if (Objects.equals(map3.get("parentId"), map1.get("id").toString())) {
-                  Map<String, Object> mapChilden1 = new HashMap();
-                  mapChilden1.put("id", map3.get("id"));
-                  mapChilden1.put("name", map3.get("name"));
-                  mapChilden1.put("parentId", map3.get("parentId"));
-                  mapChilden.put("children", mapChilden1);
+          domain.put("id", dominName);
+          domain.put("name", dominName);
+          int a = 0;
+          for (Map<String, Object> map : list) {
+            if (levelName.equals(map.get("levels")) && dominName.equals(map.get("domainId"))) {
+              if (map.get("parentId") != null && map.get("parentId").toString().length() > 0) {
+                continue;
+              } else {
+                a = 1;
+                Map<String, Object> map2 = new HashMap();
+                map2.put("id", map.get("id"));
+                map2.put("name", map.get("name"));
+                List<Map<String, Object>> childrenTwoList = new ArrayList<>();
+                for (Map<String, Object> map1 : list) {
+                  if (Objects.equals(map1.get("parentId"), map.get("id").toString())) {
+                    Map<String, Object> mapChilden = new HashMap();
+                    mapChilden.put("id", map1.get("id"));
+                    mapChilden.put("name", map1.get("name"));
+                    mapChilden.put("parentId", map1.get("parentId"));
+                    List<Map<String, Object>> childrenList = new ArrayList<>();
+                    for (Map<String, Object> map3 : list) {
+                      if (Objects.equals(map3.get("parentId"), map1.get("id").toString())) {
+                        Map<String, Object> mapChilden1 = new HashMap();
+                        mapChilden1.put("id", map3.get("id"));
+                        mapChilden1.put("name", map3.get("name"));
+                        mapChilden1.put("parentId", map3.get("parentId"));
+                        childrenList.add(mapChilden1);
+                      }
+                    }
+                    mapChilden.put("children", childrenList);
+                    childrenTwoList.add(mapChilden);
+                  }
                 }
+                map2.put("children", childrenTwoList);
+                domainList.add(map2);
               }
-              map2.put("children", mapChilden);
             }
           }
-          domain.put("name", map.get("domainId"));
-          domain.put("id", map.get("domainId"));
-          domain.put("children",map2);
-          level.put("name",map.get("levels"));
-          level.put("id",map.get("levels"));
-          level.put("children",domain);
-          listMap.add(level);
+          if (a == 1) {
+            domain.put("children", domainList);
+            levelList.add(domain);
+          }
         }
+        level.put("children", levelList);
+        listMap.add(level);
       }
       return JsonResult.successJson(listMap);
     } catch (Exception e) {
@@ -82,12 +110,12 @@ public class StandInfoServiceImpl implements StandInfoService {
         standardMainInfo.setEntityCategory(id);
       }
       List<Map<String, Object>> resultList = standInfoMapper.selectList(standardMainInfo);
-      String total =resultList.size()+"";
+      String total = resultList.size() + "";
       if (standardMainInfo.getPage_size() != null && standardMainInfo.getPage() != null) {
         resultList = Paging
             .pagingPlug(resultList, standardMainInfo.getPage_size(), standardMainInfo.getPage());
       }
-      return JsonResult.successJson(total,resultList);
+      return JsonResult.successJson(total, resultList);
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("select error！");
@@ -101,9 +129,9 @@ public class StandInfoServiceImpl implements StandInfoService {
       StringBuilder ids = new StringBuilder();
       int a = 0;
       for (Map<String, Object> map : list) {
-        if(a == 0){
+        if (a == 0) {
           ids.append("'").append(map.get("id")).append("'");
-        }else{
+        } else {
           ids.append(",").append("'").append(map.get("id")).append("'");
         }
         a++;
