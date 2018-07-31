@@ -74,7 +74,7 @@
       <if test="entityDomainId !=null and entityDomainId.toString().length()>0">
         and a.entity_domain_id = #{entityDomainId}
       </if>
-      <if test="standardLevel !=null and standardLevel.toString().length()>0">
+      <if test="entityType !=null and entityType.toString().length()>0">
         and a.entity_type = #{entityType}
       </if>
     </where>

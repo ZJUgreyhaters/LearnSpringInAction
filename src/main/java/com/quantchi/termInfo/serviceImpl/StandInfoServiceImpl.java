@@ -45,7 +45,9 @@ public class StandInfoServiceImpl implements StandInfoService {
         for (Object dominName : domainNameList) {
           List<Map<String, Object>> domainList = new ArrayList<>();
           Map<String, Object> domain = new HashMap();
-          domain.put("id", dominName);
+          StringBuilder name = new StringBuilder();
+          name.append(levelName).append("_").append(dominName);
+          domain.put("id", name);
           domain.put("name", dominName);
           int a = 0;
           for (Map<String, Object> map : list) {
@@ -109,6 +111,13 @@ public class StandInfoServiceImpl implements StandInfoService {
         String id = selectThreeId(ids.toString());
         standardMainInfo.setEntityCategory(id);
       }
+      if (standardMainInfo.getEntityDomainId() != null
+          && standardMainInfo.getEntityDomainId().length() > 0) {
+        String entityDomainId = standardMainInfo.getEntityDomainId();
+        String[] split = entityDomainId.split("_");
+        standardMainInfo.setEntityType(split[0]);
+        standardMainInfo.setEntityDomainId(split[1]);
+      }
       List<Map<String, Object>> resultList = standInfoMapper.selectList(standardMainInfo);
       String total = resultList.size() + "";
       if (standardMainInfo.getPage_size() != null && standardMainInfo.getPage() != null) {
@@ -151,7 +160,7 @@ public class StandInfoServiceImpl implements StandInfoService {
         list = Paging
             .pagingPlug(list, standardMainInfo.getPage_size(), standardMainInfo.getPage());
       }
-      return JsonResult.successJson(total,list);
+      return JsonResult.successJson(total, list);
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("select error！");
