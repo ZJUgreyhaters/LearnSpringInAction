@@ -122,6 +122,7 @@ public class StandInfoServiceImpl implements StandInfoService {
     }
   }
 
+
   String selectThreeId(String id) {
     List<Map<String, Object>> list = standInfoMapper.selectThreeId(id);
     String s = id;
@@ -140,4 +141,32 @@ public class StandInfoServiceImpl implements StandInfoService {
     }
     return s;
   }
+
+  @Override
+  public String selectMetric(StandardMainInfo standardMainInfo) {
+    try {
+      List<Map<String, Object>> list = standInfoMapper.selectMetric(standardMainInfo);
+      String total = list.size() + "";
+      if (standardMainInfo.getPage_size() != null && standardMainInfo.getPage() != null) {
+        list = Paging
+            .pagingPlug(list, standardMainInfo.getPage_size(), standardMainInfo.getPage());
+      }
+      return JsonResult.successJson(total,list);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("select error！");
+    }
+  }
+
+  @Override
+  public String selectCodeDefinition(Map<String, Object> map) {
+    try {
+      List<Map<String, Object>> list = standInfoMapper.selectCodeDefinition(map);
+      return JsonResult.successJson(list);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("select error！");
+    }
+  }
+
 }

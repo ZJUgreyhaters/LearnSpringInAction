@@ -16,4 +16,8 @@ public interface StandInfoMapper {
 
   List<Map<String, Object>> selectThreeId(@Param("id") String id);
 
+  List<Map<String, Object>> selectMetric(StandardMainInfo standardMainInfo);
+
+  List<Map<String, Object>> selectCodeDefinition(Map<String,Object> map);
+
 }

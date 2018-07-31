@@ -56,6 +56,7 @@
     ifnull(a.data_category,'') AS dataCategory,
     ifnull(a.standard_system,'') AS standardSystem,
     ifnull(c.entity_desc,'') AS termEntityDesc
+    ifnull(c.entity_id,'') AS termEntityId
     from standard_main_info a
     left join term_standard_relation b on b.standard_id = a.entity_id
     left JOIN term_main_info c on c.entity_id = b.entity_id
@@ -81,5 +82,77 @@
 
   <select id="selectThreeId" resultType="java.util.Map">
     SELECT * FROM standard_category_info where parent_id in (${id})
+  </select>
+  <select id="selectCodeDefinition" resultType="java.util.Map">
+    select
+    id,
+    ifnull(udc_rule_name,'') AS udcRuleName,
+    ifnull(udc_code,'') AS udcCode,
+    ifnull(udc_value,'') AS udcValue,
+    ifnull(udc_desc,'') AS udcDesc
+    from sys_udc
+    <where>
+      <if test="id!=null and id.toString().length()>0">
+        id = #{id}
+      </if>
+      <if test="udcCode!=null and udcCode.toString().length()>0">
+        udc_code = #{udcCode}
+      </if>
+    </where>
+  </select>
+  <select id="selectMetric" resultType="java.util.Map">
+   SELECT
+    a.id AS id,
+    a.entity_id AS entityId,
+    ifnull(a.entity_name,'') AS entityName,
+    ifnull(a.entity_desc,'') AS entityDesc,
+    ifnull(a.entity_alias,'') AS entityAlias,
+    ifnull(a.entity_category,'') AS entityCategory,
+    ifnull(a.entity_domain_id,'') AS entityDomainId,
+    ifnull(a.standard_level,'') AS standardLevel,
+    ifnull(a.business_definition,'') AS businessDefinition,
+    ifnull(a.according,'') AS according,
+    ifnull(a.def_principle,'') AS defPrinciple,
+    ifnull(a.supervision,'') AS supervision,
+    ifnull(a.entity_type,'') AS entityType,
+    ifnull(a.data_type,'') AS dataType,
+    ifnull(a.data_length,'') AS datalength,
+    ifnull(a.data_pattern,'') AS dataPattern,
+    ifnull(a.data_unit,'') AS dataUnit,
+    ifnull(a.data_area,'') AS dataArea,
+    ifnull(a.data_precision,'') AS dataPrecision,
+    ifnull(a.udc_rule_name,'') AS udcRuleName,
+    ifnull(a.udc_code,'') AS udcCode,
+    ifnull(a.udc_principle,'') AS udcPrinciple,
+    ifnull(a.business_rule,'') AS businessRule,
+    ifnull(a.technique_rule,'') AS techniqueRule,
+    ifnull(a.oral_technique_rule,'') AS oralTechniqueRule,
+    ifnull(a.system_from,'') AS systemFrom,
+    ifnull(a.system_used,'') AS systemUsed,
+    ifnull(a.display_type,'') AS displayType,
+    ifnull(a.logic_type,'') AS logicType,
+    ifnull(a.frequency,'') AS frequency,
+    ifnull(a.control_dept,'') AS controlDept,
+    ifnull(a.co_sector,'') AS coSector,
+    ifnull(a.entity_status,'') AS entityStatus,
+    ifnull(a.effective_time,'') AS effectiveTime,
+    ifnull(a.offline_time,'') AS offlineTime,
+    ifnull(a.remark,'') AS remark,
+    ifnull(a.version,'') AS version,
+    ifnull(a.checking_rule,'') AS checkingRule,
+    ifnull(a.data_category,'') AS dataCategory
+    from term_main_info a
+    <where>
+      <if test="entityName !=null and entityName.toString().length()>0">
+        a.entity_name LIKE CONCAT(CONCAT('%',#{entityName}), '%')
+        or a.entity_desc LIKE CONCAT(CONCAT('%',#{entityName}), '%')
+      </if>
+      <if test="entityId !=null and entityId.toString().length()>0">
+        and a.entity_id = #{entityId}
+      </if>
+      <if test="entityDomainId !=null and entityDomainId.toString().length()>0">
+        and a.entity_domain_id = #{entityDomainId}
+      </if>
+    </where>
   </select>
 </mapper>
