@@ -48,7 +48,7 @@ public class LineageService {
             _node.put("metricName",_lineage_node.getEntityDesc());
             _node.put("phsicalFieldName",_lineage_node.getPhysicalField());
             _node.put("phsicalFieldDesc",_lineage_node.getPhysicalFieldDesc());
-            _node.put("isOpen",!(_lineage_node.getLineageNode().isEndNode() && _lineage_node.getLineageNode().isStartNode()));
+            _node.put("isOpen",!(_lineage_node.getLineageNode().isEndNode() || _lineage_node.getLineageNode().isStartNode()));
             _lineage_nodes.add(_node);
         }
 
