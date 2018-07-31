@@ -56,13 +56,11 @@
   </select>
   <select id="selectStandardCategory" resultType="java.util.Map">
      SELECT
-     c.id AS cid,
-     d.domain_id AS domainId
+     c.id AS cid
      FROM standard_category_info a
      LEFT JOIN standard_category_info b ON  a.id = b.parent_id
      LEFT JOIN standard_category_info c ON b.id = c.parent_id
-     LEFT JOIN md_domain_info d ON d.domain_id = a.domainId
-     WHERE a.name = #{one} AND b.name = #{two} AND c.name = #{three} AND d.domain_name = #{domainName}
+     WHERE a.name = #{one} AND b.name = #{two} AND c.name = #{three} AND a.domainId = #{domainName}
   </select>
 
   <select id="selectStandardMain" resultType="java.util.Map">
@@ -79,7 +77,7 @@
    checking_rule,data_category
    ) VALUES
     (#{standardId},#{entityName},#{entityDesc},#{entityAlias},
-   #{entityCategory},#{domainId},#{standardLevel},#{businessDefinition},#{according},
+   #{entityCategory},#{domainName},#{standardLevel},#{businessDefinition},#{according},
    #{defPrinciple},#{supervision},#{entityType},#{dataType},#{dataLength},#{dataPattern},#{dataUnit},
    #{dataArea},#{dataPrecision},#{udcRuleName},#{udcCode},#{udcPrinciple},#{businessRule},
    #{techniqueRule},#{oralTechniqueRule},#{systemFrom},#{systemUsed},#{displayType},#{logicType},
@@ -92,7 +90,7 @@
    entity_desc = #{entityDesc},
    entity_alias = #{entityAlias},
    entity_category = #{entityCategory},
-   entity_domain_id = #{domainId},
+   entity_domain_id = #{domainName},
    standard_level = #{standardLevel},
    business_definition = #{businessDefinition},
    according = #{according},
