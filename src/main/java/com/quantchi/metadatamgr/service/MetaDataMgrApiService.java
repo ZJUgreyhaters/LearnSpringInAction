@@ -640,8 +640,8 @@ public class MetaDataMgrApiService {
         .selectAllByExample(dsMetaInfoDBExample);
 
     DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-    dsTableInfoDBExample.createCriteria()
-        .andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getDsName());
+    //dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getDsName());
+    dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getId().toString());
     List<DSTableInfoDB> tableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
     //遍历所有表
     for (DSTableInfoDB dsTableInfoDB : tableInfoDBList) {
@@ -703,8 +703,10 @@ public class MetaDataMgrApiService {
 
     //封装termMainInfo,获取表
     DSEntityInfoDBExample dsEntityInfoDBExample = new DSEntityInfoDBExample();
+    /*dsEntityInfoDBExample.createCriteria()
+        .andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getDsName());*/
     dsEntityInfoDBExample.createCriteria()
-        .andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getDsName());
+            .andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getId().toString());
     List<DSEntityInfoDB> dsEntityInfoDBList = dsEntityInfoDBMapper
         .selectByExample(dsEntityInfoDBExample);
     for (DSEntityInfoDB dsEntityInfoDB : dsEntityInfoDBList) {

@@ -100,10 +100,10 @@ public class StandInfoController {
   }
 
   /**
-   * @api {post} /api/metricCategory 指标查询接口
+   * @api {post} /api/metric 指标查询接口
    * @apiVersion 1.0.0
-   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/metricCategory
-   * @apiName standard
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/metric
+   * @apiName metric
    * @apiGroup StandInfoController
    * @apiParam {Integer} [page] 页数
    * @apiParam {Integer} [page_size] 每页数据数
@@ -148,9 +148,9 @@ public class StandInfoController {
    * @apiSuccess {String} [data.remark] 备注
    */
   @ResponseBody
-  @RequestMapping(value = "/metricCategory", method = {
-      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String selectMetricCategory(StandardMainInfo standardMainInfo) {
+  @RequestMapping(value = "/metric", method = {
+      RequestMethod.GET}, produces = "application/json;charset=UTF-8")
+  public String selectMetric(StandardMainInfo standardMainInfo) {
 
     return standInfoService.selectListCategory(standardMainInfo);
   }
@@ -197,7 +197,30 @@ public class StandInfoController {
   @ResponseBody
   @RequestMapping(value = "/metric", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String insertMetricCategory(StandardMainInfo standardMainInfo) {
+  public String insertMetric(StandardMainInfo standardMainInfo) {
+
+    return standInfoService.selectListCategory(standardMainInfo);
+  }
+
+  /**
+   * @api {get} /api/metricCategory 指标新增接口
+   * @apiVersion 1.0.0
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/metricCategory
+   * @apiName metricCategory
+   * @apiGroup StandInfoController
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} msg  成功或者错误信息
+   * @apiSuccess {String} total  返回记录总数
+   * @apiSuccess {List} [data] 返回数据 业务分类列表
+   * @apiSuccess {String} [data.id] 业务分类id
+   * @apiSuccess {String} [data.businessName] 业务线名称
+   * @apiSuccess {String} [data.domainName] 业务主体名称
+   * @apiSuccess {String} [data.tableName] 表名称
+   */
+  @ResponseBody
+  @RequestMapping(value = "/metricCategory", method = {
+          RequestMethod.GET}, produces = "application/json;charset=UTF-8")
+  public String getMetricCategory(StandardMainInfo standardMainInfo) {
 
     return standInfoService.selectListCategory(standardMainInfo);
   }

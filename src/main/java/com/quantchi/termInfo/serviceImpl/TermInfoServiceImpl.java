@@ -218,7 +218,7 @@ public class TermInfoServiceImpl implements TermInfoService {
                 || termGenInfo.getFieldInfoList() == null)
           throw new Exception("miss table or field or term info");*/
 
-        if (termGenInfo.getTermMainInfo().getEntityId() != null) {
+        if (termGenInfo.getTermMainInfo() != null && termGenInfo.getTermMainInfo().getEntityId() != null) {
           termMainInfoMapper.update(termGenInfo.getTermMainInfo());
           ids.add(termGenInfo.getTermMainInfo().getEntityId());
           return JsonResult.successJson(ids);

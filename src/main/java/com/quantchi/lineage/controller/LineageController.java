@@ -37,6 +37,7 @@ public class LineageController {
      * @apiSuccess {String} [data.nodes.metricId] 指标id
      * @apiSuccess {String} [data.nodes.metricName] 指标名称
      * @apiSuccess {String} [data.nodes.phsicalFieldName] 物理字段名称
+     * @apiSuccess {String} [data.nodes.phsicalFieldDesc] 物理字段中文名
      * @apiSuccess {String} [data.nodes.isOpen] 是否可点击
      * @apiSuccess {List} [data.edges] 边信息列表
      * @apiSuccess {String} [data.edges.source] 边源节点id

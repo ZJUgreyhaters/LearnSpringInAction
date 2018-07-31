@@ -289,13 +289,7 @@
     <dependency>
       <groupId>com.quantchi</groupId>
       <artifactId>lineage</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>tianshu-common</artifactId>
-          <groupId>com.quantchi</groupId>
-        </exclusion>
-      </exclusions>
+      <version>0.0.6-SNAPSHOT</version>
     </dependency>
 
       <dependency>
