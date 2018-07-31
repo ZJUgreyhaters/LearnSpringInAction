@@ -99,7 +99,7 @@ public class StandInfoController {
    * @api {post} /api/metric 指标查询接口
    * @apiVersion 1.0.0
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/metric
-   * @apiName metric
+   * @apiName selectMetric
    * @apiGroup StandInfoController
    * @apiParam {Integer} [page] 页数
    * @apiParam {Integer} [page_size] 每页数据数
@@ -155,7 +155,7 @@ public class StandInfoController {
    * @api {post} /api/metric 指标新增接口
    * @apiVersion 1.0.0
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/metric
-   * @apiName standard
+   * @apiName insertMetric
    * @apiGroup StandInfoController
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
@@ -199,7 +199,7 @@ public class StandInfoController {
   }
 
   /**
-   * @api {get} /api/metricCategory 指标新增接口
+   * @api {get} /api/metricCategory 指标业务分类接口
    * @apiVersion 1.0.0
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/metricCategory
    * @apiName metricCategory
