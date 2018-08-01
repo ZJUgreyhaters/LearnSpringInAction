@@ -129,7 +129,7 @@ public class StandInfoServiceImpl implements StandInfoService {
         standardMainInfo.setEntityCategory(ids.toString());
       }
       List<Map<String, Object>> resultList = standInfoMapper.selectList(standardMainInfo);
-      for (Map<String, Object> map : resultList) {
+      /*for (Map<String, Object> map : resultList) {
         List<Map<String, Object>> list = standInfoMapper.selectListCategory(map);
         if (list != null && list.get(0) != null) {
           Map<String, Object> entityCategory = new HashMap<>();
@@ -137,7 +137,7 @@ public class StandInfoServiceImpl implements StandInfoService {
           entityCategory.put("label", list.get(0).get("name"));
           map.put("entityCategory", entityCategory);
         }
-      }
+      }*/
       String total = resultList.size() + "";
       if (standardMainInfo.getPage_size() != null && standardMainInfo.getPage() != null) {
         resultList = Paging
@@ -219,13 +219,17 @@ public class StandInfoServiceImpl implements StandInfoService {
               name1.add(map2.get("domainName").toString());
               Map<String, Object> domainName = new HashMap<>();
               List<Map<String, Object>> list2 = new ArrayList<>();
-              domainName.put("id", map2.get("domainId"));
+              StringBuilder ids = new StringBuilder();
+              ids.append(map1.get("businessTypeId")).append("_").append(map2.get("domainId"));
+              domainName.put("id", ids);
               domainName.put("name", map2.get("domainName"));
               for (Map<String, Object> map3 : list) {
                 if (map3.get("businessTypeName").equals(map1.get("businessTypeName")) && map3
                     .get("domainName").equals(map2.get("domainName"))) {
                   Map<String, Object> logicTableName = new HashMap<>();
-                  logicTableName.put("id", map3.get("logicTableId"));
+                  StringBuilder logicTableIds = new StringBuilder();
+                  logicTableIds.append(map1.get("businessTypeId")).append("_").append(map2.get("domainId")).append("_").append(map3.get("logicTableId"));
+                  logicTableName.put("id",logicTableIds);
                   logicTableName.put("name", map3.get("logicTableName"));
                   list2.add(logicTableName);
                 }
