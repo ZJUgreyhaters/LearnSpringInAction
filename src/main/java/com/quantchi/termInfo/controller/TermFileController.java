@@ -4,6 +4,7 @@ import com.quantchi.common.ExcelUtil;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.ResultCode;
 import com.quantchi.common.SQLQueryConfig;
+import com.quantchi.lineage.metric.MetricLineage;
 import com.quantchi.termInfo.service.TermFileService;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -60,13 +61,13 @@ public class TermFileController {
     }
 
     String mapping = null;
-    if("standard".equals(typeOne) && "mapping".equals(typeTwo)){
+    if ("standard".equals(typeOne) && "mapping".equals(typeTwo)) {
       mapping = sqlQueryConfig.getSEL_DB_STANDARD_MAPPING();
-    }else if("target".equals(typeOne) && "mapping".equals(typeTwo)){
+    } else if ("target".equals(typeOne) && "mapping".equals(typeTwo)) {
       mapping = sqlQueryConfig.getSEL_DB_TARGET_MAPPING();
-    }else if("standard".equals(typeOne) && "common".equals(typeTwo)){
+    } else if ("standard".equals(typeOne) && "common".equals(typeTwo)) {
       mapping = sqlQueryConfig.getSEL_DB_STANDARD_COMMON();
-    }else if("target".equals(typeOne) && "common".equals(typeTwo)){
+    } else if ("target".equals(typeOne) && "common".equals(typeTwo)) {
       mapping = sqlQueryConfig.getSEL_DB_TARGET_COMMON();
     }
     String[] split = mapping.split(",");
@@ -80,7 +81,7 @@ public class TermFileController {
       List<String> list = new LinkedList<>();
       List<String> listStrings = new LinkedList<>();
       for (String str : strings) {
-        if(str.length()==0){
+        if (str.length() == 0) {
           continue;
         }
         listStrings.add(str);
@@ -112,21 +113,28 @@ public class TermFileController {
         for (int i = 1; i < result.size(); i++) {
           String[] values = result.get(i);
           Map<String, Object> map1 = new HashMap<>();
-          for (int j = 0; j <listStrings.size(); j++) {
+          for (int j = 0; j < listStrings.size(); j++) {
             map1.put(list.get(j), values[j]);
           }
           List<Map<String, Object>> PhysicalInfo = termFileService.selectPhysicalInfo(map1);
-          if(PhysicalInfo!=null && !PhysicalInfo.isEmpty()){
+          if (PhysicalInfo != null && !PhysicalInfo.isEmpty()) {
             map1.put("fieldId", PhysicalInfo.get(0).get("entity_id"));
-          }else {
+          } else {
             map1.put("fieldId", null);
           }
           List<Map<String, Object>> PhysicalFile = termFileService.selectPhysicalFile(map1);
-          if (PhysicalFile.isEmpty() || PhysicalFile == null) {
+          if (PhysicalFile == null || PhysicalFile.isEmpty()) {
             termFileService.insertPhysicalFile(map1);
-          } else {
+          }
+          /*else {
             //termFileService.updatePhysicalFile(map1);
             continue;
+          }*/
+          List<Map<String, Object>> list1 = termFileService.selectTargetMain(map1);
+          if (list1 != null && !list1.isEmpty() && list1.get(0).get("techniqueRule") != null
+              && list1.get(0).get("techniqueRule").toString().length() > 0 ) {
+            MetricLineage.loadLineage(list1.get(0).get("entityId").toString(),
+                list1.get(0).get("techniqueRule").toString());
           }
         }
         return JsonResult.successJson("上传成功！");
@@ -150,7 +158,7 @@ public class TermFileController {
           if (Objects.equals(map1.get("dataLength"), "")) {
             map1.put("dataLength", null);
           }
-          if (standardMain.isEmpty() || standardMain == null) {
+          if (standardMain == null || standardMain.isEmpty()) {
             termFileService.insertStandardMain(map1);
           } else {
             termFileService.updateStandardMain(map1);
@@ -173,10 +181,18 @@ public class TermFileController {
           if (Objects.equals(map1.get("dataLength"), "")) {
             map1.put("dataLength", null);
           }
-          if (targetMain.isEmpty() || targetMain == null) {
+          if (targetMain == null || targetMain.isEmpty()) {
             termFileService.insertTargetMain(map1);
           } else {
             termFileService.updateTargetMain(map1);
+          }
+          if (map1.get("techniqueRule") != null
+              && map1.get("techniqueRule").toString().length() > 0) {
+            List<Map<String, Object>> list1 = termFileService.selectPhysicalFile(map1);
+            if (list1 != null && !list1.isEmpty()) {
+              MetricLineage.loadLineage(map1.get("entityId").toString(),
+                  map1.get("techniqueRule").toString());
+            }
           }
         }
         return JsonResult.successJson("上传成功！");

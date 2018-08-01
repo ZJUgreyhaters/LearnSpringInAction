@@ -23,9 +23,9 @@ public class StandInfoServiceImpl implements StandInfoService {
   private StandInfoMapper standInfoMapper;
 
   @Override
-  public String selectListCategory(StandardMainInfo standardMainInfo) {
+  public String selectListCategory(Map<String, Object> mapCategory) {
     try {
-      List<Map<String, Object>> list = standInfoMapper.selectListCategory(standardMainInfo);
+      List<Map<String, Object>> list = standInfoMapper.selectListCategory(mapCategory);
       List<Map<String, Object>> listMap = new ArrayList<>();
       List<Object> domainNameList = new ArrayList<>();
       List<Object> levelNameList = new ArrayList<>();
@@ -115,10 +115,29 @@ public class StandInfoServiceImpl implements StandInfoService {
           && standardMainInfo.getEntityDomainId().length() > 0) {
         String entityDomainId = standardMainInfo.getEntityDomainId();
         String[] split = entityDomainId.split("_");
-        standardMainInfo.setEntityType(split[0]);
-        standardMainInfo.setEntityDomainId(split[1]);
+        List<Map<String, Object>> list = standInfoMapper.selectIdByDomainId(split[0], split[1]);
+        StringBuilder ids = new StringBuilder();
+        int a = 1;
+        for (Map<String, Object> map : list) {
+          if (a == 1) {
+            ids.append("'").append(map.get("id")).append("'");
+          } else {
+            ids.append(",").append("'").append(map.get("id")).append("'");
+          }
+          a++;
+        }
+        standardMainInfo.setEntityCategory(ids.toString());
       }
       List<Map<String, Object>> resultList = standInfoMapper.selectList(standardMainInfo);
+      for (Map<String, Object> map : resultList) {
+        List<Map<String, Object>> list = standInfoMapper.selectListCategory(map);
+        if (list != null && list.get(0) != null) {
+          Map<String, Object> entityCategory = new HashMap<>();
+          entityCategory.put("value", list.get(0).get("id"));
+          entityCategory.put("label", list.get(0).get("name"));
+          map.put("entityCategory", entityCategory);
+        }
+      }
       String total = resultList.size() + "";
       if (standardMainInfo.getPage_size() != null && standardMainInfo.getPage() != null) {
         resultList = Paging
@@ -182,7 +201,44 @@ public class StandInfoServiceImpl implements StandInfoService {
   public String selectBusiness(Map<String, Object> map) {
     try {
       List<Map<String, Object>> list = standInfoMapper.selectBusiness(map);
-      return JsonResult.successJson(list);
+      List<String> name = new ArrayList<>();
+      List<Map<String, Object>> listMap = new ArrayList<>();
+      for (Map<String, Object> map1 : list) {
+        if (name.contains(map1.get("businessTypeName"))) {
+          continue;
+        } else {
+          name.add(map1.get("businessTypeName").toString());
+          Map<String, Object> businessTypeName = new HashMap<>();
+          List<Map<String, Object>> list1 = new ArrayList<>();
+          businessTypeName.put("id", map1.get("businessTypeId"));
+          businessTypeName.put("name", map1.get("businessTypeName"));
+          List<String> name1 = new ArrayList<>();
+          for (Map<String, Object> map2 : list) {
+            if (map1.get("businessTypeName").equals(map2.get("businessTypeName")) && !name1
+                .contains(map2.get("domainName"))) {
+              name1.add(map2.get("domainName").toString());
+              Map<String, Object> domainName = new HashMap<>();
+              List<Map<String, Object>> list2 = new ArrayList<>();
+              domainName.put("id", map2.get("domainId"));
+              domainName.put("name", map2.get("domainName"));
+              for (Map<String, Object> map3 : list) {
+                if (map3.get("businessTypeName").equals(map1.get("businessTypeName")) && map3
+                    .get("domainName").equals(map2.get("domainName"))) {
+                  Map<String, Object> logicTableName = new HashMap<>();
+                  logicTableName.put("id", map3.get("logicTableId"));
+                  logicTableName.put("name", map3.get("logicTableName"));
+                  list2.add(logicTableName);
+                }
+              }
+              domainName.put("children", list2);
+              list1.add(domainName);
+            }
+          }
+          businessTypeName.put("children", list1);
+          listMap.add(businessTypeName);
+        }
+      }
+      return JsonResult.successJson(listMap);
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("select error！");

@@ -11,6 +11,11 @@
     a.domainId AS domainId,
     a.level AS levels
     FROM standard_category_info a
+    <where>
+      <if test="id != null and id.toString().length()>0">
+        a.id = #{entityCategory}
+      </if>
+    </where>
   </select>
 
   <select id="selectList" resultType="java.util.Map">
@@ -70,12 +75,6 @@
       </if>
       <if test="entityCategory !=null and entityCategory.toString().length()>0">
         and a.entity_category in (${entityCategory})
-      </if>
-      <if test="entityDomainId !=null and entityDomainId.toString().length()>0">
-        and a.entity_domain_id = #{entityDomainId}
-      </if>
-      <if test="entityType !=null and entityType.toString().length()>0">
-        and a.entity_type = #{entityType}
       </if>
     </where>
   </select>
@@ -184,5 +183,8 @@
    from term_field_relation a
    LEFT  JOIN md_physical_field_info b ON a.field_id = b.entity_id
    where  a.entity_id =#{entityId}
+  </select>
+  <select id="selectIdByDomainId" resultType="java.util.Map">
+   SELECT * FROM standard_category_info where level =#{level} and domainId =#{domainId}
   </select>
 </mapper>

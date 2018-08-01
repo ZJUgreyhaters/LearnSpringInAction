@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public interface StandInfoService {
 
-  String selectListCategory(StandardMainInfo standardMainInfo);
+  String selectListCategory(Map<String, Object> map);
 
   String selectList(StandardMainInfo standardMainInfo);
 

@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface StandInfoMapper {
 
-  List<Map<String, Object>> selectListCategory(StandardMainInfo standardMainInfo);
+  List<Map<String, Object>> selectListCategory(Map<String, Object> mapCategory);
 
   List<Map<String, Object>> selectList(StandardMainInfo standardMainInfo);
 
@@ -24,4 +24,5 @@ public interface StandInfoMapper {
 
   List<Map<String, Object>> selectPhysicalProperty(Map<String, Object> map);
 
+  List<Map<String, Object>> selectIdByDomainId(@Param("level")String level,@Param("domainId")String domainId);
 }

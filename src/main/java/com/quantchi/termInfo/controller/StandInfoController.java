@@ -101,9 +101,9 @@ public class StandInfoController {
   @ResponseBody
   @RequestMapping(value = "/standardCategory", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String listCategory(StandardMainInfo standardMainInfo) {
+  public String listCategory(@RequestBody Map<String, Object> map) {
 
-    return standInfoService.selectListCategory(standardMainInfo);
+    return standInfoService.selectListCategory(map);
   }
 
   /**
@@ -114,21 +114,19 @@ public class StandInfoController {
    * @apiGroup StandInfoController
    * @apiParam {Integer} [page] 页数
    * @apiParam {Integer} [page_size] 每页数据数
-   * @apiParam {String} [entityName] 标准名称关键字
-   * @apiParam {String} [entityId] 标准编码
-   * @apiParam {String} [entityCategory] 标准分类Id
-   * @apiParam {String} [entityDomainId] 主题id
-   * @apiParam {String} [standardLevel] 标准层次
+   * @apiParam {String} [entityName] 指标名称关键字
+   * @apiParam {String} [entityId] 指标编码
+   * @apiParam {String} [entityCategory] 指标分类Id
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    * @apiSuccess {String} total  返回记录总数
-   * @apiSuccess {List} [data] 返回数据 标准信息列表
-   * @apiSuccess {String} [data.entityId] 标准id
-   * @apiSuccess {String} [data.entityName] 标准英文名
-   * @apiSuccess {String} [data.entityDesc] 标准中文名
-   * @apiSuccess {String} [data.entityDomainId] 标准主题id
-   * @apiSuccess {String} [data.entityCategory] 标准分类
-   * @apiSuccess {String} [data.standardLevel] 标准层次
+   * @apiSuccess {List} [data] 返回数据 指标信息列表
+   * @apiSuccess {String} [data.entityId] 指标id
+   * @apiSuccess {String} [data.entityName] 指标英文名
+   * @apiSuccess {String} [data.entityDesc] 指标中文名
+   * @apiSuccess {String} [data.entityDomainId] 指标主题id
+   * @apiSuccess {String} [data.entityCategory] 指标分类
+   * @apiSuccess {String} [data.standardLevel] 指标层次
    * @apiSuccess {String} [data.businessDefinition] 业务定义
    * @apiSuccess {String} [data.according] 制定依据
    * @apiSuccess {String} [data.supervision] 监管标志
