@@ -217,7 +217,7 @@ public class StandInfoController {
         termFileService.insertTargetMain(map);
         mapResult.put("id",uuid);
       }else{
-        termFileService.updateStandardMain(map);
+        termFileService.updateTargetMain(map);
         mapResult.put("id",map.get("entityId"));
       }
       return JsonResult.successJson(mapResult);

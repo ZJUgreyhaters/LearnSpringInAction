@@ -131,10 +131,15 @@ public class TermFileController {
             continue;
           }*/
           List<Map<String, Object>> list1 = termFileService.selectTargetMain(map1);
-          if (list1 != null && !list1.isEmpty() && list1.get(0).get("techniqueRule") != null
-              && list1.get(0).get("techniqueRule").toString().length() > 0) {
-            MetricLineage.loadLineage(list1.get(0).get("entityId").toString(),
-                list1.get(0).get("techniqueRule").toString());
+          if (list1 != null && !list1.isEmpty() && list1.get(0).get("technique_rule") != null
+              && list1.get(0).get("technique_rule").toString().length() > 0) {
+            System.out.println(list1.get(0).get("entity_id").toString());
+          try{
+            MetricLineage.loadLineage(list1.get(0).get("entity_id").toString(),
+                list1.get(0).get("technique_rule").toString());
+          }catch (Exception e){
+            e.printStackTrace();
+          }
           }
         }
         return JsonResult.successJson("上传成功！");
@@ -152,11 +157,11 @@ public class TermFileController {
             map1.put("entityCategory", entityCategory.get("cid"));
           }
           List<Map<String, Object>> standardMain = termFileService.selectStandardMain(map1);
-          if (Objects.equals(map1.get("dataPrecision"), "")) {
-            map1.put("dataPrecision", null);
+          if (Objects.equals(map1.get("data_precision"), "")) {
+            map1.put("data_precision", null);
           }
-          if (Objects.equals(map1.get("dataLength"), "")) {
-            map1.put("dataLength", null);
+          if (Objects.equals(map1.get("data_length"), "")) {
+            map1.put("data_length", null);
           }
           if (standardMain == null || standardMain.isEmpty()) {
             termFileService.insertStandardMain(map1);
@@ -178,25 +183,25 @@ public class TermFileController {
             map1.put("entityCategory", domainId.get("id"));
           }
           List<Map<String, Object>> targetMain = termFileService.selectTargetMain(map1);
-          if (Objects.equals(map1.get("dataPrecision"), "")) {
-            map1.put("dataPrecision", null);
+          if (Objects.equals(map1.get("data_precision"), "")) {
+            map1.put("data_precision", null);
           }
-          if (Objects.equals(map1.get("dataLength"), "")) {
-            map1.put("dataLength", null);
+          if (Objects.equals(map1.get("data_length"), "")) {
+            map1.put("data_length", null);
           }
           if (targetMain == null || targetMain.isEmpty()) {
             termFileService.insertTargetMain(map1);
           } else {
             termFileService.updateTargetMain(map1);
           }
-          if (map1.get("techniqueRule") != null
+         /* if (map1.get("techniqueRule") != null
               && map1.get("techniqueRule").toString().length() > 0) {
             List<Map<String, Object>> list1 = termFileService.selectPhysicalFile(map1);
             if (list1 != null && !list1.isEmpty()) {
               MetricLineage.loadLineage(map1.get("entityId").toString(),
                   map1.get("techniqueRule").toString());
             }
-          }
+          }*/
         }
         return JsonResult.successJson("上传成功！");
       } else {
