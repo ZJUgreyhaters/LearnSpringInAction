@@ -115,7 +115,25 @@ public class StandInfoServiceImpl implements StandInfoService {
           && standardMainInfo.getEntityDomainId().length() > 0) {
         String entityDomainId = standardMainInfo.getEntityDomainId();
         String[] split = entityDomainId.split("_");
-        List<Map<String, Object>> list = standInfoMapper.selectIdByDomainId(split[0], split[1]);
+        standardMainInfo.setOneName(split[0]);
+        standardMainInfo.setTwoName(split[1]);
+        List<Map<String, Object>> list = standInfoMapper.selectIdByDomainId(standardMainInfo);
+        StringBuilder ids = new StringBuilder();
+        int a = 1;
+        for (Map<String, Object> map : list) {
+          if (a == 1) {
+            ids.append("'").append(map.get("id")).append("'");
+          } else {
+            ids.append(",").append("'").append(map.get("id")).append("'");
+          }
+          a++;
+        }
+        standardMainInfo.setEntityCategory(ids.toString());
+      }
+      if (standardMainInfo.getEntityType() != null
+          && standardMainInfo.getEntityType().length() > 0) {
+        standardMainInfo.setOneName(standardMainInfo.getEntityType());
+        List<Map<String, Object>> list = standInfoMapper.selectIdByDomainId(standardMainInfo);
         StringBuilder ids = new StringBuilder();
         int a = 1;
         for (Map<String, Object> map : list) {
@@ -173,7 +191,30 @@ public class StandInfoServiceImpl implements StandInfoService {
   @Override
   public String selectMetric(StandardMainInfo standardMainInfo) {
     try {
+      if (standardMainInfo.getEntityCategory() != null
+          && standardMainInfo.getEntityCategory().length() > 0) {
+        String ids = standardMainInfo.getEntityCategory();
+        String[] splits = ids.split("--");
+        if (splits.length == 1) {
+          standardMainInfo.setOneName(splits[0]);
+        } else if (splits.length == 2) {
+          standardMainInfo.setOneName(splits[0]);
+          standardMainInfo.setTwoName(splits[1]);
+        } else if (splits.length == 3) {
+          standardMainInfo.setOneName(splits[0]);
+          standardMainInfo.setTwoName(splits[1]);
+          standardMainInfo.setThreeName(splits[2]);
+        }
+      }
       List<Map<String, Object>> list = standInfoMapper.selectMetric(standardMainInfo);
+      for(Map<String, Object> map:list){
+        List<Map<String, Object>> list1 = standInfoMapper.selectBusiness(map);
+        StringBuilder str = new StringBuilder();
+        str.append(list1.get(0).get("businessTypeId")).append("--")
+            .append(list1.get(0).get("domainId")).append("--")
+            .append(list1.get(0).get("logicTableId"));
+        map.put("entityCategory",str );
+      }
       String total = list.size() + "";
       if (standardMainInfo.getPage_size() != null && standardMainInfo.getPage() != null) {
         list = Paging
@@ -220,7 +261,7 @@ public class StandInfoServiceImpl implements StandInfoService {
               Map<String, Object> domainName = new HashMap<>();
               List<Map<String, Object>> list2 = new ArrayList<>();
               StringBuilder ids = new StringBuilder();
-              ids.append(map1.get("businessTypeId")).append("_").append(map2.get("domainId"));
+              ids.append(map1.get("businessTypeId")).append("--").append(map2.get("domainId"));
               domainName.put("id", ids);
               domainName.put("name", map2.get("domainName"));
               for (Map<String, Object> map3 : list) {
@@ -228,8 +269,9 @@ public class StandInfoServiceImpl implements StandInfoService {
                     .get("domainName").equals(map2.get("domainName"))) {
                   Map<String, Object> logicTableName = new HashMap<>();
                   StringBuilder logicTableIds = new StringBuilder();
-                  logicTableIds.append(map1.get("businessTypeId")).append("_").append(map2.get("domainId")).append("_").append(map3.get("logicTableId"));
-                  logicTableName.put("id",logicTableIds);
+                  logicTableIds.append(map1.get("businessTypeId")).append("--")
+                      .append(map2.get("domainId")).append("--").append(map3.get("logicTableId"));
+                  logicTableName.put("id", logicTableIds);
                   logicTableName.put("name", map3.get("logicTableName"));
                   list2.add(logicTableName);
                 }

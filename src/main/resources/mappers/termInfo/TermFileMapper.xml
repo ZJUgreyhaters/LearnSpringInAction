@@ -48,8 +48,12 @@
    INSERT INTO term_field_relation (entity_id,field_id,main_flag) VALUES
    (#{entityId},#{fieldId},0)
   </insert>
-  <select id="selectDomainByName" resultType="String">
-    select domain_id from md_domain_info
+  <select id="selectDomainByName" resultType="java.util.Map">
+    select
+    id,
+    domain_id AS domainId,
+    logic_table_id AS logicTableId
+    from md_domain_info
     where business_type_name = #{businessTypeName}
     and domain_name = #{domainName}
     and logic_table_name = #{logicTableName}

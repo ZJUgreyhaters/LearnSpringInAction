@@ -52,7 +52,7 @@ public class TermFileServiceImpl implements TermFileService {
   }
 
   @Override
-  public String selectDomainByName(Map<String, Object> map) {
+  public Map<String, Object> selectDomainByName(Map<String, Object> map) {
     return termFileMapper.selectDomainByName(map);
   }
 

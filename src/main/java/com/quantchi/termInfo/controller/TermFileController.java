@@ -132,7 +132,7 @@ public class TermFileController {
           }*/
           List<Map<String, Object>> list1 = termFileService.selectTargetMain(map1);
           if (list1 != null && !list1.isEmpty() && list1.get(0).get("techniqueRule") != null
-              && list1.get(0).get("techniqueRule").toString().length() > 0 ) {
+              && list1.get(0).get("techniqueRule").toString().length() > 0) {
             MetricLineage.loadLineage(list1.get(0).get("entityId").toString(),
                 list1.get(0).get("techniqueRule").toString());
           }
@@ -172,8 +172,11 @@ public class TermFileController {
           for (int j = 0; j < values.length; j++) {
             map1.put(list.get(j), values[j]);
           }
-          String domainId = termFileService.selectDomainByName(map1);
-          map1.put("domainId", domainId);
+          Map<String, Object> domainId = termFileService.selectDomainByName(map1);
+          if (domainId != null) {
+            map1.put("domainId", domainId.get("domainId"));
+            map1.put("entityCategory", domainId.get("id"));
+          }
           List<Map<String, Object>> targetMain = termFileService.selectTargetMain(map1);
           if (Objects.equals(map1.get("dataPrecision"), "")) {
             map1.put("dataPrecision", null);

@@ -77,6 +77,7 @@
         and a.entity_category in (${entityCategory})
       </if>
     </where>
+    ORDER by id ASC
   </select>
 
   <select id="selectThreeId" resultType="java.util.Map">
@@ -153,10 +154,23 @@
       <if test="entityId !=null and entityId.toString().length()>0">
         and a.entity_id = #{entityId}
       </if>
-      <if test="entityDomainId !=null and entityDomainId.toString().length()>0">
-        and a.entity_domain_id = #{entityDomainId}
+      <if test="entityCategory !=null and entityCategory.toString().length()>0">
+        and a.entity_category in (select id from md_domain_info
+        <where>
+          <if test="oneName!=null and oneName.toString().length()>0">
+            business_type_id = #{oneName}
+          </if>
+          <if test="twoName!=null and twoName.toString().length()>0">
+            and domain_id = #{twoName}
+          </if>
+          <if test="threeName!=null and threeName.toString().length()>0">
+            and logic_table_id = #{twoName}
+          </if>
+        </where>
+        )
       </if>
     </where>
+    ORDER by id ASC
   </select>
   <select id="selectBusiness" resultType="java.util.Map">
    select
@@ -171,6 +185,11 @@
    ifnull(table_name,'') AS tableName,
    ifnull(logic_entity,'') AS logicEntity
    from md_domain_info
+   <where>
+     <if test="entityCategory !=null and entityCategory.toString().length()>0">
+       id = #{entityCategory}
+     </if>
+   </where>
   </select>
 
   <select id="selectPhysicalProperty" resultType="java.util.Map">
@@ -184,7 +203,17 @@
    LEFT  JOIN md_physical_field_info b ON a.field_id = b.entity_id
    where  a.entity_id =#{entityId}
   </select>
+
   <select id="selectIdByDomainId" resultType="java.util.Map">
-   SELECT * FROM standard_category_info where level =#{level} and domainId =#{domainId}
+   SELECT * FROM standard_category_info
+   <where>
+     <if test="oneName!=null and oneName.toString().length()>0">
+       level = #{oneName}
+     </if>
+     <if test="twoName!=null and twoName.toString().length()>0">
+       and domainId = #{twoName}
+     </if>
+   </where>
   </select>
+
 </mapper>

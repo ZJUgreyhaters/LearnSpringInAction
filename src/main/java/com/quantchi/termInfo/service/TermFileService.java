@@ -22,7 +22,7 @@ public interface TermFileService {
 
   List<Map<String, Object>> selectPhysicalFile(Map<String, Object> map);
 
-  String selectDomainByName(Map<String, Object> map);
+  Map<String, Object> selectDomainByName(Map<String, Object> map);
 
   Map<String, Object> selectStandardCategory(Map<String, Object> map);
 

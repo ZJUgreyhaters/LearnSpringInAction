@@ -4,6 +4,9 @@ import com.quantchi.common.JsonResult;
 import com.quantchi.termInfo.pojo.StandardMainInfo;
 import com.quantchi.termInfo.service.StandInfoService;
 import com.quantchi.termInfo.service.TermFileService;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,14 +207,20 @@ public class StandInfoController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String insertMetric(@RequestBody Map<String, Object> map) {
     try {
+      Map<String,Object> mapResult = new HashMap();
       if(map.get("entityId")==null||map.get("entityId").toString().length()==0){
         String uuid = UUID.randomUUID().toString().replace("-", "");
         map.put("entityId",uuid);
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        map.put("effective_time",sdf.format(date));
         termFileService.insertTargetMain(map);
+        mapResult.put("id",uuid);
       }else{
         termFileService.updateStandardMain(map);
+        mapResult.put("id",map.get("entityId"));
       }
-      return JsonResult.successJson();
+      return JsonResult.successJson(mapResult);
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("insert error");
