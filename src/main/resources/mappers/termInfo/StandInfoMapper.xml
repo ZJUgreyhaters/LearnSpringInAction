@@ -77,7 +77,7 @@
         and a.entity_category in (${entityCategory})
       </if>
     </where>
-    ORDER by id ASC
+    ORDER by id DESC
   </select>
 
   <select id="selectThreeId" resultType="java.util.Map">
@@ -170,7 +170,7 @@
         )
       </if>
     </where>
-    ORDER by id ASC
+    ORDER by id DESC
   </select>
   <select id="selectBusiness" resultType="java.util.Map">
    select
