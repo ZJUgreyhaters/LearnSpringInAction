@@ -142,12 +142,12 @@ public class TermFileController {
               MetricLineage.loadLineage(list1.get(0).get("entity_id").toString(),
                   list1.get(0).get("technique_rule").toString());
             } catch (SqlParserException e) {
-              logger.error("entity_id:" + list1.get(0).get("entity_id").toString());
-              logger.error("sql:" + list1.get(0).get("technique_rule").toString(),e);
+              logger.info("entity_id:" + list1.get(0).get("entity_id").toString());
+              logger.info("sql:" + list1.get(0).get("technique_rule").toString());
               //e.printStackTrace();
             } catch (Exception e) {
-              logger.error("entity_id:" + list1.get(0).get("entity_id").toString());
-              logger.error("sql:" + list1.get(0).get("technique_rule").toString(),e);
+              logger.info("entity_id:" + list1.get(0).get("entity_id").toString());
+              logger.info("sql:" + list1.get(0).get("technique_rule").toString(),e);
               //e.printStackTrace();
             }
           }

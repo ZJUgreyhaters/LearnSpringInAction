@@ -11,7 +11,7 @@
      where standard_id = #{standardId}
   </select>
   <update id="updateStandard">
-    update term_standard_relation set entity_id = #{entity_id}
+    update term_standard_relation set entity_id = #{entityId}
     <if test="entity_version !=null">
       ,entity_version = #{entityVersion}
     </if>

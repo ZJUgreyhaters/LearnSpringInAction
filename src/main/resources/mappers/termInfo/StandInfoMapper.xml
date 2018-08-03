@@ -69,6 +69,7 @@
       <if test="entityName !=null and entityName.toString().length()>0">
         a.entity_name LIKE CONCAT(CONCAT('%',#{entityName}), '%')
         or a.entity_desc LIKE CONCAT(CONCAT('%',#{entityName}), '%')
+        or a.entity_id LIKE CONCAT(CONCAT('%',#{entityName}), '%')
       </if>
       <if test="entityId !=null and entityId.toString().length()>0">
         and a.entity_id = #{entityId}
@@ -150,6 +151,7 @@
       <if test="entityName !=null and entityName.toString().length()>0">
         a.entity_name LIKE CONCAT(CONCAT('%',#{entityName}), '%')
         or a.entity_desc LIKE CONCAT(CONCAT('%',#{entityName}), '%')
+        or a.entity_id LIKE CONCAT(CONCAT('%',#{entityName}), '%')
       </if>
       <if test="entityId !=null and entityId.toString().length()>0">
         and a.entity_id = #{entityId}
