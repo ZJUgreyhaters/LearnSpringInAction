@@ -49,6 +49,8 @@ public class LineageController {
     Map<String, Object> list(@RequestParam(value = "metricId", required = false) String metricId,
                              @RequestParam(value ="type", required = false) String type) {
         try{
+            logger.info("get metric id is {}",metricId);
+            logger.debug("get type is {}",type);
             Map<String,Object> _ret = lineageService.getNodesInfo(metricId,type);
             return util.genRet(200, _ret, "", 0);
         }catch (Exception e){
