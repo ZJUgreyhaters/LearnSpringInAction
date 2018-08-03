@@ -164,7 +164,7 @@
             and domain_id = #{twoName}
           </if>
           <if test="threeName!=null and threeName.toString().length()>0">
-            and logic_table_id = #{twoName}
+            and logic_table_id = #{threeName}
           </if>
         </where>
         )

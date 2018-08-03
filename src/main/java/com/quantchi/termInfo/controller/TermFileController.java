@@ -4,6 +4,7 @@ import com.quantchi.common.ExcelUtil;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.ResultCode;
 import com.quantchi.common.SQLQueryConfig;
+import com.quantchi.lineage.exception.SqlParserException;
 import com.quantchi.lineage.metric.MetricLineage;
 import com.quantchi.termInfo.service.TermFileService;
 import java.util.HashMap;
@@ -11,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +34,8 @@ public class TermFileController {
 
   @Autowired
   private TermFileService termFileService;
+
+  private static final Logger logger = LoggerFactory.getLogger(TermFileController.class);
 
   /**
    * @api {post} /term/import 文件上传接口
@@ -133,13 +138,18 @@ public class TermFileController {
           List<Map<String, Object>> list1 = termFileService.selectTargetMain(map1);
           if (list1 != null && !list1.isEmpty() && list1.get(0).get("technique_rule") != null
               && list1.get(0).get("technique_rule").toString().length() > 0) {
-            System.out.println(list1.get(0).get("entity_id").toString());
-          try{
-            MetricLineage.loadLineage(list1.get(0).get("entity_id").toString(),
-                list1.get(0).get("technique_rule").toString());
-          }catch (Exception e){
-            e.printStackTrace();
-          }
+            try {
+              MetricLineage.loadLineage(list1.get(0).get("entity_id").toString(),
+                  list1.get(0).get("technique_rule").toString());
+            } catch (SqlParserException e) {
+              logger.error("entity_id:" + list1.get(0).get("entity_id").toString());
+              logger.error("sql:" + list1.get(0).get("technique_rule").toString(),e);
+              //e.printStackTrace();
+            } catch (Exception e) {
+              logger.error("entity_id:" + list1.get(0).get("entity_id").toString());
+              logger.error("sql:" + list1.get(0).get("technique_rule").toString(),e);
+              //e.printStackTrace();
+            }
           }
         }
         return JsonResult.successJson("上传成功！");
@@ -157,11 +167,11 @@ public class TermFileController {
             map1.put("entityCategory", entityCategory.get("cid"));
           }
           List<Map<String, Object>> standardMain = termFileService.selectStandardMain(map1);
-          if (Objects.equals(map1.get("data_precision"), "")) {
-            map1.put("data_precision", null);
+          if (Objects.equals(map1.get("dataPrecision"), "")) {
+            map1.put("dataPrecision", null);
           }
-          if (Objects.equals(map1.get("data_length"), "")) {
-            map1.put("data_length", null);
+          if (Objects.equals(map1.get("dataLength"), "")) {
+            map1.put("dataLength", null);
           }
           if (standardMain == null || standardMain.isEmpty()) {
             termFileService.insertStandardMain(map1);
@@ -183,11 +193,11 @@ public class TermFileController {
             map1.put("entityCategory", domainId.get("id"));
           }
           List<Map<String, Object>> targetMain = termFileService.selectTargetMain(map1);
-          if (Objects.equals(map1.get("data_precision"), "")) {
-            map1.put("data_precision", null);
+          if (Objects.equals(map1.get("dataPrecision"), "")) {
+            map1.put("dataPrecision", null);
           }
-          if (Objects.equals(map1.get("data_length"), "")) {
-            map1.put("data_length", null);
+          if (Objects.equals(map1.get("dataLength"), "")) {
+            map1.put("dataLength", null);
           }
           if (targetMain == null || targetMain.isEmpty()) {
             termFileService.insertTargetMain(map1);
