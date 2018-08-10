@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.lineage.mapper.LineageMapper">
+
+    <select id="getlineageInfo" resultType="java.util.Map">
+        select a.entity_id as metricId,a.entity_desc as metricName,c.physical_field as phsicalFieldName,c.physical_field_desc as phsicalFieldDesc ,'false' as isOpen from term_main_info a
+        LEFT JOIN term_field_relation b on a.entity_id = b.entity_id
+        LEFT JOIN md_physical_field_info c on b.field_id= c.entity_id
+        where a.entity_id = #{metricId}
+    </select>
+
+</mapper>

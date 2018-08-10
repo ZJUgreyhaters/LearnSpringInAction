@@ -69,8 +69,9 @@ public class intelQuery{
             totalRet.put(Status.INTERNAL_SERVER_ERROR.getStatus(),e.getMessage());
         }
         finally {
-            return totalRet;
+            //return totalRet;
         }
+        return totalRet;
     }
 
     public Map<String, Object> queryFromSearch(String serialization){
