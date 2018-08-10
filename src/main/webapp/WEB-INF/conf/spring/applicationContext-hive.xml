@@ -4,8 +4,8 @@
 <beans>
 <bean id="hiveJdbcPool" class="com.quantchi.common.JdbcPoolFactoryBean">
     <property name="url" value="jdbc:hive2://192.168.2.57:10000/default;auth=noSasl"/>
-    <property name="username" value="hive"/>
-    <property name="password" value="hive"/>
+    <property name="username" value="root"/>
+    <property name="password" value="root"/>
     <property name="jdbcDriver" value="org.apache.hive.jdbc.HiveDriver"/>
 </bean>
 </beans>

@@ -25,4 +25,6 @@ public interface StandInfoMapper {
   List<Map<String, Object>> selectPhysicalProperty(Map<String, Object> map);
 
   List<Map<String, Object>> selectIdByDomainId(StandardMainInfo standardMainInfo);
+
+  List<Map<String, Object>> selectMetricByEntityName(StandardMainInfo standardMainInfo);
 }

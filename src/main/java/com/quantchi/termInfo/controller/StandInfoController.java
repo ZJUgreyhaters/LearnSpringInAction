@@ -7,6 +7,7 @@ import com.quantchi.termInfo.service.TermFileService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,18 +208,26 @@ public class StandInfoController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String insertMetric(@RequestBody Map<String, Object> map) {
     try {
-      Map<String,Object> mapResult = new HashMap();
-      if(map.get("entityId")==null||map.get("entityId").toString().length()==0){
+      Map<String, Object> mapResult = new HashMap();
+      if (map.get("entityId") == null || map.get("entityId").toString().length() == 0) {
         String uuid = UUID.randomUUID().toString().replace("-", "");
-        map.put("entityId",uuid);
+        map.put("entityId", uuid);
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        map.put("effective_time",sdf.format(date));
-        termFileService.insertTargetMain(map);
-        mapResult.put("id",uuid);
-      }else{
+        map.put("effective_time", sdf.format(date));
+        StandardMainInfo standardMainInfo = new StandardMainInfo();
+        standardMainInfo.setEntityName(map.get("entityName").toString());
+        List<Map<String, Object>> list = standInfoService
+            .selectMetricByEntityName(standardMainInfo);
+        if (list == null || list.isEmpty()) {
+          termFileService.insertTargetMain(map);
+          mapResult.put("id", uuid);
+        }else{
+          return JsonResult.errorJson("英文名已存在！");
+        }
+      } else {
         termFileService.updateTargetMain(map);
-        mapResult.put("id",map.get("entityId"));
+        mapResult.put("id", map.get("entityId"));
       }
       return JsonResult.successJson(mapResult);
     } catch (Exception e) {
@@ -249,6 +258,24 @@ public class StandInfoController {
     return standInfoService.selectBusiness(map);
   }
 
+  /**
+   * @api {post} /api/codeDefinition 查询代码定义
+   * @apiVersion 1.0.0
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/codeDefinition
+   * @apiName codeDefinition
+   * @apiGroup StandInfoController
+   * @apiParam {String} [id] id
+   * @apiParam {String} [udcCode] 代码编号
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} msg  成功或者错误信息
+   * @apiSuccess {String} total  返回记录总数
+   * @apiSuccess {List} [data] 返回数据 代码列表
+   * @apiSuccess {String} [data.id] 代码id
+   * @apiSuccess {String} [data.udcRuleName]代码规则名称
+   * @apiSuccess {String} [data.udcCode] 编码值
+   * @apiSuccess {String} [data.udcValue] 编码取值
+   * @apiSuccess {String} [data.udcDesc] 编码说明
+   */
   //查询代码定义
   @ResponseBody
   @RequestMapping(value = "/codeDefinition", method = {
@@ -257,6 +284,7 @@ public class StandInfoController {
 
     return standInfoService.selectCodeDefinition(map);
   }
+
   /**
    * @api {post} /api/selectPhysicalProperty 查询指标物理字段信息
    * @apiVersion 1.0.0
@@ -265,7 +293,7 @@ public class StandInfoController {
    * @apiGroup StandInfoController
    * @apiParam {String} [entityId] 指标编号
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
-   * @apiSuccess {String} msg  成功或者错误信息
+   * @apiSuccess {String} msg   成功或者错误信息
    * @apiSuccess {List} [data] 返回数据 物理信息列表
    * @apiSuccess {String} [data.fieldId] 字段编号
    * @apiSuccess {String} [data.entityId] 指标编号

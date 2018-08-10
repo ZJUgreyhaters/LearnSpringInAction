@@ -1,6 +1,7 @@
 package com.quantchi.termInfo.service;
 
 import com.quantchi.termInfo.pojo.StandardMainInfo;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,4 +20,6 @@ public interface StandInfoService {
   String selectBusiness(Map<String, Object> map);
 
   String selectPhysicalProperty(Map<String, Object> map);
+
+  List<Map<String, Object>> selectMetricByEntityName(StandardMainInfo standardMainInfo);
 }

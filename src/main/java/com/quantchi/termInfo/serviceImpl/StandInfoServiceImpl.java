@@ -207,13 +207,13 @@ public class StandInfoServiceImpl implements StandInfoService {
         }
       }
       List<Map<String, Object>> list = standInfoMapper.selectMetric(standardMainInfo);
-      for(Map<String, Object> map:list){
+      for (Map<String, Object> map : list) {
         List<Map<String, Object>> list1 = standInfoMapper.selectBusiness(map);
         StringBuilder str = new StringBuilder();
         str.append(list1.get(0).get("businessTypeId")).append("--")
             .append(list1.get(0).get("domainId")).append("--")
             .append(list1.get(0).get("logicTableId"));
-        map.put("entityCategory",str );
+        map.put("entityCategory", str);
       }
       String total = list.size() + "";
       if (standardMainInfo.getPage_size() != null && standardMainInfo.getPage() != null) {
@@ -300,6 +300,11 @@ public class StandInfoServiceImpl implements StandInfoService {
       e.printStackTrace();
       return JsonResult.errorJson("select error！");
     }
+  }
+
+  @Override
+  public List<Map<String, Object>> selectMetricByEntityName(StandardMainInfo standardMainInfo) {
+    return standInfoMapper.selectMetricByEntityName(standardMainInfo);
   }
 
 }
