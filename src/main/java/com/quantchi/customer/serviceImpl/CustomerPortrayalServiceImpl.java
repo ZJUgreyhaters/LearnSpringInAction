@@ -1,6 +1,6 @@
 package com.quantchi.customer.serviceImpl;
 
-import com.quantchi.common.HiveLink;
+import com.quantchi.common.HiveConnection;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.SQLQueryConfig;
 import com.quantchi.customer.pojo.CustomerGroup;
@@ -37,7 +37,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_HIVE_COUNTRY_RATIO();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
-      List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
+      List<Map<String, Object>> list = HiveConnection.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return JsonResult.errorJson("error");
       }
@@ -53,7 +53,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_HIVE_COUNTRY_ANALYZE();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
-      List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
+      List<Map<String, Object>> list = HiveConnection.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return JsonResult.errorJson("error");
       }
@@ -69,7 +69,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_HIVE_COUNTRY_YIELD();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
-      List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
+      List<Map<String, Object>> list = HiveConnection.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return JsonResult.errorJson("error");
       }
@@ -85,7 +85,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_HIVE_COUNTRY_GRADE();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
-      List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
+      List<Map<String, Object>> list = HiveConnection.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return JsonResult.errorJson("error");
       }
@@ -101,7 +101,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_HIVE_COUNTRY_DEPARTMENT();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
-      List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
+      List<Map<String, Object>> list = HiveConnection.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return JsonResult.errorJson("error");
       }
@@ -117,7 +117,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
     try {
       String sqlQuery = sqlQueryConfig.getSEL_HIVE_COUNTRY_PREFERENCE();
       sqlQuery = MessageFormat.format(sqlQuery, group.getCust_group_id());
-      List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
+      List<Map<String, Object>> list = HiveConnection.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return JsonResult.errorJson("error");
       }

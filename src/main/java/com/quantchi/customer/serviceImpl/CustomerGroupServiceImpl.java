@@ -1,7 +1,7 @@
 package com.quantchi.customer.serviceImpl;
 
 import com.github.pagehelper.PageInfo;
-import com.quantchi.common.HiveLink;
+import com.quantchi.common.HiveConnection;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
 import com.quantchi.common.SQLQueryConfig;
@@ -315,7 +315,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       sql.append(sqlop);
       String sqlBottom = sqlQueryConfig.getSEL_SQL_BOTTOM();
       sql.append(jointSql).append(" ").append(sqlBottom).append(configuration.get("sqls"));
-      List<Map<String, Object>> Resultlist = HiveLink.selectHive(sql.toString(), jdbcPool);
+      List<Map<String, Object>> Resultlist = HiveConnection.selectHive(sql.toString(), jdbcPool);
       List<Map<String, Object>> sub = sub(Resultlist);
       if (Resultlist.toString().contains("select error")) {
         return JsonResult.errorJson("error");
@@ -345,7 +345,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     String string = sqlQueryConfig.getSEL_INSERT_SQL_TOP();
     string = MessageFormat.format(string, str);
     sql.append(string).append(sql1);
-    return HiveLink.elseHive(sql.toString(), jdbcPool);
+    return HiveConnection.elseHive(sql.toString(), jdbcPool);
   }
 
   public String listCustomersByCustomerGroupId(CustomerGroup group) {
@@ -358,7 +358,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       if (group.getField() != null && group.getOrder() != null) {
         sqlQuery = sqlQuery + " order by " + group.getField() + " " + group.getOrder();
       }
-      List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
+      List<Map<String, Object>> list = HiveConnection.selectHive(sqlQuery, jdbcPool);
       if (list.toString().contains("select error")) {
         return JsonResult.errorJson("error");
       }
@@ -392,7 +392,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     if (group.getCustomer_name() != null && group.getCustomer_name().length() > 0) {
       sqlQuery = sqlQuery + " where cust.customer_name like '%" + group.getCustomer_name() + "%'";
     }
-    List<Map<String, Object>> list = HiveLink.selectHive(sqlQuery, jdbcPool);
+    List<Map<String, Object>> list = HiveConnection.selectHive(sqlQuery, jdbcPool);
     return list;
   }
 
@@ -430,7 +430,7 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     String string = sqlQueryConfig.getSEL_SEL_SQL();
     string = MessageFormat.format(string, id);
     sql.append(string).append(sql1);
-    return HiveLink.selectHive(sql.toString(), jdbcPool);
+    return HiveConnection.selectHive(sql.toString(), jdbcPool);
   }
 
   List<Map<String, Object>> sub(List<Map<String, Object>> Resultlist) {

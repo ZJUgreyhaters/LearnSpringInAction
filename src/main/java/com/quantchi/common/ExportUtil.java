@@ -1,8 +1,10 @@
 package com.quantchi.common;
 
 import java.io.OutputStream;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 import jxl.Workbook;
 import jxl.format.Alignment;
@@ -14,7 +16,8 @@ import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
-import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 导出Excel模板
@@ -30,6 +33,8 @@ public class ExportUtil {
   /**
    * 导出关联方查询的excel
    */
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExportUtil.class);
+
   public final static String exportRelationExcel(HttpServletResponse response, String fileName,
       String title, String[] titleArray, List<Map<String, Object>> listContent) {
     String result = "Excel文件导出成功！";
@@ -72,27 +77,23 @@ public class ExportUtil {
       for (int i = 0; i < titleArray.length; i++) {
         sheet.addCell(new Label(i, 1, titleArray[i], wcf_center));
       }
-      String str= StringUtils.join(titleArray,",");
-      String titles = str.replaceAll("客户号","customer_no")
-          .replaceAll("客户姓名", "customer_name").replaceAll("融资负债（万元）", "fin_balance")
-          .replaceAll("总资产（万元）", "total_asset").replaceAll("维保比例", "assure_debit_rate")
-          .replaceAll("当前仓位", "concentrate").replaceAll("年度收益率", "profit_rate_y");
-      String[] splits = titles.split(",");
+      Set<String> mapKeys = new LinkedHashSet<>();
       for (int i = 0; i < listContent.size(); i++) {
         Map<String, Object> map = listContent.get(i);
+        mapKeys = map.keySet();
+        String[] splits = mapKeys.toArray(new String[mapKeys.size()]);
         for (int j = 0; j < splits.length; j++) {
           String value = splits[j];
-          String value1 = map.get(value).toString();
-          sheet.addCell(new Label(j, 2 + i, value1, wcf_center));
+          String valueName = map.get(value).toString();
+          sheet.addCell(new Label(j, 2 + i, valueName, wcf_center));
         }
       }
 
       workbook.write();
       workbook.close();
     } catch (Exception e) {
-      result = "文件导出失败，原因：" + e.toString();
-      System.out.println(result);
       e.printStackTrace();
+      LOGGER.info("文件导出失败", e);
     }
     return result;
   }
