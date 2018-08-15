@@ -128,10 +128,11 @@ public class IntelQueryController {
    * @apiSuccess {String} [tabulate.maintenance] 维保比例
    * @apiSuccess {String} [tabulate.totalAssets] 总资产
    * @apiContentType application/json
-   * @apiSuccessExample {json} "data":{ "candidates": {"queryNodes":{"node":""},
-   * "composeList":[{"begin":"", "end":"", "compose":{"1","2"}},{"begin":"", "end":"",
-   * "compose":{"1","2"}}]}, "steps":{"",""}, "tabulate":[{id:"",name:"",amount:"",maintenance:"",totalAssets""}],
-   * title:{"",""}, indexInfo:{entityId:"",entityName:"",entityDesc:"",businessDefinition:"",businessRule:""}
+   * @apiSuccessExample {json}
+   * "data":{"candidates":{"queryNodes":{"node":""},
+   * "composeList":[{"begin":"", "end":"", "compose":{"1","2"}}, {"begin":"",
+   * "end":"","compose":{"1","2"}} ]}, "steps":{"",""}, "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
+   * "title":{"",""}, "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
    * }
    */
   @ResponseBody

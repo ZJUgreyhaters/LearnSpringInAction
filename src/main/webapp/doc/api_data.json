@@ -197,8 +197,8 @@
       },
       "examples": [
         {
-          "title": "\"data\":{ \"candidates\": {\"queryNodes\":{\"node\":\"\"},",
-          "content": "\"composeList\":[{\"begin\":\"\", \"end\":\"\", \"compose\":{\"1\",\"2\"}},{\"begin\":\"\", \"end\":\"\",\n\"compose\":{\"1\",\"2\"}}]}, \"steps\":{\"\",\"\"}, \"tabulate\":[{id:\"\",name:\"\",amount:\"\",maintenance:\"\",totalAssets\"\"}],\ntitle:{\"\",\"\"}, indexInfo:{entityId:\"\",entityName:\"\",entityDesc:\"\",businessDefinition:\"\",businessRule:\"\"}\n}",
+          "title": "\"data\":{\"candidates\":{\"queryNodes\":{\"node\":\"\"},",
+          "content": "\"data\":{\"candidates\":{\"queryNodes\":{\"node\":\"\"},\n\"composeList\":[{\"begin\":\"\", \"end\":\"\", \"compose\":{\"1\",\"2\"}}, {\"begin\":\"\",\n\"end\":\"\",\"compose\":{\"1\",\"2\"}} ]}, \"steps\":{\"\",\"\"}, \"tabulate\":[{id:\"\",\"name\":\"\",\"amount\":\"\",\"maintenance\":\"\",\"totalAssets\":\"\"}],\n\"title\":{\"\",\"\"}, \"indexInfo\":[{\"entityId\":\"\",\"entityName\":\"\",\"entityDesc\":\"\",\"businessDefinition\":\"\",\"businessRule\":\"\"}]\n}",
           "type": "json"
         }
       ]
