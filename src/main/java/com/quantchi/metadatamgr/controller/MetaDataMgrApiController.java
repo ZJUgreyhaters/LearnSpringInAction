@@ -23,6 +23,12 @@ public class MetaDataMgrApiController {
   @Autowired
   private MetaDataMgrApiService metaDataMgrApiService;
 
+
+  /**
+   * 由于多人同时编写，团队内部没有统一的规范，导致命名混乱，将在后期逐步规范
+   *
+   */
+
   @RequestMapping(value = "/datasource/list", method = {RequestMethod.POST})
   public
   @ResponseBody
