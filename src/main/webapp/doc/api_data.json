@@ -1,6 +1,516 @@
 [
   {
     "type": "get",
+    "url": "/api/basicQuery",
+    "title": "智能取数查询接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/basicQuery"
+      }
+    ],
+    "name": "basicQuery",
+    "group": "IntelQueryController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "query",
+            "description": "<p>查询语句</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回推荐问句列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Map",
+            "optional": true,
+            "field": "data.candidates",
+            "description": "<p>返回联想问句</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "candidates.queryNodes",
+            "description": "<p>返回问句的分词集合</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "queryNodes.Node",
+            "description": "<p>问句的分词</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "candidates.composeList.begin",
+            "description": "<p>问句起截断</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "candidates.composeList.end",
+            "description": "<p>问句始截断</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "candidates.composeList.compose",
+            "description": "<p>替换词集合</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.steps",
+            "description": "<p>返回数据结果</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.title",
+            "description": "<p>返回列表头</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.indexInfo",
+            "description": "<p>返回指标信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "indexInfo.entityId",
+            "description": "<p>指标id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "indexInfo.entityName",
+            "description": "<p>指标英文名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "indexInfo.entityDesc",
+            "description": "<p>指标中文名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "indexInfo.businessDefinition",
+            "description": "<p>业务定义</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "indexInfo.businessRule",
+            "description": "<p>业务口径</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.tabulate",
+            "description": "<p>返回列表结果</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "tabulate.id",
+            "description": "<p>客户ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "tabulate.name",
+            "description": "<p>客户姓名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "tabulate.amount",
+            "description": "<p>融资负债金额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "tabulate.maintenance",
+            "description": "<p>维保比例</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "tabulate.totalAssets",
+            "description": "<p>总资产</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "\"data\":{ \"candidates\": {\"queryNodes\":{\"node\":\"\"},",
+          "content": "\"composeList\":[{\"begin\":\"\", \"end\":\"\", \"compose\":{\"1\",\"2\"}},{\"begin\":\"\", \"end\":\"\",\n\"compose\":{\"1\",\"2\"}}]}, \"steps\":{\"\",\"\"}, \"tabulate\":[{id:\"\",name:\"\",amount:\"\",maintenance:\"\",totalAssets\"\"}],\ntitle:{\"\",\"\"}, indexInfo:{entityId:\"\",entityName:\"\",entityDesc:\"\",businessDefinition:\"\",businessRule:\"\"}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "contentType": "application/json",
+    "filename": "../../java/com/quantchi/intelquery/controller/IntelQueryController.java",
+    "groupTitle": "IntelQueryController"
+  },
+  {
+    "type": "get",
+    "url": "/api/download",
+    "title": "智能取数下载接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/download"
+      }
+    ],
+    "name": "download",
+    "group": "IntelQueryController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "query",
+            "description": "<p>查询语句</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/intelquery/controller/IntelQueryController.java",
+    "groupTitle": "IntelQueryController"
+  },
+  {
+    "type": "get",
+    "url": "/api/getBusiCate",
+    "title": "智能取数页面获取业务接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/getBusiCate"
+      }
+    ],
+    "name": "getBusiCate",
+    "group": "IntelQueryController",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回业务类别数据列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.id",
+            "description": "<p>返回业务类别id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.businessTypeName",
+            "description": "<p>返回业务类别名称</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/intelquery/controller/IntelQueryController.java",
+    "groupTitle": "IntelQueryController"
+  },
+  {
+    "type": "get",
+    "url": "/api/getRecommendQuery",
+    "title": "获取推荐问句接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/getRecommendQuery"
+      }
+    ],
+    "name": "getRecommendQuery",
+    "group": "IntelQueryController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "businessTypeId",
+            "description": "<p>业务分类id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回推荐问句列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.id",
+            "description": "<p>返回推荐问句id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.query",
+            "description": "<p>返回推荐问句</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/intelquery/controller/IntelQueryController.java",
+    "groupTitle": "IntelQueryController"
+  },
+  {
+    "type": "get",
+    "url": "/api/getRelatedQuery",
+    "title": "获取相关问句接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/getRelatedQuery"
+      }
+    ],
+    "name": "getRelatedQuery",
+    "group": "IntelQueryController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "keyword",
+            "description": "<p>关键词</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回推荐问句列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.id",
+            "description": "<p>返回相关问句id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.query",
+            "description": "<p>返回相关问句</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/intelquery/controller/IntelQueryController.java",
+    "groupTitle": "IntelQueryController"
+  },
+  {
+    "type": "get",
+    "url": "/api/likenum",
+    "title": "点赞接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/likenum"
+      }
+    ],
+    "name": "likenum",
+    "group": "IntelQueryController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "query",
+            "description": "<p>点赞语句</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>是否点赞(1:点赞，2:不点赞)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/intelquery/controller/IntelQueryController.java",
+    "groupTitle": "IntelQueryController"
+  },
+  {
+    "type": "get",
     "url": "/api/lineage",
     "title": "血缘关系查询接口",
     "permission": [
@@ -422,6 +932,110 @@
     "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataMgrApiController.java",
     "groupTitle": "MetaDataMgrApiController",
     "name": "PostApiMetadataUpdatefield"
+  },
+  {
+    "type": "post",
+    "url": "/api/codeDefinition",
+    "title": "查询代码定义",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/codeDefinition"
+      }
+    ],
+    "name": "codeDefinition",
+    "group": "StandInfoController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "id",
+            "description": "<p>id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "udcCode",
+            "description": "<p>代码编号</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "total",
+            "description": "<p>返回记录总数</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据 代码列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.id",
+            "description": "<p>代码id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.udcRuleName",
+            "description": "<p>代码规则名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.udcCode",
+            "description": "<p>编码值</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.udcValue",
+            "description": "<p>编码取值</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.udcDesc",
+            "description": "<p>编码说明</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/termInfo/controller/StandInfoController.java",
+    "groupTitle": "StandInfoController"
   },
   {
     "type": "post",
