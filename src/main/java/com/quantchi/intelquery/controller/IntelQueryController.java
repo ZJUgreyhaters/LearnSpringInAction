@@ -1,6 +1,6 @@
 package com.quantchi.intelquery.controller;
 
-import com.quantchi.common.util;
+import com.quantchi.common.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -36,9 +36,9 @@ public class IntelQueryController {
     Map<String, Object> getBusiCate() {
         try{
 
-            return util.genRet(200, null, "", 0);
+            return Util.genRet(200, null, "", 0);
         }catch (Exception e){
-            return util.genRet(500, null, e.getMessage(), 0);
+            return Util.genRet(500, null, e.getMessage(), 0);
         }
     }
 
@@ -62,9 +62,9 @@ public class IntelQueryController {
     Map<String, Object> getRecommendQuery(@RequestParam(value = "businessTypeId") String businessTypeId) {
         try{
 
-            return util.genRet(200, null, "", 0);
+            return Util.genRet(200, null, "", 0);
         }catch (Exception e){
-            return util.genRet(500, null, e.getMessage(), 0);
+            return Util.genRet(500, null, e.getMessage(), 0);
         }
     }
 
@@ -88,9 +88,9 @@ public class IntelQueryController {
     Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
         try{
 
-            return util.genRet(200, null, "", 0);
+            return Util.genRet(200, null, "", 0);
         }catch (Exception e){
-            return util.genRet(500, null, e.getMessage(), 0);
+            return Util.genRet(500, null, e.getMessage(), 0);
         }
     }
 

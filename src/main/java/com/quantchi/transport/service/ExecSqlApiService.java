@@ -1,20 +1,16 @@
 package com.quantchi.transport.service;
 
 import com.alibaba.fastjson.JSONArray;
-import com.quantchi.common.util;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import com.quantchi.common.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.quantchi.tianshu.common.JdbcPool;
-import org.apache.hive.service.cli.HiveSQLException;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -34,7 +30,7 @@ public class ExecSqlApiService {
 			Connection connection = jdbcPool.getConnection();
 			stmt = connection.prepareStatement(sql);
 			rs = stmt.executeQuery(sql);
-			JSONArray _res = util.convertResultSetIntoJSON(rs);
+			JSONArray _res = Util.convertResultSetIntoJSON(rs);
 			_ret.put("data", _res);
 			_ret.put("total", _res.size());
 		} catch (Exception e) {

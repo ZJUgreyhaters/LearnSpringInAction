@@ -5,20 +5,18 @@ package com.quantchi.common;
 import org.json.JSONObject;*/
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.quantchi.metadatamgr.controller.MetaDataMgrApiController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Decoder;
 
-import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class util {
+public class Util {
 
-    private static final Logger logger = LoggerFactory.getLogger(util.class);
+    private static final Logger logger = LoggerFactory.getLogger(Util.class);
 
     public static Map<String, Object> genRet(int code,Object data,String retMsg,int total){
         Map<String, Object> _ret = new HashMap<String, Object>();

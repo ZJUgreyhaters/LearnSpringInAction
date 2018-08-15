@@ -1,7 +1,7 @@
 package com.quantchi.lineage.controller;
 
 
-import com.quantchi.common.util;
+import com.quantchi.common.Util;
 import com.quantchi.lineage.service.LineageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +52,9 @@ public class LineageController {
             logger.info("get metric id is {}",metricId);
             logger.debug("get type is {}",type);
             Map<String,Object> _ret = lineageService.getNodesInfo(metricId,type);
-            return util.genRet(200, _ret, "", 0);
+            return Util.genRet(200, _ret, "", 0);
         }catch (Exception e){
-            return util.genRet(500, null, e.getMessage(), 0);
+            return Util.genRet(500, null, e.getMessage(), 0);
         }
     }
 
