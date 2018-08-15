@@ -97,7 +97,7 @@ public class IntelQueryController {
   }
 
   /**
-   * @api {get} /api/basicQuery 智能取数查询接口
+   * @api {post} /api/basicQuery 智能取数查询接口
    * @apiPermission none
    * @apiVersion 1.0.0
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/basicQuery
@@ -108,32 +108,30 @@ public class IntelQueryController {
    * @apiSuccess {String} msg  成功或者错误信息
    * @apiSuccess {List} [data] 返回推荐问句列表
    * @apiSuccess {Map} [data.candidates] 返回联想问句
-   * @apiSuccess {List} [candidates.queryNodes] 返回问句的分词集合
-   * @apiSuccess {List} [queryNodes.Node] 问句的分词
-   * @apiSuccess {String} [candidates.composeList.begin] 问句起截断
-   * @apiSuccess {String} [candidates.composeList.end] 问句始截断
-   * @apiSuccess {List} [candidates.composeList.compose] 替换词集合
+   * @apiSuccess {List} [data.candidates.queryNodes] 返回问句的分词集合
+   * @apiSuccess {String} [data.candidates.queryNodes.node] 问句的分词
+   * @apiSuccess {String} [data.candidates.queryNodes.serializeNode] 问句的分词的序列化
+   * @apiSuccess {String} [data.candidates.composeList.begin] 问句起截断
+   * @apiSuccess {String} [data.candidates.composeList.end] 问句始截断
+   * @apiSuccess {List} [data.candidates.composeList.compose] 替换词集合
+   * @apiSuccess {String} [data.candidates.composeList.compose.node] 替换词分词
+   * @apiSuccess {String} [data.candidates.composeList.compose.serializeNode] 替换词分词的序列化
    * @apiSuccess {List} [data.steps] 返回数据结果
-   * @apiSuccess {List} [data.title] 返回列表头
    * @apiSuccess {List} [data.indexInfo] 返回指标信息
-   * @apiSuccess {List} [indexInfo.entityId] 指标id
-   * @apiSuccess {List} [indexInfo.entityName] 指标英文名
-   * @apiSuccess {List} [indexInfo.entityDesc] 指标中文名
-   * @apiSuccess {List} [indexInfo.businessDefinition] 业务定义
-   * @apiSuccess {List} [indexInfo.businessRule] 业务口径
+   * @apiSuccess {String} [data.indexInfo.entityId] 指标id
+   * @apiSuccess {String} [data.indexInfo.entityName] 指标英文名
+   * @apiSuccess {String} [data.indexInfo.entityDesc] 指标中文名
+   * @apiSuccess {String} [data.indexInfo.businessDefinition] 业务定义
+   * @apiSuccess {String} [data.indexInfo.businessRule] 业务口径
    * @apiSuccess {List} [data.tabulate] 返回列表结果
-   * @apiSuccess {String} [tabulate.id] 客户ID
-   * @apiSuccess {String} [tabulate.name] 客户姓名
-   * @apiSuccess {String} [tabulate.amount] 融资负债金额
-   * @apiSuccess {String} [tabulate.maintenance] 维保比例
-   * @apiSuccess {String} [tabulate.totalAssets] 总资产
    * @apiContentType application/json
-   * @apiSuccessExample {json}
-   * "data":{"candidates":{"queryNodes":{"node":""},
-   * "composeList":[{"begin":"", "end":"", "compose":{"1","2"}}, {"begin":"",
-   * "end":"","compose":{"1","2"}} ]}, "steps":{"",""}, "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
-   * "title":{"",""}, "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
-   * }
+   * @apiSuccessExample {json} Success-Response
+   * {"data":{"candidates":{"queryNodes":{"node":"","serializeNode":""},
+   * "composeList":[{"begin":"", "end":"", "compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]},
+   * {"begin":"", "end":"","compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]}
+   * ]}, "steps":{"",""}, "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
+   * "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
+   * } }
    */
   @ResponseBody
   @RequestMapping(value = "/basicQuery", method = {
@@ -166,7 +164,7 @@ public class IntelQueryController {
   }
 
   /**
-   * @api {get} /api/likenum 点赞接口
+   * @api {post} /api/likenum 点赞接口
    * @apiPermission none
    * @apiVersion 1.0.0
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/likenum
