@@ -1,26 +1,34 @@
 package com.quantchi.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 public class AppProperties {
+
+    private static final Logger logger = LoggerFactory.getLogger(AppProperties.class);
+
     private static AppProperties instance = null;
     Properties properties = null;
 
-    public AppProperties() throws IOException {
-//        InputStream is = this.getClass().getClassLoader().getResourceAsStream("app.properties");
-        InputStreamReader inputStreamReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("app.properties"),"UTF-8");
-        this.properties = new Properties();
-//        prop.load(new InputStreamReader(Client.class.getClassLoader().getResourceAsStream(“config.properties”), “UTF-8”));
-        this.properties.load(inputStreamReader);
-        inputStreamReader.close();
+    private AppProperties(){
+
+        try(InputStreamReader inputStreamReader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("app.properties"),"UTF-8");){
+            this.properties = new Properties();
+            this.properties.load(inputStreamReader);
+            inputStreamReader.close();
+        }catch (IOException e){
+            logger.error("get properties error: {}",e.getMessage());
+        }
+
     }
 
-    public static AppProperties getInstance() throws IOException {
+    public static AppProperties getInstance() {
         if (instance == null) {
             instance = new AppProperties();
         }
@@ -28,32 +36,26 @@ public class AppProperties {
         return instance;
     }
 
-    public static String get(String key) throws IOException {
-        String ret = null;
-        ret = getInstance().properties.getProperty(key);
-        return ret;
+    public static String get(String key) {
+        return getInstance().properties.getProperty(key);
     }
 
     public static String getWithDefault(String key, String defaultKey){
-        String ret = null;
+        String ret = "";
         if (defaultKey != null){
             ret = defaultKey;
         }else {
-            try {
-                ret = getInstance().properties.getProperty(key);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            ret = getInstance().properties.getProperty(key);
         }
         return ret;
     }
 
-    public static boolean getBoolean(String key) throws IOException {
+    public static boolean getBoolean(String key) {
         String value = get(key);
         return value != null && value.trim().equals("true");
     }
 
-    public static int getInt(String key) throws IOException {
+    public static int getInt(String key) {
         String value = get(key);
         return value != null ? Integer.parseInt(value) : 0;
     }
@@ -62,12 +64,7 @@ public class AppProperties {
     public static Map<String,String> getPropertiesMap(String paramKey){
         Map<String,String> paramValue = new HashMap<>();
         //获取app.properties文件的solr.param参数，解析参数，封装到param中
-        String solrParam = null;
-        try {
-            solrParam = get(paramKey);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String solrParam = get(paramKey);
         String[] solrParams = solrParam.split("&");
         for(int i=0; i < solrParams.length; i++){
             String[] entry = solrParams[i].split("=");
