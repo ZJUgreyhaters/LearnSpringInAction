@@ -3,7 +3,7 @@ package com.quantchi.metadatamgr.service;
 import com.alibaba.fastjson.JSONObject;
 import com.quantchi.common.AppProperties;
 import com.quantchi.common.JsonResult;
-import com.quantchi.common.util;
+import com.quantchi.common.Util;
 import com.quantchi.metadatamgr.data.DSMetaInfo;
 import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
@@ -281,7 +281,7 @@ public class MetaDataMgrApiService {
       HiveMetaInfo _meta = new HiveMetaInfo();
       _meta.setMysqlUrl(_info_from_db.getHiveMetaMysqlUrl());
       _meta.setMysqlUser(_info_from_db.getHiveMetaUsername());
-      _meta.setMysqlPass(util.DecodePassword(_info_from_db.getHiveMetaPswd()));
+      _meta.setMysqlPass(Util.DecodePassword(_info_from_db.getHiveMetaPswd()));
       _info.setHiveMetaInfo(_meta);
       _extract = new HiveExtractImp(_info);
     }
@@ -840,7 +840,7 @@ public class MetaDataMgrApiService {
       HiveMetaInfo _meta = new HiveMetaInfo();
       _meta.setMysqlUrl(_info_from_db.getHiveMetaMysqlUrl());
       _meta.setMysqlUser(_info_from_db.getHiveMetaUsername());
-      _meta.setMysqlPass(util.DecodePassword(_info_from_db.getHiveMetaPswd()));
+      _meta.setMysqlPass(Util.DecodePassword(_info_from_db.getHiveMetaPswd()));
       _info.setHiveMetaInfo(_meta);
       _extract = new HiveExtractImp(_info);
     }

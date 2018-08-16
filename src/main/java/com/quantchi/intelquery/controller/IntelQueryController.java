@@ -1,8 +1,6 @@
 package com.quantchi.intelquery.controller;
 
-import com.quantchi.common.util;
-import java.util.Map;
-import javax.servlet.http.HttpServletResponse;
+import com.quantchi.common.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -11,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "api")
@@ -37,11 +38,11 @@ public class IntelQueryController {
   Map<String, Object> getBusiCate() {
     try {
 
-      return util.genRet(200, null, "", 0);
-    } catch (Exception e) {
-      return util.genRet(500, null, e.getMessage(), 0);
+            return Util.genRet(200, null, "", 0);
+        }catch (Exception e){
+            return Util.genRet(500, null, e.getMessage(), 0);
+        }
     }
-  }
 
   /**
    * @api {get} /api/getRecommendQuery 获取推荐问句接口
@@ -64,11 +65,11 @@ public class IntelQueryController {
       @RequestParam(value = "businessTypeId") String businessTypeId) {
     try {
 
-      return util.genRet(200, null, "", 0);
-    } catch (Exception e) {
-      return util.genRet(500, null, e.getMessage(), 0);
+            return Util.genRet(200, null, "", 0);
+        }catch (Exception e){
+            return Util.genRet(500, null, e.getMessage(), 0);
+        }
     }
-  }
 
   /**
    * @api {get} /api/getRelatedQuery 获取相关问句接口
@@ -90,11 +91,11 @@ public class IntelQueryController {
   Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
     try {
 
-      return util.genRet(200, null, "", 0);
-    } catch (Exception e) {
-      return util.genRet(500, null, e.getMessage(), 0);
+            return Util.genRet(200, null, "", 0);
+        }catch (Exception e){
+            return Util.genRet(500, null, e.getMessage(), 0);
+        }
     }
-  }
 
   /**
    * @api {post} /api/basicQuery 智能取数查询接口
