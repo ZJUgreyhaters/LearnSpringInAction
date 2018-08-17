@@ -1,6 +1,6 @@
 define({ "api": [
   {
-    "type": "get",
+    "type": "post",
     "url": "/api/basicQuery",
     "title": "智能取数查询接口",
     "permission": [
@@ -64,36 +64,57 @@ define({ "api": [
             "group": "Success 200",
             "type": "List",
             "optional": true,
-            "field": "candidates.queryNodes",
+            "field": "data.candidates.queryNodes",
             "description": "<p>返回问句的分词集合</p>"
           },
           {
             "group": "Success 200",
-            "type": "List",
+            "type": "String",
             "optional": true,
-            "field": "queryNodes.Node",
+            "field": "data.candidates.queryNodes.node",
             "description": "<p>问句的分词</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": true,
-            "field": "candidates.composeList.begin",
+            "field": "data.candidates.queryNodes.serializeNode",
+            "description": "<p>问句的分词的序列化</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.candidates.composeList.begin",
             "description": "<p>问句起截断</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": true,
-            "field": "candidates.composeList.end",
+            "field": "data.candidates.composeList.end",
             "description": "<p>问句始截断</p>"
           },
           {
             "group": "Success 200",
             "type": "List",
             "optional": true,
-            "field": "candidates.composeList.compose",
+            "field": "data.candidates.composeList.compose",
             "description": "<p>替换词集合</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.candidates.composeList.compose.node",
+            "description": "<p>替换词分词</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.candidates.composeList.compose.serializeNode",
+            "description": "<p>替换词分词的序列化</p>"
           },
           {
             "group": "Success 200",
@@ -106,49 +127,42 @@ define({ "api": [
             "group": "Success 200",
             "type": "List",
             "optional": true,
-            "field": "data.title",
-            "description": "<p>返回列表头</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "List",
-            "optional": true,
             "field": "data.indexInfo",
             "description": "<p>返回指标信息</p>"
           },
           {
             "group": "Success 200",
-            "type": "List",
+            "type": "String",
             "optional": true,
-            "field": "indexInfo.entityId",
+            "field": "data.indexInfo.entityId",
             "description": "<p>指标id</p>"
           },
           {
             "group": "Success 200",
-            "type": "List",
+            "type": "String",
             "optional": true,
-            "field": "indexInfo.entityName",
+            "field": "data.indexInfo.entityName",
             "description": "<p>指标英文名</p>"
           },
           {
             "group": "Success 200",
-            "type": "List",
+            "type": "String",
             "optional": true,
-            "field": "indexInfo.entityDesc",
+            "field": "data.indexInfo.entityDesc",
             "description": "<p>指标中文名</p>"
           },
           {
             "group": "Success 200",
-            "type": "List",
+            "type": "String",
             "optional": true,
-            "field": "indexInfo.businessDefinition",
+            "field": "data.indexInfo.businessDefinition",
             "description": "<p>业务定义</p>"
           },
           {
             "group": "Success 200",
-            "type": "List",
+            "type": "String",
             "optional": true,
-            "field": "indexInfo.businessRule",
+            "field": "data.indexInfo.businessRule",
             "description": "<p>业务口径</p>"
           },
           {
@@ -157,48 +171,13 @@ define({ "api": [
             "optional": true,
             "field": "data.tabulate",
             "description": "<p>返回列表结果</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "tabulate.id",
-            "description": "<p>客户ID</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "tabulate.name",
-            "description": "<p>客户姓名</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "tabulate.amount",
-            "description": "<p>融资负债金额</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "tabulate.maintenance",
-            "description": "<p>维保比例</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "tabulate.totalAssets",
-            "description": "<p>总资产</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "\"data\":{ \"candidates\": {\"queryNodes\":{\"node\":\"\"},",
-          "content": "\"composeList\":[{\"begin\":\"\", \"end\":\"\", \"compose\":{\"1\",\"2\"}},{\"begin\":\"\", \"end\":\"\",\n\"compose\":{\"1\",\"2\"}}]}, \"steps\":{\"\",\"\"}, \"tabulate\":[{id:\"\",name:\"\",amount:\"\",maintenance:\"\",totalAssets\"\"}],\ntitle:{\"\",\"\"}, indexInfo:{entityId:\"\",entityName:\"\",entityDesc:\"\",businessDefinition:\"\",businessRule:\"\"}\n}",
+          "title": "Success-Response",
+          "content": "{\"data\":{\"candidates\":{\"queryNodes\":{\"node\":\"\",\"serializeNode\":\"\"},\n\"composeList\":[{\"begin\":\"\", \"end\":\"\", \"compose\":[{\"node\":\"\",\"serializeNode\":\"\"},{\"node\":\"\",\"serializeNode\":\"\"}]},\n{\"begin\":\"\", \"end\":\"\",\"compose\":[{\"node\":\"\",\"serializeNode\":\"\"},{\"node\":\"\",\"serializeNode\":\"\"}]}\n]}, \"steps\":{\"\",\"\"}, \"tabulate\":[{id:\"\",\"name\":\"\",\"amount\":\"\",\"maintenance\":\"\",\"totalAssets\":\"\"}],\n\"indexInfo\":[{\"entityId\":\"\",\"entityName\":\"\",\"entityDesc\":\"\",\"businessDefinition\":\"\",\"businessRule\":\"\"}]\n} }",
           "type": "json"
         }
       ]
@@ -450,7 +429,7 @@ define({ "api": [
     "groupTitle": "IntelQueryController"
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "/api/likenum",
     "title": "点赞接口",
     "permission": [

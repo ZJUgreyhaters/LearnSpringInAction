@@ -1,10 +1,8 @@
 package com.quantchi.metadatamgr.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.quantchi.common.util;
+import com.quantchi.common.Util;
 import com.quantchi.metadatamgr.service.MetaDataMgrFieldApiService;
-import com.quantchi.metadatamgr.service.MetaDataMgrTableApiService;
-import javafx.beans.binding.ObjectExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,11 +56,11 @@ public class MetaDataMgrFieldApiController {
     public @ResponseBody
     Map<String, Object> edit (@RequestBody String bodyString) {
         try{
-            return util.genRet(500,null,"",0);
+            return Util.genRet(500,null,"",0);
             //return util.genRet(200,_ret.get("data"),"ok",Integer.parseInt(_ret.get("total").toString()));
         }catch (Exception e){
             logger.error("list func err:",e.getMessage());
-            return util.genRet(500,null,e.getMessage(),0);
+            return Util.genRet(500,null,e.getMessage(),0);
         }
 
 

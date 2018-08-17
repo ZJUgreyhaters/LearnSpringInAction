@@ -5,7 +5,7 @@ import com.quantchi.common.HiveConnection;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
 import com.quantchi.common.SQLQueryConfig;
-import com.quantchi.common.util;
+import com.quantchi.common.Util;
 import com.quantchi.customer.mapper.CustomerGroupMapper;
 import com.quantchi.customer.pojo.CustomerGroup;
 import com.quantchi.customer.service.CustomerGroupService;
@@ -56,11 +56,11 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
       result.put("total", total);
       // 结果rows数据
       result.put("data", list);
-      return util
+      return Util
           .genRet(200, result.get("data"), "ok", Integer.parseInt(result.get("total").toString()));
     } catch (Exception e) {
       e.printStackTrace();
-      return util.genRet(500, null, "select CustomerGroup error", 0);
+      return Util.genRet(500, null, "select CustomerGroup error", 0);
     }
   }
 

@@ -1,7 +1,7 @@
 package com.quantchi.metadatamgr.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.quantchi.common.util;
+import com.quantchi.common.Util;
 import com.quantchi.metadatamgr.service.MetaDataMgrApiService;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +23,12 @@ public class MetaDataMgrApiController {
   @Autowired
   private MetaDataMgrApiService metaDataMgrApiService;
 
+
+  /**
+   * 由于多人同时编写，团队内部没有统一的规范，导致命名混乱，将在后期逐步规范
+   *
+   */
+
   @RequestMapping(value = "/datasource/list", method = {RequestMethod.POST})
   public
   @ResponseBody
@@ -38,11 +44,11 @@ public class MetaDataMgrApiController {
       //int pagesize = Integer.parseInt(json.get("page_size").toString());
       Map<String, Object> _ret = metaDataMgrApiService
           .getDSMetaInfo(dsName, json.getString("page"), json.getString("page_size"));
-      return util
+      return Util
           .genRet(200, _ret.get("data"), "ok", Integer.parseInt(_ret.get("total").toString()));
     } catch (Exception e) {
       logger.error("list func err:", e.getMessage());
-      return util.genRet(500, null, e.getMessage(), 0);
+      return Util.genRet(500, null, e.getMessage(), 0);
     }
 
 
@@ -65,7 +71,7 @@ public class MetaDataMgrApiController {
         String host = json.get("data_source_host").toString();
         String port = json.get("data_source_port").toString();
         String username = json.get("data_source_username").toString();
-        String pswd = util.DecodePassword(json.get("data_source_passwd").toString());
+        String pswd = Util.DecodePassword(json.get("data_source_passwd").toString());
         if (json.getString("data_source_type").toLowerCase().equals("hive")) {
           if (json.get("data_source_mysql_url") == null
               || json.get("data_source_mysql_usr") == null
@@ -74,24 +80,24 @@ public class MetaDataMgrApiController {
           }
           String url = json.getString("data_source_mysql_url");
           String mysql_user = json.getString("data_source_mysql_usr");
-          String mysql_pswd = util.DecodePassword(json.getString("data_source_mysql_pswd"));
+          String mysql_pswd = Util.DecodePassword(json.getString("data_source_mysql_pswd"));
           boolean _retMeta = metaDataMgrApiService
               .connectMysqlTest(url, mysql_user, mysql_pswd);
           if (!_retMeta) {
-            return util.genRet(201, false, "meta 数据库连接失败", 0);
+            return Util.genRet(201, false, "meta 数据库连接失败", 0);
           }
         }
 
         boolean _ret = metaDataMgrApiService.connectTest(host, port, username, pswd);
         if (_ret) {
-          return util.genRet(200, _ret, "连接成功", 0);
+          return Util.genRet(200, _ret, "连接成功", 0);
         } else {
-          return util.genRet(201, _ret, "连接失败", 0);
+          return Util.genRet(201, _ret, "连接失败", 0);
         }
       }
     } catch (Exception e) {
       logger.error("connectTest func err:", e.getMessage());
-      return util.genRet(500, null, e.getMessage(), 0);
+      return Util.genRet(500, null, e.getMessage(), 0);
     }
 
 
@@ -114,14 +120,14 @@ public class MetaDataMgrApiController {
 
       boolean _ret = metaDataMgrApiService.saveMetaInfo(json);
       if (_ret) {
-        return util.genRet(200, _ret, "修改成功", 0);
+        return Util.genRet(200, _ret, "修改成功", 0);
       } else {
-        return util.genRet(201, _ret, "修改失败", 0);
+        return Util.genRet(201, _ret, "修改失败", 0);
       }
 
     } catch (Exception e) {
       logger.error("save func err:", e.getMessage());
-      return util.genRet(500, null, e.getMessage(), 0);
+      return Util.genRet(500, null, e.getMessage(), 0);
     }
 
 
@@ -137,13 +143,13 @@ public class MetaDataMgrApiController {
 
       boolean _ret = metaDataMgrApiService.delMetaInfo(json);
       if (_ret) {
-        return util.genRet(200, _ret, "删除成功", 0);
+        return Util.genRet(200, _ret, "删除成功", 0);
       } else {
-        return util.genRet(201, _ret, "删除失败", 0);
+        return Util.genRet(201, _ret, "删除失败", 0);
       }
     } catch (Exception e) {
       logger.error("deleteDataSource func err:", e.getMessage());
-      return util.genRet(500, null, e.getMessage(), 0);
+      return Util.genRet(500, null, e.getMessage(), 0);
     }
 
 
@@ -164,14 +170,14 @@ public class MetaDataMgrApiController {
 
         boolean _ret = metaDataMgrApiService.chkDSName(dsName);
         if (_ret) {
-          return util.genRet(200, _ret, "成功", 0);
+          return Util.genRet(200, _ret, "成功", 0);
         } else {
-          return util.genRet(201, _ret, "重复", 0);
+          return Util.genRet(201, _ret, "重复", 0);
         }
       }
     } catch (Exception e) {
       logger.error("check func err:", e.getMessage());
-      return util.genRet(500, null, e.getMessage(), 0);
+      return Util.genRet(500, null, e.getMessage(), 0);
     }
 
 
@@ -192,11 +198,11 @@ public class MetaDataMgrApiController {
       String dsName = json.getString("data_source_name");
       String keyword = json.getString("keyword");
       Map<String, Object> _ret = metaDataMgrApiService.extractTables(dsName, keyword);
-      return util
+      return Util
           .genRet(200, _ret.get("data"), "成功", Integer.parseInt(_ret.get("total").toString()));
     } catch (Exception e) {
       logger.error("extractTables func err:", e.getMessage());
-      return util.genRet(500, null, e.getMessage(), 0);
+      return Util.genRet(500, null, e.getMessage(), 0);
     }
 
 
@@ -212,13 +218,13 @@ public class MetaDataMgrApiController {
 
       boolean _ret = metaDataMgrApiService.saveTablesAndFields(json);
       if (_ret) {
-        return util.genRet(200, _ret, "成功", 0);
+        return Util.genRet(200, _ret, "成功", 0);
       } else {
-        return util.genRet(201, _ret, "失败", 0);
+        return Util.genRet(201, _ret, "失败", 0);
       }
     } catch (Exception e) {
       logger.error("extractTables func err:", e.getMessage());
-      return util.genRet(500, null, "保存失败", 0);
+      return Util.genRet(500, null, "保存失败", 0);
     }
   }
 
