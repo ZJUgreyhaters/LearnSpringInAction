@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.intelquery.mapper.IntelQueryMapper">
+  <select id="getBusiCate" resultType="Map">
+    select
+    id,
+    business_type_name AS businessTypeName
+     from business_segment
+  </select>
+
+  <select id="getRecommendQuery" resultType="Map">
+    select * from recommend_questions
+  </select>
+</mapper>

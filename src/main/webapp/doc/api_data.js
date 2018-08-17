@@ -1,6 +1,144 @@
 define({ "api": [
   {
     "type": "post",
+    "url": "/api/associateQuery",
+    "title": "智能取数联想语句查询接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/associateQuery"
+      }
+    ],
+    "name": "associateQuery",
+    "group": "IntelQueryController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "query",
+            "description": "<p>序列化的语句</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回推荐问句列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.steps",
+            "description": "<p>返回数据结果</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.steps.node",
+            "description": "<p>数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.steps.serializeNode",
+            "description": "<p>序列化数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.indexInfo",
+            "description": "<p>返回指标信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.indexInfo.entityId",
+            "description": "<p>指标id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.indexInfo.entityName",
+            "description": "<p>指标英文名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.indexInfo.entityDesc",
+            "description": "<p>指标中文名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.indexInfo.businessDefinition",
+            "description": "<p>业务定义</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.indexInfo.businessRule",
+            "description": "<p>业务口径</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.tabulate",
+            "description": "<p>返回列表结果</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response {\"data\":{ \"steps\":[{\"node\":\"\",\"serializeNode\":\"\"}],",
+          "content": "\"tabulate\":[{id:\"\",\"name\":\"\",\"amount\":\"\",\"maintenance\":\"\",\"totalAssets\":\"\"}],\n\"indexInfo\":[{\"entityId\":\"\",\"entityName\":\"\",\"entityDesc\":\"\",\"businessDefinition\":\"\",\"businessRule\":\"\"}]\n} }",
+          "type": "json"
+        }
+      ]
+    },
+    "contentType": "application/json",
+    "filename": "../../java/com/quantchi/intelquery/controller/IntelQueryController.java",
+    "groupTitle": "IntelQueryController"
+  },
+  {
+    "type": "post",
     "url": "/api/basicQuery",
     "title": "智能取数查询接口",
     "permission": [
@@ -83,6 +221,13 @@ define({ "api": [
           },
           {
             "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.candidates.composeList",
+            "description": "<p>问句截断结合</p>"
+          },
+          {
+            "group": "Success 200",
             "type": "String",
             "optional": true,
             "field": "data.candidates.composeList.begin",
@@ -122,6 +267,20 @@ define({ "api": [
             "optional": true,
             "field": "data.steps",
             "description": "<p>返回数据结果</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.steps.node",
+            "description": "<p>数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.steps.serializeNode",
+            "description": "<p>序列化数据</p>"
           },
           {
             "group": "Success 200",
@@ -176,8 +335,8 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Success-Response",
-          "content": "{\"data\":{\"candidates\":{\"queryNodes\":{\"node\":\"\",\"serializeNode\":\"\"},\n\"composeList\":[{\"begin\":\"\", \"end\":\"\", \"compose\":[{\"node\":\"\",\"serializeNode\":\"\"},{\"node\":\"\",\"serializeNode\":\"\"}]},\n{\"begin\":\"\", \"end\":\"\",\"compose\":[{\"node\":\"\",\"serializeNode\":\"\"},{\"node\":\"\",\"serializeNode\":\"\"}]}\n]}, \"steps\":{\"\",\"\"}, \"tabulate\":[{id:\"\",\"name\":\"\",\"amount\":\"\",\"maintenance\":\"\",\"totalAssets\":\"\"}],\n\"indexInfo\":[{\"entityId\":\"\",\"entityName\":\"\",\"entityDesc\":\"\",\"businessDefinition\":\"\",\"businessRule\":\"\"}]\n} }",
+          "title": "Success-Response {\"data\":{\"candidates\":{\"queryNodes\":[{\"node\":\"\",\"serializeNode\":\"\"}],",
+          "content": "\"composeList\":[{\"begin\":\"\", \"end\":\"\", \"compose\":[{\"node\":\"\",\"serializeNode\":\"\"},{\"node\":\"\",\"serializeNode\":\"\"}]},\n{\"begin\":\"\", \"end\":\"\",\"compose\":[{\"node\":\"\",\"serializeNode\":\"\"},{\"node\":\"\",\"serializeNode\":\"\"}]}\n]}, \"steps\":[{\"node\":\"\",\"serializeNode\":\"\"}], \"tabulate\":[{id:\"\",\"name\":\"\",\"amount\":\"\",\"maintenance\":\"\",\"totalAssets\":\"\"}],\n\"indexInfo\":[{\"entityId\":\"\",\"entityName\":\"\",\"entityDesc\":\"\",\"businessDefinition\":\"\",\"businessRule\":\"\"}]\n} }",
           "type": "json"
         }
       ]
@@ -429,7 +588,7 @@ define({ "api": [
     "groupTitle": "IntelQueryController"
   },
   {
-    "type": "post",
+    "type": "get",
     "url": "/api/likenum",
     "title": "点赞接口",
     "permission": [
@@ -452,8 +611,8 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "query",
-            "description": "<p>点赞语句</p>"
+            "field": "id",
+            "description": "<p>点赞语句id</p>"
           },
           {
             "group": "Parameter",
@@ -481,6 +640,80 @@ define({ "api": [
             "optional": false,
             "field": "msg",
             "description": "<p>成功或者错误信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/intelquery/controller/IntelQueryController.java",
+    "groupTitle": "IntelQueryController"
+  },
+  {
+    "type": "post",
+    "url": "/api/stepsQuery",
+    "title": "智能取数步骤查询接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/stepsQuery"
+      }
+    ],
+    "name": "stepsQuery",
+    "group": "IntelQueryController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "query",
+            "description": "<p>查询语句</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "querySerialize",
+            "description": "<p>序列化之后的查询语句</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回推荐问句列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.tabulate",
+            "description": "<p>返回列表结果</p>"
           }
         ]
       }

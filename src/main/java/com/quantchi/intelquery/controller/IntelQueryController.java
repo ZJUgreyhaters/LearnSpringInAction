@@ -1,8 +1,9 @@
 package com.quantchi.intelquery.controller;
 
 import com.quantchi.common.JsonResult;
-import com.quantchi.common.SQLQueryConfig;
 import com.quantchi.common.Util;
+import com.quantchi.intelquery.service.IntelQueryService;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class IntelQueryController {
   private static final Logger logger = LoggerFactory.getLogger(IntelQueryController.class);
 
   @Autowired
-  private SQLQueryConfig sqlQueryConfig;
+  private IntelQueryService intelQueryService;
 
   /**
    * @api {get} /api/getBusiCate 智能取数页面获取业务接口
@@ -43,11 +44,10 @@ public class IntelQueryController {
   @ResponseBody
   String getBusiCate() {
     try {
-      String businessSegment = sqlQueryConfig.getSEL_BUSINESS_SEGMENT();
-      String[] split = businessSegment.split(",");
-      return JsonResult.successJson(split);
+      List<Map<String, Object>> busiCate = intelQueryService.getBusiCate();
+      return JsonResult.successJson(busiCate);
     } catch (Exception e) {
-      logger.info("get busiCate error",e);
+      logger.info("get busiCate error", e);
       return JsonResult.errorJson("select busiCate error");
     }
   }
@@ -69,15 +69,15 @@ public class IntelQueryController {
   @RequestMapping(value = "/getRecommendQuery", method = {RequestMethod.GET})
   public
   @ResponseBody
-  Map<String, Object> getRecommendQuery(
-      @RequestParam(value = "businessTypeId") String businessTypeId) {
+  String getRecommendQuery(String businessTypeId) {
     try {
-
-            return Util.genRet(200, null, "", 0);
-        }catch (Exception e){
-            return Util.genRet(500, null, e.getMessage(), 0);
-        }
+      List<Map<String, Object>> recommendQuery = intelQueryService.getRecommendQuery();
+      return JsonResult.successJson(recommendQuery);
+    } catch (Exception e) {
+      logger.info("get Recommend error", e);
+      return JsonResult.errorJson("select Recommend error");
     }
+  }
 
   /**
    * @api {get} /api/getRelatedQuery 获取相关问句接口
@@ -99,11 +99,11 @@ public class IntelQueryController {
   Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
     try {
 
-            return Util.genRet(200, null, "", 0);
-        }catch (Exception e){
-            return Util.genRet(500, null, e.getMessage(), 0);
-        }
+      return Util.genRet(200, null, "", 0);
+    } catch (Exception e) {
+      return Util.genRet(500, null, e.getMessage(), 0);
     }
+  }
 
   /**
    * @api {post} /api/basicQuery 智能取数查询接口
@@ -120,12 +120,15 @@ public class IntelQueryController {
    * @apiSuccess {List} [data.candidates.queryNodes] 返回问句的分词集合
    * @apiSuccess {String} [data.candidates.queryNodes.node] 问句的分词
    * @apiSuccess {String} [data.candidates.queryNodes.serializeNode] 问句的分词的序列化
+   * @apiSuccess {List} [data.candidates.composeList] 问句截断结合
    * @apiSuccess {String} [data.candidates.composeList.begin] 问句起截断
    * @apiSuccess {String} [data.candidates.composeList.end] 问句始截断
    * @apiSuccess {List} [data.candidates.composeList.compose] 替换词集合
    * @apiSuccess {String} [data.candidates.composeList.compose.node] 替换词分词
    * @apiSuccess {String} [data.candidates.composeList.compose.serializeNode] 替换词分词的序列化
    * @apiSuccess {List} [data.steps] 返回数据结果
+   * @apiSuccess {String} [data.steps.node] 数据
+   * @apiSuccess {String} [data.steps.serializeNode] 序列化数据
    * @apiSuccess {List} [data.indexInfo] 返回指标信息
    * @apiSuccess {String} [data.indexInfo.entityId] 指标id
    * @apiSuccess {String} [data.indexInfo.entityName] 指标英文名
@@ -134,11 +137,10 @@ public class IntelQueryController {
    * @apiSuccess {String} [data.indexInfo.businessRule] 业务口径
    * @apiSuccess {List} [data.tabulate] 返回列表结果
    * @apiContentType application/json
-   * @apiSuccessExample {json} Success-Response
-   * {"data":{"candidates":{"queryNodes":{"node":"","serializeNode":""},
+   * @apiSuccessExample {json} Success-Response {"data":{"candidates":{"queryNodes":[{"node":"","serializeNode":""}],
    * "composeList":[{"begin":"", "end":"", "compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]},
    * {"begin":"", "end":"","compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]}
-   * ]}, "steps":{"",""}, "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
+   * ]}, "steps":[{"node":"","serializeNode":""}], "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
    * "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
    * } }
    */
@@ -156,7 +158,7 @@ public class IntelQueryController {
         List<Replacement> replacements = ((TokenizingResult) result).getReplacements();
         Integer begIndex = replacements.get(0).getBegIndex(); // 需要用户选择的起始node index
         Integer endIndex = replacements.get(0).getEndIndex(); // 需要用户选择的结束node index，左开右闭
-        List<QueryNodes> candidates = replacements.get(0).getCandidates();
+        List<QueryNodes> candidates = replacements.get(0).getCandidates(); // 所有可能的结果
       }
       QueryWithTree queryTree = result.getFinalTree();
       String descText = queryTree.getTextForUser();
@@ -179,7 +181,7 @@ public class IntelQueryController {
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/likenum
    * @apiName likenum
    * @apiGroup IntelQueryController
-   * @apiParam {String} query 点赞语句
+   * @apiParam {String} id 点赞语句id
    * @apiParam {String} type 是否点赞(1:点赞，2:不点赞)
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
@@ -209,6 +211,72 @@ public class IntelQueryController {
       RequestMethod.GET}, produces = "application/json;charset=UTF-8")
   public String download(HttpServletResponse response, String query) {
     try {
+      return "";
+    } catch (Exception e) {
+      return "";
+    }
+  }
+
+  /**
+   * @api {post} /api/associateQuery 智能取数联想语句查询接口
+   * @apiPermission none
+   * @apiVersion 1.0.0
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/associateQuery
+   * @apiName associateQuery
+   * @apiGroup IntelQueryController
+   * @apiParam {String} query 序列化的语句
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} msg  成功或者错误信息
+   * @apiSuccess {List} [data] 返回推荐问句列表
+   * @apiSuccess {List} [data.steps] 返回数据结果
+   * @apiSuccess {String} [data.steps.node] 数据
+   * @apiSuccess {String} [data.steps.serializeNode] 序列化数据
+   * @apiSuccess {List} [data.indexInfo] 返回指标信息
+   * @apiSuccess {String} [data.indexInfo.entityId] 指标id
+   * @apiSuccess {String} [data.indexInfo.entityName] 指标英文名
+   * @apiSuccess {String} [data.indexInfo.entityDesc] 指标中文名
+   * @apiSuccess {String} [data.indexInfo.businessDefinition] 业务定义
+   * @apiSuccess {String} [data.indexInfo.businessRule] 业务口径
+   * @apiSuccess {List} [data.tabulate] 返回列表结果
+   * @apiContentType application/json
+   * @apiSuccessExample {json} Success-Response {"data":{ "steps":[{"node":"","serializeNode":""}],
+   * "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
+   * "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
+   * } }
+   */
+  @ResponseBody
+  @RequestMapping(value = "/associateQuery", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String associateQuery(@RequestBody Map<String, Object> map) {
+    try {
+      return "";
+    } catch (Exception e) {
+      return "";
+    }
+  }
+
+  /**
+   * @api {post} /api/stepsQuery 智能取数步骤查询接口
+   * @apiPermission none
+   * @apiVersion 1.0.0
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/stepsQuery
+   * @apiName stepsQuery
+   * @apiGroup IntelQueryController
+   * @apiParam {String} query 查询语句
+   * @apiParam {String} querySerialize 序列化之后的查询语句
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} msg  成功或者错误信息
+   * @apiSuccess {List} [data] 返回推荐问句列表
+   * @apiSuccess {List} [data.tabulate] 返回列表结果
+   */
+  @ResponseBody
+  @RequestMapping(value = "/stepsQuery", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String stepsQuery(@RequestBody Map<String, Object> map) {
+    try {
+      /*QueryNodes queryNodes = queryWithNodes.getNodes();
+      queryNodes.replace(begIndex, endIndex, candidate); // 调用 replace API 将原来的Nodes替换成用户选择的候选项
+      StepResult result = QueryParser.getInstance().parse(queryWithNodes);*/
       return "";
     } catch (Exception e) {
       return "";
