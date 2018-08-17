@@ -1,10 +1,13 @@
 package com.quantchi.intelquery.controller;
 
+import com.quantchi.common.JsonResult;
+import com.quantchi.common.SQLQueryConfig;
 import com.quantchi.common.util;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class IntelQueryController {
 
   private static final Logger logger = LoggerFactory.getLogger(IntelQueryController.class);
+
+  @Autowired
+  private SQLQueryConfig sqlQueryConfig;
 
   /**
    * @api {get} /api/getBusiCate 智能取数页面获取业务接口
@@ -31,15 +37,18 @@ public class IntelQueryController {
    * @apiSuccess {String} [data.id] 返回业务类别id
    * @apiSuccess {String} [data.businessTypeName] 返回业务类别名称
    */
-  @RequestMapping(value = "/getBusiCate", method = {RequestMethod.GET})
+  @RequestMapping(value = "/getBusiCate", method = {
+      RequestMethod.GET}, produces = "application/json;charset=UTF-8")
   public
   @ResponseBody
-  Map<String, Object> getBusiCate() {
+  String getBusiCate() {
     try {
-
-      return util.genRet(200, null, "", 0);
+      String businessSegment = sqlQueryConfig.getSEL_BUSINESS_SEGMENT();
+      String[] split = businessSegment.split(",");
+      return JsonResult.successJson(split);
     } catch (Exception e) {
-      return util.genRet(500, null, e.getMessage(), 0);
+      logger.info("get busiCate error",e);
+      return JsonResult.errorJson("select busiCate error");
     }
   }
 
@@ -128,7 +137,8 @@ public class IntelQueryController {
    * @apiSuccess {String} [tabulate.maintenance] 维保比例
    * @apiSuccess {String} [tabulate.totalAssets] 总资产
    * @apiContentType application/json
-   * @apiSuccessExample {json} "data":{ "candidates": {"queryNodes":{"node":""},
+   * @apiSuccessExample {json} Success-Response:
+   * "data":{ "candidates": {"queryNodes":{"node":""},
    * "composeList":[{"begin":"", "end":"", "compose":{"1","2"}},{"begin":"", "end":"",
    * "compose":{"1","2"}}]}, "steps":{"",""}, "tabulate":[{id:"",name:"",amount:"",maintenance:"",totalAssets""}],
    * title:{"",""}, indexInfo:{entityId:"",entityName:"",entityDesc:"",businessDefinition:"",businessRule:""}

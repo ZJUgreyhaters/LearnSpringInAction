@@ -6,8 +6,6 @@ import org.springframework.context.annotation.PropertySource;
 
 /**
  * 从配置文件sql_query_config.properties获取具体SQL语句
- *
- * Created by luchisheng on 2017/11/6.
  */
 
 @Configuration
@@ -64,6 +62,17 @@ public class SQLQueryConfig {
 
   @Value("${sel.db.target.mapping}")
   private String SEL_DB_TARGET_MAPPING;
+
+  @Value("${sel.business.segment}")
+  private String SEL_BUSINESS_SEGMENT;
+
+  public String getSEL_BUSINESS_SEGMENT() {
+    return SEL_BUSINESS_SEGMENT;
+  }
+
+  public void setSEL_BUSINESS_SEGMENT(String SEL_BUSINESS_SEGMENT) {
+    this.SEL_BUSINESS_SEGMENT = SEL_BUSINESS_SEGMENT;
+  }
 
   public String getSEL_DB_STANDARD_COMMON() {
     return SEL_DB_STANDARD_COMMON;
