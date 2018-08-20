@@ -156,22 +156,10 @@ public class IntelQueryController {
    * "composeList":[{"begin":"", "end":"", "compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]},
    * {"begin":"", "end":"","compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]}
    * ]}, "steps":[{"node":"","serializeNode":""}], "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
-   * "metrics":[
-   *  {
-   *    "cn_name": "融资负债",
-   *    "category": "融资融券>两融客户>资产负债",
-   *    "seg_name": "融资 负债",
-   *    "definition": "融资负债",
-   *    "db_field": "dmp_demo.fact_cust_balance.fin_debit",
-   *    "id": "224",
-   *    "type": "entity",
-   *    "dept": "两融部门",
-   *    "en_name": "fin_debit",
-   *    "_version_": 1602053511199064069,
-   *    "hit_ratio": 1
-   *   }
-   * ],
-   * "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
+   * "metrics":[ { "cn_name": "融资负债", "category": "融资融券>两融客户>资产负债", "seg_name": "融资 负债",
+   * "definition": "融资负债", "db_field": "dmp_demo.fact_cust_balance.fin_debit", "id": "224", "type":
+   * "entity", "dept": "两融部门", "en_name": "fin_debit", "_version_": 1602053511199064069,
+   * "hit_ratio": 1 } ], "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
    * } }
    */
   @ResponseBody
@@ -314,7 +302,7 @@ public class IntelQueryController {
   }
 
   /**
-   * @api {post} /api/queryInstance 键盘精灵接口
+   * @api {get} /api/queryInstance 键盘精灵接口
    * @apiPermission none
    * @apiVersion 1.0.0
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/queryInstance
@@ -327,13 +315,20 @@ public class IntelQueryController {
    * @apiSuccess {List} [data] 返回推荐问句列表
    * @apiSuccess {List} [data.tabulate] 返回列表结果
    */
-  @RequestMapping(value = "/queryInstance", method = { RequestMethod.GET })
-  public @ResponseBody
-  Map<String, Object> queryInstance (@RequestParam("q") String q) throws Exception {
-   /* String _query = String.join(" ",intelQueryService.segment(q));
-    //String _query = q;
-    QueryResponse rets = intelQueryService.searchInstance(_query);
-    SolrDocumentList data =  intelQueryService.handleInst(_query,rets);*/
-    return Util.genRet(200, null, "", 0);
+  @RequestMapping(value = "/queryInstance1", method = {
+      RequestMethod.GET}, produces = "application/json;charset=UTF-8")
+  public
+  @ResponseBody
+  String queryInstance(@RequestParam("q")String q) {
+    try {
+      List<Object> quickMacroQuery = intelQueryService.getQuickMacroQuery(q);
+      return JsonResult.successJson(quickMacroQuery);
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.info("queryInstance error", e);
+      return JsonResult.errorJson("queryInstance error");
+    }
+
+
   }
 }

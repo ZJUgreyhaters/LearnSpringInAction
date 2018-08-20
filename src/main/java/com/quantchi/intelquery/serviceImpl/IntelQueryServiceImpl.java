@@ -1,17 +1,10 @@
 package com.quantchi.intelquery.serviceImpl;
 
-import com.quantchi.common.AppProperties;
 import com.quantchi.intelquery.mapper.IntelQueryMapper;
 import com.quantchi.intelquery.search.SearchEng;
 import com.quantchi.intelquery.service.IntelQueryService;
-
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,22 +25,22 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   @Override
-  public List<Map<String, Object>> getRecommendQuery() {
-    return intelQueryMapper.getRecommendQuery();
+  public List<Map<String, Object>> getRecommendQuery(String businessTypeId) {
+    return intelQueryMapper.getRecommendQuery(businessTypeId);
   }
 
-  private List<Object> getMetricsRet(String query) throws Exception {
+  public List<Object> getMetricsRet(String query) throws Exception {
     //TODO get metrics
     //if return [] , call intelquery
     SearchEng engObj = SearchEng.instanceOf(query,SEARCHTYPE);
     return engObj.getMetrics();
   }
 
-  private void getIntelQuery(){
+  public void getIntelQuery(){
 
   }
 
-  private List<Object> getQuickMacroQuery(String query) throws Exception {
+  public List<Object> getQuickMacroQuery(String query) throws Exception {
     SearchEng engObj = SearchEng.instanceOf(query,SEARCHTYPE);
     return engObj.getQuickMacro();
   }
