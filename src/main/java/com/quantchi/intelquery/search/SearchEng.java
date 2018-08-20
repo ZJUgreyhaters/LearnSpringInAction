@@ -1,0 +1,89 @@
+package com.quantchi.intelquery.search;
+
+import com.quantchi.common.AppProperties;
+import com.quantchi.intelquery.QueryNodes;
+import com.quantchi.intelquery.exception.QPException;
+import com.quantchi.intelquery.node.SemanticNode;
+import com.quantchi.intelquery.tokenize.LtpTokenizer;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SearchEng {
+
+		private final String type;
+		private String query;
+
+		public String getType() {
+				return type;
+		}
+
+		public String getQuery() {
+				return query;
+		}
+
+		public void setQuery(String query) {
+				this.query = query;
+		}
+
+		public SearchEng(String query, String type){
+				this.type = type;
+				this.query = query;
+		}
+
+		public static SearchEng instanceOf(String query,String type) throws Exception{
+				SearchEng obj = null;
+				switch (type){
+						case "solr":
+								obj = new SolrEng(query,type);
+								break;
+						default:
+								throw new Exception("not found type:"+type);
+				}
+
+				return obj;
+		}
+
+		public List<Object> getMetrics() throws Exception { return  null;}
+
+		public List<Object> getQuickMacro() throws Exception { return  null;}
+
+		protected List<String> segment() throws QPException, IOException {
+				List<String> list = new ArrayList<>();
+				String ltp = AppProperties.get("ltp.addr");
+				QueryNodes _nodes = LtpTokenizer.tokenize(getQuery(),ltp);
+
+				for(SemanticNode node : _nodes){
+						list.add(node.getText());
+				}
+
+				//添加分词后处理策略
+				removeName_with_seg_xx(list);
+
+				return list;
+		}
+
+		//XX 被分词了，所以针对人名去除分词，但是人名xx的提示将不会出来
+		private void removeName_with_seg_xx(List<String> segList){
+				//脱敏后的人名都按 XX 来处理,不存在 X
+				String _needRemoveFlag = "XX";
+				int _idx = -1;
+				for(String word: segList){
+						if(_needRemoveFlag.equals(word)){
+								_idx = segList.indexOf(word);
+						}
+				}
+				if(_idx > -1 && segList.size() > 1){
+						//如果XX是首个词，则连接第二个词
+						if(_idx == 0){
+								String _secondWord = _needRemoveFlag+segList.get(1);
+								segList.set(1,_secondWord);
+						}else{
+								String _prevWord = segList.get(_idx-1)+_needRemoveFlag;
+								segList.set(_idx-1,_prevWord);
+						}
+						segList.remove(_needRemoveFlag);
+				}
+		}
+}
