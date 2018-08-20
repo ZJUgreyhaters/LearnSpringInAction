@@ -10,5 +10,5 @@ public interface IntelQueryService {
 
   List<Map<String, Object>> getBusiCate();
 
-  List<Map<String, Object>> getRecommendQuery();
+  List<Map<String, Object>> getRecommendQuery(String businessTypeId);
 }

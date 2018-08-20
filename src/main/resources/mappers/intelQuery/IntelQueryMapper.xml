@@ -10,6 +10,11 @@
   </select>
 
   <select id="getRecommendQuery" resultType="Map">
-    select * from recommend_questions
+    select
+    id,
+    query,
+    business_id AS businessId
+    from recommend_questions
+    where business_id =#{businessTypeId}
   </select>
 </mapper>
