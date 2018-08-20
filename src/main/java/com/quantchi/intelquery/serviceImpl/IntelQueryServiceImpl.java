@@ -22,7 +22,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   @Override
-  public List<Map<String, Object>> getRecommendQuery() {
-    return intelQueryMapper.getRecommendQuery();
+  public List<Map<String, Object>> getRecommendQuery(String businessTypeId) {
+    return intelQueryMapper.getRecommendQuery(businessTypeId);
   }
 }

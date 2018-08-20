@@ -66,12 +66,14 @@ public class IntelQueryController {
    * @apiSuccess {String} [data.id] 返回推荐问句id
    * @apiSuccess {String} [data.query] 返回推荐问句
    */
-  @RequestMapping(value = "/getRecommendQuery", method = {RequestMethod.GET})
+  @RequestMapping(value = "/getRecommendQuery", method = {
+      RequestMethod.GET}, produces = "application/json;charset=UTF-8")
   public
   @ResponseBody
   String getRecommendQuery(String businessTypeId) {
     try {
-      List<Map<String, Object>> recommendQuery = intelQueryService.getRecommendQuery();
+      List<Map<String, Object>> recommendQuery = intelQueryService
+          .getRecommendQuery(businessTypeId);
       return JsonResult.successJson(recommendQuery);
     } catch (Exception e) {
       logger.info("get Recommend error", e);
@@ -93,7 +95,8 @@ public class IntelQueryController {
    * @apiSuccess {String} [data.id] 返回相关问句id
    * @apiSuccess {String} [data.query] 返回相关问句
    */
-  @RequestMapping(value = "/getRelatedQuery", method = {RequestMethod.GET})
+  @RequestMapping(value = "/getRelatedQuery", method = {
+      RequestMethod.GET}, produces = "application/json;charset=UTF-8")
   public
   @ResponseBody
   Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
