@@ -139,11 +139,38 @@ public class IntelQueryController {
    * @apiSuccess {String} [data.indexInfo.businessDefinition] 业务定义
    * @apiSuccess {String} [data.indexInfo.businessRule] 业务口径
    * @apiSuccess {List} [data.tabulate] 返回列表结果
+   * @apiSuccess {List} [data.metrics] 返回指标结果，如果没有则返回空数组
+   * @apiSuccess {List} [data.metrics] 返回指标结果，如果没有则返回空数组
+   * @apiSuccess {String} [data.metrics.category] 指标分类目录
+   * @apiSuccess {String} [data.metrics.seg_name] 指标分词结果
+   * @apiSuccess {String} [data.metrics.definition] 指标业务定义
+   * @apiSuccess {String} [data.metrics.db_field] 指标数据库字段
+   * @apiSuccess {String} [data.metrics.id] 指标id
+   * @apiSuccess {String} [data.metrics.type] 指标类型
+   * @apiSuccess {String} [data.metrics.dept] 两融部门
+   * @apiSuccess {String} [data.metrics.en_name] 指标英文名
+   * @apiSuccess {double} [data.metrics.hit_ratio] 指标搜索分数
+   * @apiSuccess {double} [data.metrics._version_] 搜索系统里的版本号
    * @apiContentType application/json
    * @apiSuccessExample {json} Success-Response: {"data":{"candidates":{"queryNodes":[{"node":"","serializeNode":""}],
    * "composeList":[{"begin":"", "end":"", "compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]},
    * {"begin":"", "end":"","compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]}
    * ]}, "steps":[{"node":"","serializeNode":""}], "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
+   * "metrics":[
+   *  {
+   *    "cn_name": "融资负债",
+   *    "category": "融资融券>两融客户>资产负债",
+   *    "seg_name": "融资 负债",
+   *    "definition": "融资负债",
+   *    "db_field": "dmp_demo.fact_cust_balance.fin_debit",
+   *    "id": "224",
+   *    "type": "entity",
+   *    "dept": "两融部门",
+   *    "en_name": "fin_debit",
+   *    "_version_": 1602053511199064069,
+   *    "hit_ratio": 1
+   *   }
+   * ],
    * "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
    * } }
    */
