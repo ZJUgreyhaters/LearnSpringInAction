@@ -140,7 +140,7 @@ public class IntelQueryController {
    * @apiSuccess {String} [data.indexInfo.businessRule] 业务口径
    * @apiSuccess {List} [data.tabulate] 返回列表结果
    * @apiContentType application/json
-   * @apiSuccessExample {json} Success-Response {"data":{"candidates":{"queryNodes":[{"node":"","serializeNode":""}],
+   * @apiSuccessExample {json} Success-Response: {"data":{"candidates":{"queryNodes":[{"node":"","serializeNode":""}],
    * "composeList":[{"begin":"", "end":"", "compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]},
    * {"begin":"", "end":"","compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]}
    * ]}, "steps":[{"node":"","serializeNode":""}], "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
@@ -284,5 +284,29 @@ public class IntelQueryController {
     } catch (Exception e) {
       return "";
     }
+  }
+
+  /**
+   * @api {post} /api/queryInstance 键盘精灵接口
+   * @apiPermission none
+   * @apiVersion 1.0.0
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/queryInstance
+   * @apiName queryInstance
+   * @apiGroup IntelQueryController
+   * @apiParam {String} query 查询语句
+   * @apiParam {String} querySerialize 序列化之后的查询语句
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} msg  成功或者错误信息
+   * @apiSuccess {List} [data] 返回推荐问句列表
+   * @apiSuccess {List} [data.tabulate] 返回列表结果
+   */
+  @RequestMapping(value = "/queryInstance", method = { RequestMethod.GET })
+  public @ResponseBody
+  Map<String, Object> queryInstance (@RequestParam("q") String q) throws Exception {
+   /* String _query = String.join(" ",intelQueryService.segment(q));
+    //String _query = q;
+    QueryResponse rets = intelQueryService.searchInstance(_query);
+    SolrDocumentList data =  intelQueryService.handleInst(_query,rets);*/
+    return Util.genRet(200, null, "", 0);
   }
 }
