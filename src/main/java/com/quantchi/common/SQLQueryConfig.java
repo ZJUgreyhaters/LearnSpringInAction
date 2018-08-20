@@ -6,8 +6,6 @@ import org.springframework.context.annotation.PropertySource;
 
 /**
  * 从配置文件sql_query_config.properties获取具体SQL语句
- *
- * Created by luchisheng on 2017/11/6.
  */
 
 @Configuration
@@ -64,6 +62,7 @@ public class SQLQueryConfig {
 
   @Value("${sel.db.target.mapping}")
   private String SEL_DB_TARGET_MAPPING;
+
 
   public String getSEL_DB_STANDARD_COMMON() {
     return SEL_DB_STANDARD_COMMON;
