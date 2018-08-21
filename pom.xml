@@ -276,7 +276,7 @@
     <dependency>
       <groupId>com.quantchi</groupId>
       <artifactId>intelquery</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
       <!--  forget why add exclusion-->
       <exclusions>
         <exclusion>

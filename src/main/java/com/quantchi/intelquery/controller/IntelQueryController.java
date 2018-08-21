@@ -3,6 +3,7 @@ package com.quantchi.intelquery.controller;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Util;
 import com.quantchi.intelquery.service.IntelQueryService;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
@@ -152,26 +153,14 @@ public class IntelQueryController {
    * @apiSuccess {double} [data.metrics.hit_ratio] 指标搜索分数
    * @apiSuccess {double} [data.metrics._version_] 搜索系统里的版本号
    * @apiContentType application/json
-   * @apiSuccessExample {json} Success-Response {"data":{"candidates":{"queryNodes":[{"node":"","serializeNode":""}],
+   * @apiSuccessExample {json} Success-Response: {"data":{"candidates":{"queryNodes":[{"node":"","serializeNode":""}],
    * "composeList":[{"begin":"", "end":"", "compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]},
    * {"begin":"", "end":"","compose":[{"node":"","serializeNode":""},{"node":"","serializeNode":""}]}
    * ]}, "steps":[{"node":"","serializeNode":""}], "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
-   * "metrics":[
-   *  {
-   *    "cn_name": "融资负债",
-   *    "category": "融资融券>两融客户>资产负债",
-   *    "seg_name": "融资 负债",
-   *    "definition": "融资负债",
-   *    "db_field": "dmp_demo.fact_cust_balance.fin_debit",
-   *    "id": "224",
-   *    "type": "entity",
-   *    "dept": "两融部门",
-   *    "en_name": "fin_debit",
-   *    "_version_": 1602053511199064069,
-   *    "hit_ratio": 1
-   *   }
-   * ],
-   * "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
+   * "metrics":[ { "cn_name": "融资负债", "category": "融资融券>两融客户>资产负债", "seg_name": "融资 负债",
+   * "definition": "融资负债", "db_field": "dmp_demo.fact_cust_balance.fin_debit", "id": "224", "type":
+   * "entity", "dept": "两融部门", "en_name": "fin_debit", "_version_": 1602053511199064069,
+   * "hit_ratio": 1 } ], "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
    * } }
    */
   @ResponseBody
@@ -179,7 +168,11 @@ public class IntelQueryController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String basicQuery(@RequestBody Map<String, Object> map) {
     try {
-      /*String q = "今天维保比例";
+      String query = map.get("q").toString();
+      List<Object> metricsRet = intelQueryService.getMetricsRet(query);
+      Map<String,Object> resultMap = new HashMap();
+      resultMap.put("metrics",metricsRet);
+     /* String q = "今天维保比例";
       Query query = new BasicQuery(q);
       StepResult result = QueryParser.getInstance().parse(query);
       if (result instanceof TokenizingResult) {
@@ -195,17 +188,19 @@ public class IntelQueryController {
       SqlFormatter formatter = new Builder()
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
           .build();
-      String sql = queryTree.getSql(formatter);
+      SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
       List<String> selectedFields = queryTree.getSqlQuery().getSelectedFields();
       List<QueryWithTree> steps = result.getSteps();*/
-      return "";
+      return JsonResult.successJson(resultMap);
     } catch (Exception e) {
-      return "";
+      e.printStackTrace();
+      logger.info("get basicQuery error", e);
+      return JsonResult.errorJson("get basicQuery error");
     }
   }
 
   /**
-   * @api {get} /api/likenum 点赞接口
+   * @api {post} /api/likenum 点赞接口
    * @apiPermission none
    * @apiVersion 1.0.0
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/likenum
@@ -269,7 +264,7 @@ public class IntelQueryController {
    * @apiSuccess {String} [data.indexInfo.businessRule] 业务口径
    * @apiSuccess {List} [data.tabulate] 返回列表结果
    * @apiContentType application/json
-   * @apiSuccessExample {json} Success-Response {"data":{ "steps":[{"node":"","serializeNode":""}],
+   * @apiSuccessExample {json} Success-Response: {"data":{ "steps":[{"node":"","serializeNode":""}],
    * "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
    * "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
    * } }
@@ -311,5 +306,42 @@ public class IntelQueryController {
     } catch (Exception e) {
       return "";
     }
+  }
+
+  /**
+   * @api {get} /api/queryInstance 键盘精灵接口
+   * @apiPermission none
+   * @apiVersion 1.0.0
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/queryInstance
+   * @apiName queryInstance
+   * @apiGroup IntelQueryController
+   * @apiParam {String} query 查询语句
+   * @apiParam {String} querySerialize 序列化之后的查询语句
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} msg  成功或者错误信息
+   * @apiSuccess {List} [data] 返回推荐问句列表
+   * @apiContentType application/json
+   * @apiSuccessExample {json} Success-Response:
+   * "data": [ { "_version_": 1602053511204306951,
+   * "category": "融资融券>两融合同>合同主信息", "cn_name": "融资头寸", "db_field": "dmp_demo.dim_contract.fin_cashgroup_no",
+   * "definition": "融资头寸", "dept": "两融部门", "en_name": "fin_cashgroup_no", "hit_ratio": 0.5, "id":
+   * "348", "replace_origin": "融资\"", "replace_origin_seg": "融资", "seg_name": "融资 头寸", "type":
+   * "entity", "weight": 0.65 } ]
+   */
+  @RequestMapping(value = "/queryInstance", method = {
+      RequestMethod.GET}, produces = "application/json;charset=UTF-8")
+  public
+  @ResponseBody
+  String queryInstance(@RequestParam("q") String q) {
+    try {
+      List<Object> quickMacroQuery = intelQueryService.getQuickMacroQuery(q);
+      return JsonResult.successJson(quickMacroQuery);
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.info("queryInstance error", e);
+      return JsonResult.errorJson("queryInstance error");
+    }
+
+
   }
 }

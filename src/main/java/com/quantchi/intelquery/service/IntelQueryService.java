@@ -11,4 +11,9 @@ public interface IntelQueryService {
   List<Map<String, Object>> getBusiCate();
 
   List<Map<String, Object>> getRecommendQuery(String businessTypeId);
+
+  List<Object> getQuickMacroQuery(String query) throws Exception;
+
+  List<Object> getMetricsRet(String query) throws Exception;
+
 }

@@ -1,12 +1,19 @@
 package com.quantchi.transport.service;
 
 import com.quantchi.common.AppProperties;
-import com.quantchi.intelquery.QueryNodes;
 import com.quantchi.intelquery.exception.QPException;
 import com.quantchi.intelquery.node.SemanticNode;
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
+import com.quantchi.intelquery.query.QueryNodes;
+import com.quantchi.intelquery.tokenize.LtpTokenizer;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
@@ -15,10 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.quantchi.intelquery.tokenize.LtpTokenizer;
-import java.io.IOException;
-import java.sql.*;
-import java.util.*;
 
 @Service
 public class SearchApiService {
