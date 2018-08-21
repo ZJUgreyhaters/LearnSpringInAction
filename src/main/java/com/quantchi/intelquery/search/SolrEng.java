@@ -9,21 +9,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.PostConstruct;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.impl.XMLResponseParser;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+
 public class SolrEng extends SearchEng {
 
   private final Map<String, String> solrCommParam = AppProperties.getPropertiesMap("solr.param");
   private final Map<String, String> solrQuickParam = AppProperties
       .getPropertiesMap("solr.instance");
+
+  private final String solrUrl = AppProperties.get("solr.url");
 
   private static final String SEARCHFILED = AppProperties.getWithDefault("searchField", "seg_name");
 
@@ -35,11 +35,12 @@ public class SolrEng extends SearchEng {
   private static final String REPLACE_ORIGIN = "replace_origin";
   private static final String REPLACE_ORIGIN_WITH_SEG = "replace_origin_seg";
 
-  @Autowired
-  private HttpSolrClient httpSolr;
+  private HttpSolrClient httpSolr = null;
 
   public SolrEng(String query, String type) {
     super(query, type);
+    httpSolr = new HttpSolrClient.Builder(solrUrl).build();
+    httpSolr.setParser(new XMLResponseParser());
   }
 
   @Override
@@ -116,7 +117,7 @@ public class SolrEng extends SearchEng {
       query.setParam(key, solrParam.get(key));
     }
 
-    QueryResponse response = testUtils.httpSolr.query(query);
+    QueryResponse response = httpSolr.query(query);
     return response;
   }
 
@@ -211,11 +212,5 @@ public class SolrEng extends SearchEng {
     return resultDocs;
   }
 
-  public static SolrEng testUtils;
-
-  @PostConstruct
-  public void init() {
-    testUtils = this;
-  }
 
 }

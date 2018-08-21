@@ -12,7 +12,7 @@ import java.util.Map;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
-public class SearchEng {
+public abstract class SearchEng {
 
   private static final String REPLACE_ORIGIN = "replace_origin";
   private static final String REPLACE_ORIGIN_WITH_SEG = "replace_origin_seg";
@@ -50,13 +50,8 @@ public class SearchEng {
     return obj;
   }
 
-  public List<Object> getMetrics() throws Exception {
-    return null;
-  }
-
-  public List<Object> getQuickMacro() throws Exception {
-    return null;
-  }
+  public abstract List<Object> getMetrics() throws Exception;
+  public abstract List<Object> getQuickMacro() throws Exception;
 
   protected List<String> segment() throws QPException, IOException {
     List<String> list = new ArrayList<>();
