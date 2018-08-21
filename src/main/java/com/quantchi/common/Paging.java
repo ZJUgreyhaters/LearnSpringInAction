@@ -11,15 +11,29 @@ public class Paging {
 
   public final static List<Map<String, Object>> pagingPlug(
       List<Map<String, Object>> list, Integer pageSize, Integer pageIndex) {
-      int a = (pageIndex-1)*pageSize;
-      int b = pageIndex*pageSize;
-      List<Map<String, Object>> resultList = new ArrayList<>();
+    int a = (pageIndex-1)*pageSize;
+    int b = pageIndex*pageSize;
+    List<Map<String, Object>> resultList = new ArrayList<>();
     for(int i=a;i<b;i++){
       if(i>=list.size()){
         break;
       }
       resultList.add(list.get(i));
+    }
+    return resultList;
+  }
+
+  public final static List<Object> pagingPlugObject(
+      List<Object> list, Integer pageSize, Integer pageIndex) {
+    int a = (pageIndex-1)*pageSize;
+    int b = pageIndex*pageSize;
+    List<Object> resultList = new ArrayList<>();
+    for(int i=a;i<b;i++){
+      if(i>=list.size()){
+        break;
       }
+      resultList.add(list.get(i));
+    }
     return resultList;
   }
 }
