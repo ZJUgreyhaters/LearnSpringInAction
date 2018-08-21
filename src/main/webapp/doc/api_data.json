@@ -127,7 +127,7 @@
       },
       "examples": [
         {
-          "title": "Success-Response {\"data\":{ \"steps\":[{\"node\":\"\",\"serializeNode\":\"\"}],",
+          "title": "Success-Response: {\"data\":{ \"steps\":[{\"node\":\"\",\"serializeNode\":\"\"}],",
           "content": "\"tabulate\":[{id:\"\",\"name\":\"\",\"amount\":\"\",\"maintenance\":\"\",\"totalAssets\":\"\"}],\n\"indexInfo\":[{\"entityId\":\"\",\"entityName\":\"\",\"entityDesc\":\"\",\"businessDefinition\":\"\",\"businessRule\":\"\"}]\n} }",
           "type": "json"
         }
@@ -330,13 +330,90 @@
             "optional": true,
             "field": "data.tabulate",
             "description": "<p>返回列表结果</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.metrics",
+            "description": "<p>返回指标结果，如果没有则返回空数组</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.metrics.category",
+            "description": "<p>指标分类目录</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.metrics.seg_name",
+            "description": "<p>指标分词结果</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.metrics.definition",
+            "description": "<p>指标业务定义</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.metrics.db_field",
+            "description": "<p>指标数据库字段</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.metrics.id",
+            "description": "<p>指标id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.metrics.type",
+            "description": "<p>指标类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.metrics.dept",
+            "description": "<p>两融部门</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.metrics.en_name",
+            "description": "<p>指标英文名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "double",
+            "optional": true,
+            "field": "data.metrics.hit_ratio",
+            "description": "<p>指标搜索分数</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "double",
+            "optional": true,
+            "field": "data.metrics._version_",
+            "description": "<p>搜索系统里的版本号</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "Success-Response {\"data\":{\"candidates\":{\"queryNodes\":[{\"node\":\"\",\"serializeNode\":\"\"}],",
-          "content": "\"composeList\":[{\"begin\":\"\", \"end\":\"\", \"compose\":[{\"node\":\"\",\"serializeNode\":\"\"},{\"node\":\"\",\"serializeNode\":\"\"}]},\n{\"begin\":\"\", \"end\":\"\",\"compose\":[{\"node\":\"\",\"serializeNode\":\"\"},{\"node\":\"\",\"serializeNode\":\"\"}]}\n]}, \"steps\":[{\"node\":\"\",\"serializeNode\":\"\"}], \"tabulate\":[{id:\"\",\"name\":\"\",\"amount\":\"\",\"maintenance\":\"\",\"totalAssets\":\"\"}],\n\"indexInfo\":[{\"entityId\":\"\",\"entityName\":\"\",\"entityDesc\":\"\",\"businessDefinition\":\"\",\"businessRule\":\"\"}]\n} }",
+          "title": "Success-Response: {\"data\":{\"candidates\":{\"queryNodes\":[{\"node\":\"\",\"serializeNode\":\"\"}],",
+          "content": "\"composeList\":[{\"begin\":\"\", \"end\":\"\", \"compose\":[{\"node\":\"\",\"serializeNode\":\"\"},{\"node\":\"\",\"serializeNode\":\"\"}]},\n{\"begin\":\"\", \"end\":\"\",\"compose\":[{\"node\":\"\",\"serializeNode\":\"\"},{\"node\":\"\",\"serializeNode\":\"\"}]}\n]}, \"steps\":[{\"node\":\"\",\"serializeNode\":\"\"}], \"tabulate\":[{id:\"\",\"name\":\"\",\"amount\":\"\",\"maintenance\":\"\",\"totalAssets\":\"\"}],\n\"metrics\":[ { \"cn_name\": \"融资负债\", \"category\": \"融资融券>两融客户>资产负债\", \"seg_name\": \"融资 负债\",\n\"definition\": \"融资负债\", \"db_field\": \"dmp_demo.fact_cust_balance.fin_debit\", \"id\": \"224\", \"type\":\n\"entity\", \"dept\": \"两融部门\", \"en_name\": \"fin_debit\", \"_version_\": 1602053511199064069,\n\"hit_ratio\": 1 } ], \"indexInfo\":[{\"entityId\":\"\",\"entityName\":\"\",\"entityDesc\":\"\",\"businessDefinition\":\"\",\"businessRule\":\"\"}]\n} }",
           "type": "json"
         }
       ]
@@ -588,7 +665,7 @@
     "groupTitle": "IntelQueryController"
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "/api/likenum",
     "title": "点赞接口",
     "permission": [
@@ -644,6 +721,81 @@
         ]
       }
     },
+    "filename": "../../java/com/quantchi/intelquery/controller/IntelQueryController.java",
+    "groupTitle": "IntelQueryController"
+  },
+  {
+    "type": "get",
+    "url": "/api/queryInstance",
+    "title": "键盘精灵接口",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/queryInstance"
+      }
+    ],
+    "name": "queryInstance",
+    "group": "IntelQueryController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "query",
+            "description": "<p>查询语句</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "querySerialize",
+            "description": "<p>序列化之后的查询语句</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回推荐问句列表</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "\"data\": [ { \"_version_\": 1602053511204306951,\n\"category\": \"融资融券>两融合同>合同主信息\", \"cn_name\": \"融资头寸\", \"db_field\": \"dmp_demo.dim_contract.fin_cashgroup_no\",\n\"definition\": \"融资头寸\", \"dept\": \"两融部门\", \"en_name\": \"fin_cashgroup_no\", \"hit_ratio\": 0.5, \"id\":\n\"348\", \"replace_origin\": \"融资\\\"\", \"replace_origin_seg\": \"融资\", \"seg_name\": \"融资 头寸\", \"type\":\n\"entity\", \"weight\": 0.65 } ]",
+          "type": "json"
+        }
+      ]
+    },
+    "contentType": "application/json",
     "filename": "../../java/com/quantchi/intelquery/controller/IntelQueryController.java",
     "groupTitle": "IntelQueryController"
   },
