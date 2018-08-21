@@ -14,4 +14,6 @@ public interface IntelQueryService {
 
   List<Object> getQuickMacroQuery(String query) throws Exception;
 
+  List<Object> getMetricsRet(String query) throws Exception;
+
 }

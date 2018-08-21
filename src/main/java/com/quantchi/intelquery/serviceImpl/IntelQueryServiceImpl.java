@@ -32,16 +32,16 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   public List<Object> getMetricsRet(String query) throws Exception {
     //TODO get metrics
     //if return [] , call intelquery
-    SearchEng engObj = SearchEng.instanceOf(query,SEARCHTYPE);
+    SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
     return engObj.getMetrics();
   }
 
-  public void getIntelQuery(){
+  public void getIntelQuery() {
 
   }
 
   public List<Object> getQuickMacroQuery(String query) throws Exception {
-    SearchEng engObj = SearchEng.instanceOf(query,SEARCHTYPE);
+    SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
     return engObj.getQuickMacro();
   }
 }

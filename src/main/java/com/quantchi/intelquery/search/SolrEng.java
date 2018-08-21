@@ -3,6 +3,7 @@ package com.quantchi.intelquery.search;
 import com.quantchi.common.AppProperties;
 import com.quantchi.intelquery.exception.QPException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,6 +35,7 @@ public class SolrEng extends SearchEng {
   private static final String WEIGHT = "weight";
   private static final String REPLACE_ORIGIN = "replace_origin";
   private static final String REPLACE_ORIGIN_WITH_SEG = "replace_origin_seg";
+  private static final String DEFAULT_TRIM_WEIGHT = "0.5";
 
   private HttpSolrClient httpSolr = null;
 
@@ -96,13 +98,11 @@ public class SolrEng extends SearchEng {
         result.add(doc);
       }
     }
-    //return result;
-    return null;
+    return result;
   }
 
   private QueryResponse searchSolr(Map<String, String> param) throws Exception {
-
-    String str = getQuery();
+    String str = String.join(" ",segment());;
     SolrQuery query = new SolrQuery();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.search");
     query.setQuery(SEARCHFILED + ":(" + str + ")");
@@ -212,5 +212,32 @@ public class SolrEng extends SearchEng {
     return resultDocs;
   }
 
+  protected boolean appendRelaceWordToEnd(SolrDocument doc, String query) {
+    boolean _ret = false;
+    String replace_with_seg = doc.getFieldValue(REPLACE_ORIGIN_WITH_SEG).toString();
+    int _st = query.indexOf(replace_with_seg);
+    String replaceWordsToEnd = query.substring(_st).replace(" ", "");
+    String replaceWordsToEnd_with_seg = "";
+    if ((_st + replace_with_seg.length()) != query.length()) {
+      replaceWordsToEnd_with_seg = query.substring(_st + replace_with_seg.length() + 1);
+    }
+    String[] _list = replaceWordsToEnd_with_seg.split(" ");
+    double _weight = (double) 1 / (double) (_list.length + 1);
+    double _conf_weight = Double
+        .parseDouble(AppProperties.getWithDefault("solr.trimWeight", DEFAULT_TRIM_WEIGHT));
+    if (_weight >= _conf_weight) {
+      doc.setField(REPLACE_ORIGIN, replaceWordsToEnd);
+      _ret = true;
+    }
+    return _ret;
+  }
+
+  List<Object> documentListToObjectList(SolrDocumentList solrDocumentList) {
+    List<Object> documentList = new ArrayList<>();
+    for (SolrDocument doc : solrDocumentList) {
+      documentList.add(doc);
+    }
+    return documentList;
+  }
 
 }
