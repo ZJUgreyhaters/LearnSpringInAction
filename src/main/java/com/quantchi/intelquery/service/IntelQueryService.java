@@ -14,4 +14,7 @@ public interface IntelQueryService {
 
   List<Object> getQuickMacroQuery(String query) throws Exception;
 
+  List<Object> getMetricsRet(String query) throws Exception;
+
+  Map<String, Object> execsql(String sql,Map<String, Object> map) throws Exception;
 }

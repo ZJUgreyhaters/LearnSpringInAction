@@ -1,10 +1,29 @@
 package com.quantchi.intelquery.controller;
 
 import com.quantchi.common.JsonResult;
+import com.quantchi.common.Paging;
 import com.quantchi.common.Util;
+import com.quantchi.intelquery.QueryParser;
+import com.quantchi.intelquery.SqlFormatter;
+import com.quantchi.intelquery.SqlFormatter.Builder;
+import com.quantchi.intelquery.StepResult;
+import com.quantchi.intelquery.TokenizingResult;
+import com.quantchi.intelquery.date.formatter.NormalFormatter;
+import com.quantchi.intelquery.node.SemanticNode;
+import com.quantchi.intelquery.query.BasicQuery;
+import com.quantchi.intelquery.query.QueryNodes;
+import com.quantchi.intelquery.query.QueryWithNodes;
+import com.quantchi.intelquery.query.QueryWithTree;
 import com.quantchi.intelquery.service.IntelQueryService;
+import com.quantchi.intelquery.sqlquery.SqlQuery;
+import com.quantchi.intelquery.tokenize.search.Replacement;
+import com.quantchi.intelquery.utils.SerializationUtils;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,33 +186,88 @@ public class IntelQueryController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String basicQuery(@RequestBody Map<String, Object> map) {
     try {
-      /*String q = "今天维保比例";
-      Query query = new BasicQuery(q);
-      StepResult result = QueryParser.getInstance().parse(query);
+      Map<String, Object> resultMap = new HashMap();
+      String query = map.get("q").toString();
+      List<Object> metricsRet = intelQueryService.getMetricsRet(query);
+      if (map.get("page_size") != null && map.get("page") != null) {
+        metricsRet = Paging.pagingPlugObject(metricsRet, Integer.parseInt(map.get("page_size").toString()),
+            Integer.parseInt(map.get("page").toString()));
+      }
+      resultMap.put("metrics", metricsRet);
+      if (metricsRet != null && !metricsRet.isEmpty()) {
+        return JsonResult.successJson(resultMap);
+      }
+      BasicQuery basicquery = new BasicQuery(query);
+      StepResult result = QueryParser.getInstance().parse(basicquery);
+      Map<String,Object> candidates = null;
       if (result instanceof TokenizingResult) {
+        candidates = new HashMap<>();
         QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
         QueryNodes nodes = queryWithNodes.getNodes();
+        List<Map<String, Object>> queryNodes = new ArrayList<>();
+        for (SemanticNode node : nodes) {
+          Map<String, Object> nodeMap = new HashMap<>();
+          String base64String = SerializationUtils.toSerializedString(node);
+          nodeMap.put("node", node.getText());
+          nodeMap.put("serializeNode", base64String);
+          queryNodes.add(nodeMap);
+        }
+        List<Map<String, Object>> composeList = new ArrayList<>();
         List<Replacement> replacements = ((TokenizingResult) result).getReplacements();
-        Integer begIndex = replacements.get(0).getBegIndex(); // 需要用户选择的起始node index
-        Integer endIndex = replacements.get(0).getEndIndex(); // 需要用户选择的结束node index，左开右闭
-        List<QueryNodes> candidates = replacements.get(0).getCandidates(); // 所有可能的结果
+        for (Replacement replacement : replacements) {
+          Map<String, Object> composeMap = new HashMap<>();
+          Integer begIndex = replacement.getBegIndex(); // 需要用户选择的起始node index
+          Integer endIndex = replacement.getEndIndex(); // 需要用户选择的结束node index，左闭右开
+          List<QueryNodes> compose = replacement.getAllCandidates(); // 所有可能的结果
+          List<Map<String, Object>> composeNodeList = new ArrayList<>();
+          for (QueryNodes queryNode : compose) {
+            Map<String, Object> queryNodeMap = new HashMap<>();
+            StringBuilder nodeBuilder = new StringBuilder();
+            for (SemanticNode node : queryNode) {
+              nodeBuilder.append(node.getText());
+            }
+            queryNodeMap.put("node", nodeBuilder);
+            queryNodeMap.put("serializeNode", SerializationUtils.toSerializedString(queryNode));
+            composeNodeList.add(queryNodeMap);
+          }
+          composeMap.put("begIndex", begIndex);
+          composeMap.put("endIndex", endIndex);
+          composeMap.put("compose", composeNodeList);
+          composeList.add(composeMap);
+        }
+        candidates.put("queryNodes",queryNodes);
+        candidates.put("composeList",composeList);
       }
       QueryWithTree queryTree = result.getFinalTree();
-      String descText = queryTree.getTextForUser();
+      //String descText = queryTree.getTextForUser();
       SqlFormatter formatter = new Builder()
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
           .build();
-      String sql = queryTree.getSql(formatter);
-      List<String> selectedFields = queryTree.getSqlQuery().getSelectedFields();
-      List<QueryWithTree> steps = result.getSteps();*/
-      return "";
+      SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
+      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(),map);
+
+      List<Optional<String>> selectedFields = queryTree.getSqlQuery().getSelectedFields();
+      List<QueryWithTree> steps = result.getSteps();
+      List<Map<String,Object>> stepsList = new ArrayList<>();
+      for(QueryWithTree queryWithTree:steps){
+        Map<String,Object> stepsMap = new HashMap<>();
+        stepsMap.put("node",queryWithTree.getTextForUser());
+        stepsMap.put("serializeNode",SerializationUtils.toSerializedString(queryWithTree));
+        stepsList.add(stepsMap);
+      }
+      resultMap.put("tabulate", tabulate);
+      resultMap.put("steps", stepsList);
+      resultMap.put("candidates", candidates);
+      return JsonResult.successJson(resultMap);
     } catch (Exception e) {
-      return "";
+      e.printStackTrace();
+      logger.info("get basicQuery error", e);
+      return JsonResult.errorJson("get basicQuery error");
     }
   }
 
   /**
-   * @api {get} /api/likenum 点赞接口
+   * @api {post} /api/likenum 点赞接口
    * @apiPermission none
    * @apiVersion 1.0.0
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/likenum
@@ -257,7 +331,7 @@ public class IntelQueryController {
    * @apiSuccess {String} [data.indexInfo.businessRule] 业务口径
    * @apiSuccess {List} [data.tabulate] 返回列表结果
    * @apiContentType application/json
-   * @apiSuccessExample {json} Success-Response {"data":{ "steps":[{"node":"","serializeNode":""}],
+   * @apiSuccessExample {json} Success-Response: {"data":{ "steps":[{"node":"","serializeNode":""}],
    * "tabulate":[{id:"","name":"","amount":"","maintenance":"","totalAssets":""}],
    * "indexInfo":[{"entityId":"","entityName":"","entityDesc":"","businessDefinition":"","businessRule":""}]
    * } }
@@ -308,18 +382,22 @@ public class IntelQueryController {
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/queryInstance
    * @apiName queryInstance
    * @apiGroup IntelQueryController
-   * @apiParam {String} query 查询语句
-   * @apiParam {String} querySerialize 序列化之后的查询语句
+   * @apiParam {String} q 查询语句
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    * @apiSuccess {List} [data] 返回推荐问句列表
-   * @apiSuccess {List} [data.tabulate] 返回列表结果
+   * @apiContentType application/json
+   * @apiSuccessExample {json} Success-Response: "data": [ { "_version_": 1602053511204306951,
+   * "category": "融资融券>两融合同>合同主信息", "cn_name": "融资头寸", "db_field": "dmp_demo.dim_contract.fin_cashgroup_no",
+   * "definition": "融资头寸", "dept": "两融部门", "en_name": "fin_cashgroup_no", "hit_ratio": 0.5, "id":
+   * "348", "replace_origin": "融资\"", "replace_origin_seg": "融资", "seg_name": "融资 头寸", "type":
+   * "entity", "weight": 0.65 } ]
    */
-  @RequestMapping(value = "/queryInstance1", method = {
+  @RequestMapping(value = "/queryInstance", method = {
       RequestMethod.GET}, produces = "application/json;charset=UTF-8")
   public
   @ResponseBody
-  String queryInstance(@RequestParam("q")String q) {
+  String queryInstance(@RequestParam("q") String q) {
     try {
       List<Object> quickMacroQuery = intelQueryService.getQuickMacroQuery(q);
       return JsonResult.successJson(quickMacroQuery);

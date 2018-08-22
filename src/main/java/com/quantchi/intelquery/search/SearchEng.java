@@ -1,22 +1,17 @@
 package com.quantchi.intelquery.search;
 
 import com.quantchi.common.AppProperties;
-import com.quantchi.intelquery.QueryNodes;
 import com.quantchi.intelquery.exception.QPException;
 import com.quantchi.intelquery.node.SemanticNode;
+import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.tokenize.LtpTokenizer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 
 public abstract class SearchEng {
 
-  private static final String REPLACE_ORIGIN = "replace_origin";
-  private static final String REPLACE_ORIGIN_WITH_SEG = "replace_origin_seg";
-  private static final String DEFAULT_TRIM_WEIGHT = "0.5";
   private final String type;
   private String query;
 
@@ -128,31 +123,5 @@ public abstract class SearchEng {
     return _ret;
   }
 
-  protected boolean appendRelaceWordToEnd(SolrDocument doc, String query) {
-    boolean _ret = false;
-    String replace_with_seg = doc.getFieldValue(REPLACE_ORIGIN_WITH_SEG).toString();
-    int _st = query.indexOf(replace_with_seg);
-    String replaceWordsToEnd = query.substring(_st).replace(" ", "");
-    String replaceWordsToEnd_with_seg = "";
-    if ((_st + replace_with_seg.length()) != query.length()) {
-      replaceWordsToEnd_with_seg = query.substring(_st + replace_with_seg.length() + 1);
-    }
-    String[] _list = replaceWordsToEnd_with_seg.split(" ");
-    double _weight = (double) 1 / (double) (_list.length + 1);
-    double _conf_weight = Double
-        .parseDouble(AppProperties.getWithDefault("solr.trimWeight", DEFAULT_TRIM_WEIGHT));
-    if (_weight >= _conf_weight) {
-      doc.setField(REPLACE_ORIGIN, replaceWordsToEnd);
-      _ret = true;
-    }
-    return _ret;
-  }
 
-  List<Object> documentListToObjectList(SolrDocumentList solrDocumentList) {
-    List<Object> documentList = new ArrayList<>();
-    for (SolrDocument doc : solrDocumentList) {
-      documentList.add(doc);
-    }
-    return documentList;
-  }
 }
