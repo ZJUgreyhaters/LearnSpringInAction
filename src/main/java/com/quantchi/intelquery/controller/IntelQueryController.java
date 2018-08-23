@@ -189,13 +189,14 @@ public class IntelQueryController {
       Map<String, Object> resultMap = new HashMap();
       String query = map.get("q").toString();
       List<Object> metricsRet = intelQueryService.getMetricsRet(query);
+      String total = String.valueOf(metricsRet.size());
       if (map.get("page_size") != null && map.get("page") != null) {
         metricsRet = Paging.pagingPlugObject(metricsRet, Integer.parseInt(map.get("page_size").toString()),
             Integer.parseInt(map.get("page").toString()));
       }
       resultMap.put("metrics", metricsRet);
       if (metricsRet != null && !metricsRet.isEmpty()) {
-        return JsonResult.successJson(resultMap);
+        return JsonResult.successJson(total,resultMap);
       }
       BasicQuery basicquery = new BasicQuery(query);
       StepResult result = QueryParser.getInstance().parse(basicquery);
