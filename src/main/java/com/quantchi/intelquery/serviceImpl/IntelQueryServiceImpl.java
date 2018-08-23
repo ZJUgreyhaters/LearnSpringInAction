@@ -61,13 +61,14 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
   public Map<String, Object> execsql(String sql, Map<String, Object> map) throws Exception {
     List<Map<String, Object>> resultList = HiveConnection.selectHive(sql, jdbcPool);
+    Integer total = resultList.size();
     if (map.get("page_size") != null && map.get("page") != null) {
       resultList = Paging.pagingPlug(resultList, Integer.parseInt(map.get("page_size").toString()),
           Integer.parseInt(map.get("page").toString()));
     }
     Map<String,Object> resultMap = new HashMap();
     resultMap.put("resultList",resultList);
-    resultMap.put("total",resultList.size());
+    resultMap.put("total",total);
     return resultMap;
 }
 }
