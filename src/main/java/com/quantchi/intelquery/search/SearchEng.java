@@ -3,6 +3,7 @@ package com.quantchi.intelquery.search;
 import com.quantchi.common.AppProperties;
 import com.quantchi.intelquery.exception.QPException;
 import com.quantchi.intelquery.node.SemanticNode;
+import com.quantchi.intelquery.pojo.QuerySentence;
 import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.tokenize.LtpTokenizer;
 import java.io.IOException;
@@ -47,21 +48,27 @@ public abstract class SearchEng {
 
   public abstract List<Object> getMetrics() throws Exception;
   public abstract List<Object> getQuickMacro() throws Exception;
+  public abstract String addQuerySentence(QuerySentence qs) throws Exception;
+  public abstract List<Object> getCorrelativeSentence() throws Exception;
 
   protected List<String> segment() throws QPException, IOException {
-    List<String> list = new ArrayList<>();
-    String ltp = AppProperties.get("ltp.addr");
-    QueryNodes _nodes = LtpTokenizer.tokenize(getQuery(), ltp);
-
-    for (SemanticNode node : _nodes) {
-      list.add(node.getText());
-    }
-
-    //添加分词后处理策略
-    removeName_with_seg_xx(list);
-
-    return list;
+		return segmentWithLTP(getQuery());
   }
+
+	protected List<String> segmentWithLTP(String query) throws QPException, IOException {
+		List<String> list = new ArrayList<>();
+		String ltp = AppProperties.get("ltp.addr");
+		QueryNodes _nodes = LtpTokenizer.tokenize(query, ltp);
+
+		for (SemanticNode node : _nodes) {
+			list.add(node.getText());
+		}
+
+		//添加分词后处理策略
+		removeName_with_seg_xx(list);
+
+		return list;
+	}
 
   //XX 被分词了，所以针对人名去除分词，但是人名xx的提示将不会出来
   private void removeName_with_seg_xx(List<String> segList) {

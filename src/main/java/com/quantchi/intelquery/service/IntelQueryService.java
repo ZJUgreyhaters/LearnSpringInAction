@@ -23,4 +23,12 @@ public interface IntelQueryService {
   Map<String, Object> candidatesMapping(StepResult result) throws IOException;
 
   List<Map<String, Object>> stepsMapping(StepResult result)throws IOException;
+
+  String addQuerySentence (String username,
+                           String businessName,
+                           String query,
+                           boolean isParseable,
+                           String sql) throws Exception;
+
+  List<Object> getCorrelativeSentence(String query) throws Exception;
 }
