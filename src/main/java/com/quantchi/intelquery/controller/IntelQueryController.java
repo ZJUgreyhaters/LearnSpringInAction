@@ -9,17 +9,14 @@ import com.quantchi.intelquery.SqlFormatter.Builder;
 import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.TokenizingResult;
 import com.quantchi.intelquery.date.formatter.NormalFormatter;
-import com.quantchi.intelquery.node.SemanticNode;
 import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.query.QueryWithNodes;
 import com.quantchi.intelquery.query.QueryWithTree;
 import com.quantchi.intelquery.service.IntelQueryService;
 import com.quantchi.intelquery.sqlquery.SqlQuery;
-import com.quantchi.intelquery.tokenize.search.Replacement;
 import com.quantchi.intelquery.utils.SerializationUtils;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -189,54 +186,21 @@ public class IntelQueryController {
       Map<String, Object> resultMap = new HashMap();
       String query = map.get("q").toString();
       List<Object> metricsRet = intelQueryService.getMetricsRet(query);
+      String total = String.valueOf(metricsRet.size());
       if (map.get("page_size") != null && map.get("page") != null) {
-        metricsRet = Paging.pagingPlugObject(metricsRet, Integer.parseInt(map.get("page_size").toString()),
-            Integer.parseInt(map.get("page").toString()));
+        metricsRet = Paging
+            .pagingPlugObject(metricsRet, Integer.parseInt(map.get("page_size").toString()),
+                Integer.parseInt(map.get("page").toString()));
       }
       resultMap.put("metrics", metricsRet);
       if (metricsRet != null && !metricsRet.isEmpty()) {
-        return JsonResult.successJson(resultMap);
+        return JsonResult.successJson(total, resultMap);
       }
       BasicQuery basicquery = new BasicQuery(query);
       StepResult result = QueryParser.getInstance().parse(basicquery);
-      Map<String,Object> candidates = null;
+      Map<String, Object> candidates = null;
       if (result instanceof TokenizingResult) {
-        candidates = new HashMap<>();
-        QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
-        QueryNodes nodes = queryWithNodes.getNodes();
-        List<Map<String, Object>> queryNodes = new ArrayList<>();
-        for (SemanticNode node : nodes) {
-          Map<String, Object> nodeMap = new HashMap<>();
-          String base64String = SerializationUtils.toSerializedString(node);
-          nodeMap.put("node", node.getText());
-          nodeMap.put("serializeNode", base64String);
-          queryNodes.add(nodeMap);
-        }
-        List<Map<String, Object>> composeList = new ArrayList<>();
-        List<Replacement> replacements = ((TokenizingResult) result).getReplacements();
-        for (Replacement replacement : replacements) {
-          Map<String, Object> composeMap = new HashMap<>();
-          Integer begIndex = replacement.getBegIndex(); // 需要用户选择的起始node index
-          Integer endIndex = replacement.getEndIndex(); // 需要用户选择的结束node index，左闭右开
-          List<QueryNodes> compose = replacement.getAllCandidates(); // 所有可能的结果
-          List<Map<String, Object>> composeNodeList = new ArrayList<>();
-          for (QueryNodes queryNode : compose) {
-            Map<String, Object> queryNodeMap = new HashMap<>();
-            StringBuilder nodeBuilder = new StringBuilder();
-            for (SemanticNode node : queryNode) {
-              nodeBuilder.append(node.getText());
-            }
-            queryNodeMap.put("node", nodeBuilder);
-            queryNodeMap.put("serializeNode", SerializationUtils.toSerializedString(queryNode));
-            composeNodeList.add(queryNodeMap);
-          }
-          composeMap.put("begIndex", begIndex);
-          composeMap.put("endIndex", endIndex);
-          composeMap.put("compose", composeNodeList);
-          composeList.add(composeMap);
-        }
-        candidates.put("queryNodes",queryNodes);
-        candidates.put("composeList",composeList);
+        candidates = intelQueryService.candidatesMapping(result);
       }
       QueryWithTree queryTree = result.getFinalTree();
       //String descText = queryTree.getTextForUser();
@@ -244,19 +208,23 @@ public class IntelQueryController {
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
-      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(),map);
+
+      /*Entry<Set<Integer>, Set<Integer>> relationInfo = sqlQuery.getColumnRelation(); // 获取列之间的（一对多）关系，(0, 1) -> (3, 4) 保存列的下标
+      ColumnInfo columnInfo = sqlQuery.getColumnInfo().get(0); // 获取每一列的信息
+      Optional<String> physicalField = columnInfo.getPhysicalField(); // 该列相关的物理字段
+      columnInfo.isPrime(); // 是否是基础列
+      columnInfo.isDomainField(); // 是否是domain的列
+      columnInfo.isKey(); // 是否是某张表的Key*/
+
+      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
 
       List<Optional<String>> selectedFields = queryTree.getSqlQuery().getSelectedFields();
-      List<QueryWithTree> steps = result.getSteps();
-      List<Map<String,Object>> stepsList = new ArrayList<>();
-      for(QueryWithTree queryWithTree:steps){
-        Map<String,Object> stepsMap = new HashMap<>();
-        stepsMap.put("node",queryWithTree.getTextForUser());
-        stepsMap.put("serializeNode",SerializationUtils.toSerializedString(queryWithTree));
-        stepsList.add(stepsMap);
-      }
+
+      List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
+      QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
       resultMap.put("tabulate", tabulate);
       resultMap.put("steps", stepsList);
+      resultMap.put("queryWithNodes", SerializationUtils.toSerializedString(queryWithNodes));
       resultMap.put("candidates", candidates);
       return JsonResult.successJson(resultMap);
     } catch (Exception e) {
@@ -316,7 +284,11 @@ public class IntelQueryController {
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/associateQuery
    * @apiName associateQuery
    * @apiGroup IntelQueryController
-   * @apiParam {String} query 序列化的语句
+   * @apiParam {List} candidates 需要替換词集合
+   * @apiParam {String} candidates.begIndex 需要替換词的起始下标
+   * @apiParam {String} candidates.serializeNode 需要替換词的序列化
+   * @apiParam {String} candidates.endIndex 需要替換词的终止下标
+   * @apiParam {String} queryWithNode 原始节点序列化
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    * @apiSuccess {List} [data] 返回推荐问句列表
@@ -341,9 +313,34 @@ public class IntelQueryController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String associateQuery(@RequestBody Map<String, Object> map) {
     try {
-      return "";
+      String queryWithNode = map.get("queryWithNode").toString();
+      QueryWithNodes queryWithNodes = SerializationUtils.fromSerializedString(queryWithNode);
+      QueryNodes queryNodes = queryWithNodes.getNodes();
+
+      List<Map<String, Object>> candidates = (List<Map<String, Object>>) map.get("candidates");
+      for (Map candidateMap : candidates) {
+        String begIndex = candidateMap.get("begIndex").toString();
+        String endIndex = candidateMap.get("endIndex").toString();
+        String serializeNode = candidateMap.get("serializeNode").toString();
+        QueryNodes candidate = SerializationUtils.fromSerializedString(serializeNode);
+        queryNodes.replace(Integer.parseInt(begIndex), Integer.parseInt(endIndex),
+            candidate); // 调用 replace API 将原来的Nodes替换成用户选择的候选项
+      }
+
+      StepResult result = QueryParser.getInstance().parse(queryWithNodes);
+      QueryWithTree queryTree = result.getFinalTree();
+      SqlFormatter formatter = new Builder()
+          .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+          .build();
+      SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
+      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
+      Map<String,Object> resultMap = new HashMap<>();
+      resultMap.put("tabulate",tabulate);
+      return JsonResult.successJson(resultMap);
     } catch (Exception e) {
-      return "";
+      e.printStackTrace();
+      logger.info("associateQuery error",e);
+      return JsonResult.errorJson("associateQuery error");
     }
   }
 
