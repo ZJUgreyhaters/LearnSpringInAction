@@ -2,12 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.quantchi.authority.mapper.AuthorityMapper">
-  <select id="getBusiCate" resultType="Map">
+  <select id="selectAuth" resultType="Map">
     select
-    id,
-    business_type_name AS businessTypeName
-     from business_segment
+    l_authid,
+    c_authname,
+    c_isenable,
+    d_createdate
+    from tauthority
   </select>
+  <insert id="insertAuth" parameterType="map"
+          useGeneratedKeys="true" keyProperty="l_authid">
+  INSERT INTO tauthority (c_authname,c_isenable,c_authtype,d_createdate)
+  VALUES (#{c_authname}, #{c_isenable}, #{c_authtype},#{d_createdate} )
+  </insert>
 
+  <insert id="inertAuthRoleRela" parameterType="map" >
+   insert into tauthrolerela(l_roleid,l_authid)
+    values (#{l_roleid},#{l_authid})
+  </insert>
 
+  <delete id="deleRoleRelaByRoleId" parameterType="java.lang.Integer">
+    delete from tauthrolerela where l_roleid=#{roleId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleRoleRelaByRelaId" parameterType="java.lang.Integer">
+    delete from tauthrolerela where l_roleauthid=#{relaId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleAuth" parameterType="java.lang.Integer">
+    delete from tauthority where l_authid=#{authId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleRoleRelaByAuthId" parameterType="java.lang.Integer">
+    delete from tauthrolerela where l_authid=#{authId,jdbcType=INTEGER}
+  </delete>
+  <update id="updateAuth" parameterType="map">
+    update tauthority set c_authname= #{c_authname},c_isenable=#{c_isenable}
+    where l_authid=#{l_authid}
+  </update>
 </mapper>
