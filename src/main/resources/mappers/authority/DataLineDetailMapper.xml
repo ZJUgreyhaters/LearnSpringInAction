@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.authority.mapper.DataLineDetailMapper">
+  <select id="selectLineDetail" resultType="Map">
+    select
+    l_linedetailid,
+    c_isenable,
+    c_column,
+    c_fiter,
+    c_fiterdesc,
+    c_tablename
+    from ttablelinedetail
+  </select>
+  <insert id="insertLineDetail" parameterType="map"
+          useGeneratedKeys="true" keyProperty="l_linedetailid">
+  INSERT INTO ttablelinedetail (c_isenable,c_column, c_fiter, c_fiterdesc, c_tablename)
+  VALUES (#{c_isenable}, #{c_column}, #{c_fiter}, #{c_fiterdesc}, #{c_tablename})
+  </insert>
+  <insert id="insertLineDetailRela" parameterType="map">
+  INSERT INTO tauthlinerela (l_authid,l_linedetailid)
+  VALUES (#{l_authid}, #{l_linedetailid})
+  </insert>
+
+  <delete id="deleAuthLineRela" parameterType="java.lang.Integer">
+    delete  from  tauthlinerela where l_authid=#{authId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleLineByAuthid" parameterType="java.lang.Integer">
+    delete  from  ttablelinedetail where l_linedetailid in  (
+    select tauthlinerela.l_linedetailid from tauthlinerela where l_authid=#{authId,jdbcType=INTEGER}
+    )
+  </delete>
+
+  <delete id="deleAuthLineRelaByLineId" parameterType="java.lang.Integer">
+    delete  from  tauthlinerela where l_linedetailid =#{lineId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleLineByLineId" parameterType="java.lang.Integer">
+    delete  from  ttablelinedetail where l_linedetailid =#{lineId,jdbcType=INTEGER}
+  </delete>
+  <update id="modifyLineDetail" parameterType="map">
+    update ttablelinedetail set c_isenable=#{c_isenable},c_fiter=#{c_fiter},c_column=#{c_column},c_tablename=#{c_tablename},c_fiterdesc=#{c_fiterdesc}
+    where l_linedetailid=#{l_linedetailid}
+  </update>
+
+ </mapper>
