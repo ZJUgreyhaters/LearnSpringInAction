@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.authority.mapper.TabColumnDetailMapper">
+  <select id="selectTabColDetail" resultType="Map">
+    select
+    l_columndeailid,
+    c_tablename,
+    c_column,
+    c_isenable
+    from tdatacolumndetail
+  </select>
+  <insert id="insertTabColDetail"  parameterType="map"  useGeneratedKeys="true" keyProperty="l_columndetailid">
+  INSERT INTO tdatacolumndetail (c_tablename,c_column,c_isenable)
+  VALUES (#{c_tablename}, #{c_column}, #{c_isenable})
+  </insert>
+  <insert id="insertColDetailRela"  parameterType="map">
+  INSERT INTO tauthcolrela (l_authid,l_columndetailid)
+  VALUES (#{l_authid}, #{l_columndetailid})
+  </insert>
+  <delete id="deleAuthColRela" parameterType="java.lang.Integer">
+    delete  from  tauthcolrela where l_authid=#{authId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleColByAuthid" parameterType="java.lang.Integer">
+    delete  from  tdatacolumndetail where l_columndetailid in  (
+    select tauthcolrela.l_columndetailid from tauthcolrela where l_authid=#{authId,jdbcType=INTEGER}
+    )
+  </delete>
+
+  <delete id="deleAuthColRelaByColId" parameterType="java.lang.Integer">
+    delete  from  tauthcolrela where l_columndetailid =#{colId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleColByColId" parameterType="java.lang.Integer">
+    delete  from  tdatacolumndetail where l_columndetailid =#{colId,jdbcType=INTEGER}
+  </delete>
+  <update id="modifyColuDetail" parameterType="map">
+    update tdatacolumndetail set c_tablename=#{c_tablename},c_isenable=#{c_isenable},c_column=#{c_column}
+    where l_columndetailid=#{l_columndetailid}
+  </update>
+</mapper>

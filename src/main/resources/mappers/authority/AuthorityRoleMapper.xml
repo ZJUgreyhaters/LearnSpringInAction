@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.authority.mapper.AuthorityRoleMapper">
+  <select id="getAuthRole" resultType="java.util.Map">
+    select
+    l_roleid,
+    c_rolename  ,
+    c_isenable,
+    c_roledesc
+    from tuserrole
+  </select>
+  <select id="getAuthRoleAndUserCount" resultType="java.util.Map">
+    select
+    t.l_roleid,
+    t.c_rolename  ,
+    t.c_isenable,
+    t.c_roledesc,
+    x.usercount
+    from tuserrole t
+    left join (select count(1) as usercount, l_roleid from tuserrolerela group by l_roleid) x  on t.l_roleid=x.l_roleid
+  </select>
+  <insert id="insertRole" parameterType="map"  useGeneratedKeys="true" keyProperty="l_roleid">
+  INSERT INTO tuserrole (c_rolename,c_isenable,c_roledesc)
+  VALUES (#{c_rolename}, #{c_isenable}, #{c_isenable})
+  </insert>
+
+  <select id="getRoleAuthDetail" resultType="map" parameterType="java.lang.Integer" >
+    select
+    a.l_roleid,
+    a.c_rolename,
+    auth.c_authname,
+    auth.c_authtype,
+    t.l_roleauthid
+    from tuserrole a
+    left join  tauthrolerela t on a.l_roleid = t.l_roleid
+    left join tauthority auth on t.l_authid=auth.l_authid
+    where a.l_roleid=#{roleId,jdbcType=INTEGER}
+  </select>
+  <select id="getRoleAuthDetailByName" resultType="map" parameterType="java.lang.String" >
+    select
+    a.l_roleid,
+    a.c_rolename,
+    auth.c_authname,
+    auth.c_authtype,
+    t.l_roleauthid
+    from
+    tuserrole a
+    left join  tauthrolerela t on a.l_roleid = t.l_roleid
+    left join tauthority auth on t.l_authid=auth.l_authid
+    where a.c_rolename like CONCAT(CONCAT('%',#{name}), '%')
+  </select>
+
+  <delete id="deleRole" parameterType="java.lang.Integer">
+    delete from tuserrole where l_roleid=#{roleId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleUserRole" parameterType="java.lang.Integer">
+    delete from tuserrolerela where l_roleid=#{roleId,jdbcType=INTEGER}
+  </delete>
+  <update id="updateRole" parameterType="map">
+    update tuserrole set c_roledesc= #{c_roledesc}, c_rolename= #{c_rolename},c_isenable=#{c_isenable}
+    where l_roleid=#{l_roleid}
+  </update>
+
+
+</mapper>
