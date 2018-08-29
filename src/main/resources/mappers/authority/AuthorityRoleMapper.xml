@@ -31,7 +31,9 @@
     a.c_rolename,
     auth.c_authname,
     auth.c_authtype,
-    t.l_roleauthid
+    t.l_roleauthid,
+    a.c_roledesc,
+    a.c_isenable
     from tuserrole a
     left join  tauthrolerela t on a.l_roleid = t.l_roleid
     left join tauthority auth on t.l_authid=auth.l_authid
@@ -43,7 +45,9 @@
     a.c_rolename,
     auth.c_authname,
     auth.c_authtype,
-    t.l_roleauthid
+    t.l_roleauthid,
+    a.c_roledesc,
+    a.c_isenable
     from
     tuserrole a
     left join  tauthrolerela t on a.l_roleid = t.l_roleid

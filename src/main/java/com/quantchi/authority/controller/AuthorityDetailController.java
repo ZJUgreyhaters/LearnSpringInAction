@@ -77,8 +77,8 @@ public class AuthorityDetailController {
      * @apiParam {String} [funcDetail.c_funcname] 功能名称
      * @apiParam {String} [funcDetail.c_url]功能路径
      * @apiParam {String} [funcDetail.c_isenable]  是否有效
+     * @apiParamExample {json} Request-example:
      *
-    *例子
     *{"authority":{"c_authname":"alibaba","c_isenable":"1","c_authtype":"0","l_authid":0},
     * "funcDetail":{"l_funcdetail":1,"c_funcname":"alaifunc","c_url":"127.0.0.1","c_isenable":0} }
      */
@@ -117,10 +117,10 @@ public class AuthorityDetailController {
      * @apiParam {String} [c_tablename] 表名字
      * @apiParam {String} [c_column] 表字段名字
      * @apiParam {String} [c_isenable]  是否有效
-      * 例子
-    * {"l_columndetailid":1,"c_tablename":"dytable","c_column":"cc_cc","c_isenable":0}
-     *
-    * */
+      * @apiParamExample {json} Request-example:
+      *
+      * {"l_columndetailid":1,"c_tablename":"dytable","c_column":"cc_cc","c_isenable":0}
+      * */
     @ResponseBody
     @RequestMapping(value = "/modifyColumnDetail", method = {
             RequestMethod.POST}, produces = "application/json;charset=UTF-8")
@@ -136,8 +136,9 @@ public class AuthorityDetailController {
      * @apiParam {Int} [ l_datatabledetailid] 表字段权限ID
      * @apiParam {String} [c_tablename] 表名字
      * @apiParam {String} [c_isenable]  是否有效
-    * 例子
-    * {"l_datatabledetailid":1,"c_tablename":"tcustomerinfo","c_isenable":0}
+     * @apiParamExample {json} Request-example:
+     *
+     * {"l_datatabledetailid":1,"c_tablename":"tcustomerinfo","c_isenable":0}
     * */
     @ResponseBody
     @RequestMapping(value = "/modifyTableDetail", method = {
@@ -156,7 +157,8 @@ public class AuthorityDetailController {
      * @apiParam {String} [c_funcname] 功能名称
      * @apiParam {String} [c_url]功能路径
      * @apiParam {String} [c_isenable]  是否有效
-    * 例子
+     * @apiParamExample {json} Request-example:
+     *
     * {"l_funcdetail":1,"c_funcname":"alaifunc","c_url":"127.0.0.1","c_isenable":0}
     * */
     @ResponseBody
@@ -174,6 +176,8 @@ public class AuthorityDetailController {
      * @apiGroup AuthorityDetailController
      * @apiParam {Int} [detailType] 数据明细类型
      * @apiParam {Int} [detailDataId] 要删除的明细Id
+     * @apiParamExample {json} Request-example:
+     *
      * detailDataId 传入明细权限的Id   ;  detailType： 0 行数据类型  ，1 字段类型 ，2 表类型
     * 例子{"detailType":2,"detailDataId":1}
     * */
