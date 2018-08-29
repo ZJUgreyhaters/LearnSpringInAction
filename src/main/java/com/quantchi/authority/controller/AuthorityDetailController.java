@@ -61,7 +61,22 @@ public class AuthorityDetailController {
     public void addDataAuth(@RequestBody Map<String, Object> requestMap){
         authoritydetailService.addAuthAndDataDetail(requestMap);
     }
-    /*插入功能权限
+    /**@api {post} /api/addFuncAuth 插入功能权限
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/addFuncAuth
+     * @apiName addFuncAuth
+     * @apiGroup AuthorityDetailController
+     * @apiParam {Object} [authority] 权限
+     * @apiParam {String} [authority.c_authname] 权限名称
+     * @apiParam {String} [authority.c_isenable] 是否生效
+     * @apiParam {String} [authority.c_authtype] 权限类型  0:功能权限  1:数据权限'
+     * @apiParam {Int} [authority.l_authid] 权限id   因为还未插入表 填0
+     * @apiParam {Object} [funcDetail] 功能权限明细
+     * @apiParam {Int} [funcDetail.l_funcdetail] 功能权限ID    因为还未插入表 填0
+     * @apiParam {String} [funcDetail.c_funcname] 功能名称
+     * @apiParam {String} [funcDetail.c_url]功能路径
+     * @apiParam {String} [funcDetail.c_isenable]  是否有效
+     *
     *例子
     *{"authority":{"c_authname":"alibaba","c_isenable":"1","c_authtype":"0","l_authid":0},
     * "funcDetail":{"l_funcdetail":1,"c_funcname":"alaifunc","c_url":"127.0.0.1","c_isenable":0} }
@@ -72,8 +87,17 @@ public class AuthorityDetailController {
     public void addFuncAuth(@RequestBody Map<String, Object> requestMap){
         authoritydetailService.addAuthAndFuncDetail(requestMap);
     }
-    //修改行数据权限
-    /*
+     /**@api {post} /api/modifyLineDetail 修改行数明细
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/modifyLineDetail
+     * @apiName modifyLineDetail
+     * @apiGroup AuthorityDetailController
+     * @apiParam {Int} [l_linedetailid] 行数据权限ID
+      * @apiParam {String} [c_tablename] 表名字
+      * @apiParam {String} [c_column] 表字段名字
+      * @apiParam {String} [c_fiterdesc] 过滤描述
+      * @apiParam {String} [c_fiter]  过滤条件
+      * @apiParam {String} [c_isenable]  是否有效
     * 例子
     *{"l_linedetailid":1,"c_tablename":"tdcuqocallogfo","c_column":"logs","c_fiterdesc":"xxx","c_fiter":"123123","c_isenable":0}
     * */
@@ -83,8 +107,16 @@ public class AuthorityDetailController {
     public void modifyLineDetail(@RequestBody Map<String, Object> requestMap){
         authoritydetailService.modifyLineDetail(requestMap);
     }
-    //修改字段权限
-    /*例子
+     /**@api {post} /api/modifyColumnDetail 修改字段权限
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/modifyColumnDetail
+     * @apiName modifyColumnDetail
+     * @apiGroup AuthorityDetailController
+     * @apiParam {Int} [ l_columndetailid] 表字段权限ID
+     * @apiParam {String} [c_tablename] 表名字
+     * @apiParam {String} [c_column] 表字段名字
+     * @apiParam {String} [c_isenable]  是否有效
+      * 例子
     * {"l_columndetailid":1,"c_tablename":"dytable","c_column":"cc_cc","c_isenable":0}
      *
     * */
@@ -94,8 +126,15 @@ public class AuthorityDetailController {
     public void modifyColumnDetail(@RequestBody Map<String, Object> requestMap){
         authoritydetailService.modifyColuDetail(requestMap);
     }
-    //修改表权限
-    /*
+
+    /**@api {post} /api/modifyTableDetail 修改表权限
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/modifyTableDetail
+     * @apiName modifyTableDetail
+     * @apiGroup AuthorityDetailController
+     * @apiParam {Int} [ l_datatabledetailid] 表字段权限ID
+     * @apiParam {String} [c_tablename] 表名字
+     * @apiParam {String} [c_isenable]  是否有效
     * 例子
     * {"l_datatabledetailid":1,"c_tablename":"tcustomerinfo","c_isenable":0}
     * */
@@ -106,8 +145,16 @@ public class AuthorityDetailController {
         authoritydetailService.modifyTableDetail(requestMap);
     }
 
-    //修改功能权限
-    /*
+
+    /**@api {post} /api/modifyFuncDetail 修改功能权限
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/modifyFuncDetail
+     * @apiName modifyFuncDetail
+     * @apiGroup AuthorityDetailController
+     * @apiParam {Int} [l_funcdetail] 功能权限ID
+     * @apiParam {String} [c_funcname] 功能名称
+     * @apiParam {String} [c_url]功能路径
+     * @apiParam {String} [c_isenable]  是否有效
     * 例子
     * {"l_funcdetail":1,"c_funcname":"alaifunc","c_url":"127.0.0.1","c_isenable":0}
     * */
@@ -118,8 +165,15 @@ public class AuthorityDetailController {
         authoritydetailService.modifyFuncDetail(requestMap);
     }
 
-    // 删除数据明细权限
-    /* detailDataId 传入明细权限的Id   ;  detailType： 0 行数据类型  ，1 字段类型 ，2 表类型
+
+    /**@api {post} /api/deleAuthDetail 删除数据明细权限
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/deleAuthDetail
+     * @apiName deleAuthDetail
+     * @apiGroup AuthorityDetailController
+     * @apiParam {Int} [detailType] 数据明细类型
+     * @apiParam {Int} [detailDataId] 要删除的明细Id
+     * detailDataId 传入明细权限的Id   ;  detailType： 0 行数据类型  ，1 字段类型 ，2 表类型
     * 例子{"detailType":2,"detailDataId":1}
     * */
     @ResponseBody
