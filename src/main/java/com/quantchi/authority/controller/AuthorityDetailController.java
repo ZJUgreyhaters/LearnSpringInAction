@@ -27,6 +27,7 @@ public class AuthorityDetailController {
     *{"authority":{"c_authname":"quantchix","c_isenable":"1","c_authtype":"0","l_authid":0},
     * "dataTabDetail":[{"l_datatabledetailid":1,"c_tablename":"tcustomerinfo","c_isenable":0},{"l_datatabledetailid":1,"c_tablename":"taccoinfo","c_isenable":0}],
     * "dataColDetail":[{"l_columndetailid":1,"c_tablename":"tstock","c_column":"c_stockcode","c_isenable":"0" }]}
+    *  也可以同时加入 dataLineDetail:[] 内部配装按照数据库字段全小写 类似上面 可以上个权限同时添加
     * */
     @ResponseBody
     @RequestMapping(value = "/addDataAuth", method = {
