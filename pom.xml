@@ -30,8 +30,11 @@
 
   <dependencies>
 
-
-
+    <dependency>
+      <groupId>com.quantchi</groupId>
+      <artifactId>sql-analysis</artifactId>
+      <version>0.1.1-SNAPSHOT</version>
+    </dependency>
     <!-- dayread相关包 -->
 
     <!--以下两个jar包用于解决tomcat跨域-->
@@ -361,6 +364,12 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.6.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.1.10</version>
     </dependency>
   </dependencies>
 
