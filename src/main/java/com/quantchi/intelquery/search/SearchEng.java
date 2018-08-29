@@ -49,7 +49,7 @@ public abstract class SearchEng {
   public abstract List<Object> getMetrics() throws Exception;
   public abstract List<Object> getQuickMacro() throws Exception;
   public abstract String addQuerySentence(QuerySentence qs) throws Exception;
-  public abstract List<Object> getCorrelativeSentence() throws Exception;
+  public abstract List<QuerySentence> getCorrelativeSentence() throws Exception;
 
   protected List<String> segment() throws QPException, IOException {
 		return segmentWithLTP(getQuery());

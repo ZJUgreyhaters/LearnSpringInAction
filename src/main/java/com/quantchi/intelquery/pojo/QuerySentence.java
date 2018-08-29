@@ -7,36 +7,36 @@ import java.util.UUID;
 
 public class QuerySentence {
 
-	@Field
+	@Field("id")
 	private String id = UUID.randomUUID().toString().replace("-", "");;
-	@Field
-	private int count;
-	@Field
+	@Field("times")
+	private Long count = 1L;
+	@Field("username")
 	private String username;
-	@Field
+	@Field("businessName")
 	private String businessName;
-	@Field
+	@Field("query")
 	private	String query;
-	@Field
+	@Field("add_time")
 	private Date	datetime = new Date();
-	@Field
+	@Field("isParseable")
 	private Boolean isParseable = false;
-	@Field
+	@Field("querySql")
 	private String querySql;
-	@Field
+	@Field("feedback")
 	private String feedback = "";
-	@Field
+	@Field("intelqueryVer")
 	private String intelqueryVer;
 
 	public String getId() {
 		return id;
 	}
 
-	public int getCount() {
+	public Long getCount() {
 		return count;
 	}
 
-	public void setCount(int count) {
+	public void setCount(Long count) {
 		this.count = count;
 	}
 

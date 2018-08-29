@@ -3,11 +3,13 @@ package com.quantchi.intelquery.serviceImpl;
 import com.quantchi.common.AppProperties;
 import com.quantchi.common.HiveConnection;
 import com.quantchi.common.Paging;
+import com.quantchi.intelquery.QueryParser;
 import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.TokenizingResult;
 import com.quantchi.intelquery.mapper.IntelQueryMapper;
 import com.quantchi.intelquery.node.SemanticNode;
 import com.quantchi.intelquery.pojo.QuerySentence;
+import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.query.QueryWithNodes;
 import com.quantchi.intelquery.query.QueryWithTree;
@@ -155,9 +157,28 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     return engObj.addQuerySentence(qs);
   }
 
-  public List<Object> getCorrelativeSentence(String query) throws Exception{
+  public List<QuerySentence> getCorrelativeSentence(String query) throws Exception{
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-    return engObj.getCorrelativeSentence();
+    List<QuerySentence> sentences =  engObj.getCorrelativeSentence();
+		removeSameDomainSentence(sentences);
+    return sentences;
   }
+
+  private void removeSameDomainSentence(List<QuerySentence> sentences) throws Exception{
+		int startIdx = 0;
+		while(startIdx < sentences.size()){
+      QuerySentence first = sentences.get(startIdx);
+			for(int i=startIdx+1;i<sentences.size();i++){
+				QuerySentence second = sentences.get(i);
+				if(QueryParser.getInstance().hasSameDomainEntity(new BasicQuery(first.getQuery()), new BasicQuery(second.getQuery()))){
+					//add times in the same sentences
+					first.setCount(first.getCount()+second.getCount());
+					sentences.remove(second);
+					i--;
+				}
+			}
+			startIdx++;
+		}
+	}
 
 }

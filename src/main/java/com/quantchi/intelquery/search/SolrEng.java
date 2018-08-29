@@ -3,13 +3,9 @@ package com.quantchi.intelquery.search;
 import com.quantchi.common.AppProperties;
 import com.quantchi.intelquery.exception.QPException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
 
 import com.quantchi.intelquery.pojo.QuerySentence;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -31,6 +27,9 @@ public class SolrEng extends SearchEng {
   private final Map<String, String> solrCommParam = AppProperties.getPropertiesMap("solr.param");
   private final Map<String, String> solrQuickParam = AppProperties
       .getPropertiesMap("solr.instance");
+
+  private final Map<String, String> solrCorSentenceParam = AppProperties
+          .getPropertiesMap("solr.sentence");
 
   private final String solrUrl = AppProperties.get("solr.url");
 
@@ -74,7 +73,6 @@ public class SolrEng extends SearchEng {
       QuerySentence solrRet = checkDocInSolr(qs.getQuery());
       //add doc into solr
       if(solrRet == null){
-				/*segmentWithLTP(qs.getQuery())*/
         httpSolr.addBean(qs);
         httpSolr.commit();
         qsId = qs.getId();
@@ -85,7 +83,7 @@ public class SolrEng extends SearchEng {
         newDoc.addField("id", solrRet.getId());
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("inc", 1);
-        newDoc.addField("count", map);
+        newDoc.addField("times", map);
         httpSolr.add(newDoc);
         httpSolr.commit();
         qsId = solrRet.getId();
@@ -103,15 +101,16 @@ public class SolrEng extends SearchEng {
   }
 
   @Override
-  public List<Object> getCorrelativeSentence() throws Exception{
-    QueryResponse qr = searchSolr(solrCommParam,CHECKDOCFILED);
-    return documentListToObjectList(qr.getResults());
+  public List<QuerySentence> getCorrelativeSentence() throws Exception{
+    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCorSentenceParam,CHECKDOCFILED);
+    //return documentListToObjectList(qr.getResults());
+    return qr.getBeans(QuerySentence.class);
   }
 
   private QuerySentence checkDocInSolr(String queryStr) throws Exception {
     QuerySentence qs = null;
     SolrQuery query = new SolrQuery();
-    query.setQuery(CHECKDOCFILED + ":(" + queryStr + ")");
+    query.setQuery(CHECKDOCFILED + ":\"" + queryStr + "\"");
     QueryResponse qr = httpSolr.query(query);
     if(qr.getResults().size() > 0){
       qs = qr.getBeans(QuerySentence.class).get(0);
@@ -162,8 +161,7 @@ public class SolrEng extends SearchEng {
     return result;
   }
 
-  private QueryResponse searchSolr(Map<String, String> param,String field) throws Exception {
-    String str = String.join(" ",segment());
+  private QueryResponse searchSolrWithoutSeg(String str,Map<String, String> param,String field) throws Exception {
     SolrQuery query = new SolrQuery();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.search");
     query.setQuery(field + ":(" + str + ")");
@@ -180,6 +178,11 @@ public class SolrEng extends SearchEng {
 
     QueryResponse response = httpSolr.query(query);
     return response;
+  }
+
+  private QueryResponse searchSolr(Map<String, String> param,String field) throws Exception {
+    String str = String.join(" ",segment());
+    return searchSolrWithoutSeg(str,param,field);
   }
 
   private SolrDocumentList setReplaceOrigin(SolrDocumentList docs,

@@ -1,6 +1,8 @@
 package com.quantchi.intelquery.service;
 
 import com.quantchi.intelquery.StepResult;
+import com.quantchi.intelquery.pojo.QuerySentence;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -30,5 +32,5 @@ public interface IntelQueryService {
                            boolean isParseable,
                            String sql) throws Exception;
 
-  List<Object> getCorrelativeSentence(String query) throws Exception;
+  List<QuerySentence> getCorrelativeSentence(String query) throws Exception;
 }
