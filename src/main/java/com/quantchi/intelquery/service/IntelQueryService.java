@@ -33,4 +33,10 @@ public interface IntelQueryService {
                            String sql) throws Exception;
 
   List<QuerySentence> getCorrelativeSentence(String query) throws Exception;
+
+  List<Object> queryInstanceMapping(List<Object> quickMacroQuery);
+
+  List<Map<String, Object>> columnRelationMapping(TreeNode columnRelation,Map<String, Object> tabulate);
+
+  Map<String, Object> tabulateMapping(TreeNode columnRelation,Map<String, Object> tabulate);
 }

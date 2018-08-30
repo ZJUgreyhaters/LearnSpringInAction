@@ -15,13 +15,13 @@ import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.query.QueryWithNodes;
 import com.quantchi.intelquery.query.QueryWithTree;
 import com.quantchi.intelquery.service.IntelQueryService;
+import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import com.quantchi.intelquery.sqlquery.SqlQuery;
 import com.quantchi.intelquery.utils.SerializationUtils;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,23 +223,24 @@ public class IntelQueryController {
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
 
-      /*Entry<Set<Integer>, Set<Integer>> relationInfo = sqlQuery.getColumnRelation(); // 获取列之间的（一对多）关系，(0, 1) -> (3, 4) 保存列的下标
-      ColumnInfo columnInfo = sqlQuery.getColumnInfo().get(0); // 获取每一列的信息
-      Optional<String> physicalField = columnInfo.getPhysicalField(); // 该列相关的物理字段
-      columnInfo.isPrime(); // 是否是基础列
-      columnInfo.isDomainField(); // 是否是domain的列
-      columnInfo.isKey(); // 是否是某张表的Key*/
-
       Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
 
+      // List<Optional<String>> selectedFields = queryTree.getSqlQuery().getSelectedFields();
       //List<Optional<String>> selectedFields = queryTree.getSqlQuery().getSelectedFields();
 
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
+      TreeNode columnRelation = sqlQuery.getColumnRelation();
+      List<Map<String, Object>> listTop = intelQueryService.columnRelationMapping(columnRelation,tabulate);
+
+      tabulate = intelQueryService.tabulateMapping(columnRelation,tabulate);
+
       QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
       resultMap.put("tabulate", tabulate);
+      resultMap.put("columnRelation", listTop);
       resultMap.put("steps", stepsList);
       resultMap.put("queryWithNodes", SerializationUtils.toSerializedString(queryWithNodes));
       resultMap.put("candidates", candidates);
+
       return JsonResult.successJson(resultMap);
     } catch (Exception e) {
       e.printStackTrace();
@@ -278,16 +279,29 @@ public class IntelQueryController {
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/download
    * @apiName download
    * @apiGroup IntelQueryController
-   * @apiParam {String} query 查询语句
+   * @apiParam {String} queryWithNodes 查询语句的序列化
    */
   @ResponseBody
   @RequestMapping(value = "/download", method = {
       RequestMethod.GET}, produces = "application/json;charset=UTF-8")
-  public String download(HttpServletResponse response, String query) {
+  public String download(HttpServletResponse response,String queryWithNodes, String page, String page_size) {
     try {
-      return "";
+      Map<String,Object> map = new HashMap<>();
+      map.put("page",page);
+      map.put("page_size",page_size);
+      QueryWithNodes queryWithNode = SerializationUtils.fromSerializedString(queryWithNodes);
+      StepResult result = QueryParser.getInstance().parse(queryWithNode);
+      QueryWithTree queryTree = result.getFinalTree();
+      SqlFormatter formatter = new Builder()
+          .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+          .build();
+      SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
+      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
+      TreeNode columnRelation = sqlQuery.getColumnRelation();
+
+      return JsonResult.successJson("下载成功！");
     } catch (Exception e) {
-      return "";
+      return JsonResult.successJson("下载失败！");
     }
   }
 
@@ -348,12 +362,12 @@ public class IntelQueryController {
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
       Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
-      Map<String,Object> resultMap = new HashMap<>();
-      resultMap.put("tabulate",tabulate);
+      Map<String, Object> resultMap = new HashMap<>();
+      resultMap.put("tabulate", tabulate);
       return JsonResult.successJson(resultMap);
     } catch (Exception e) {
       e.printStackTrace();
-      logger.info("associateQuery error",e);
+      logger.info("associateQuery error", e);
       return JsonResult.errorJson("associateQuery error");
     }
   }
@@ -377,12 +391,20 @@ public class IntelQueryController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String stepsQuery(@RequestBody Map<String, Object> map) {
     try {
-      /*QueryNodes queryNodes = queryWithNodes.getNodes();
-      queryNodes.replace(begIndex, endIndex, candidate); // 调用 replace API 将原来的Nodes替换成用户选择的候选项
-      StepResult result = QueryParser.getInstance().parse(queryWithNodes);*/
-      return "";
+      QueryWithTree queryTree = SerializationUtils
+          .fromSerializedString(map.get("querySerialize").toString());
+      SqlFormatter formatter = new Builder()
+          .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+          .build();
+      SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
+      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
+      Map<String, Object> resultMap = new HashMap<>();
+      resultMap.put("tabulate", tabulate);
+      return JsonResult.successJson(resultMap);
     } catch (Exception e) {
-      return "";
+      e.printStackTrace();
+      logger.info("stepsQuery error", e);
+      return JsonResult.errorJson("stepsQuery error");
     }
   }
 
@@ -411,6 +433,7 @@ public class IntelQueryController {
   String queryInstance(@RequestParam("q") String q) {
     try {
       List<Object> quickMacroQuery = intelQueryService.getQuickMacroQuery(q);
+      quickMacroQuery = intelQueryService.queryInstanceMapping(quickMacroQuery);
       return JsonResult.successJson(quickMacroQuery);
     } catch (Exception e) {
       e.printStackTrace();
