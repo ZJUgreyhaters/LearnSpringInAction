@@ -2,6 +2,7 @@ package com.quantchi.intelquery.service;
 
 import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.pojo.QuerySentence;
+import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +37,7 @@ public interface IntelQueryService {
 
   List<Object> queryInstanceMapping(List<Object> quickMacroQuery);
 
-  List<Map<String, Object>> columnRelationMapping(TreeNode columnRelation,Map<String, Object> tabulate);
+  List<Map<String, Object>> columnRelationMapping(TreeNode columnRelation, Map<String, Object> tabulate);
 
   Map<String, Object> tabulateMapping(TreeNode columnRelation,Map<String, Object> tabulate);
 }
