@@ -11,4 +11,6 @@ public interface IntelQueryMapper {
   List<Map<String, Object>> getBusiCate();
 
   List<Map<String, Object>> getRecommendQuery(String businessTypeId);
+
+  Map<String, Object> selectCategory(Map<String,Object> map);
 }

@@ -11,8 +11,11 @@ import com.quantchi.intelquery.query.QueryWithNodes;
 import com.quantchi.intelquery.query.QueryWithTree;
 import com.quantchi.intelquery.search.SearchEng;
 import com.quantchi.intelquery.service.IntelQueryService;
+import com.quantchi.intelquery.sqlquery.ColumnInfo;
+import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import com.quantchi.intelquery.tokenize.search.Replacement;
 import com.quantchi.intelquery.utils.SerializationUtils;
+import com.quantchi.termInfo.mapper.StandInfoMapper;
 import com.quantchi.tianshu.common.JdbcPool;
 import com.quantchi.transport.service.ExecSqlApiService;
 import java.io.IOException;
@@ -42,6 +45,9 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
   @Autowired
   private IntelQueryMapper intelQueryMapper;
+
+  @Autowired
+  private StandInfoMapper standInfoMapper;
 
   @Override
   public List<Map<String, Object>> getBusiCate() {
@@ -122,7 +128,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     return candidates;
   }
 
-  public List<Map<String, Object>> stepsMapping(StepResult result)throws IOException{
+  public List<Map<String, Object>> stepsMapping(StepResult result) throws IOException {
     List<QueryWithTree> steps = result.getSteps();
     List<Map<String, Object>> stepsList = new ArrayList<>();
     for (QueryWithTree queryWithTree : steps) {
@@ -132,6 +138,185 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       stepsList.add(stepsMap);
     }
     return stepsList;
+  }
+
+  @Override
+  public List<Object> queryInstanceMapping(List<Object> quickMacroQuery) {
+    for (Object quickMacroQueryObj : quickMacroQuery) {
+      Map<String, Object> objectMap = (Map<String, Object>) quickMacroQueryObj;
+      if ("value".equals(objectMap.get("type"))) {
+        Map<String, Object> dbFieldMap = new HashMap<>();
+        String dbField = objectMap.get("db_field").toString();
+        String[] splits = dbField.split("\\.");
+        dbFieldMap.put("physical_db", splits[0]);
+        dbFieldMap.put("physical_table", splits[1]);
+        dbFieldMap.put("physical_field", splits[2]);
+        Map<String, Object> categoryMap = intelQueryMapper.selectCategory(dbFieldMap);
+        if (categoryMap != null) {
+          List<Map<String, Object>> businessList = standInfoMapper.selectBusiness(categoryMap);
+          StringBuilder str = new StringBuilder();
+          str.append(businessList.get(0).get("businessTypeName")).append("<")
+              .append(businessList.get(0).get("domainName")).append("<")
+              .append(businessList.get(0).get("logicTableName"));
+          objectMap.put("entityCategory", str);
+        }
+      }
+    }
+    return quickMacroQuery;
+  }
+
+  @Override
+  public List<Map<String, Object>> columnRelationMapping(TreeNode columnRelation,
+      Map<String, Object> tabulate) {
+    List<TreeNode> children = columnRelation.getChildren();
+    List<Map<String, Object>> listTop = new ArrayList<>();
+    for (TreeNode treeNode : children) {
+      ColumnInfo columnInfo = treeNode.getColumnInfo();
+      if (treeNode.isRowToCol() && (treeNode.getChildren() == null
+          || treeNode.getChildren().isEmpty())) {
+        ColumnInfo parentInfo = columnRelation.getColumnInfo();
+        List<String> mappings = mapping(columnInfo.getAlias(), tabulate);
+        for (String mapping : mappings) {
+          Map<String, Object> mapRowTocol = new HashMap<>();
+          StringBuilder title = new StringBuilder();
+          title.append(parentInfo.getAlias()).append(">>").append(mapping);
+          mapRowTocol.put("title", mapping);
+          mapRowTocol.put("dataIndex", false);
+          mapRowTocol.put("name", title);
+          mapRowTocol.put("keys", false);
+          mapRowTocol.put("key", title);
+          mapRowTocol.put("fixed", false);
+          mapRowTocol.put("children", new ArrayList<>());
+          listTop.add(mapRowTocol);
+        }
+      } else if (treeNode.isRowToCol() && (treeNode.getChildren() != null
+          && !treeNode.getChildren().isEmpty())) {
+        List<String> mappings = mapping(columnInfo.getAlias(), tabulate);
+        List<TreeNode> childrenInfo = treeNode.getChildren();
+        for (String mapping : mappings) {
+          Map<String, Object> mapRowTocol = new HashMap<>();
+          List<Map<String, Object>> childrenList = childrenInfoMapping(mapping, childrenInfo);
+          mapRowTocol.put("title", mapping);
+          mapRowTocol.put("dataIndex", false);
+          mapRowTocol.put("name", mapping);
+          mapRowTocol.put("keys", false);
+          mapRowTocol.put("key", mapping);
+          mapRowTocol.put("fixed", false);
+          mapRowTocol.put("children", childrenList);
+          listTop.add(mapRowTocol);
+        }
+      } else {
+        Map<String, Object> mapTop = new HashMap<>();
+        mapTop.put("title", columnInfo.getAlias());
+        mapTop.put("dataIndex", columnInfo.isDomainField());
+        mapTop.put("name", columnInfo.getAlias());
+        mapTop.put("index", columnInfo.getIndex());
+        mapTop.put("keys", columnInfo.isKey());
+        mapTop.put("key", columnInfo.toString());
+        mapTop.put("fixed", columnInfo.isPrime());
+        mapTop.put("physicalField", columnInfo.toString());
+        mapTop.put("rowToCol", treeNode.isRowToCol());
+        if (treeNode.getChildren() != null && !treeNode.getChildren().isEmpty()) {
+          List<Map<String, Object>> list = columnRelationMapping(treeNode, tabulate);
+          mapTop.put("children", list);
+        } else {
+          mapTop.put("children", new ArrayList<>());
+        }
+        listTop.add(mapTop);
+      }
+    }
+    return listTop;
+  }
+
+  @Override
+  public Map<String, Object> tabulateMapping(TreeNode columnRelation,
+      Map<String, Object> tabulate) {
+    List<TreeNode> children = columnRelation.getChildren();
+
+    List<String> primeList = new ArrayList<>();
+    Map<String, List<String>> map = getclassifyList(columnRelation);
+    for (TreeNode treeNode : children) {
+      if (treeNode.getColumnInfo().isPrime()) {
+        primeList.add(treeNode.getColumnInfo().getAlias());
+      }
+    }
+
+    List<Map<String, Object>> resultList = (List<Map<String, Object>>) tabulate.get("resultList");
+    List<Object> listMap = new ArrayList<>();
+    if(!primeList.isEmpty()){
+      for (Map<String, Object> tabulateMap : resultList) {
+        Object alias = primeList.get(0);
+        Object obj = tabulateMap.get(alias);
+        if (!listMap.contains(obj)) {
+          listMap.add(obj);
+        }
+      }
+    }
+
+
+    return null;
+  }
+
+  List<String> mapping(String info, Map<String, Object> tabulate) {
+    List<Map<String, Object>> resultList = (List<Map<String, Object>>) tabulate
+        .get("resultList");
+    List<String> infoList = new ArrayList<>();
+    for (Map<String, Object> tabulateMap : resultList) {
+      String fields = tabulateMap.get(info).toString();
+      if (!infoList.contains(fields)) {
+        infoList.add(fields);
+      }
+    }
+    return infoList;
+  }
+
+  List<Map<String, Object>> childrenInfoMapping(String mapping, List<TreeNode> childrenInfo) {
+
+    List<Map<String, Object>> list = new ArrayList<>();
+    for (TreeNode treeNode : childrenInfo) {
+      ColumnInfo columnInfo = treeNode.getColumnInfo();
+      Map<String, Object> mapTop = new HashMap<>();
+      StringBuilder topBuilder = new StringBuilder();
+      topBuilder.append(columnInfo.getAlias()).append(">>").append(mapping);
+      mapTop.put("title", columnInfo.getAlias());
+      mapTop.put("dataIndex", columnInfo.isDomainField());
+      mapTop.put("name", topBuilder);
+      mapTop.put("index", columnInfo.getIndex());
+      mapTop.put("keys", columnInfo.isKey());
+      mapTop.put("key", columnInfo.toString());
+      mapTop.put("fixed", columnInfo.isPrime());
+      mapTop.put("physicalField", columnInfo.toString());
+      mapTop.put("rowToCol", treeNode.isRowToCol());
+      list.add(mapTop);
+    }
+    return list;
+  }
+
+  Map<String, List<String>> getclassifyList(TreeNode columnRelation) {
+    Map<String, List<String>> map = new HashMap<>();
+    List<String> domainList = new ArrayList<>();
+    List<String> rowTocolList = new ArrayList<>();
+    getclassify(domainList, rowTocolList, columnRelation);
+    map.put("domainList",domainList);
+    map.put("rowTocolList",rowTocolList);
+    return map;
+  }
+
+  void getclassify(List<String> domainList, List<String> rowTocolList,
+      TreeNode columnRelation){
+    List<TreeNode> children = columnRelation.getChildren();
+    for (TreeNode treeNode : children) {
+      ColumnInfo columnInfo = treeNode.getColumnInfo();
+      if(columnInfo.isDomainField()){
+        domainList.add(columnInfo.getAlias());
+      }
+      if(treeNode.isRowToCol()){
+        rowTocolList.add(columnInfo.getAlias());
+      }
+      if(treeNode.getChildren()!=null && !treeNode.getChildren().isEmpty()){
+        getclassify(domainList, rowTocolList, treeNode);
+      }
+    }
   }
 
 }
