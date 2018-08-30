@@ -1,0 +1,239 @@
+package com.quantchi.authority.serviceImpl;
+
+import com.alibaba.fastjson.JSONObject;
+import com.quantchi.authority.mapper.*;
+import com.quantchi.authority.pojo.*;
+import com.quantchi.authority.service.AuthorityDetailService;
+import com.quantchi.common.JsonResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class AuthorityDetailServiceImpl implements  AuthorityDetailService {
+
+    @Autowired
+    private DataLineDetailMapper dataLineDetailMapper;
+    @Autowired
+    private FuncDetailMapper funcDetailMapper;
+    @Autowired
+    private TabColumnDetailMapper tabColumnDetailMapper;
+    @Autowired
+    private TableDetailMapper tableDetailMapper;
+    @Autowired
+    private AuthorityMapper authorityMapper;
+
+    private  ObjectMapper oMapper = new ObjectMapper();
+
+    @Override
+    public  String selectTableDetailList(){
+        try {
+            List<Map<String, Object>> list = tableDetailMapper.selectTableDetail();
+            return JsonResult.successJson(list);
+         } catch (Exception e) {
+            e.printStackTrace();
+            return JsonResult.errorJson("select error！");
+        }
+    }
+    @Override
+    public void addTableDetail(Map<String, Object> map){
+         tableDetailMapper.insertTableDetail(map);
+    }
+
+    @Override
+    public  void addTableColDetail(Map<String, Object> map){
+      tabColumnDetailMapper.insertTabColDetail(map);
+    }
+
+    @Override
+    public String selectTableColDetailList(){
+        try {
+            List<Map<String, Object>> list = tabColumnDetailMapper.selectTabColDetail();
+            return JsonResult.successJson(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonResult.errorJson("select error！");
+        }
+    }
+    @Override
+    public void addDataLineDetail(Map<String, Object> map){
+      dataLineDetailMapper.insertLineDetail(map);
+
+    }
+    @Override
+    public String selectDataLineDetail(){
+        try {
+            List<Map<String, Object>> list = dataLineDetailMapper.selectLineDetail();
+            return JsonResult.successJson(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonResult.errorJson("select error！");
+        }
+    }
+    @Override
+    public void addFuncDetail(Map<String, Object> map){
+        funcDetailMapper.insertFuncDetail(map);
+
+    }
+    @Override
+    public String selectFuncDetail(){
+        try {
+            List<Map<String, Object>> list = funcDetailMapper.selectFuncDetail();
+            return JsonResult.successJson(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonResult.errorJson("select error！");
+        }
+    }
+    @Override
+    public void addAuthAndDataDetail(Map<String, Object> map){
+        Map <String, Object> authMap= (Map<String, Object>)map.get("authority");
+
+        authorityMapper.insertAuth(authMap);
+
+        //插入行数据过滤以及与权限的关系
+        List<Ttablelinedetail> dataLineDetails=(List)map.get("dataLineDetail");
+        if (dataLineDetails != null  ){
+        String ataLineDetailObj = JSONObject.toJSONString(dataLineDetails);
+        dataLineDetails=JSONObject.parseArray(ataLineDetailObj, Ttablelinedetail.class);
+
+        for(Ttablelinedetail ttablelinedetail:dataLineDetails)
+        {
+            Map<String, Object> ttablelinedetailMap =   oMapper.convertValue(ttablelinedetail, Map.class);
+            dataLineDetailMapper.insertLineDetail(ttablelinedetailMap);
+
+            Tauthlinerela tauthlinerela = new Tauthlinerela();
+            tauthlinerela.setL_Authid(Long.parseLong(authMap.get(new String("l_authid")).toString()));
+            tauthlinerela.setL_Linedetailid(Long.parseLong(ttablelinedetailMap.get(new String("l_linedetailid")).toString()));
+            Map<String, Object> authLineRelaMap =  oMapper.convertValue(tauthlinerela, Map.class);
+            dataLineDetailMapper.insertLineDetailRela(authLineRelaMap);
+        }
+        }
+        //插入字段过滤以及权限关系
+        List<Tdatacolumndetail> dataColDetails=(List)map.get("dataColDetail");
+        if ( dataColDetails != null ) {
+            String dataColDetailObj = JSONObject.toJSONString(dataColDetails);
+            dataColDetails = JSONObject.parseArray(dataColDetailObj, Tdatacolumndetail.class);
+
+            for (Tdatacolumndetail tdatacolumndetail : dataColDetails) {
+                Map<String, Object> tdatacolumndetailMap = oMapper.convertValue(tdatacolumndetail, Map.class);
+                tabColumnDetailMapper.insertTabColDetail(tdatacolumndetailMap);
+
+                Tauthcolrela tauthcolrela = new Tauthcolrela();
+                tauthcolrela.setL_Authid(Long.parseLong(authMap.get(new String("l_authid")).toString()));
+                tauthcolrela.setL_Columndetailid(Long.parseLong(tdatacolumndetailMap.get(new String("l_columndetailid")).toString()));
+                Map<String, Object> authColRelaMap = oMapper.convertValue(tauthcolrela, Map.class);
+                tabColumnDetailMapper.insertColDetailRela(authColRelaMap);
+            }
+        }
+        //插入表过滤以及权限关系
+        List<Tdatatabledetail> dataTabDetails=(List)map.get("dataTabDetail");
+        if ( dataTabDetails != null ) {
+            String dataTabDetailObj = JSONObject.toJSONString(dataTabDetails);
+            dataTabDetails = JSONObject.parseArray(dataTabDetailObj, Tdatatabledetail.class);
+
+            for (Tdatatabledetail tdatatabledetail : dataTabDetails) {
+                Map<String, Object> tdatatabledetailMap = oMapper.convertValue(tdatatabledetail, Map.class);
+                tableDetailMapper.insertTableDetail(tdatatabledetailMap);
+
+                Tauthtablerela tauthtablerela = new Tauthtablerela();
+                tauthtablerela.setL_Authid(Long.parseLong(authMap.get(new String("l_authid")).toString()));
+                tauthtablerela.setL_Datatabledetailid(Long.parseLong(tdatatabledetailMap.get(new String("l_datatabledetailid")).toString()));
+                Map<String, Object> authColRelaMap = oMapper.convertValue(tauthtablerela, Map.class);
+                tableDetailMapper.insertTableDetailRela(authColRelaMap);
+            }
+        }
+    }
+
+    @Override
+    public void addAuthAndFuncDetail(Map<String, Object> map){
+
+        Map<String, Object>   authMap = (Map<String, Object>)map.get("authority");
+        authorityMapper.insertAuth(authMap);
+        Map<String, Object> funcDetailMap=(Map<String, Object>)map.get("funcDetail");
+        funcDetailMapper.insertFuncDetail (funcDetailMap);
+
+        Tauthfuncrela tauthfuncrela = new Tauthfuncrela();
+        tauthfuncrela.setL_Authid(Long.parseLong(authMap.get(new String("l_authid")).toString()));
+        tauthfuncrela.setL_Funcdetail(Long.parseLong(funcDetailMap.get(new String("l_funcdetail")).toString()));
+        Map<String, Object> authColRelaMap =  oMapper.convertValue(tauthfuncrela, Map.class);
+        funcDetailMapper.insertFuncDetailRela(authColRelaMap);
+
+    }
+   @Override
+   public void deleAuthByAuth(String authId){
+        Integer authIdInt = Integer.parseInt(authId);
+
+        dataLineDetailMapper.deleAuthLineRela(authIdInt);
+
+        dataLineDetailMapper.deleLineByAuthid(authIdInt);
+
+        tabColumnDetailMapper.deleAuthColRela(authIdInt);
+
+        tabColumnDetailMapper.deleColByAuthid(authIdInt);
+
+        tableDetailMapper.deleAuthTabRela(authIdInt);
+
+        tableDetailMapper.deleTabByAuthid(authIdInt);
+
+        funcDetailMapper.deleAuthFuncRela(authIdInt);
+
+        funcDetailMapper.deleFuncByAuthid(authIdInt);
+
+        authorityMapper.deleRoleRelaByAuthId(authIdInt);
+
+        authorityMapper.deleAuth(authIdInt);
+   }
+   @Override
+    public void deleLineDetail(String lineId){
+        Integer lineIdInt = Integer.parseInt(lineId);
+        dataLineDetailMapper.deleAuthLineRelaByLineId(lineIdInt);
+        dataLineDetailMapper.deleLineByLineId(lineIdInt);
+    }
+    @Override
+    public void deleColuDetail(String coluId){
+        Integer coluIdInt =Integer.parseInt(coluId);
+        tabColumnDetailMapper.deleAuthColRelaByColId(coluIdInt);
+        tabColumnDetailMapper.deleColByColId(coluIdInt);
+    }
+
+    @Override
+    public void deleTableDetail(String tableId){
+        Integer tabIdInt =Integer.parseInt(tableId);
+        tableDetailMapper.deleAuthTabRelaByTabId(tabIdInt);
+        tableDetailMapper.deleTabByTabId(tabIdInt);
+    }
+
+    @Override
+    public void deleFuncDetail(String funcId){
+        Integer funcIdInt =Integer.parseInt(funcId);
+        funcDetailMapper.deleAuthFuncRelaByFuncId(funcIdInt);
+        funcDetailMapper.deleFuncByFuncId(funcIdInt);
+    }
+
+    @Override
+    public void modifyLineDetail(Map<String, Object> map){
+
+        dataLineDetailMapper.modifyLineDetail(map);
+    }
+    @Override
+    public void modifyColuDetail(Map<String, Object> map){
+
+        tabColumnDetailMapper.modifyColuDetail(map);
+    }
+
+    @Override
+    public void modifyTableDetail(Map<String, Object> map){
+
+        tableDetailMapper.modifyTableDetail(map);
+    }
+
+    @Override
+    public void modifyFuncDetail(Map<String, Object> map){
+
+        funcDetailMapper.modifyFuncDetail(map);
+    }
+
+}
