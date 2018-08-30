@@ -3,8 +3,6 @@ package com.quantchi.intelquery.search;
 import com.quantchi.common.AppProperties;
 import com.quantchi.intelquery.exception.QPException;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.*;
 
 import com.quantchi.intelquery.pojo.QuerySentence;
@@ -23,6 +21,8 @@ import org.slf4j.LoggerFactory;
 public class SolrEng extends SearchEng {
 
   private static final Logger logger = LoggerFactory.getLogger(SolrEng.class);
+
+  private static SolrEng instance = null;
 
   private final Map<String, String> solrCommParam = AppProperties.getPropertiesMap("solr.param");
   private final Map<String, String> solrQuickParam = AppProperties
@@ -47,10 +47,18 @@ public class SolrEng extends SearchEng {
 
   private HttpSolrClient httpSolr = null;
 
-  public SolrEng(String query, String type) {
+  private SolrEng(String query, String type) {
     super(query, type);
     httpSolr = new HttpSolrClient.Builder(solrUrl).build();
     httpSolr.setParser(new XMLResponseParser());
+  }
+
+  public static SolrEng getInstance(String query, String type){
+    if (instance == null) {
+      instance = new SolrEng(query,type);
+    }
+
+    return instance;
   }
 
   @Override

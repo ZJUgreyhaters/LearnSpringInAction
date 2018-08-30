@@ -20,10 +20,8 @@ import com.quantchi.intelquery.utils.SerializationUtils;
 import com.quantchi.tianshu.common.JdbcPool;
 import com.quantchi.transport.service.ExecSqlApiService;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,10 +156,15 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   public List<QuerySentence> getCorrelativeSentence(String query) throws Exception{
-    SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-    List<QuerySentence> sentences =  engObj.getCorrelativeSentence();
-		removeSameDomainSentence(sentences);
-    return sentences;
+    if(!"".equals(query)){
+      SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
+      List<QuerySentence> sentences =  engObj.getCorrelativeSentence();
+      removeSameDomainSentence(sentences);
+      return sentences;
+    }else{
+      return Collections.emptyList();
+    }
+
   }
 
   private void removeSameDomainSentence(List<QuerySentence> sentences) throws Exception{

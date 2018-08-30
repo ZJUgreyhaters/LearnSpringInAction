@@ -125,6 +125,19 @@ public class IntelQueryController {
     }
   }
 
+  @RequestMapping(value = "/getRelatedQuery", method = {
+          RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public
+  @ResponseBody
+  Map<String, Object> testAddRelatedQuery(@RequestParam(value = "keyword") String keyword) {
+    try {
+      String retId = intelQueryService.addQuerySentence("客户1","两融业务",keyword,false,"select * from a;");
+      return Util.genRet(200, retId, "", 0);
+    } catch (Exception e) {
+      return Util.genRet(500, null, e.getMessage(), 0);
+    }
+  }
+
   /**
    * @api {post} /api/basicQuery 智能取数查询接口
    * @apiPermission none
