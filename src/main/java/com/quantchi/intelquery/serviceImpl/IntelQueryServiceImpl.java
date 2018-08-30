@@ -143,49 +143,6 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     return stepsList;
   }
 
-<<<<<<<<< Temporary merge branch 1
-  public String addQuerySentence(String username,
-                                  String businessName,
-                                  String query,
-                                  boolean isParseable,
-                                  String sql) throws Exception{
-
-    QuerySentence qs = new QuerySentence();
-    qs.setUsername(username);
-    qs.setBusinessName(businessName);
-    qs.setQuery(query);
-    qs.setParseable(isParseable);
-    qs.setQuerySql(sql);
-    qs.setIntelqueryVer(INTELQUERYVERSION);
-
-    SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-    return engObj.addQuerySentence(qs);
-  }
-
-  public List<QuerySentence> getCorrelativeSentence(String query) throws Exception{
-    SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-    List<QuerySentence> sentences =  engObj.getCorrelativeSentence();
-		removeSameDomainSentence(sentences);
-    return sentences;
-  }
-
-  private void removeSameDomainSentence(List<QuerySentence> sentences) throws Exception{
-		int startIdx = 0;
-		while(startIdx < sentences.size()){
-      QuerySentence first = sentences.get(startIdx);
-			for(int i=startIdx+1;i<sentences.size();i++){
-				QuerySentence second = sentences.get(i);
-				if(QueryParser.getInstance().hasSameDomainEntity(new BasicQuery(first.getQuery()), new BasicQuery(second.getQuery()))){
-					//add times in the same sentences
-					first.setCount(first.getCount()+second.getCount());
-					sentences.remove(second);
-					i--;
-				}
-			}
-			startIdx++;
-		}
-	}
-=========
   @Override
   public List<Object> queryInstanceMapping(List<Object> quickMacroQuery) {
     for (Object quickMacroQueryObj : quickMacroQuery) {
@@ -214,6 +171,9 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   @Override
   public List<Map<String, Object>> columnRelationMapping(TreeNode columnRelation,
       Map<String, Object> tabulate) {
+
+    columnRelationMappingExt(columnRelation);
+
     List<TreeNode> children = columnRelation.getChildren();
     List<Map<String, Object>> listTop = new ArrayList<>();
     for (TreeNode treeNode : children) {
@@ -273,6 +233,20 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     }
     return listTop;
   }
+
+
+  private Map<Object, Object> columnRelationMappingExt(TreeNode columnRelation){
+
+		Map<Object, Object> ret = new HashMap<>();
+		List<TreeNode> children = columnRelation.getChildren();
+		for (TreeNode treeNode : children) {
+			ColumnInfo columnInfo = treeNode.getColumnInfo();
+			if(treeNode.isRowToCol()){
+
+			}
+		}
+    return ret;
+	}
 
   @Override
   public Map<String, Object> tabulateMapping(TreeNode columnRelation,
@@ -365,52 +339,8 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     }
   }
 
-  public String addQuerySentence(String username,
-                                  String businessName,
-                                  String query,
-                                  boolean isParseable,
-                                  String sql) throws Exception{
 
-    QuerySentence qs = new QuerySentence();
-    qs.setUsername(username);
-    qs.setBusinessName(businessName);
-    qs.setQuery(query);
-    qs.setParseable(isParseable);
-    qs.setQuerySql(sql);
-    qs.setIntelqueryVer(INTELQUERYVERSION);
 
-    SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-    return engObj.addQuerySentence(qs);
-  }
-
-  public List<QuerySentence> getCorrelativeSentence(String query) throws Exception{
-    if(!"".equals(query)){
-      SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-      List<QuerySentence> sentences =  engObj.getCorrelativeSentence();
-      removeSameDomainSentence(sentences);
-      return sentences;
-    }else{
-      return Collections.emptyList();
-    }
-
-  }
-
-  private void removeSameDomainSentence(List<QuerySentence> sentences) throws Exception{
-		int startIdx = 0;
-		while(startIdx < sentences.size()){
-      QuerySentence first = sentences.get(startIdx);
-			for(int i=startIdx+1;i<sentences.size();i++){
-				QuerySentence second = sentences.get(i);
-				if(QueryParser.getInstance().hasSameDomainEntity(new BasicQuery(first.getQuery()), new BasicQuery(second.getQuery()))){
-					//add times in the same sentences
-					first.setCount(first.getCount()+second.getCount());
-					sentences.remove(second);
-					i--;
-				}
-			}
-			startIdx++;
-		}
-	}
 
   public String addQuerySentence(String username,
                                   String businessName,

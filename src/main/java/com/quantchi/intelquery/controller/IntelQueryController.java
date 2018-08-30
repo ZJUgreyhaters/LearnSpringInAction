@@ -220,6 +220,9 @@ public class IntelQueryController {
       //String descText = queryTree.getTextForUser();
       SqlFormatter formatter = new Builder()
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+              .selectRelated(true)
+              .selectKey(true)
+              .selectName(true)
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
 
