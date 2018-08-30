@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.authority.mapper.FuncDetailMapper">
+  <select id="selectFuncDetail" resultType="Map">
+    select
+    l_funcdetail ,
+    c_funcname,
+    c_isenable,
+    c_url
+    from tfuncdetail
+  </select>
+  <insert id="insertFuncDetail" parameterType="map"  useGeneratedKeys="true" keyProperty="l_funcdetail">
+  INSERT INTO tfuncdetail (c_funcname,c_url,c_isenable)
+  VALUES (#{c_funcname}, #{c_url}, #{c_isenable})
+  </insert>
+  <insert id="insertFuncDetailRela" parameterType="map">
+  INSERT INTO tauthfuncrela (l_authid,l_funcdetail)
+  VALUES (#{l_authid}, #{l_funcdetail} )
+  </insert>
+  <delete id="deleAuthFuncRela" parameterType="java.lang.Integer">
+    delete  from  tauthfuncrela where l_authid=#{authId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleFuncByAuthid" parameterType="java.lang.Integer">
+    delete  from  tfuncdetail where l_funcdetail in  (
+    select tauthfuncrela.l_funcdetail from tauthfuncrela where l_authid=#{authId,jdbcType=INTEGER}
+    )
+  </delete>
+
+  <delete id="deleAuthFuncRelaByFuncId" parameterType="java.lang.Integer">
+    delete  from  tauthfuncrela where l_funcdetail =#{funcId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleFuncByFuncId" parameterType="java.lang.Integer">
+    delete  from  tfuncdetail where l_funcdetail =#{funcId,jdbcType=INTEGER}
+  </delete>
+  <update id="modifyFuncDetail" parameterType="map">
+    update tfuncdetail set c_isenable=#{c_isenable},c_url=#{c_url},c_funcname=#{c_funcname}
+    where l_funcdetail=#{l_funcdetail}
+  </update>
+
+</mapper>

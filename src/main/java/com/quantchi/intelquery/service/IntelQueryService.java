@@ -1,6 +1,8 @@
 package com.quantchi.intelquery.service;
 
 import com.quantchi.intelquery.StepResult;
+import com.quantchi.intelquery.pojo.QuerySentence;
+
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import java.io.IOException;
 import java.util.List;
@@ -24,6 +26,14 @@ public interface IntelQueryService {
   Map<String, Object> candidatesMapping(StepResult result) throws IOException;
 
   List<Map<String, Object>> stepsMapping(StepResult result)throws IOException;
+
+  String addQuerySentence (String username,
+                           String businessName,
+                           String query,
+                           boolean isParseable,
+                           String sql) throws Exception;
+
+  List<QuerySentence> getCorrelativeSentence(String query) throws Exception;
 
   List<Object> queryInstanceMapping(List<Object> quickMacroQuery);
 

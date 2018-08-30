@@ -1,11 +1,15 @@
 package com.quantchi.intelquery.serviceImpl;
 
+import com.quantchi.common.AppProperties;
 import com.quantchi.common.HiveConnection;
 import com.quantchi.common.Paging;
+import com.quantchi.intelquery.QueryParser;
 import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.TokenizingResult;
 import com.quantchi.intelquery.mapper.IntelQueryMapper;
 import com.quantchi.intelquery.node.SemanticNode;
+import com.quantchi.intelquery.pojo.QuerySentence;
+import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.query.QueryWithNodes;
 import com.quantchi.intelquery.query.QueryWithTree;
@@ -36,6 +40,7 @@ import org.springframework.stereotype.Service;
 public class IntelQueryServiceImpl implements IntelQueryService {
 
   private static final String SEARCHTYPE = "solr";
+  private static final String INTELQUERYVERSION = AppProperties.get("intelquery.version");;
 
   private static final Logger logger = LoggerFactory.getLogger(ExecSqlApiService.class);
 
@@ -318,5 +323,47 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       }
     }
   }
+
+  public String addQuerySentence(String username,
+                                  String businessName,
+                                  String query,
+                                  boolean isParseable,
+                                  String sql) throws Exception{
+
+    QuerySentence qs = new QuerySentence();
+    qs.setUsername(username);
+    qs.setBusinessName(businessName);
+    qs.setQuery(query);
+    qs.setParseable(isParseable);
+    qs.setQuerySql(sql);
+    qs.setIntelqueryVer(INTELQUERYVERSION);
+
+    SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
+    return engObj.addQuerySentence(qs);
+  }
+
+  public List<QuerySentence> getCorrelativeSentence(String query) throws Exception{
+    SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
+    List<QuerySentence> sentences =  engObj.getCorrelativeSentence();
+		removeSameDomainSentence(sentences);
+    return sentences;
+  }
+
+  private void removeSameDomainSentence(List<QuerySentence> sentences) throws Exception{
+		int startIdx = 0;
+		while(startIdx < sentences.size()){
+      QuerySentence first = sentences.get(startIdx);
+			for(int i=startIdx+1;i<sentences.size();i++){
+				QuerySentence second = sentences.get(i);
+				if(QueryParser.getInstance().hasSameDomainEntity(new BasicQuery(first.getQuery()), new BasicQuery(second.getQuery()))){
+					//add times in the same sentences
+					first.setCount(first.getCount()+second.getCount());
+					sentences.remove(second);
+					i--;
+				}
+			}
+			startIdx++;
+		}
+	}
 
 }

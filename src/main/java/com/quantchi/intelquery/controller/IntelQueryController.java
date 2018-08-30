@@ -9,6 +9,7 @@ import com.quantchi.intelquery.SqlFormatter.Builder;
 import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.TokenizingResult;
 import com.quantchi.intelquery.date.formatter.NormalFormatter;
+import com.quantchi.intelquery.pojo.QuerySentence;
 import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.query.QueryWithNodes;
@@ -117,8 +118,8 @@ public class IntelQueryController {
   @ResponseBody
   Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
     try {
-
-      return Util.genRet(200, null, "", 0);
+      List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword);
+			return Util.genRet(200, sentences, "", 0);
     } catch (Exception e) {
       return Util.genRet(500, null, e.getMessage(), 0);
     }

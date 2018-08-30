@@ -1,6 +1,1292 @@
 [
   {
     "type": "post",
+    "url": "/api/addRole",
+    "title": "插入新角色",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/addRole"
+      }
+    ],
+    "name": "addRole",
+    "group": "AuthorityController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": true,
+            "field": "role",
+            "description": "<p>角色</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "role.c_isenable",
+            "description": "<p>是否有效</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "role.c_roledesc",
+            "description": "<p>角色描述</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "role.c_rolename",
+            "description": "<p>角色名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "role.l_roleid",
+            "description": "<p>角色id   因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "List",
+            "optional": true,
+            "field": "roleAuthRela",
+            "description": "<p>角色权限关系 可以装入多个</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "roleAuthRela.l_authid",
+            "description": "<p>权限ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "roleAuthRela.l_roleauthid",
+            "description": "<p>关系id  因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "roleAuthRela.l_roleid",
+            "description": "<p>角色ID 因为还未插入表 填0</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "{\"role\":{\"c_isenable\":\"0\",\"c_roledesc\":\"xxxx\",\"c_rolename\":\"xxxxxx\",\"l_roleid\":0},\n\"roleAuthRela\":[{\"l_authid\":1,\"l_roleauthid\":123,\"l_roleid\":789},{\"l_authid\":2,\"l_roleauthid\":1223,\"l_roleid\":789}]}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/addRoleAuth",
+    "title": "插入角色和权限关系",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/addRoleAuth"
+      }
+    ],
+    "name": "addRoleAuth",
+    "group": "AuthorityController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "List",
+            "optional": true,
+            "field": "authRoleRela",
+            "description": "<p>表数据权限明细 可以装入多个</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "authRoleRela.l_authid",
+            "description": "<p>权限ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "authRoleRela.l_roleauthid",
+            "description": "<p>关系id  因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "authRoleRela.l_roleid",
+            "description": "<p>角色ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "{ \"authRoleRela\":[{\"l_authid\":1,\"l_roleauthid\":123,\"l_roleid\":3},{\"l_authid\":2,\"l_roleauthid\":1223,\"l_roleid\":3}]}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/authorityRole",
+    "title": "查询所有角色",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/authorityRole"
+      }
+    ],
+    "name": "authorityRole",
+    "group": "AuthorityController",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据 指标信息列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.l_roleid",
+            "description": "<p>角色id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_rolename",
+            "description": "<p>角色名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_isenable",
+            "description": "<p>是否有效</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_roledesc",
+            "description": "<p>角色描述信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/deleAuth",
+    "title": "删除权限",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/deleAuth"
+      }
+    ],
+    "name": "deleAuth",
+    "group": "AuthorityController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authId",
+            "description": "<p>权限ID</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/deleRole",
+    "title": "删除角色",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/deleRole"
+      }
+    ],
+    "name": "deleRole",
+    "group": "AuthorityController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "roleId",
+            "description": "<p>角色ID</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/deleRoleAuth",
+    "title": "删除权限与角色关系",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/deleRoleAuth"
+      }
+    ],
+    "name": "deleRoleAuth",
+    "group": "AuthorityController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "List",
+            "optional": true,
+            "field": "authRoleRela",
+            "description": "<p>角色权限关系</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authRoleRela.l_authid",
+            "description": "<p>权限id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authRoleRela.l_roleauthid",
+            "description": "<p>角色权限关系</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authRoleRela.l_roleid",
+            "description": "<p>角色ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "{ \"authRoleRela\":[{\"l_authid\":1,\"l_roleauthid\":7,\"l_roleid\":3},{\"l_authid\":2,\"l_roleauthid\":8,\"l_roleid\":3}]}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/listRoleByRoleId",
+    "title": "根据id查询角色",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/listRoleByRoleId"
+      }
+    ],
+    "name": "listRoleByRoleId",
+    "group": "AuthorityController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "roleId",
+            "description": "<p>角色id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据 指标信息列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.l_roleid",
+            "description": "<p>角色id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_rolename",
+            "description": "<p>角色名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_isenable",
+            "description": "<p>是否有效</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_roledesc",
+            "description": "<p>角色描述信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_authname",
+            "description": "<p>权限名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_authtype",
+            "description": "<p>权限类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.l_roleauthid",
+            "description": "<p>权限与角色关系id</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/listRoleByRoleName",
+    "title": "根据name查询角色",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/listRoleByRoleName"
+      }
+    ],
+    "name": "listRoleByRoleName",
+    "group": "AuthorityController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "roleName",
+            "description": "<p>角色名称</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据 指标信息列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.l_roleid",
+            "description": "<p>角色id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_rolename",
+            "description": "<p>角色名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_isenable",
+            "description": "<p>是否有效</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_roledesc",
+            "description": "<p>角色描述信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_authname",
+            "description": "<p>权限名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_authtype",
+            "description": "<p>权限类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.l_roleauthid",
+            "description": "<p>权限与角色关系id</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/modifyAuth",
+    "title": "修改权限说明",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/modifyAuth"
+      }
+    ],
+    "name": "modifyAuth",
+    "group": "AuthorityController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_isenable",
+            "description": "<p>权限id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "ac_authname",
+            "description": "<p>角色权限关系</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "l_authid",
+            "description": "<p>角色ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_authtype",
+            "description": "<p>权限类型</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "{\"c_isenable\":\"0\",\"c_authname\":\"xxxx\",\"c_authtype\":\"1\",\"l_authid\":1}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/modifyRole",
+    "title": "修改角色名字",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/modifyRole"
+      }
+    ],
+    "name": "modifyRole",
+    "group": "AuthorityController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": true,
+            "field": "role",
+            "description": "<p>角色</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "role.c_isenable",
+            "description": "<p>权限名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "role.c_roledesc",
+            "description": "<p>是否生效</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "role.c_rolename",
+            "description": "<p>角色名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "role.l_roleid",
+            "description": "<p>角色ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:例子:",
+          "content": "{\"role\":{\"c_isenable\":\"0\",\"c_roledesc\":\"xxxx\",\"c_rolename\":\"xxxxxx\",\"l_roleid\":0},",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/selectAllAuth",
+    "title": "查询所有权限",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/selectAllAuth"
+      }
+    ],
+    "name": "selectAllAuth",
+    "group": "AuthorityController",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据 指标信息列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.l_roleid",
+            "description": "<p>角色id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_rolename",
+            "description": "<p>角色名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_isenable",
+            "description": "<p>是否有效</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_roledesc",
+            "description": "<p>角色描述信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_authname",
+            "description": "<p>权限名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.c_authtype",
+            "description": "<p>权限类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.l_roleauthid",
+            "description": "<p>权限与角色关系id</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
+    "url": "/api/addDataAuth",
+    "title": "添加新的数据权限",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/addDataAuth"
+      }
+    ],
+    "name": "addDataAuth",
+    "group": "AuthorityDetailController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": true,
+            "field": "authority",
+            "description": "<p>权限</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authority.c_authname",
+            "description": "<p>权限名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authority.c_isenable",
+            "description": "<p>是否生效</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authority.c_authtype",
+            "description": "<p>权限类型  0:功能权限  1:数据权限'</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "authority.l_authid",
+            "description": "<p>权限id   因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "List",
+            "optional": true,
+            "field": "dataTabDetail",
+            "description": "<p>表数据权限明细 可以装入多个</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "dataTabDetail.l_datatabledetailid",
+            "description": "<p>表权限ID    因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dataTabDetail.c_tablename",
+            "description": "<p>表名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dataTabDetail.c_isenable",
+            "description": "<p>是否有效</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "List",
+            "optional": true,
+            "field": "dataColDetail",
+            "description": "<p>表字段数据权限明细 可以装入多个</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "dataColDetail.l_columndetailid",
+            "description": "<p>表字段权限ID    因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dataColDetail.c_tablename",
+            "description": "<p>表名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dataColDetail.c_column",
+            "description": "<p>表字段名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dataColDetail.c_isenable",
+            "description": "<p>是否有效</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "List",
+            "optional": true,
+            "field": "dataLineDetail",
+            "description": "<p>行数据权限明细 可以装入多个</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "dataLineDetail.l_linedetailid",
+            "description": "<p>行数据权限ID    因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dataLineDetail.c_tablename",
+            "description": "<p>表名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dataLineDetail.c_column",
+            "description": "<p>表字段名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dataLineDetail.c_fiterdesc",
+            "description": "<p>过滤描述</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dataLineDetail.c_fiter",
+            "description": "<p>过滤条件</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dataLineDetail.c_isenable",
+            "description": "<p>是否有效</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "\n{\"authority\":{\"c_authname\":\"quantchix\",\"c_isenable\":\"1\",\"c_authtype\":\"0\",\"l_authid\":0},\n\"dataTabDetail\":[{\"l_datatabledetailid\":1,\"c_tablename\":\"tcustomerinfo\",\"c_isenable\":0},{\"l_datatabledetailid\":1,\"c_tablename\":\"taccoinfo\",\"c_isenable\":0}],\n\"dataColDetail\":[{\"l_columndetailid\":1,\"c_tablename\":\"tstock\",\"c_column\":\"c_stockcode\",\"c_isenable\":\"0\" }]}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
+    "groupTitle": "AuthorityDetailController"
+  },
+  {
+    "type": "post",
+    "url": "/api/addFuncAuth",
+    "title": "插入功能权限",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/addFuncAuth"
+      }
+    ],
+    "name": "addFuncAuth",
+    "group": "AuthorityDetailController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": true,
+            "field": "authority",
+            "description": "<p>权限</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authority.c_authname",
+            "description": "<p>权限名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authority.c_isenable",
+            "description": "<p>是否生效</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authority.c_authtype",
+            "description": "<p>权限类型  0:功能权限  1:数据权限'</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "authority.l_authid",
+            "description": "<p>权限id   因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": true,
+            "field": "funcDetail",
+            "description": "<p>功能权限明细</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "funcDetail.l_funcdetail",
+            "description": "<p>功能权限ID    因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "funcDetail.c_funcname",
+            "description": "<p>功能名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "funcDetail.c_url",
+            "description": "<p>功能路径</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "funcDetail.c_isenable",
+            "description": "<p>是否有效</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "\n{\"authority\":{\"c_authname\":\"alibaba\",\"c_isenable\":\"1\",\"c_authtype\":\"0\",\"l_authid\":0},\n\"funcDetail\":{\"l_funcdetail\":1,\"c_funcname\":\"alaifunc\",\"c_url\":\"127.0.0.1\",\"c_isenable\":0} }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
+    "groupTitle": "AuthorityDetailController"
+  },
+  {
+    "type": "post",
+    "url": "/api/deleAuthDetail",
+    "title": "删除数据明细权限",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/deleAuthDetail"
+      }
+    ],
+    "name": "deleAuthDetail",
+    "group": "AuthorityDetailController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "detailType",
+            "description": "<p>数据明细类型</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "detailDataId",
+            "description": "<p>要删除的明细Id</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "\ndetailDataId 传入明细权限的Id   ;  detailType： 0 行数据类型  ，1 字段类型 ，2 表类型\n例子{\"detailType\":2,\"detailDataId\":1}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
+    "groupTitle": "AuthorityDetailController"
+  },
+  {
+    "type": "post",
+    "url": "/api/modifyColumnDetail",
+    "title": "修改字段权限",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/modifyColumnDetail"
+      }
+    ],
+    "name": "modifyColumnDetail",
+    "group": "AuthorityDetailController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "l_columndetailid",
+            "description": "<p>表字段权限ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_tablename",
+            "description": "<p>表名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_column",
+            "description": "<p>表字段名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_isenable",
+            "description": "<p>是否有效</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "\n{\"l_columndetailid\":1,\"c_tablename\":\"dytable\",\"c_column\":\"cc_cc\",\"c_isenable\":0}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
+    "groupTitle": "AuthorityDetailController"
+  },
+  {
+    "type": "post",
+    "url": "/api/modifyFuncDetail",
+    "title": "修改功能权限",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/modifyFuncDetail"
+      }
+    ],
+    "name": "modifyFuncDetail",
+    "group": "AuthorityDetailController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "l_funcdetail",
+            "description": "<p>功能权限ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_funcname",
+            "description": "<p>功能名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_url",
+            "description": "<p>功能路径</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_isenable",
+            "description": "<p>是否有效</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "\n{\"l_funcdetail\":1,\"c_funcname\":\"alaifunc\",\"c_url\":\"127.0.0.1\",\"c_isenable\":0}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
+    "groupTitle": "AuthorityDetailController"
+  },
+  {
+    "type": "post",
+    "url": "/api/modifyLineDetail",
+    "title": "修改行数明细",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/modifyLineDetail"
+      }
+    ],
+    "name": "modifyLineDetail",
+    "group": "AuthorityDetailController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "l_linedetailid",
+            "description": "<p>行数据权限ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_tablename",
+            "description": "<p>表名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_column",
+            "description": "<p>表字段名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_fiterdesc",
+            "description": "<p>过滤描述</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_fiter",
+            "description": "<p>过滤条件</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_isenable",
+            "description": "<p>是否有效 例子 {&quot;l_linedetailid&quot;:1,&quot;c_tablename&quot;:&quot;tdcuqocallogfo&quot;,&quot;c_column&quot;:&quot;logs&quot;,&quot;c_fiterdesc&quot;:&quot;xxx&quot;,&quot;c_fiter&quot;:&quot;123123&quot;,&quot;c_isenable&quot;:0}</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
+    "groupTitle": "AuthorityDetailController"
+  },
+  {
+    "type": "post",
+    "url": "/api/modifyTableDetail",
+    "title": "修改表权限",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/modifyTableDetail"
+      }
+    ],
+    "name": "modifyTableDetail",
+    "group": "AuthorityDetailController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "l_datatabledetailid",
+            "description": "<p>表字段权限ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_tablename",
+            "description": "<p>表名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "c_isenable",
+            "description": "<p>是否有效</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "\n{\"l_datatabledetailid\":1,\"c_tablename\":\"tcustomerinfo\",\"c_isenable\":0}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
+    "groupTitle": "AuthorityDetailController"
+  },
+  {
+    "type": "post",
     "url": "/api/associateQuery",
     "title": "智能取数联想语句查询接口",
     "permission": [
@@ -21,10 +1307,38 @@
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "List",
+            "optional": false,
+            "field": "candidates",
+            "description": "<p>需要替換词集合</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "query",
-            "description": "<p>序列化的语句</p>"
+            "field": "candidates.begIndex",
+            "description": "<p>需要替換词的起始下标</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "candidates.serializeNode",
+            "description": "<p>需要替換词的序列化</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "candidates.endIndex",
+            "description": "<p>需要替換词的终止下标</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "queryWithNode",
+            "description": "<p>原始节点序列化</p>"
           }
         ]
       }
@@ -748,15 +2062,8 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "query",
+            "field": "q",
             "description": "<p>查询语句</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "querySerialize",
-            "description": "<p>序列化之后的查询语句</p>"
           }
         ]
       }
@@ -789,8 +2096,8 @@
       },
       "examples": [
         {
-          "title": "Success-Response:",
-          "content": "\"data\": [ { \"_version_\": 1602053511204306951,\n\"category\": \"融资融券>两融合同>合同主信息\", \"cn_name\": \"融资头寸\", \"db_field\": \"dmp_demo.dim_contract.fin_cashgroup_no\",\n\"definition\": \"融资头寸\", \"dept\": \"两融部门\", \"en_name\": \"fin_cashgroup_no\", \"hit_ratio\": 0.5, \"id\":\n\"348\", \"replace_origin\": \"融资\\\"\", \"replace_origin_seg\": \"融资\", \"seg_name\": \"融资 头寸\", \"type\":\n\"entity\", \"weight\": 0.65 } ]",
+          "title": "Success-Response: \"data\": [ { \"_version_\": 1602053511204306951,",
+          "content": "\"category\": \"融资融券>两融合同>合同主信息\", \"cn_name\": \"融资头寸\", \"db_field\": \"dmp_demo.dim_contract.fin_cashgroup_no\",\n\"definition\": \"融资头寸\", \"dept\": \"两融部门\", \"en_name\": \"fin_cashgroup_no\", \"hit_ratio\": 0.5, \"id\":\n\"348\", \"replace_origin\": \"融资\\\"\", \"replace_origin_seg\": \"融资\", \"seg_name\": \"融资 头寸\", \"type\":\n\"entity\", \"weight\": 0.65 } ]",
           "type": "json"
         }
       ]
