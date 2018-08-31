@@ -24,6 +24,8 @@ import com.quantchi.tianshu.common.JdbcPool;
 import com.quantchi.transport.service.ExecSqlApiService;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,7 +174,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   public List<Map<String, Object>> columnRelationMapping(TreeNode columnRelation,
       Map<String, Object> tabulate) {
 
-    columnRelationMappingExt(columnRelation);
+    columnRelationMappingExt(columnRelation,null,(List<Map<String,Object>>)tabulate.get("resultList"));
 
     List<TreeNode> children = columnRelation.getChildren();
     List<Map<String, Object>> listTop = new ArrayList<>();
@@ -235,18 +237,69 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
 
-  private Map<Object, Object> columnRelationMappingExt(TreeNode columnRelation){
+  private Map<Object, Object> columnRelationMappingExt(TreeNode columnRelation, List<TreeNode>  primeTreeNodes,List<Map<String,Object>> datas){
 
 		Map<Object, Object> ret = new HashMap<>();
+    //List<TreeNode> primeTreeNodes =
+    if(primeTreeNodes == null)
+      primeTreeNodes = columnRelation.getChildren().stream().filter(n->n.getColumnInfo().isPrime()).collect(Collectors.toList());
 		List<TreeNode> children = columnRelation.getChildren();
 		for (TreeNode treeNode : children) {
-			ColumnInfo columnInfo = treeNode.getColumnInfo();
-			if(treeNode.isRowToCol()){
+      if(primeTreeNodes.contains(treeNode))
+          continue;
 
-			}
+			ColumnInfo columnInfo = treeNode.getColumnInfo();
+      //普通列
+			if(treeNode.getChildren().isEmpty()){
+        System.out.print(getNormalColumn(treeNode,primeTreeNodes,datas));
+      }
+      //普通列带有孩子
+      else if(!treeNode.getChildren().isEmpty() && !treeNode.isRowToCol()){
+        System.out.print(getNormalColumnWithChildNode(treeNode,primeTreeNodes,datas));
+      }
 		}
     return ret;
 	}
+
+	private Map<Object,Object> getNormalColumn(TreeNode curTreeNode,List<TreeNode>  primeTreeNodes,  List<Map<String,Object>> datas){
+
+    Function<Map<String,Object>,Object> normalFunc = e->{
+      ArrayList<String> groupbyCol = new ArrayList<>();
+      primeTreeNodes.forEach(i -> groupbyCol.add(e.get(i.getColumnInfo().toString()).toString()));
+      return groupbyCol;
+    };
+
+    Map<Object,Object> ret = new HashMap<>();
+    Map<Object, List<Map<String,Object>>> result = datas.stream().collect(Collectors.groupingBy(normalFunc));
+    result.forEach((k,v)->ret.put(k,v.stream().collect(Collectors.toMap(e->curTreeNode.getColumnInfo().toString(), e->e.get(curTreeNode.getColumnInfo().toString())))));
+    return ret;
+  }
+
+  private Map<Object,Object> getNormalColumnWithChildNode(TreeNode curTreeNode,List<TreeNode>  primeTreeNodes,  List<Map<String,Object>> datas){
+
+    Function<Map<String,Object>,Object> normalFunc = e->{
+      ArrayList<String> groupbyCol = new ArrayList<>();
+      primeTreeNodes.forEach(i -> groupbyCol.add(e.get(i.getColumnInfo().toString()).toString()));
+      return groupbyCol;
+    };
+
+    List<String> childColumns = new ArrayList<>();
+    curTreeNode.getChildren().forEach(i ->childColumns.add(i.getColumnInfo().toString()) );
+
+    /*Function<Map<String,Object>,Object> filterFunc = e->{
+      e.entrySet().
+      ArrayList<String> groupbyCol = new ArrayList<>();
+      primeTreeNodes.forEach(i -> groupbyCol.add(e.get(i.getColumnInfo().toString()).toString()));
+      return groupbyCol;
+    };*/
+
+
+    Map<Object,Object> ret = new HashMap<>();
+    Map<Object, List<Map<String,Object>>> result = datas.stream().collect(Collectors.groupingBy(normalFunc));
+    result.forEach((k,v)->ret.put(k,v.stream().collect(Collectors.toMap(e->curTreeNode.getColumnInfo().toString(), e->e.get(curTreeNode.getColumnInfo().toString())))));
+    return ret;
+
+  }
 
   @Override
   public Map<String, Object> tabulateMapping(TreeNode columnRelation,
