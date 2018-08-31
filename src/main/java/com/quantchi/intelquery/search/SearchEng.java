@@ -33,6 +33,10 @@ public abstract class SearchEng {
     this.query = query;
   }
 
+  protected void init(String query){
+    this.query = query;
+  }
+
   public static SearchEng instanceOf(String query, String type) throws Exception {
     SearchEng obj = null;
     switch (type) {

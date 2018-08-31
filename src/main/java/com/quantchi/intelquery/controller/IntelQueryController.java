@@ -146,9 +146,12 @@ public class IntelQueryController {
    * @apiName basicQuery
    * @apiGroup IntelQueryController
    * @apiParam {String} query 查询语句
+   * @apiParam {String} businessName 业务名称
+   * @apiParam {String} businessID 业务名称
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    * @apiSuccess {List} [data] 返回推荐问句列表
+   * @apiSuccess {String} data.sentenceId 问句列表搜索库中的id,用于点赞
    * @apiSuccess {Map} [data.candidates] 返回联想问句
    * @apiSuccess {List} [data.candidates.queryNodes] 返回问句的分词集合
    * @apiSuccess {String} [data.candidates.queryNodes.node] 问句的分词
@@ -199,6 +202,7 @@ public class IntelQueryController {
     try {
       Map<String, Object> resultMap = new HashMap();
       String query = map.get("q").toString();
+      String businessName = map.get("businessName").toString();
       List<Object> metricsRet = intelQueryService.getMetricsRet(query);
       String total = String.valueOf(metricsRet.size());
       if (map.get("page_size") != null && map.get("page") != null) {
@@ -208,6 +212,7 @@ public class IntelQueryController {
       }
       resultMap.put("metrics", metricsRet);
       if (metricsRet != null && !metricsRet.isEmpty()) {
+        //intelQueryService.addQuerySentence("testUser",businessName,query,true,)
         return JsonResult.successJson(total, resultMap);
       }
       BasicQuery basicquery = new BasicQuery(query);
@@ -236,6 +241,11 @@ public class IntelQueryController {
       List<Map<String, Object>> listTop = intelQueryService.columnRelationMapping(columnRelation,tabulate);
 
       tabulate = intelQueryService.tabulateMapping(columnRelation,tabulate);
+
+      if(tabulate.size() > 0){
+        String id = intelQueryService.addQuerySentence("testUser",businessName,query,(stepsList.size()>0),sqlQuery.toSql());
+        resultMap.put("sentencesId",id);
+      }
 
       QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
       resultMap.put("tabulate", tabulate);
@@ -315,6 +325,8 @@ public class IntelQueryController {
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/associateQuery
    * @apiName associateQuery
    * @apiGroup IntelQueryController
+   * @apiParam {String} businessName 业务名称
+   * @apiParam {String} businessID 业务名称
    * @apiParam {List} candidates 需要替換词集合
    * @apiParam {String} candidates.begIndex 需要替換词的起始下标
    * @apiParam {String} candidates.serializeNode 需要替換词的序列化
@@ -323,6 +335,7 @@ public class IntelQueryController {
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    * @apiSuccess {List} [data] 返回推荐问句列表
+   * @apiSuccess {String} data.sentenceId 问句列表搜索库中的id,用于点赞
    * @apiSuccess {List} [data.steps] 返回数据结果
    * @apiSuccess {String} [data.steps.node] 数据
    * @apiSuccess {String} [data.steps.serializeNode] 序列化数据
@@ -345,6 +358,7 @@ public class IntelQueryController {
   public String associateQuery(@RequestBody Map<String, Object> map) {
     try {
       String queryWithNode = map.get("queryWithNode").toString();
+      String businessName = map.get("businessName").toString();
       QueryWithNodes queryWithNodes = SerializationUtils.fromSerializedString(queryWithNode);
       QueryNodes queryNodes = queryWithNodes.getNodes();
 
@@ -367,6 +381,15 @@ public class IntelQueryController {
       Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
       Map<String, Object> resultMap = new HashMap<>();
       resultMap.put("tabulate", tabulate);
+
+
+      List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
+      if(tabulate.size() > 0){
+        String query = queryNodes.getTextForUser();
+        String id = intelQueryService.addQuerySentence("testUser",businessName,query,(stepsList.size()>0),sqlQuery.toSql());
+        resultMap.put("sentencesId",id);
+      }
+
       return JsonResult.successJson(resultMap);
     } catch (Exception e) {
       e.printStackTrace();

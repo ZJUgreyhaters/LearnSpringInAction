@@ -17,6 +17,8 @@ public class QuerySentence {
 	private String businessName;
 	@Field("query")
 	private	String query;
+	@Field("querySeg")
+	private	String querySeg;
 	@Field("add_time")
 	private Date	datetime = new Date();
 	@Field("isParseable")
@@ -66,6 +68,14 @@ public class QuerySentence {
 
 	public void setQuery(String query) {
 		this.query = query;
+	}
+
+	public String getQuerySeg() {
+		return querySeg;
+	}
+
+	public void setQuerySeg(String querySeg) {
+		this.querySeg = querySeg;
 	}
 
 	public Boolean getParseable() {
