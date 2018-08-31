@@ -1,13 +1,8 @@
 package com.quantchi.authority.sqlparser;
 
-
 import com.alibaba.fastjson.JSON;
 import com.quantchi.sqlanalysis.v1.PermissionParser;
 import com.quantchi.sqlanalysis.model.permission.PermissionResult;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONArray;
-
-import java.util.*;
 
 /**
  * @ClassName: Parser
@@ -18,6 +13,7 @@ import java.util.*;
  **/
 
 public class Parser {
+
     public static void main(String[] args){
 
         String[] testSql = new String[10];

@@ -31,6 +31,12 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-all</artifactId>
+      <version>1.2.4</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.quantchi</groupId>
       <artifactId>sql-analysis</artifactId>
       <version>0.1.1-SNAPSHOT</version>
@@ -370,6 +376,11 @@
       <groupId>com.alibaba</groupId>
       <artifactId>druid</artifactId>
       <version>1.1.10</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
     </dependency>
   </dependencies>
 

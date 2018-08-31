@@ -1,0 +1,67 @@
+package com.quantchi.authority.shiro;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.config.IniSecurityManagerFactory;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.util.Factory;
+import org.junit.Test;
+
+import java.util.Arrays;
+
+/**
+ * @ClassName: authenticationTest
+ * @Description: TODO
+ * @Author: wbchen
+ * @Date: 2018/8/31 15:14
+ * @Version 1.0.0
+ **/
+
+public class authenticationTest {
+    @Test
+    public void testLogin(){
+        Factory<SecurityManager> securityManagerFactory = new IniSecurityManagerFactory("classpath:shiroLearn.ini");
+        SecurityManager securityManager = securityManagerFactory.getInstance();
+        SecurityUtils.setSecurityManager(securityManager);
+        org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("wbchen", "222");
+        try {
+            subject.login(usernamePasswordToken);
+        }catch (AuthenticationException ex){
+            //ex.printStackTrace();
+        }
+        System.out.println("是否通过验证：" + subject.isAuthenticated());
+
+        subject.logout();
+        System.out.println("用户退出" + subject.isAuthenticated());
+    }
+
+    @Test
+    public void testAuthorization(){
+        Factory<SecurityManager> securityManagerFactory = new IniSecurityManagerFactory("classpath:shiroPermission.ini");
+        SecurityManager securityManager = securityManagerFactory.getInstance();
+        SecurityUtils.setSecurityManager(securityManager);
+        org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("wbchen", "222");
+        try {
+            subject.login(usernamePasswordToken);
+        }catch (AuthenticationException ex){
+            //ex.printStackTrace();
+        }
+        System.out.println("用户通过登录认证：" + subject.isAuthenticated());
+
+        Boolean isPermittedOne = subject.isPermitted("user:create");
+        System.out.println("单个权限认证："+isPermittedOne);
+
+        Boolean isPermittedHome = subject.isPermitted("/home");
+        System.out.println("/home权限认证："+isPermittedOne);
+
+        Boolean isPermittedAll = subject.isPermittedAll("user:create", "user:update");
+        System.out.println("多个权限认证：" + isPermittedAll);
+
+        Boolean ishasRole = subject.hasRole("role1");
+        Boolean ishasRoleAll = subject.hasAllRoles(Arrays.asList("role1","role2"));
+        System.out.println("单个角色验证："+ishasRole+" | 多个角色验证"+ishasRoleAll);
+    }
+}
