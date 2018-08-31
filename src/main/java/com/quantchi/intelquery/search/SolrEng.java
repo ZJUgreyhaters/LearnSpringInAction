@@ -34,7 +34,7 @@ public class SolrEng extends SearchEng {
   private final String solrUrl = AppProperties.get("solr.url");
 
   private static final String SEARCHFILED = AppProperties.getWithDefault("searchField", "seg_name");
-  private static final String SEARCHDOCFILED = AppProperties.getWithDefault("searchDocField", "querySeg");
+  private static final String SEARCHDOCFILED = AppProperties.getWithDefault("searchDocField", "query");
 
   private static final String highlightField = AppProperties
       .getWithDefault("highlightField", "seg_name");
@@ -85,7 +85,6 @@ public class SolrEng extends SearchEng {
       QuerySentence solrRet = checkDocInSolr(qs.getQuery());
       //add doc into solr
       if(solrRet == null){
-        qs.setQuerySeg(String.join(" ",segment()));
         httpSolr.addBean(qs);
         httpSolr.commit();
         qsId = qs.getId();
@@ -115,16 +114,14 @@ public class SolrEng extends SearchEng {
 
   @Override
   public List<QuerySentence> getCorrelativeSentence() throws Exception{
-    String queryWithSeg = String.join(" ",segment());
-    QueryResponse qr = searchSolrWithoutSeg(queryWithSeg,solrCorSentenceParam,SEARCHDOCFILED);
+    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCorSentenceParam,SEARCHDOCFILED);
     return qr.getBeans(QuerySentence.class);
   }
 
   private QuerySentence checkDocInSolr(String queryStr) throws Exception {
     QuerySentence qs = null;
-    String queryWithSeg = String.join(" ",segment());
     SolrQuery query = new SolrQuery();
-    query.setQuery(SEARCHDOCFILED + ":\"" + queryWithSeg + "\"");
+    query.setQuery(SEARCHDOCFILED + ":\"" + queryStr + "\"");
     QueryResponse qr = httpSolr.query(query);
     if(qr.getResults().size() > 0){
       qs = qr.getBeans(QuerySentence.class).get(0);
