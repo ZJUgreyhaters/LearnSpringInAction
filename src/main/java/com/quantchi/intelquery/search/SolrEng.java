@@ -3,8 +3,6 @@ package com.quantchi.intelquery.search;
 import com.quantchi.common.AppProperties;
 import com.quantchi.intelquery.exception.QPException;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.*;
 
 import com.quantchi.intelquery.pojo.QuerySentence;
@@ -24,6 +22,8 @@ public class SolrEng extends SearchEng {
 
   private static final Logger logger = LoggerFactory.getLogger(SolrEng.class);
 
+  private static SolrEng instance = null;
+
   private final Map<String, String> solrCommParam = AppProperties.getPropertiesMap("solr.param");
   private final Map<String, String> solrQuickParam = AppProperties
       .getPropertiesMap("solr.instance");
@@ -34,7 +34,7 @@ public class SolrEng extends SearchEng {
   private final String solrUrl = AppProperties.get("solr.url");
 
   private static final String SEARCHFILED = AppProperties.getWithDefault("searchField", "seg_name");
-  private static final String CHECKDOCFILED = AppProperties.getWithDefault("checkDocField", "query");
+  private static final String SEARCHDOCFILED = AppProperties.getWithDefault("searchDocField", "query");
 
   private static final String highlightField = AppProperties
       .getWithDefault("highlightField", "seg_name");
@@ -47,11 +47,23 @@ public class SolrEng extends SearchEng {
 
   private HttpSolrClient httpSolr = null;
 
-  public SolrEng(String query, String type) {
+  private SolrEng(String query, String type) {
     super(query, type);
     httpSolr = new HttpSolrClient.Builder(solrUrl).build();
     httpSolr.setParser(new XMLResponseParser());
   }
+
+  public static SolrEng getInstance(String query, String type){
+    if (instance == null) {
+      instance = new SolrEng(query,type);
+    }else{
+      instance.init(query);
+    }
+
+    return instance;
+  }
+
+
 
   @Override
   public List<Object> getMetrics() throws Exception {
@@ -102,15 +114,14 @@ public class SolrEng extends SearchEng {
 
   @Override
   public List<QuerySentence> getCorrelativeSentence() throws Exception{
-    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCorSentenceParam,CHECKDOCFILED);
-    //return documentListToObjectList(qr.getResults());
+    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCorSentenceParam,SEARCHDOCFILED);
     return qr.getBeans(QuerySentence.class);
   }
 
   private QuerySentence checkDocInSolr(String queryStr) throws Exception {
     QuerySentence qs = null;
     SolrQuery query = new SolrQuery();
-    query.setQuery(CHECKDOCFILED + ":\"" + queryStr + "\"");
+    query.setQuery(SEARCHDOCFILED + ":\"" + queryStr + "\"");
     QueryResponse qr = httpSolr.query(query);
     if(qr.getResults().size() > 0){
       qs = qr.getBeans(QuerySentence.class).get(0);

@@ -28,8 +28,12 @@ public abstract class SearchEng {
     this.query = query;
   }
 
-  public SearchEng(String query, String type) {
+  protected SearchEng(String query, String type) {
     this.type = type;
+    this.query = query;
+  }
+
+  protected void init(String query){
     this.query = query;
   }
 
@@ -37,7 +41,7 @@ public abstract class SearchEng {
     SearchEng obj = null;
     switch (type) {
       case "solr":
-        obj = new SolrEng(query, type);
+        obj = SolrEng.getInstance(query, type);
         break;
       default:
         throw new Exception("not found type:" + type);

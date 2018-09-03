@@ -17,6 +17,16 @@ public class DSFieldInfoDB {
 
     private Integer isterm;
 
+    private String datasourceName;
+
+    public String getDatasourceName() {
+        return datasourceName;
+    }
+
+    public void setDatasourceName(String datasourceName) {
+        this.datasourceName = datasourceName;
+    }
+
     public Integer getId() {
         return id;
     }

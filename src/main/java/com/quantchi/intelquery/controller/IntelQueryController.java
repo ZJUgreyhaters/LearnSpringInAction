@@ -15,14 +15,20 @@ import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.query.QueryWithNodes;
 import com.quantchi.intelquery.query.QueryWithTree;
 import com.quantchi.intelquery.service.IntelQueryService;
+import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import com.quantchi.intelquery.sqlquery.SqlQuery;
 import com.quantchi.intelquery.utils.SerializationUtils;
+import com.quantchi.intelquery.utils.ComplexTable;
+
+import java.sql.ResultSet;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
+
+import com.quantchi.sqlanalysis.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,7 +125,21 @@ public class IntelQueryController {
   Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
     try {
       List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword);
-			return Util.genRet(200, sentences, "", 0);
+      return Util.genRet(200, sentences, "", 0);
+    } catch (Exception e) {
+      return Util.genRet(500, null, e.getMessage(), 0);
+    }
+  }
+
+  @RequestMapping(value = "/getRelatedQuery", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public
+  @ResponseBody
+  Map<String, Object> testAddRelatedQuery(@RequestParam(value = "keyword") String keyword) {
+    try {
+      String retId = intelQueryService
+          .addQuerySentence("客户1", "两融业务", keyword, false, "select * from a;");
+      return Util.genRet(200, retId, "", 0);
     } catch (Exception e) {
       return Util.genRet(500, null, e.getMessage(), 0);
     }
@@ -133,9 +153,12 @@ public class IntelQueryController {
    * @apiName basicQuery
    * @apiGroup IntelQueryController
    * @apiParam {String} query 查询语句
+   * @apiParam {String} businessName 业务名称
+   * @apiParam {String} businessID 业务名称
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    * @apiSuccess {List} [data] 返回推荐问句列表
+   * @apiSuccess {String} data.sentenceId 问句列表搜索库中的id,用于点赞
    * @apiSuccess {Map} [data.candidates] 返回联想问句
    * @apiSuccess {List} [data.candidates.queryNodes] 返回问句的分词集合
    * @apiSuccess {String} [data.candidates.queryNodes.node] 问句的分词
@@ -186,15 +209,22 @@ public class IntelQueryController {
     try {
       Map<String, Object> resultMap = new HashMap();
       String query = map.get("q").toString();
+      String businessName = map.get("businessName").toString();
       List<Object> metricsRet = intelQueryService.getMetricsRet(query);
       String total = String.valueOf(metricsRet.size());
+      int page = 1;
+      int page_size = 20;
       if (map.get("page_size") != null && map.get("page") != null) {
+        page = Integer.parseInt(map.get("page").toString());
+        page_size =Integer.parseInt(map.get("page_size").toString());
+
         metricsRet = Paging
             .pagingPlugObject(metricsRet, Integer.parseInt(map.get("page_size").toString()),
                 Integer.parseInt(map.get("page").toString()));
       }
       resultMap.put("metrics", metricsRet);
       if (metricsRet != null && !metricsRet.isEmpty()) {
+        //intelQueryService.addQuerySentence("testUser",businessName,query,true,)
         return JsonResult.successJson(total, resultMap);
       }
       BasicQuery basicquery = new BasicQuery(query);
@@ -207,26 +237,34 @@ public class IntelQueryController {
       //String descText = queryTree.getTextForUser();
       SqlFormatter formatter = new Builder()
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+          .selectRelated(true)
+          .selectKey(true)
+          .selectName(true)
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
 
-      /*Entry<Set<Integer>, Set<Integer>> relationInfo = sqlQuery.getColumnRelation(); // 获取列之间的（一对多）关系，(0, 1) -> (3, 4) 保存列的下标
-      ColumnInfo columnInfo = sqlQuery.getColumnInfo().get(0); // 获取每一列的信息
-      Optional<String> physicalField = columnInfo.getPhysicalField(); // 该列相关的物理字段
-      columnInfo.isPrime(); // 是否是基础列
-      columnInfo.isDomainField(); // 是否是domain的列
-      columnInfo.isKey(); // 是否是某张表的Key*/
-
-      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
-
-      //List<Optional<String>> selectedFields = queryTree.getSqlQuery().getSelectedFields();
-
+      ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql(), map);
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
+      TreeNode columnRelation = sqlQuery.getColumnRelation();
+      Map<String,Object> complexDataAndHeader = intelQueryService.getComplexData(tabulate,columnRelation,page,page_size);
+
+      List<Object> complexData = Paging.pagingPlugObject(((Map<List<String>,Object>)complexDataAndHeader.get("data")).entrySet().stream().collect(Collectors.toList()), page_size,page);
+
+
+      if (stepsList.size() > 0) {
+        String id = intelQueryService
+            .addQuerySentence("testUser", businessName, query, (stepsList.size() > 0),
+                sqlQuery.toSql());
+        resultMap.put("sentencesId", id);
+      }
+
       QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
-      resultMap.put("tabulate", tabulate);
+      resultMap.put("tabulate", complexData);
+      resultMap.put("columnRelation", complexDataAndHeader.get("header"));
       resultMap.put("steps", stepsList);
       resultMap.put("queryWithNodes", SerializationUtils.toSerializedString(queryWithNodes));
       resultMap.put("candidates", candidates);
+
       return JsonResult.successJson(resultMap);
     } catch (Exception e) {
       e.printStackTrace();
@@ -243,18 +281,28 @@ public class IntelQueryController {
    * @apiName likenum
    * @apiGroup IntelQueryController
    * @apiParam {String} id 点赞语句id
-   * @apiParam {String} type 是否点赞(1:点赞，2:不点赞)
+   * @apiParam {String} dislikeNums 否定数
+   * @apiParam {String} query 点赞语句
+   * @apiParam {String} likeNums 点赞数
+   * @apiParam {String} username 用户名
+   * @apiParam {String} businessName 业务类型
+   * @apiParam {String} querySql 查询的sql
+   * @apiParam {String} intelqueryVer
+   * @apiParam {String} feedback
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    */
   @ResponseBody
   @RequestMapping(value = "/likenum", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String likenum(@RequestBody Map<String, Object> map) {
+  public String likenum(@RequestBody QuerySentence querySentence) {
     try {
-      return "";
+      intelQueryService.likenum(querySentence);
+      return JsonResult.successJson();
     } catch (Exception e) {
-      return "";
+      e.printStackTrace();
+      logger.info("add solr error", e);
+      return JsonResult.errorJson("add solr error");
     }
   }
 
@@ -265,16 +313,30 @@ public class IntelQueryController {
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/download
    * @apiName download
    * @apiGroup IntelQueryController
-   * @apiParam {String} query 查询语句
+   * @apiParam {String} queryWithNodes 查询语句的序列化
    */
   @ResponseBody
   @RequestMapping(value = "/download", method = {
       RequestMethod.GET}, produces = "application/json;charset=UTF-8")
-  public String download(HttpServletResponse response, String query) {
+  public String download(HttpServletResponse response, String queryWithNodes, String page,
+      String page_size) {
     try {
-      return "";
+      Map<String, Object> map = new HashMap<>();
+      map.put("page", page);
+      map.put("page_size", page_size);
+      QueryWithNodes queryWithNode = SerializationUtils.fromSerializedString(queryWithNodes);
+      StepResult result = QueryParser.getInstance().parse(queryWithNode);
+      QueryWithTree queryTree = result.getFinalTree();
+      SqlFormatter formatter = new Builder()
+          .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+          .build();
+      SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
+      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
+      TreeNode columnRelation = sqlQuery.getColumnRelation();
+
+      return JsonResult.successJson("下载成功！");
     } catch (Exception e) {
-      return "";
+      return JsonResult.successJson("下载失败！");
     }
   }
 
@@ -285,6 +347,8 @@ public class IntelQueryController {
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/associateQuery
    * @apiName associateQuery
    * @apiGroup IntelQueryController
+   * @apiParam {String} businessName 业务名称
+   * @apiParam {String} businessID 业务名称
    * @apiParam {List} candidates 需要替換词集合
    * @apiParam {String} candidates.begIndex 需要替換词的起始下标
    * @apiParam {String} candidates.serializeNode 需要替換词的序列化
@@ -293,6 +357,7 @@ public class IntelQueryController {
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    * @apiSuccess {List} [data] 返回推荐问句列表
+   * @apiSuccess {String} data.sentenceId 问句列表搜索库中的id,用于点赞
    * @apiSuccess {List} [data.steps] 返回数据结果
    * @apiSuccess {String} [data.steps.node] 数据
    * @apiSuccess {String} [data.steps.serializeNode] 序列化数据
@@ -315,6 +380,9 @@ public class IntelQueryController {
   public String associateQuery(@RequestBody Map<String, Object> map) {
     try {
       String queryWithNode = map.get("queryWithNode").toString();
+      String businessName = map.get("businessName").toString();
+      int page = 1;
+      int page_size = 20;
       QueryWithNodes queryWithNodes = SerializationUtils.fromSerializedString(queryWithNode);
       QueryNodes queryNodes = queryWithNodes.getNodes();
 
@@ -334,13 +402,30 @@ public class IntelQueryController {
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
-      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
-      Map<String,Object> resultMap = new HashMap<>();
-      resultMap.put("tabulate",tabulate);
+      //Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
+      ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql(), map);
+      Map<String, Object> resultMap = new HashMap<>();
+      //resultMap.put("tabulate", tabulate);
+
+      List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
+
+      TreeNode columnRelation = sqlQuery.getColumnRelation();
+      Map<String,Object> complexDataAndHeader = intelQueryService.getComplexData(tabulate,columnRelation,page,page_size);
+      List<Object> complexData = Paging.pagingPlugObject(((Map<List<String>,Object>)complexDataAndHeader.get("data")).entrySet().stream().collect(Collectors.toList()), page_size,page);
+      resultMap.put("tabulate", complexData);
+      resultMap.put("columnRelation", complexDataAndHeader.get("header"));
+      if (stepsList.size() > 0) {
+        String query = queryNodes.getTextForUser();
+        String id = intelQueryService
+            .addQuerySentence("testUser", businessName, query, (stepsList.size() > 0),
+                sqlQuery.toSql());
+        resultMap.put("sentencesId", id);
+      }
+
       return JsonResult.successJson(resultMap);
     } catch (Exception e) {
       e.printStackTrace();
-      logger.info("associateQuery error",e);
+      logger.info("associateQuery error", e);
       return JsonResult.errorJson("associateQuery error");
     }
   }
@@ -364,12 +449,20 @@ public class IntelQueryController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String stepsQuery(@RequestBody Map<String, Object> map) {
     try {
-      /*QueryNodes queryNodes = queryWithNodes.getNodes();
-      queryNodes.replace(begIndex, endIndex, candidate); // 调用 replace API 将原来的Nodes替换成用户选择的候选项
-      StepResult result = QueryParser.getInstance().parse(queryWithNodes);*/
-      return "";
+      QueryWithTree queryTree = SerializationUtils
+          .fromSerializedString(map.get("querySerialize").toString());
+      SqlFormatter formatter = new Builder()
+          .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+          .build();
+      SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
+      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
+      Map<String, Object> resultMap = new HashMap<>();
+      resultMap.put("tabulate", tabulate);
+      return JsonResult.successJson(resultMap);
     } catch (Exception e) {
-      return "";
+      e.printStackTrace();
+      logger.info("stepsQuery error", e);
+      return JsonResult.errorJson("stepsQuery error");
     }
   }
 
@@ -398,6 +491,7 @@ public class IntelQueryController {
   String queryInstance(@RequestParam("q") String q) {
     try {
       List<Object> quickMacroQuery = intelQueryService.getQuickMacroQuery(q);
+      quickMacroQuery = intelQueryService.queryInstanceMapping(quickMacroQuery);
       return JsonResult.successJson(quickMacroQuery);
     } catch (Exception e) {
       e.printStackTrace();

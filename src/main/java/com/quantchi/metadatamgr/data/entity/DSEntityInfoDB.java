@@ -15,6 +15,26 @@ public class DSEntityInfoDB {
 
     private String nonMainTable;
 
+    private String mainEntityFieldName;
+
+    private String datasourceName;
+
+    public String getDatasourceName() {
+        return datasourceName;
+    }
+
+    public void setDatasourceName(String datasourceName) {
+        this.datasourceName = datasourceName;
+    }
+
+    public String getMainEntityFieldName() {
+        return mainEntityFieldName;
+    }
+
+    public void setMainEntityFieldName(String mainEntityFieldName) {
+        this.mainEntityFieldName = mainEntityFieldName;
+    }
+
     public Integer getId() {
         return id;
     }

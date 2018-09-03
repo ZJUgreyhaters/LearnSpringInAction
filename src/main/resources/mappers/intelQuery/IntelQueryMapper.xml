@@ -17,4 +17,16 @@
     from recommend_questions
     where business_id =#{businessTypeId}
   </select>
+
+  <select id="selectCategory" resultType="Map">
+   select
+   c.entity_id AS entityId,
+   c.entity_name AS  entityName,
+   c.entity_category AS entityCategory
+   FROM md_physical_field_info a
+   LEFT JOIN term_field_relation b ON a.entity_id = b.field_id
+   LEFT JOIN term_main_info c ON c.entity_id = b.entity_id
+   where a.physical_field =#{physical_field} and a.physical_table = #{physical_table}
+         and a.physical_db =#{physical_db}
+  </select>
 </mapper>

@@ -17,6 +17,8 @@ public class QuerySentence {
 	private String businessName;
 	@Field("query")
 	private	String query;
+	/*@Field("querySeg")
+	private	String querySeg;*/
 	@Field("add_time")
 	private Date	datetime = new Date();
 	@Field("isParseable")
@@ -27,6 +29,28 @@ public class QuerySentence {
 	private String feedback = "";
 	@Field("intelqueryVer")
 	private String intelqueryVer;
+
+	@Field("likeNums")
+	private Long likeNums;
+
+	@Field("dislikeNums")
+	private Long dislikeNums;
+
+	public Long getLikeNums() {
+		return likeNums;
+	}
+
+	public void setLikeNums(Long likeNums) {
+		this.likeNums = likeNums;
+	}
+
+	public Long getDislikeNums() {
+		return dislikeNums;
+	}
+
+	public void setDislikeNums(Long dislikeNums) {
+		this.dislikeNums = dislikeNums;
+	}
 
 	public String getId() {
 		return id;
@@ -67,6 +91,14 @@ public class QuerySentence {
 	public void setQuery(String query) {
 		this.query = query;
 	}
+
+	/*public String getQuerySeg() {
+		return querySeg;
+	}
+
+	public void setQuerySeg(String querySeg) {
+		this.querySeg = querySeg;
+	}*/
 
 	public Boolean getParseable() {
 		return isParseable;
