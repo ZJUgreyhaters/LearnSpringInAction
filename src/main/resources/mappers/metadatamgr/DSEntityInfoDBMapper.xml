@@ -9,6 +9,7 @@
     <result column="main_table" property="mainTable" jdbcType="VARCHAR" />
     <result column="entity_field" property="entityField" jdbcType="VARCHAR" />
     <result column="non_main_table" property="nonMainTable" jdbcType="VARCHAR" />
+    <result column="main_entity_field_name" property="mainEntityFieldName" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -69,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, entity_name, business, datasource_id, main_table, entity_field, non_main_table
+    id, entity_name, business, datasource_id, main_table, entity_field, non_main_table,main_entity_field_name
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDBExample" >
     select
@@ -105,10 +106,10 @@
   <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDB" >
     insert into ds_entity_info (id, entity_name, business, 
       datasource_id, main_table, entity_field, 
-      non_main_table)
+      non_main_table,main_entity_field_name)
     values (#{id,jdbcType=INTEGER}, #{entityName,jdbcType=VARCHAR}, #{business,jdbcType=VARCHAR}, 
       #{datasourceId,jdbcType=VARCHAR}, #{mainTable,jdbcType=VARCHAR}, #{entityField,jdbcType=VARCHAR}, 
-      #{nonMainTable,jdbcType=VARCHAR})
+      #{nonMainTable,jdbcType=VARCHAR},#{mainEntityFieldName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDB" >
     insert into ds_entity_info
@@ -221,6 +222,9 @@
       </if>
       <if test="nonMainTable != null" >
         non_main_table = #{nonMainTable,jdbcType=VARCHAR},
+      </if>
+      <if test="mainEntityFieldName != null" >
+        main_entity_field_name = #{mainEntityFieldName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

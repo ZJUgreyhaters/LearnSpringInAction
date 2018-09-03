@@ -24,6 +24,26 @@ public class DSTableInfoDB {
 
   private Integer foreignNums;
 
+  private String datasourceName;
+
+  private String timeFiled;
+
+  public String getTimeFiled() {
+    return timeFiled;
+  }
+
+  public void setTimeFiled(String timeFiled) {
+    this.timeFiled = timeFiled;
+  }
+
+  public String getDatasourceName() {
+    return datasourceName;
+  }
+
+  public void setDatasourceName(String datasourceName) {
+    this.datasourceName = datasourceName;
+  }
+
   public Integer getNums() {
     return nums;
   }

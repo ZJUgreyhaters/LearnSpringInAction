@@ -13,6 +13,8 @@
     <result column="nums" property="nums" jdbcType="VARCHAR"/>
     <result column="foreignNums" property="foreignNums" jdbcType="INTEGER"/>
     <result column="table_type" property="tableType" jdbcType="VARCHAR"/>
+    <result column="datasource_name" property="datasourceName" jdbcType="VARCHAR"/>
+    <result column="time_filed" property="timeFiled" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -258,19 +260,22 @@
   <!--新加内容-->
   <select id="search" resultMap="BaseResultMap">
     SELECT
-    id,
-    table_english_name,
-    IFNULL(table_chinese_name,"") AS table_chinese_name ,
-    IFNULL(datasource_id,"") AS datasource_id,
-    IFNULL(primary_key,"") AS primary_key,
+    a.id,
+    a.table_english_name,
+    IFNULL(a.table_chinese_name,"") AS table_chinese_name ,
+    IFNULL(a.datasource_id,"") AS datasource_id,
+    IFNULL(a.primary_key,"") AS primary_key,
     STATUS,
-    IFNULL(nums,"") AS nums,
-    IFNULL(foreignNums,"") AS foreignNums
+    IFNULL(a.time_filed,"") AS time_filed,
+    IFNULL(b.nums,"") AS nums,
+    IFNULL(c.foreignNums,"") AS foreignNums,
+    IFNULL(m.ds_name,"") AS datasource_name
     FROM ds_table_info a LEFT JOIN ( SELECT COUNT(*) nums,table_id FROM ds_field_info GROUP
     BY table_id) b ON
     a.id=b.table_id LEFT JOIN (SELECT COUNT(*) foreignNums,table_id AS cid ,isprimary
     FROM ds_field_releation WHERE isprimary = '0' GROUP BY table_id )c ON
     a.id=c.cid
+    LEFT JOIN ds_meta_info m ON m.id = a.datasource_id
     <where>
       <if test="datasourceId !=null and datasourceId.toString().length()>0">AND datasource_id
         = #{datasourceId}
@@ -300,6 +305,9 @@
       </if>
       <if test="status !=null and status.toString().length()>0">
         status = #{status},
+      </if>
+      <if test="timeFiled !=null and timeFiled.toString().length()>0">
+        time_filed = #{timeFiled}
       </if>
     </set>
     WHERE id = #{id}

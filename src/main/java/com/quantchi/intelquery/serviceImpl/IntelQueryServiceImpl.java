@@ -23,10 +23,13 @@ import com.quantchi.termInfo.mapper.StandInfoMapper;
 import com.quantchi.tianshu.common.JdbcPool;
 import com.quantchi.transport.service.ExecSqlApiService;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +43,8 @@ import org.springframework.stereotype.Service;
 public class IntelQueryServiceImpl implements IntelQueryService {
 
   private static final String SEARCHTYPE = "solr";
-  private static final String INTELQUERYVERSION = AppProperties.get("intelquery.version");;
+  private static final String INTELQUERYVERSION = AppProperties.get("intelquery.version");
+  ;
 
   private static final Logger logger = LoggerFactory.getLogger(ExecSqlApiService.class);
 
@@ -53,6 +57,9 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
   @Autowired
   private StandInfoMapper standInfoMapper;
+
+  @Autowired
+  private HttpSolrClient httpSolr;
 
   @Override
   public List<Map<String, Object>> getBusiCate() {
@@ -174,7 +181,8 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   public List<Map<String, Object>> columnRelationMapping(TreeNode columnRelation,
       Map<String, Object> tabulate) {
 
-    columnRelationMappingExt(columnRelation,null,(List<Map<String,Object>>)tabulate.get("resultList"));
+    columnRelationMappingExt(columnRelation, null,
+        (List<Map<String, Object>>) tabulate.get("resultList"));
 
     List<TreeNode> children = columnRelation.getChildren();
     List<Map<String, Object>> listTop = new ArrayList<>();
@@ -237,54 +245,63 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
 
-  private Map<Object, Object> columnRelationMappingExt(TreeNode columnRelation, List<TreeNode>  primeTreeNodes,List<Map<String,Object>> datas){
+  private Map<Object, Object> columnRelationMappingExt(TreeNode columnRelation,
+      List<TreeNode> primeTreeNodes, List<Map<String, Object>> datas) {
 
-		Map<Object, Object> ret = new HashMap<>();
+    Map<Object, Object> ret = new HashMap<>();
     //List<TreeNode> primeTreeNodes =
-    if(primeTreeNodes == null)
-      primeTreeNodes = columnRelation.getChildren().stream().filter(n->n.getColumnInfo().isPrime()).collect(Collectors.toList());
-		List<TreeNode> children = columnRelation.getChildren();
-		for (TreeNode treeNode : children) {
-      if(primeTreeNodes.contains(treeNode))
-          continue;
+    if (primeTreeNodes == null) {
+      primeTreeNodes = columnRelation.getChildren().stream()
+          .filter(n -> n.getColumnInfo().isPrime()).collect(Collectors.toList());
+    }
+    List<TreeNode> children = columnRelation.getChildren();
+    for (TreeNode treeNode : children) {
+      if (primeTreeNodes.contains(treeNode)) {
+        continue;
+      }
 
-			ColumnInfo columnInfo = treeNode.getColumnInfo();
+      ColumnInfo columnInfo = treeNode.getColumnInfo();
       //普通列
-			if(treeNode.getChildren().isEmpty()){
-        System.out.print(getNormalColumn(treeNode,primeTreeNodes,datas));
+      if (treeNode.getChildren().isEmpty()) {
+        System.out.print(getNormalColumn(treeNode, primeTreeNodes, datas));
       }
       //普通列带有孩子
-      else if(!treeNode.getChildren().isEmpty() && !treeNode.isRowToCol()){
-        System.out.print(getNormalColumnWithChildNode(treeNode,primeTreeNodes,datas));
+      else if (!treeNode.getChildren().isEmpty() && !treeNode.isRowToCol()) {
+        System.out.print(getNormalColumnWithChildNode(treeNode, primeTreeNodes, datas));
       }
-		}
+    }
     return ret;
-	}
+  }
 
-	private Map<Object,Object> getNormalColumn(TreeNode curTreeNode,List<TreeNode>  primeTreeNodes,  List<Map<String,Object>> datas){
+  private Map<Object, Object> getNormalColumn(TreeNode curTreeNode, List<TreeNode> primeTreeNodes,
+      List<Map<String, Object>> datas) {
 
-    Function<Map<String,Object>,Object> normalFunc = e->{
+    Function<Map<String, Object>, Object> normalFunc = e -> {
       ArrayList<String> groupbyCol = new ArrayList<>();
       primeTreeNodes.forEach(i -> groupbyCol.add(e.get(i.getColumnInfo().toString()).toString()));
       return groupbyCol;
     };
 
-    Map<Object,Object> ret = new HashMap<>();
-    Map<Object, List<Map<String,Object>>> result = datas.stream().collect(Collectors.groupingBy(normalFunc));
-    result.forEach((k,v)->ret.put(k,v.stream().collect(Collectors.toMap(e->curTreeNode.getColumnInfo().toString(), e->e.get(curTreeNode.getColumnInfo().toString())))));
+    Map<Object, Object> ret = new HashMap<>();
+    Map<Object, List<Map<String, Object>>> result = datas.stream()
+        .collect(Collectors.groupingBy(normalFunc));
+    result.forEach((k, v) -> ret.put(k, v.stream().collect(Collectors
+        .toMap(e -> curTreeNode.getColumnInfo().toString(),
+            e -> e.get(curTreeNode.getColumnInfo().toString())))));
     return ret;
   }
 
-  private Map<Object,Object> getNormalColumnWithChildNode(TreeNode curTreeNode,List<TreeNode>  primeTreeNodes,  List<Map<String,Object>> datas){
+  private Map<Object, Object> getNormalColumnWithChildNode(TreeNode curTreeNode,
+      List<TreeNode> primeTreeNodes, List<Map<String, Object>> datas) {
 
-    Function<Map<String,Object>,Object> normalFunc = e->{
+    Function<Map<String, Object>, Object> normalFunc = e -> {
       ArrayList<String> groupbyCol = new ArrayList<>();
       primeTreeNodes.forEach(i -> groupbyCol.add(e.get(i.getColumnInfo().toString()).toString()));
       return groupbyCol;
     };
 
     List<String> childColumns = new ArrayList<>();
-    curTreeNode.getChildren().forEach(i ->childColumns.add(i.getColumnInfo().toString()) );
+    curTreeNode.getChildren().forEach(i -> childColumns.add(i.getColumnInfo().toString()));
 
     /*Function<Map<String,Object>,Object> filterFunc = e->{
       e.entrySet().
@@ -293,10 +310,12 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       return groupbyCol;
     };*/
 
-
-    Map<Object,Object> ret = new HashMap<>();
-    Map<Object, List<Map<String,Object>>> result = datas.stream().collect(Collectors.groupingBy(normalFunc));
-    result.forEach((k,v)->ret.put(k,v.stream().collect(Collectors.toMap(e->curTreeNode.getColumnInfo().toString(), e->e.get(curTreeNode.getColumnInfo().toString())))));
+    Map<Object, Object> ret = new HashMap<>();
+    Map<Object, List<Map<String, Object>>> result = datas.stream()
+        .collect(Collectors.groupingBy(normalFunc));
+    result.forEach((k, v) -> ret.put(k, v.stream().collect(Collectors
+        .toMap(e -> curTreeNode.getColumnInfo().toString(),
+            e -> e.get(curTreeNode.getColumnInfo().toString())))));
     return ret;
 
   }
@@ -316,7 +335,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
     List<Map<String, Object>> resultList = (List<Map<String, Object>>) tabulate.get("resultList");
     List<Object> listMap = new ArrayList<>();
-    if(!primeList.isEmpty()){
+    if (!primeList.isEmpty()) {
       for (Map<String, Object> tabulateMap : resultList) {
         Object alias = primeList.get(0);
         Object obj = tabulateMap.get(alias);
@@ -326,8 +345,13 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       }
     }
 
-
     return null;
+  }
+
+  @Override
+  public String likenum(QuerySentence querySentence) throws Exception {
+    SearchEng engObj = SearchEng.instanceOf(querySentence.getQuery(), SEARCHTYPE);
+    return engObj.addQuerySentence(querySentence);
   }
 
   List<String> mapping(String info, Map<String, Object> tabulate) {
@@ -370,36 +394,34 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     List<String> domainList = new ArrayList<>();
     List<String> rowTocolList = new ArrayList<>();
     getclassify(domainList, rowTocolList, columnRelation);
-    map.put("domainList",domainList);
-    map.put("rowTocolList",rowTocolList);
+    map.put("domainList", domainList);
+    map.put("rowTocolList", rowTocolList);
     return map;
   }
 
   void getclassify(List<String> domainList, List<String> rowTocolList,
-      TreeNode columnRelation){
+      TreeNode columnRelation) {
     List<TreeNode> children = columnRelation.getChildren();
     for (TreeNode treeNode : children) {
       ColumnInfo columnInfo = treeNode.getColumnInfo();
-      if(columnInfo.isDomainField()){
+      if (columnInfo.isDomainField()) {
         domainList.add(columnInfo.getAlias());
       }
-      if(treeNode.isRowToCol()){
+      if (treeNode.isRowToCol()) {
         rowTocolList.add(columnInfo.getAlias());
       }
-      if(treeNode.getChildren()!=null && !treeNode.getChildren().isEmpty()){
+      if (treeNode.getChildren() != null && !treeNode.getChildren().isEmpty()) {
         getclassify(domainList, rowTocolList, treeNode);
       }
     }
   }
 
 
-
-
   public String addQuerySentence(String username,
-                                  String businessName,
-                                  String query,
-                                  boolean isParseable,
-                                  String sql) throws Exception{
+      String businessName,
+      String query,
+      boolean isParseable,
+      String sql) throws Exception {
 
     QuerySentence qs = new QuerySentence();
     qs.setUsername(username);
@@ -413,28 +435,29 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     return engObj.addQuerySentence(qs);
   }
 
-  public List<QuerySentence> getCorrelativeSentence(String query) throws Exception{
+  public List<QuerySentence> getCorrelativeSentence(String query) throws Exception {
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-    List<QuerySentence> sentences =  engObj.getCorrelativeSentence();
-		removeSameDomainSentence(sentences);
+    List<QuerySentence> sentences = engObj.getCorrelativeSentence();
+    removeSameDomainSentence(sentences);
     return sentences;
   }
 
-  private void removeSameDomainSentence(List<QuerySentence> sentences) throws Exception{
-		int startIdx = 0;
-		while(startIdx < sentences.size()){
+  private void removeSameDomainSentence(List<QuerySentence> sentences) throws Exception {
+    int startIdx = 0;
+    while (startIdx < sentences.size()) {
       QuerySentence first = sentences.get(startIdx);
-			for(int i=startIdx+1;i<sentences.size();i++){
-				QuerySentence second = sentences.get(i);
-				if(QueryParser.getInstance().hasSameDomainEntity(new BasicQuery(first.getQuery()), new BasicQuery(second.getQuery()))){
-					//add times in the same sentences
-					first.setCount(first.getCount()+second.getCount());
-					sentences.remove(second);
-					i--;
-				}
-			}
-			startIdx++;
-		}
-	}
+      for (int i = startIdx + 1; i < sentences.size(); i++) {
+        QuerySentence second = sentences.get(i);
+        if (QueryParser.getInstance().hasSameDomainEntity(new BasicQuery(first.getQuery()),
+            new BasicQuery(second.getQuery()))) {
+          //add times in the same sentences
+          first.setCount(first.getCount() + second.getCount());
+          sentences.remove(second);
+          i--;
+        }
+      }
+      startIdx++;
+    }
+  }
 
 }

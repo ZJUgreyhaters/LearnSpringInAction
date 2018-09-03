@@ -119,19 +119,20 @@ public class IntelQueryController {
   Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
     try {
       List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword);
-			return Util.genRet(200, sentences, "", 0);
+      return Util.genRet(200, sentences, "", 0);
     } catch (Exception e) {
       return Util.genRet(500, null, e.getMessage(), 0);
     }
   }
 
   @RequestMapping(value = "/getRelatedQuery", method = {
-          RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public
   @ResponseBody
   Map<String, Object> testAddRelatedQuery(@RequestParam(value = "keyword") String keyword) {
     try {
-      String retId = intelQueryService.addQuerySentence("客户1","两融业务",keyword,false,"select * from a;");
+      String retId = intelQueryService
+          .addQuerySentence("客户1", "两融业务", keyword, false, "select * from a;");
       return Util.genRet(200, retId, "", 0);
     } catch (Exception e) {
       return Util.genRet(500, null, e.getMessage(), 0);
@@ -225,9 +226,9 @@ public class IntelQueryController {
       //String descText = queryTree.getTextForUser();
       SqlFormatter formatter = new Builder()
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
-              .selectRelated(true)
-              .selectKey(true)
-              .selectName(true)
+          .selectRelated(true)
+          .selectKey(true)
+          .selectName(true)
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
 
@@ -238,13 +239,16 @@ public class IntelQueryController {
 
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
       TreeNode columnRelation = sqlQuery.getColumnRelation();
-      List<Map<String, Object>> listTop = intelQueryService.columnRelationMapping(columnRelation,tabulate);
+      List<Map<String, Object>> listTop = intelQueryService
+          .columnRelationMapping(columnRelation, tabulate);
 
-      tabulate = intelQueryService.tabulateMapping(columnRelation,tabulate);
+      tabulate = intelQueryService.tabulateMapping(columnRelation, tabulate);
 
-      if(tabulate.size() > 0){
-        String id = intelQueryService.addQuerySentence("testUser",businessName,query,(stepsList.size()>0),sqlQuery.toSql());
-        resultMap.put("sentencesId",id);
+      if (tabulate.size() > 0) {
+        String id = intelQueryService
+            .addQuerySentence("testUser", businessName, query, (stepsList.size() > 0),
+                sqlQuery.toSql());
+        resultMap.put("sentencesId", id);
       }
 
       QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
@@ -270,18 +274,28 @@ public class IntelQueryController {
    * @apiName likenum
    * @apiGroup IntelQueryController
    * @apiParam {String} id 点赞语句id
-   * @apiParam {String} type 是否点赞(1:点赞，2:不点赞)
+   * @apiParam {String} dislikeNums 否定数
+   * @apiParam {String} query 点赞语句
+   * @apiParam {String} likeNums 点赞数
+   * @apiParam {String} username 用户名
+   * @apiParam {String} businessName 业务类型
+   * @apiParam {String} querySql 查询的sql
+   * @apiParam {String} intelqueryVer
+   * @apiParam {String} feedback
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
    * @apiSuccess {String} msg  成功或者错误信息
    */
   @ResponseBody
   @RequestMapping(value = "/likenum", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String likenum(@RequestBody Map<String, Object> map) {
+  public String likenum(@RequestBody QuerySentence querySentence) {
     try {
-      return "";
+      intelQueryService.likenum(querySentence);
+      return JsonResult.successJson();
     } catch (Exception e) {
-      return "";
+      e.printStackTrace();
+      logger.info("add solr error", e);
+      return JsonResult.errorJson("add solr error");
     }
   }
 
@@ -297,11 +311,12 @@ public class IntelQueryController {
   @ResponseBody
   @RequestMapping(value = "/download", method = {
       RequestMethod.GET}, produces = "application/json;charset=UTF-8")
-  public String download(HttpServletResponse response,String queryWithNodes, String page, String page_size) {
+  public String download(HttpServletResponse response, String queryWithNodes, String page,
+      String page_size) {
     try {
-      Map<String,Object> map = new HashMap<>();
-      map.put("page",page);
-      map.put("page_size",page_size);
+      Map<String, Object> map = new HashMap<>();
+      map.put("page", page);
+      map.put("page_size", page_size);
       QueryWithNodes queryWithNode = SerializationUtils.fromSerializedString(queryWithNodes);
       StepResult result = QueryParser.getInstance().parse(queryWithNode);
       QueryWithTree queryTree = result.getFinalTree();
@@ -382,12 +397,13 @@ public class IntelQueryController {
       Map<String, Object> resultMap = new HashMap<>();
       resultMap.put("tabulate", tabulate);
 
-
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
-      if(tabulate.size() > 0){
+      if (tabulate.size() > 0) {
         String query = queryNodes.getTextForUser();
-        String id = intelQueryService.addQuerySentence("testUser",businessName,query,(stepsList.size()>0),sqlQuery.toSql());
-        resultMap.put("sentencesId",id);
+        String id = intelQueryService
+            .addQuerySentence("testUser", businessName, query, (stepsList.size() > 0),
+                sqlQuery.toSql());
+        resultMap.put("sentencesId", id);
       }
 
       return JsonResult.successJson(resultMap);
