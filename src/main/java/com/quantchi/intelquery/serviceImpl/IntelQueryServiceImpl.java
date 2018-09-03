@@ -18,15 +18,16 @@ import com.quantchi.intelquery.service.IntelQueryService;
 import com.quantchi.intelquery.sqlquery.ColumnInfo;
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import com.quantchi.intelquery.tokenize.search.Replacement;
+import com.quantchi.intelquery.utils.ComplexTable;
+import com.quantchi.intelquery.utils.ComplexTable.LeafHeader;
 import com.quantchi.intelquery.utils.SerializationUtils;
 import com.quantchi.termInfo.mapper.StandInfoMapper;
 import com.quantchi.tianshu.common.JdbcPool;
 import com.quantchi.transport.service.ExecSqlApiService;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -100,6 +101,10 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     return resultMap;
   }
 
+  public ResultSet execsqlWithResultSet(String sql, Map<String, Object> map) throws Exception {
+    return HiveConnection.selectHiveWithRs(sql, jdbcPool);
+  }
+
   public Map<String, Object> candidatesMapping(StepResult result) throws IOException {
     Map<String, Object> candidates = new HashMap<>();
     QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
@@ -150,6 +155,41 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       stepsList.add(stepsMap);
     }
     return stepsList;
+  }
+
+
+  //public Map<List<String>,Object> getComplexData(ResultSet rs,TreeNode columnRelation,int page,int pagesize) throws SQLException{
+  public Map<String,Object> getComplexData(ResultSet rs,TreeNode columnRelation,int page,int pagesize) throws SQLException{
+    Map<String,Object> ret = new HashMap<>();
+    Map<List<String>,Object> retData = new HashMap<>();
+    List<Object> retHeader = new ArrayList<>();
+    ComplexTable ct = new ComplexTable(rs,columnRelation);
+    LeafHeader lh = ct.getPrimeHeader();
+    retHeader.add(lh.getTitles());
+    List<Map<String, Object>> normHeaders = ct.getNormHeaders();
+		lh.getData().forEach((i) -> retData.put(i.getRowData(),null));
+		for(Map<String, Object> normalColumn : normHeaders){
+			for(String col:normalColumn.keySet()){
+        int index = normalColumn.keySet().stream().collect(Collectors.toList()).indexOf(col);
+        String colKey = col;
+        Map<String,Object> colHeader = new HashMap<>();
+        colHeader.put(col,((LeafHeader)normalColumn.get(col)).getTitles());
+        retHeader.add(colHeader);
+        for(ComplexTable.Block nb:((LeafHeader)normalColumn.get(col)).getData()){
+          Map<String,Object> colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
+          if(colMap == null)
+            colMap = new HashMap<>();
+          else
+            colKey = col+"_"+index;
+          colMap.put(colKey,((ComplexTable.NormBlock)nb).getRowData());
+          retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);
+        }
+			}
+
+		}
+    ret.put("data",retData);
+    ret.put("header",retHeader);
+		return ret;
   }
 
   @Override

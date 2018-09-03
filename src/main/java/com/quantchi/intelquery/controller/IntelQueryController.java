@@ -18,11 +18,17 @@ import com.quantchi.intelquery.service.IntelQueryService;
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import com.quantchi.intelquery.sqlquery.SqlQuery;
 import com.quantchi.intelquery.utils.SerializationUtils;
+import com.quantchi.intelquery.utils.ComplexTable;
+
+import java.sql.ResultSet;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
+
+import com.quantchi.sqlanalysis.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -206,7 +212,12 @@ public class IntelQueryController {
       String businessName = map.get("businessName").toString();
       List<Object> metricsRet = intelQueryService.getMetricsRet(query);
       String total = String.valueOf(metricsRet.size());
+      int page = 1;
+      int page_size = 20;
       if (map.get("page_size") != null && map.get("page") != null) {
+        page = Integer.parseInt(map.get("page").toString());
+        page_size =Integer.parseInt(map.get("page_size").toString());
+
         metricsRet = Paging
             .pagingPlugObject(metricsRet, Integer.parseInt(map.get("page_size").toString()),
                 Integer.parseInt(map.get("page").toString()));
@@ -232,19 +243,15 @@ public class IntelQueryController {
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
 
-      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
-
-      // List<Optional<String>> selectedFields = queryTree.getSqlQuery().getSelectedFields();
-      //List<Optional<String>> selectedFields = queryTree.getSqlQuery().getSelectedFields();
-
+      ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql(), map);
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
       TreeNode columnRelation = sqlQuery.getColumnRelation();
-      List<Map<String, Object>> listTop = intelQueryService
-          .columnRelationMapping(columnRelation, tabulate);
+      Map<String,Object> complexDataAndHeader = intelQueryService.getComplexData(tabulate,columnRelation,page,page_size);
 
-      tabulate = intelQueryService.tabulateMapping(columnRelation, tabulate);
+      List<Object> complexData = Paging.pagingPlugObject(((Map<List<String>,Object>)complexDataAndHeader.get("data")).entrySet().stream().collect(Collectors.toList()), page_size,page);
 
-      if (tabulate.size() > 0) {
+
+      if (stepsList.size() > 0) {
         String id = intelQueryService
             .addQuerySentence("testUser", businessName, query, (stepsList.size() > 0),
                 sqlQuery.toSql());
@@ -252,8 +259,8 @@ public class IntelQueryController {
       }
 
       QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
-      resultMap.put("tabulate", tabulate);
-      resultMap.put("columnRelation", listTop);
+      resultMap.put("tabulate", complexData);
+      resultMap.put("columnRelation", complexDataAndHeader.get("header"));
       resultMap.put("steps", stepsList);
       resultMap.put("queryWithNodes", SerializationUtils.toSerializedString(queryWithNodes));
       resultMap.put("candidates", candidates);
@@ -374,6 +381,8 @@ public class IntelQueryController {
     try {
       String queryWithNode = map.get("queryWithNode").toString();
       String businessName = map.get("businessName").toString();
+      int page = 1;
+      int page_size = 20;
       QueryWithNodes queryWithNodes = SerializationUtils.fromSerializedString(queryWithNode);
       QueryNodes queryNodes = queryWithNodes.getNodes();
 
@@ -393,12 +402,19 @@ public class IntelQueryController {
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
-      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
+      //Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
+      ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql(), map);
       Map<String, Object> resultMap = new HashMap<>();
-      resultMap.put("tabulate", tabulate);
+      //resultMap.put("tabulate", tabulate);
 
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
-      if (tabulate.size() > 0) {
+
+      TreeNode columnRelation = sqlQuery.getColumnRelation();
+      Map<String,Object> complexDataAndHeader = intelQueryService.getComplexData(tabulate,columnRelation,page,page_size);
+      List<Object> complexData = Paging.pagingPlugObject(((Map<List<String>,Object>)complexDataAndHeader.get("data")).entrySet().stream().collect(Collectors.toList()), page_size,page);
+      resultMap.put("tabulate", complexData);
+      resultMap.put("columnRelation", complexDataAndHeader.get("header"));
+      if (stepsList.size() > 0) {
         String query = queryNodes.getTextForUser();
         String id = intelQueryService
             .addQuerySentence("testUser", businessName, query, (stepsList.size() > 0),

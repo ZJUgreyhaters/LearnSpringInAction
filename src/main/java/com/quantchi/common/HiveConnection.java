@@ -62,6 +62,20 @@ public class HiveConnection {
     }
   }
 
+  public static ResultSet selectHiveWithRs(String sql, JdbcPool jdbcPool) {
+		/*Connection conn = null;
+		PreparedStatement pstmt = null;
+  	ResultSet rs = null;*/
+  	try (Connection conn = jdbcPool.getConnection()){
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+      return rs;
+    } catch (SQLException e) {
+      LOGGER.info("sql error", e);
+      return null;
+    }
+  }
+
   public static int elseHive(String sql, JdbcPool jdbcPool) {
     int rs;
     try (Connection conn = jdbcPool.getConnection();
