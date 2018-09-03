@@ -74,4 +74,15 @@ public interface AuthorityService {
    * 修改权限描述
    */
    void modifyAuth(Map<String, Object> map);
+   /**modify date:20180823
+  * author :cjl
+  * 多条件查询权限
+  */
+   String getAuthByFilter(Map<String, Object> map);
+    /**modify date:20180823
+     * author :cjl
+     * 多条件查询角色
+     */
+    String getRoleByFilter(Map<String, Object> map);
+
 }

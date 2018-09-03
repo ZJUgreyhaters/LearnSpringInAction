@@ -22,4 +22,9 @@ public interface AuthorityMapper {
     void deleAuth(Integer authId);
 
     void updateAuth(Map<String, Object> map);
+
+    List<Map<String, Object>> getAuthByFilter(Map<String, Object> map);
+
+    List<Map<String, Object>> getAuthByAuthId(Integer authid);
+
 }

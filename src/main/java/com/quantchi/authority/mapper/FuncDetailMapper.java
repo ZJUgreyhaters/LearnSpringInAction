@@ -13,13 +13,16 @@ public interface FuncDetailMapper {
 
     void deleAuthFuncRela(Integer authId);
 
-    void deleFuncByAuthid(Integer authId);
-
     void deleAuthFuncRelaByFuncId(Integer funcId);
 
     void deleFuncByFuncId(Integer funcId);
 
     void modifyFuncDetail(Map<String, Object> map);
+
+    List<Map<String, Object>> getFuncDetailRelaByAuthId(Integer authId);
+
+    List<Map<String, Object>> getFuncDetailByAuth(Integer authId);
+
 
 
 }

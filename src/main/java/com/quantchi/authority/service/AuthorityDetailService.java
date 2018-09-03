@@ -60,7 +60,7 @@ public interface AuthorityDetailService {
      * author :cjl
      * 删除权限
      */
-    void deleAuthByAuth(String authId);
+    void deleAuthByAuth(Integer authId);
     /**modify date:20180823
      * author :cjl
      * 删除行权限明细
@@ -103,7 +103,8 @@ public interface AuthorityDetailService {
      */
     void modifyFuncDetail(Map<String, Object> map);
 
-
+   /*查询权限的明细*/
+    String getAuthdetail(Map<String, Object> map);
 
 
 }

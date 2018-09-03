@@ -8,6 +8,9 @@ import com.quantchi.common.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -93,8 +96,14 @@ public class AuthorityDetailServiceImpl implements  AuthorityDetailService {
 
         authorityMapper.insertAuth(authMap);
 
+        String dataType = (String)authMap.get("l_datatype");
+        String c_authtype = (String)authMap.get("c_authtype");
+
+        if (c_authtype.equals("1")  ){
+
+            if (dataType.equals("3") ){
         //插入行数据过滤以及与权限的关系
-        List<Ttablelinedetail> dataLineDetails=(List)map.get("dataLineDetail");
+        List<Ttablelinedetail> dataLineDetails=(List)map.get("authDetail");
         if (dataLineDetails != null  ){
         String ataLineDetailObj = JSONObject.toJSONString(dataLineDetails);
         dataLineDetails=JSONObject.parseArray(ataLineDetailObj, Ttablelinedetail.class);
@@ -105,31 +114,35 @@ public class AuthorityDetailServiceImpl implements  AuthorityDetailService {
             dataLineDetailMapper.insertLineDetail(ttablelinedetailMap);
 
             Tauthlinerela tauthlinerela = new Tauthlinerela();
-            tauthlinerela.setL_Authid(Long.parseLong(authMap.get(new String("l_authid")).toString()));
-            tauthlinerela.setL_Linedetailid(Long.parseLong(ttablelinedetailMap.get(new String("l_linedetailid")).toString()));
+            tauthlinerela.setL_Authid(Long.parseLong(authMap.get( "l_authid").toString()));
+            tauthlinerela.setL_Linedetailid(Long.parseLong(ttablelinedetailMap.get( "l_linedetailid").toString()));
             Map<String, Object> authLineRelaMap =  oMapper.convertValue(tauthlinerela, Map.class);
             dataLineDetailMapper.insertLineDetailRela(authLineRelaMap);
         }
         }
-        //插入字段过滤以及权限关系
-        List<Tdatacolumndetail> dataColDetails=(List)map.get("dataColDetail");
-        if ( dataColDetails != null ) {
-            String dataColDetailObj = JSONObject.toJSONString(dataColDetails);
-            dataColDetails = JSONObject.parseArray(dataColDetailObj, Tdatacolumndetail.class);
+        }
+        if (dataType.equals("2")) {
+            //插入字段过滤以及权限关系
+            List<Tdatacolumndetail> dataColDetails = (List) map.get("authDetail");
+            if (dataColDetails != null) {
+                String dataColDetailObj = JSONObject.toJSONString(dataColDetails);
+                dataColDetails = JSONObject.parseArray(dataColDetailObj, Tdatacolumndetail.class);
 
-            for (Tdatacolumndetail tdatacolumndetail : dataColDetails) {
-                Map<String, Object> tdatacolumndetailMap = oMapper.convertValue(tdatacolumndetail, Map.class);
-                tabColumnDetailMapper.insertTabColDetail(tdatacolumndetailMap);
+                for (Tdatacolumndetail tdatacolumndetail : dataColDetails) {
+                    Map<String, Object> tdatacolumndetailMap = oMapper.convertValue(tdatacolumndetail, Map.class);
+                    tabColumnDetailMapper.insertTabColDetail(tdatacolumndetailMap);
 
-                Tauthcolrela tauthcolrela = new Tauthcolrela();
-                tauthcolrela.setL_Authid(Long.parseLong(authMap.get(new String("l_authid")).toString()));
-                tauthcolrela.setL_Columndetailid(Long.parseLong(tdatacolumndetailMap.get(new String("l_columndetailid")).toString()));
-                Map<String, Object> authColRelaMap = oMapper.convertValue(tauthcolrela, Map.class);
-                tabColumnDetailMapper.insertColDetailRela(authColRelaMap);
+                    Tauthcolrela tauthcolrela = new Tauthcolrela();
+                    tauthcolrela.setL_Authid(Long.parseLong(authMap.get( "l_authid").toString()));
+                    tauthcolrela.setL_Columndetailid(Long.parseLong(tdatacolumndetailMap.get( "l_columndetailid").toString()));
+                    Map<String, Object> authColRelaMap = oMapper.convertValue(tauthcolrela, Map.class);
+                    tabColumnDetailMapper.insertColDetailRela(authColRelaMap);
+                }
             }
         }
+        if (dataType.equals("1")) {
         //插入表过滤以及权限关系
-        List<Tdatatabledetail> dataTabDetails=(List)map.get("dataTabDetail");
+        List<Tdatatabledetail> dataTabDetails=(List)map.get("authDetail");
         if ( dataTabDetails != null ) {
             String dataTabDetailObj = JSONObject.toJSONString(dataTabDetails);
             dataTabDetails = JSONObject.parseArray(dataTabDetailObj, Tdatatabledetail.class);
@@ -139,11 +152,26 @@ public class AuthorityDetailServiceImpl implements  AuthorityDetailService {
                 tableDetailMapper.insertTableDetail(tdatatabledetailMap);
 
                 Tauthtablerela tauthtablerela = new Tauthtablerela();
-                tauthtablerela.setL_Authid(Long.parseLong(authMap.get(new String("l_authid")).toString()));
-                tauthtablerela.setL_Datatabledetailid(Long.parseLong(tdatatabledetailMap.get(new String("l_datatabledetailid")).toString()));
+                tauthtablerela.setL_Authid(Long.parseLong(authMap.get("l_authid").toString()));
+                tauthtablerela.setL_Datatabledetailid(Long.parseLong(tdatatabledetailMap.get( "l_datatabledetailid").toString()));
                 Map<String, Object> authColRelaMap = oMapper.convertValue(tauthtablerela, Map.class);
                 tableDetailMapper.insertTableDetailRela(authColRelaMap);
             }
+         }
+        }
+        }
+        if (c_authtype.equals("0") ){
+
+          List<Map<String, Object>> funcDetailMaps=(List<Map<String, Object>>)map.get("authDetail");
+          Map<String, Object> funcDetailMap   =  funcDetailMaps.get(funcDetailMaps.size()-1);
+          funcDetailMapper.insertFuncDetail (funcDetailMap);
+
+          Tauthfuncrela tauthfuncrela = new Tauthfuncrela();
+          tauthfuncrela.setL_Authid(Long.parseLong(authMap.get( "l_authid").toString()));
+          tauthfuncrela.setL_Funcdetail(Long.parseLong(funcDetailMap.get( "l_funcdetail").toString()));
+          Map<String, Object> authColRelaMap =  oMapper.convertValue(tauthfuncrela, Map.class);
+          funcDetailMapper.insertFuncDetailRela(authColRelaMap);
+
         }
     }
 
@@ -156,31 +184,44 @@ public class AuthorityDetailServiceImpl implements  AuthorityDetailService {
         funcDetailMapper.insertFuncDetail (funcDetailMap);
 
         Tauthfuncrela tauthfuncrela = new Tauthfuncrela();
-        tauthfuncrela.setL_Authid(Long.parseLong(authMap.get(new String("l_authid")).toString()));
-        tauthfuncrela.setL_Funcdetail(Long.parseLong(funcDetailMap.get(new String("l_funcdetail")).toString()));
+        tauthfuncrela.setL_Authid(Long.parseLong(authMap.get( "l_authid").toString()));
+        tauthfuncrela.setL_Funcdetail(Long.parseLong(funcDetailMap.get("l_funcdetail").toString()));
         Map<String, Object> authColRelaMap =  oMapper.convertValue(tauthfuncrela, Map.class);
         funcDetailMapper.insertFuncDetailRela(authColRelaMap);
 
     }
    @Override
-   public void deleAuthByAuth(String authId){
-        Integer authIdInt = Integer.parseInt(authId);
+   public void deleAuthByAuth(Integer authId){
+        Integer authIdInt =authId;
+        List<Map<String,Object>> relaMaps;
 
+        relaMaps= dataLineDetailMapper.selectLineDetRelaByAuthId(authIdInt);
         dataLineDetailMapper.deleAuthLineRela(authIdInt);
+        for (Map<String,Object> relamap:relaMaps ){
+            Integer lineId = (Integer)relamap.get("l_linedetailid");
+            dataLineDetailMapper.deleLineByLineId(lineId);
+        }
 
-        dataLineDetailMapper.deleLineByAuthid(authIdInt);
-
+        relaMaps=tabColumnDetailMapper.getTabColDetailRelaByAuthId(authIdInt);
         tabColumnDetailMapper.deleAuthColRela(authIdInt);
+        for (Map<String,Object> relamap:relaMaps ){
+           Integer lineId = (Integer)relamap.get("l_columndetailid");
+           tabColumnDetailMapper.deleColByColId(lineId);
+        }
 
-        tabColumnDetailMapper.deleColByAuthid(authIdInt);
-
+        relaMaps=tableDetailMapper.getTableDetailRelaByAuthId(authIdInt);
         tableDetailMapper.deleAuthTabRela(authIdInt);
+        for (Map<String,Object> relamap:relaMaps ){
+           Integer lineId = (Integer)relamap.get("l_datatabledetailid");
+           tableDetailMapper.deleTabByTabId(lineId);
+        }
 
-        tableDetailMapper.deleTabByAuthid(authIdInt);
-
+        relaMaps = funcDetailMapper.getFuncDetailRelaByAuthId(authIdInt);
         funcDetailMapper.deleAuthFuncRela(authIdInt);
-
-        funcDetailMapper.deleFuncByAuthid(authIdInt);
+        for (Map<String,Object> relamap:relaMaps ){
+           Integer lineId = (Integer)relamap.get("l_funcdetail");
+           funcDetailMapper.deleFuncByFuncId(lineId);
+        }
 
         authorityMapper.deleRoleRelaByAuthId(authIdInt);
 
@@ -235,5 +276,37 @@ public class AuthorityDetailServiceImpl implements  AuthorityDetailService {
 
         funcDetailMapper.modifyFuncDetail(map);
     }
+    @Override
+    public   String getAuthdetail(Map<String, Object> map){
+         Integer authId= (Integer) map.get("l_authid");
+         List<Map<String,Object>> authroitys =  authorityMapper.getAuthByAuthId(authId);
+        Map<String,Object>authroity = authroitys.get(authroitys.size()-1);
+         Map<String,Object> authDetail =new HashMap<String, Object>();
+         authDetail.put("authiorty" , authroity);
 
+         List<Map<String,Object>> details= new ArrayList<Map<String,Object>>()  ;
+
+         String dataType= (String) map.get("l_datatype");
+         String authType= (String) map.get("c_authtype");
+
+         if(authType.equals("0")){
+
+             details = funcDetailMapper.getFuncDetailByAuth(authId) ;
+         }
+         if(authType.equals("1")){
+            if (dataType.equals("1")){
+                details =tableDetailMapper.getTableDetailByAuthId(authId);
+
+            }
+             if (dataType.equals("2")){
+                 details =tabColumnDetailMapper.getTabColDetailByAuthId(authId);
+
+             }
+             if (dataType.equals("3")){
+                 details =dataLineDetailMapper.selectLineDetByAuthId(authId);
+             }
+          }
+        authDetail.put("authDetail",details);
+        return JsonResult.successJson(authDetail);
+    }
 }

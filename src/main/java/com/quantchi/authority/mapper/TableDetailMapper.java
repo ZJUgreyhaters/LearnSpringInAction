@@ -12,13 +12,14 @@ public interface TableDetailMapper {
 
     void deleAuthTabRela(Integer authId);
 
-    void deleTabByAuthid(Integer authId);
-
     void deleAuthTabRelaByTabId(Integer tabId);
 
     void deleTabByTabId(Integer tabId);
 
     void modifyTableDetail(Map<String, Object> map);
 
+    List<Map<String, Object>> getTableDetailRelaByAuthId(Integer authId);
+
+    List<Map<String, Object>> getTableDetailByAuthId(Integer authId);
 
 }

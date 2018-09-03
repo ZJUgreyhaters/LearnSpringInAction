@@ -20,4 +20,6 @@ public interface AuthorityRoleMapper {
     void deleUserRole(Integer roleId);
 
     void updateRole(Map<String, Object> map);
+
+    List<Map<String, Object>>  getRoleByFilter(Map<String, Object> map);
 }
