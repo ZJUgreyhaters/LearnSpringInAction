@@ -14,6 +14,8 @@ import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.query.QueryWithNodes;
 import com.quantchi.intelquery.query.QueryWithTree;
+import com.quantchi.intelquery.search.SearchEng;
+import com.quantchi.intelquery.search.SolrEng;
 import com.quantchi.intelquery.service.IntelQueryService;
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import com.quantchi.intelquery.sqlquery.SqlQuery;

@@ -14,6 +14,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,8 @@ public class SolrEng extends SearchEng {
 
   private final String solrUrl = AppProperties.get("solr.url");
 
-  private static final String SEARCHFILED = AppProperties.getWithDefault("searchField", "seg_name");
+  //private static final String SEARCHFILED = AppProperties.getWithDefault("searchField", "seg_name");
+  private static final String SEARCHFILED = AppProperties.getWithDefault("searchField", "cn_name");
   private static final String SEARCHDOCFILED = AppProperties.getWithDefault("searchDocField", "query");
 
   private static final String highlightField = AppProperties
@@ -67,7 +69,7 @@ public class SolrEng extends SearchEng {
 
   @Override
   public List<Object> getMetrics() throws Exception {
-    QueryResponse qr = searchSolr(solrCommParam,SEARCHFILED);
+    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCommParam,SEARCHFILED);
     return documentListToObjectList(processDocs(qr, false));
   }
 
@@ -134,6 +136,9 @@ public class SolrEng extends SearchEng {
     SolrDocumentList result = new SolrDocumentList();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.handle");
     double threshold = Double.parseDouble(solrParam.get("threshold"));   //阈值
+    String segQuery = qr.getDebugMap().get("parsedquery").toString();
+    segQuery = segQuery.substring(2,segQuery.length()-3);
+    segQuery = segQuery.replaceAll(SEARCHFILED+":","");
 
     //对每个doc做处理
     for (SolrDocument doc : qr.getResults()) {
@@ -143,7 +148,9 @@ public class SolrEng extends SearchEng {
         continue;
       }
 
-      String seg_name = (String) doc.get(SEARCHFILED);
+      //System.out.print(segQuery);
+      //String seg_name = (String) doc.get(SEARCHFILED);
+      String seg_name = segQuery;
       List<String> queryWord = segment();
       Set<String> queryWords = new HashSet<>();
 
@@ -313,6 +320,36 @@ public class SolrEng extends SearchEng {
       documentList.add(doc);
     }
     return documentList;
+  }
+
+
+  public int metricsImport(){
+    int affectnum = 0;
+    SolrQuery startQuery = new SolrQuery();
+    startQuery.setRequestHandler("/dataimport");
+    startQuery.set("command", "full-import");
+    startQuery.set("verbose", "false");
+    startQuery.set("clean", "false");
+    startQuery.set("commit", "true");
+    startQuery.set("core", "dmp");
+    startQuery.set("entity", "metrics");
+    startQuery.set("name", "dataimport");
+
+    try{
+      QueryResponse response = httpSolr.query(startQuery);
+      affectnum = Integer.parseInt(((SimpleOrderedMap)response.getResponse().get("statusMessages")).get("Total Documents Processed").toString());
+    }
+    catch (SolrServerException e){
+      logger.error("solr server exception: {}",e.getMessage());
+    }
+    catch (IOException e){
+      logger.error("solr io exception: {}",e.getMessage());
+    }
+    catch (Exception e){
+      logger.error("normal exception happend while import data: {} ",e.getMessage());
+    }
+    return affectnum;
+
   }
 
 }
