@@ -4,12 +4,65 @@
 <mapper namespace="com.quantchi.authority.mapper.AuthorityMapper">
   <select id="selectAuth" resultType="Map">
     select
-    l_authid,
-    c_authname,
-    c_isenable,
-    d_createdate
+    tauthority.l_authid,
+    tauthority.c_authname,
+    tauthority.c_isenable,
+    tauthority.d_createdate,
+    tauthority.c_authtype,
+    case when t.l_authid is null and t2.l_authid is null and t3.l_authid is null  then '0'
+    when  t2.l_authid is null and t3.l_authid is null  then '1'
+    when t.l_authid is null  and t3.l_authid is null then '2'
+    when t.l_authid is null and t2.l_authid is null  then '3' end  as l_datatype
     from tauthority
+    left join tauthtablerela t on tauthority.l_authid = t.l_authid
+    left join tauthcolrela t2 on tauthority.l_authid = t2.l_authid
+    left join tauthlinerela  t3 on tauthority.l_authid = t3.l_authid
   </select>
+  <select id="getAuthByFilter" resultType="Map" parameterType="map" >
+    select
+    a.l_authid,
+    a.c_authname,
+    a.c_isenable,
+    a.d_createdate,
+    a.c_authtype,
+    case when t.l_authid is null and t2.l_authid is null and t3.l_authid is null  then '0'
+    when  t2.l_authid is null and t3.l_authid is null  then '1'
+    when t.l_authid is null  and t3.l_authid is null then '2'
+    when t.l_authid is null and t2.l_authid is null  then '3' end  as l_datatype
+    from tauthority a
+    left join tauthtablerela t on a.l_authid = t.l_authid
+    left join tauthcolrela t2 on a.l_authid = t2.l_authid
+    left join tauthlinerela  t3 on a.l_authid = t3.l_authid
+    where 1=2
+    <if test="l_authid != null and l_authid>0">
+     or  a.l_authid= #{l_authid}
+    </if>
+    <if test="c_authname != null and c_authname.toString().length()>0">
+      or  a.c_authname like CONCAT(CONCAT('%',#{c_authname}), '%')
+    </if>
+    <if test="c_authtype != null and c_authtype.toString().length()>0">
+      and  a.c_authtype = #{c_authtype}
+    </if>
+  </select>
+
+  <select id="getAuthByAuthId" parameterType="java.lang.Integer" resultType="map">
+    select
+    tauthority.l_authid,
+    tauthority.c_authname,
+    tauthority.c_isenable,
+    tauthority.d_createdate,
+    tauthority.c_authtype,
+    case when t.l_authid is null and t2.l_authid is null and t3.l_authid is null  then '0'
+    when  t2.l_authid is null and t3.l_authid is null  then '1'
+    when t.l_authid is null  and t3.l_authid is null then '2'
+    when t.l_authid is null and t2.l_authid is null  then '3' end  as l_datatype
+    from tauthority
+    left join tauthtablerela t on tauthority.l_authid = t.l_authid
+    left join tauthcolrela t2 on tauthority.l_authid = t2.l_authid
+    left join tauthlinerela  t3 on tauthority.l_authid = t3.l_authid
+    where  tauthority.l_authid= #{authid,jdbcType=INTEGER}
+  </select>
+
   <insert id="insertAuth" parameterType="map"
           useGeneratedKeys="true" keyProperty="l_authid">
   INSERT INTO tauthority (c_authname,c_isenable,c_authtype,d_createdate)

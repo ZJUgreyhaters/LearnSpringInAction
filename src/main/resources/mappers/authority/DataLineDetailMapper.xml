@@ -21,15 +21,29 @@
   INSERT INTO tauthlinerela (l_authid,l_linedetailid)
   VALUES (#{l_authid}, #{l_linedetailid})
   </insert>
-
+  <select id="selectLineDetRelaByAuthId" parameterType="java.lang.Integer" resultType="Map">
+    select
+    l_linedetailid,
+    l_authid,
+    l_authlinerelaid
+    from tauthlinerela
+    where l_authid=#{authId,jdbcType=INTEGER}
+  </select>
+  <select id="selectLineDetByAuthId" parameterType="java.lang.Integer" resultType="Map">
+    select
+    t.l_linedetailid,
+    l_authid,
+    l_authlinerelaid,
+    t.c_column,
+    t.c_tablename,
+    t.c_fiterdesc,
+    t.c_fiter
+    from tauthlinerela
+    left join ttablelinedetail t on tauthlinerela.l_linedetailid = t.l_linedetailid
+    where l_authid=#{authId,jdbcType=INTEGER}
+  </select>
   <delete id="deleAuthLineRela" parameterType="java.lang.Integer">
     delete  from  tauthlinerela where l_authid=#{authId,jdbcType=INTEGER}
-  </delete>
-
-  <delete id="deleLineByAuthid" parameterType="java.lang.Integer">
-    delete  from  ttablelinedetail where l_linedetailid in  (
-    select tauthlinerela.l_linedetailid from tauthlinerela where l_authid=#{authId,jdbcType=INTEGER}
-    )
   </delete>
 
   <delete id="deleAuthLineRelaByLineId" parameterType="java.lang.Integer">

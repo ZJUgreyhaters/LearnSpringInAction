@@ -10,6 +10,26 @@
     c_isenable
     from tdatacolumndetail
   </select>
+  <select id="getTabColDetailRelaByAuthId" resultType="Map" parameterType="java.lang.Integer">
+    select
+     l_authid,
+     l_authcolrelaid,
+     l_columndetailid
+    from tauthcolrela
+    where l_authid=#{authId,jdbcType=INTEGER}
+  </select>
+  <select id="getTabColDetailByAuthId" resultType="Map" parameterType="java.lang.Integer">
+    select
+     a.l_authid,
+     l_authcolrelaid,
+     a.l_columndetailid,
+     t.c_tablename,
+     t.c_column,
+     t.c_isenable
+    from tauthcolrela a
+    left join tdatacolumndetail t on t.l_columndetailid=a.l_columndetailid
+    where a.l_authid=#{authId,jdbcType=INTEGER}
+  </select>
   <insert id="insertTabColDetail"  parameterType="map"  useGeneratedKeys="true" keyProperty="l_columndetailid">
   INSERT INTO tdatacolumndetail (c_tablename,c_column,c_isenable)
   VALUES (#{c_tablename}, #{c_column}, #{c_isenable})
@@ -20,12 +40,6 @@
   </insert>
   <delete id="deleAuthColRela" parameterType="java.lang.Integer">
     delete  from  tauthcolrela where l_authid=#{authId,jdbcType=INTEGER}
-  </delete>
-
-  <delete id="deleColByAuthid" parameterType="java.lang.Integer">
-    delete  from  tdatacolumndetail where l_columndetailid in  (
-    select tauthcolrela.l_columndetailid from tauthcolrela where l_authid=#{authId,jdbcType=INTEGER}
-    )
   </delete>
 
   <delete id="deleAuthColRelaByColId" parameterType="java.lang.Integer">
