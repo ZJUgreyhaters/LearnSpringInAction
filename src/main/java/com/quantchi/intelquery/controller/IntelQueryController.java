@@ -126,6 +126,9 @@ public class IntelQueryController {
   @ResponseBody
   Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
     try {
+      if("".equals(keyword))
+        return Util.genRet(200, null, "", 0);
+
       List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword);
       return Util.genRet(200, sentences, "", 0);
     } catch (Exception e) {
