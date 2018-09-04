@@ -174,8 +174,9 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         String colKey = col;
         Map<String,Object> colHeader = new HashMap<>();
         //setColHeaderAndData();
-        colHeader.put(col,((LeafHeader)normalColumn.get(col)).getTitles());
-        retHeader.add(colHeader);
+        setColHeaderAndData(colHeader,col,normalColumn);
+        /*colHeader.put(col,((LeafHeader)normalColumn.get(col)).getTitles());
+        retHeader.add(colHeader);*/
         for(ComplexTable.Block nb:((LeafHeader)normalColumn.get(col)).getData()){
           Map<String,Object> colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
           if(colMap == null)
@@ -195,7 +196,11 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
   private void setColHeaderAndData(Map<String,Object> colHeader,String ColName,Object normalColumn){
     if(normalColumn instanceof HashMap){
-      //setColHeaderAndData();
+      Map<String,Object> subColHeader = new HashMap<>();
+      String subCol = ((HashMap) normalColumn).keySet().toArray()[0].toString();
+      Object subNormalCol = ((HashMap) normalColumn).get(subCol);
+      setColHeaderAndData(subColHeader,subCol,subNormalCol);
+			colHeader.put(ColName,subColHeader);
     }else if(normalColumn instanceof LeafHeader){
       colHeader.put(ColName,((LeafHeader) normalColumn).getTitles());
     }

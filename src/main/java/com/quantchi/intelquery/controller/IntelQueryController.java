@@ -248,7 +248,7 @@ public class IntelQueryController {
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
 
-      ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql(), map);
+      ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql()+" limit 100", map);
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
       TreeNode columnRelation = sqlQuery.getColumnRelation();
       Map<String,Object> complexDataAndHeader = intelQueryService.getComplexData(tabulate,columnRelation,page,page_size);
