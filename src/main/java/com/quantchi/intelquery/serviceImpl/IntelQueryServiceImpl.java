@@ -17,6 +17,7 @@ import com.quantchi.intelquery.search.SearchEng;
 import com.quantchi.intelquery.service.IntelQueryService;
 import com.quantchi.intelquery.sqlquery.ColumnInfo;
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
+import com.quantchi.intelquery.sqlquery.SqlQuery;
 import com.quantchi.intelquery.tokenize.search.Replacement;
 import com.quantchi.intelquery.utils.ComplexTable;
 import com.quantchi.intelquery.utils.ComplexTable.LeafHeader;
@@ -190,6 +191,17 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     ret.put("data",retData);
     ret.put("header",retHeader);
 		return ret;
+  }
+
+  // 生成下载Excel文件用的数据
+  @Override
+  public ComplexTable getComplexTable(SqlQuery sqlQuery) throws Exception {
+    ResultSet tabulate = execsqlWithResultSet(sqlQuery.toSql(), null);
+    TreeNode columnRelation = sqlQuery.getColumnRelation();
+
+    // 生成展示用的ComplexTable
+    ComplexTable ct = new ComplexTable(tabulate, columnRelation);
+    return ct;
   }
 
   @Override

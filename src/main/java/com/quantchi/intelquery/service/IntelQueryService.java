@@ -3,6 +3,9 @@ package com.quantchi.intelquery.service;
 import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.pojo.QuerySentence;
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
+import com.quantchi.intelquery.sqlquery.SqlQuery;
+import com.quantchi.intelquery.utils.ComplexTable;
+
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,6 +50,9 @@ public interface IntelQueryService {
 
   //Map<List<String>,Object> getComplexData(ResultSet rs,TreeNode columnRelation,int page,int pagesize) throws SQLException;
   Map<String,Object> getComplexData(ResultSet rs,TreeNode columnRelation,int page,int pagesize) throws SQLException;
+
+  // 生成下载Excel文件用的数据
+  ComplexTable getComplexTable(SqlQuery sqlQuery) throws Exception;
 
   String likenum(QuerySentence querySentence) throws Exception;
 }
