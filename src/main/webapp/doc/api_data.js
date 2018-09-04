@@ -409,6 +409,76 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/api/getTableColumn",
+    "title": "修改权限说明",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/getTableColumn"
+      }
+    ],
+    "name": "modifyAuth",
+    "group": "AuthorityController",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据 指标信息列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.database",
+            "description": "<p>数据库</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.tables",
+            "description": "<p>表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "tables.tableName",
+            "description": "<p>表名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "tables.columns",
+            "description": "<p>字段名称</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
+    "groupTitle": "AuthorityController"
+  },
+  {
+    "type": "post",
     "url": "/api/modifyAuth",
     "title": "修改权限说明",
     "version": "1.0.0",
@@ -1165,70 +1235,6 @@ define({ "api": [
     },
     "filename": "../../java/com/quantchi/authority/controller/AuthorityUserController.java",
     "groupTitle": "AuthorityUserController"
-  },
-  {
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "code",
-            "description": "<p>成功或者错误代码200成功，500错误</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "msg",
-            "description": "<p>成功或者错误信息</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "List",
-            "optional": true,
-            "field": "data",
-            "description": "<p>返回数据 指标信息列表</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "data.database",
-            "description": "<p>数据库</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "List",
-            "optional": true,
-            "field": "data.tables",
-            "description": "<p>表</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "tables.tableName",
-            "description": "<p>表名</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "List",
-            "optional": true,
-            "field": "tables.columns",
-            "description": "<p>字段名称</p>"
-          }
-        ]
-      }
-    },
-    "type": "",
-    "url": "",
-    "version": "0.0.0",
-    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
-    "group": "C__project_search_src_main_java_com_quantchi_authority_controller_AuthorityDetailController_java",
-    "groupTitle": "C__project_search_src_main_java_com_quantchi_authority_controller_AuthorityDetailController_java",
-    "name": ""
   },
   {
     "type": "post",

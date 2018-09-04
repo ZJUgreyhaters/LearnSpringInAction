@@ -157,7 +157,12 @@ public class AuthorityDetailController {
             return JsonResult.errorJson("error!");
         }
     }
-    /**@apiSuccess {String} code 成功或者错误代码200成功，500错误
+    /**@api {post} /api/getTableColumn 修改权限说明
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/getTableColumn
+     * @apiName modifyAuth
+     * @apiGroup AuthorityController
+     * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiSuccess {List} [data] 返回数据 指标信息列表
      * @apiSuccess {String} [data.database] 数据库
