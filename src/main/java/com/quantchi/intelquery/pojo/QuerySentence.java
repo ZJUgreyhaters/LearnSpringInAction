@@ -30,11 +30,21 @@ public class QuerySentence {
 	@Field("intelqueryVer")
 	private String intelqueryVer;
 
-	@Field("likeNums")
-	private Long likeNums;
+	@Field("favor")
+	private Long likeNums = 0L;
 
-	@Field("dislikeNums")
-	private Long dislikeNums;
+	@Field("disfavor")
+	private Long dislikeNums = 0L;
+
+	private String type;
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public Long getLikeNums() {
 		return likeNums;
@@ -44,12 +54,20 @@ public class QuerySentence {
 		this.likeNums = likeNums;
 	}
 
+	public void addLikeNums() {
+		this.likeNums++;
+	}
+
 	public Long getDislikeNums() {
 		return dislikeNums;
 	}
 
 	public void setDislikeNums(Long dislikeNums) {
 		this.dislikeNums = dislikeNums;
+	}
+
+	public void addDislikeNums() {
+		this.dislikeNums++;
 	}
 
 	public String getId() {

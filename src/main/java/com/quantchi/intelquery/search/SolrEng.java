@@ -29,12 +29,13 @@ public class SolrEng extends SearchEng {
       .getPropertiesMap("solr.instance");
 
   private final Map<String, String> solrCorSentenceParam = AppProperties
-          .getPropertiesMap("solr.sentence");
+      .getPropertiesMap("solr.sentence");
 
   private final String solrUrl = AppProperties.get("solr.url");
 
   private static final String SEARCHFILED = AppProperties.getWithDefault("searchField", "seg_name");
-  private static final String SEARCHDOCFILED = AppProperties.getWithDefault("searchDocField", "query");
+  private static final String SEARCHDOCFILED = AppProperties
+      .getWithDefault("searchDocField", "query");
 
   private static final String highlightField = AppProperties
       .getWithDefault("highlightField", "seg_name");
@@ -53,10 +54,10 @@ public class SolrEng extends SearchEng {
     httpSolr.setParser(new XMLResponseParser());
   }
 
-  public static SolrEng getInstance(String query, String type){
+  public static SolrEng getInstance(String query, String type) {
     if (instance == null) {
-      instance = new SolrEng(query,type);
-    }else{
+      instance = new SolrEng(query, type);
+    } else {
       instance.init(query);
     }
 
@@ -64,57 +65,64 @@ public class SolrEng extends SearchEng {
   }
 
 
-
   @Override
-  public List<Object> getMetrics() throws Exception {
-    QueryResponse qr = searchSolr(solrCommParam,SEARCHFILED);
-    return documentListToObjectList(processDocs(qr, false));
+  public List<Object> getMetrics(Map<String, String> queryMap) throws Exception {
+    QueryResponse qr = searchSolr(solrCommParam, queryMap);
+    return documentListToObjectList(qr.getResults());
   }
 
   @Override
   public List<Object> getQuickMacro() throws Exception {
-    QueryResponse qr = searchSolr(solrQuickParam,SEARCHFILED);
+    QueryResponse qr = searchSolr(solrQuickParam, SEARCHFILED);
     SolrDocumentList solrDocuments = processDocs(qr, true);
     return documentListToObjectList(setReplaceOrigin(solrDocuments, qr.getHighlighting()));
   }
 
   @Override
-  public String addQuerySentence(QuerySentence qs){
+  public String addQuerySentence(QuerySentence qs) {
     String qsId = "";
     try {
-      QuerySentence solrRet = checkDocInSolr(qs.getQuery());
+      QuerySentence solrRet = checkDocInSolrById(qs.getId());
       //add doc into solr
-      if(solrRet == null){
+      if (solrRet == null) {
         httpSolr.addBean(qs);
         httpSolr.commit();
         qsId = qs.getId();
       }
       //update count
-      else{
+      else {
         SolrInputDocument newDoc = new SolrInputDocument();
         newDoc.addField("id", solrRet.getId());
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("inc", 1);
         newDoc.addField("times", map);
+        if ("0".equals(qs.getType())) {
+          newDoc.addField("disfavor", map);
+        } else {
+          newDoc.addField("favor", map);
+        }
         httpSolr.add(newDoc);
         httpSolr.commit();
         qsId = solrRet.getId();
       }
 
 
-    }catch (SolrServerException serverEx){
-      logger.error("solr add doc :{} error,and error info is: {}",qs.getQuery(),serverEx.getMessage());
-    }catch (IOException ioEx){
-      logger.error("solr commit doc :{} error,and error info is: {}",qs.getQuery(),ioEx.getMessage());
+    } catch (SolrServerException serverEx) {
+      logger.error("solr add doc :{} error,and error info is: {}", qs.getQuery(),
+          serverEx.getMessage());
+    } catch (IOException ioEx) {
+      logger.error("solr commit doc :{} error,and error info is: {}", qs.getQuery(),
+          ioEx.getMessage());
     } catch (Exception ex) {
-      logger.error("solr check doc :{} error,and error info is: {}",qs.getQuery(),ex.getMessage());
+      logger
+          .error("solr check doc :{} error,and error info is: {}", qs.getQuery(), ex.getMessage());
     }
     return qsId;
   }
 
   @Override
-  public List<QuerySentence> getCorrelativeSentence() throws Exception{
-    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCorSentenceParam,SEARCHDOCFILED);
+  public List<QuerySentence> getCorrelativeSentence() throws Exception {
+    QueryResponse qr = searchSolrWithoutSeg(getQuery(), solrCorSentenceParam, SEARCHDOCFILED);
     return qr.getBeans(QuerySentence.class);
   }
 
@@ -123,7 +131,18 @@ public class SolrEng extends SearchEng {
     SolrQuery query = new SolrQuery();
     query.setQuery(SEARCHDOCFILED + ":\"" + queryStr + "\"");
     QueryResponse qr = httpSolr.query(query);
-    if(qr.getResults().size() > 0){
+    if (qr.getResults().size() > 0) {
+      qs = qr.getBeans(QuerySentence.class).get(0);
+    }
+    return qs;
+  }
+
+  private QuerySentence checkDocInSolrById(String id) throws Exception {
+    QuerySentence qs = null;
+    SolrQuery query = new SolrQuery();
+    query.setQuery("id" + ":\"" + id + "\"");
+    QueryResponse qr = httpSolr.query(query);
+    if (qr.getResults().size() > 0) {
       qs = qr.getBeans(QuerySentence.class).get(0);
     }
     return qs;
@@ -172,7 +191,8 @@ public class SolrEng extends SearchEng {
     return result;
   }
 
-  private QueryResponse searchSolrWithoutSeg(String str,Map<String, String> param,String field) throws Exception {
+  private QueryResponse searchSolrWithoutSeg(String str, Map<String, String> param, String field)
+      throws Exception {
     SolrQuery query = new SolrQuery();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.search");
     query.setQuery(field + ":(" + str + ")");
@@ -191,9 +211,42 @@ public class SolrEng extends SearchEng {
     return response;
   }
 
-  private QueryResponse searchSolr(Map<String, String> param,String field) throws Exception {
-    String str = String.join(" ",segment());
-    return searchSolrWithoutSeg(str,param,field);
+  private QueryResponse searchSolrWithoutSeg(String str, Map<String, String> param,
+      Map<String, String> mapQuery) throws Exception {
+    SolrQuery query = new SolrQuery();
+    Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.search");
+    StringBuilder builderQuery = new StringBuilder();
+    builderQuery.append("seg_name:").append(str);
+    builderQuery.append(" OR ").append("definition").append(":").append(mapQuery.get("definition"));
+    builderQuery.append(" AND ").append("businessId").append(":")
+        .append(mapQuery.get("businessId"));
+    query.setQuery(builderQuery.toString());
+
+    if (param != null) {
+      for (Map.Entry<String, String> entry : param.entrySet()) {
+        query.setParam(entry.getKey(), entry.getValue());
+      }
+    }
+    Set<String> keys = solrParam.keySet();
+    for (String key : keys) {
+      query.setParam(key, solrParam.get(key));
+    }
+
+    QueryResponse response = httpSolr.query(query);
+    return response;
+  }
+
+  private QueryResponse searchSolr(Map<String, String> param, String filed)
+      throws Exception {
+    String str = String.join(" ", segment());
+    return searchSolrWithoutSeg(str, param, filed);
+  }
+
+
+  private QueryResponse searchSolr(Map<String, String> param, Map<String, String> queryMap)
+      throws Exception {
+    String str = String.join(" ", segment());
+    return searchSolrWithoutSeg(str, param, queryMap);
   }
 
   private SolrDocumentList setReplaceOrigin(SolrDocumentList docs,
