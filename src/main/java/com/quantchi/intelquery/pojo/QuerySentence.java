@@ -30,11 +30,11 @@ public class QuerySentence {
 	@Field("intelqueryVer")
 	private String intelqueryVer;
 
-	@Field("likeNums")
-	private Long likeNums;
+	@Field("favor")
+	private Long likeNums = 0L;
 
-	@Field("dislikeNums")
-	private Long dislikeNums;
+	@Field("disfavor")
+	private Long dislikeNums = 0L;
 
 	public Long getLikeNums() {
 		return likeNums;
