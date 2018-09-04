@@ -92,7 +92,8 @@ public class AuthorityController {
      * @apiSuccess {String} [data.c_authname] 权限名称
      * @apiSuccess {String} [data.c_authtype] 权限类型 0:功能权限  1:数据权限
      * @apiSuccess {Int} [data.l_authid] 权限id
-     * @apiSuccess {Int} [data.c_isenable] 是否有效
+     * @apiSuccess {String} [data.c_isenable] 是否有效
+     * @apiSuccess {String} [data.c_isenable] d_createdate
      * @apiSuccess {Int} [data.l_datatype] 数据权限类型 0表示非数据权限 1表示表权限 2 表示字段权限 3 表示行数据权限
      * @apiParamExample {json} Request-example:
      * {"c_authname":"xxx"}    或者 {"c_authname":"xxxxx","c_authtype":"0"}

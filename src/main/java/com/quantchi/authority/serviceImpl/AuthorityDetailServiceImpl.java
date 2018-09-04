@@ -286,8 +286,8 @@ public class AuthorityDetailServiceImpl implements  AuthorityDetailService {
 
          List<Map<String,Object>> details= new ArrayList<Map<String,Object>>()  ;
 
-         String dataType= (String) map.get("l_datatype");
-         String authType= (String) map.get("c_authtype");
+         String dataType= (String) authroity.get("l_datatype");
+         String authType= (String) authroity.get("c_authtype");
 
          if(authType.equals("0")){
 
