@@ -170,22 +170,9 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 		lh.getData().forEach((i) -> retData.put(i.getRowData(),null));
 		for(Map<String, Object> normalColumn : normHeaders){
 			for(String col:normalColumn.keySet()){
-        int index = normalColumn.keySet().stream().collect(Collectors.toList()).indexOf(col);
-        String colKey = col;
         Map<String,Object> colHeader = new HashMap<>();
-        //setColHeaderAndData();
-        setColHeaderAndData(colHeader,col,normalColumn);
-        /*colHeader.put(col,((LeafHeader)normalColumn.get(col)).getTitles());
-        retHeader.add(colHeader);*/
-        for(ComplexTable.Block nb:((LeafHeader)normalColumn.get(col)).getData()){
-          Map<String,Object> colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
-          if(colMap == null)
-            colMap = new HashMap<>();
-          else
-            colKey = col+"_"+index;
-          colMap.put(colKey,((ComplexTable.NormBlock)nb).getRowData());
-          retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);
-        }
+        setColHeaderAndData(retData,colHeader,colHeader,col,normalColumn);
+        retHeader.add(colHeader);
 			}
 
 		}
@@ -194,15 +181,25 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 		return ret;
   }
 
-  private void setColHeaderAndData(Map<String,Object> colHeader,String ColName,Object normalColumn){
+  private void setColHeaderAndData(Map<List<String>,Object> retData,Map<String,Object> colHeader,Map<String,Object> parentHeader,String ColName,Object normalColumn){
     if(normalColumn instanceof HashMap){
-      Map<String,Object> subColHeader = new HashMap<>();
-      String subCol = ((HashMap) normalColumn).keySet().toArray()[0].toString();
-      Object subNormalCol = ((HashMap) normalColumn).get(subCol);
-      setColHeaderAndData(subColHeader,subCol,subNormalCol);
-			colHeader.put(ColName,subColHeader);
+      for(Object subCol:((HashMap) normalColumn).keySet()){
+        Map<String,Object> subColHeader = new HashMap<>();
+        colHeader.put(subCol.toString(),subColHeader);
+        Object subNormalCol = ((HashMap) normalColumn).get(subCol);
+        setColHeaderAndData(retData,subColHeader,colHeader,subCol.toString(),subNormalCol);
+      }
     }else if(normalColumn instanceof LeafHeader){
-      colHeader.put(ColName,((LeafHeader) normalColumn).getTitles());
+      parentHeader.put(ColName,((LeafHeader) normalColumn).getTitles());
+
+      for(ComplexTable.Block nb:((LeafHeader)normalColumn).getData()){
+        Map<String,Object> colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
+        if(colMap == null)
+          colMap = new HashMap<>();
+        colMap.put(ColName,((ComplexTable.NormBlock)nb).getRowData());
+        retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);
+      }
+
     }
   }
 
