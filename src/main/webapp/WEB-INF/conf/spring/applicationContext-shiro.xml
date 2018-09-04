@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    <!-- shiro的web过滤器 -->
+    <!-- 与web.xml对应 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    <!--<bean id="shiroFilter" class="com.quantchi.authority.shiro.MyShiroFilterFactoryBean">-->
+        <property name="securityManager" ref="securityManager" />
+        <property name="loginUrl" value="/index.jsp" />
+        <property name="unauthorizedUrl" value="/error.jsp" />
+        <property name="filters">
+            <util:map>
+                <entry key="MyUrlFilter" value-ref="MyUrlFilter" />
+            </util:map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                /** MyUrlFilter
+            </value>
+        </property>
+    </bean>
+
+    <bean id="MyUrlFilter" class="com.quantchi.authority.shiro.MyUrlFilter" />
+
+    <!-- 安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="userRealm" />
+    </bean>
+
+    <bean id="userRealm" class="com.quantchi.authority.shiro.MyRealm" />
+
+</beans>

@@ -4,6 +4,7 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
@@ -19,7 +20,7 @@ public class MyPermissionRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken){
         String userCode=(String)authenticationToken.getPrincipal();
-        //模拟数据库操作查询用户
+        // 模拟数据库操作查询用户
         if(!userCode.equals("wbchen")){
             return null;
         }
@@ -28,10 +29,14 @@ public class MyPermissionRealm extends AuthorizingRealm {
 
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userCode,password,"testRealm");
 
-        return info;
+        return null;
     }
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        return null;
+        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+
+
+
+        return simpleAuthorizationInfo;
     }
 }

@@ -7,8 +7,11 @@ import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.util.Factory;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.Hashtable;
 
 /**
  * @ClassName: authenticationTest
@@ -19,6 +22,8 @@ import java.util.Arrays;
  **/
 
 public class authenticationTest {
+    private static final Logger logger = LoggerFactory.getLogger(authenticationTest.class);
+
     @Test
     public void testLogin(){
         Factory<SecurityManager> securityManagerFactory = new IniSecurityManagerFactory("classpath:shiroLearn.ini");
@@ -32,6 +37,7 @@ public class authenticationTest {
             //ex.printStackTrace();
         }
         System.out.println("是否通过验证：" + subject.isAuthenticated());
+        System.out.println("是否有角色：" + subject.hasRole("admin"));
 
         subject.logout();
         System.out.println("用户退出" + subject.isAuthenticated());
@@ -63,5 +69,13 @@ public class authenticationTest {
         Boolean ishasRole = subject.hasRole("role1");
         Boolean ishasRoleAll = subject.hasAllRoles(Arrays.asList("role1","role2"));
         System.out.println("单个角色验证："+ishasRole+" | 多个角色验证"+ishasRoleAll);
+
+        Hashtable<String,String> testHashTable = new Hashtable<>();
+        testHashTable.put("Tom", "anhui");
+        testHashTable.put("Tom", "nice");
+        String province = testHashTable.get("Tom");
+
+        System.out.println(province + testHashTable.containsKey("Tom"));
+
     }
 }
