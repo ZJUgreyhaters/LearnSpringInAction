@@ -18,7 +18,7 @@ import java.util.Map;
 @RequestMapping("api")
 public class AuthorityUserController {
     private static final Logger logger = LoggerFactory.getLogger(AuthorityUserController.class);
-   /**@api {post} /api/getUserTree 删除权限
+   /**@api {post} /api/getUserTree 查询公司信息
     * @apiVersion 1.0.0
     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/getUserTree
     * @apiName getUserTree
@@ -69,11 +69,11 @@ public class AuthorityUserController {
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiSuccess {List} [data] 返回数据 指标信息列表
-     * @apiSuccess {String}  [data.userAccount]  公司名称
-     * @apiSuccess {String}  [data.userId":]  公司名称
-     * @apiSuccess {String}  [data.userName]  公司名称
-     * @apiSuccess {String}  [data.userRoles]  公司名称
-     * @apiSuccess {String}  [data.userStatus]  公司名称
+     * @apiSuccess {String}  [data.userAccount]  客户账号
+     * @apiSuccess {String}  [data.userId":]  客户id
+     * @apiSuccess {String}  [data.userName]  客户姓名
+     * @apiSuccess {String}  [data.userRoles]  客户角色
+     * @apiSuccess {String}  [data.userStatus]  客户状态
      * */
     @ResponseBody
     @RequestMapping(value = "/getUserList", method = {
@@ -116,11 +116,11 @@ public class AuthorityUserController {
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiSuccess {List} [data] 返回数据 指标信息列表
-     * @apiSuccess {String}  [data.userAccount]  公司名称
-     * @apiSuccess {String}  [data.userId":]  公司名称
-     * @apiSuccess {String}  [data.userName]  公司名称
-     * @apiSuccess {String}  [data.userRoles]  公司名称
-     * @apiSuccess {String}  [data.userStatus]  公司名称
+     * @apiSuccess {String}  [data.userAccount]  客户账号
+     * @apiSuccess {String}  [data.userId":]  客户id
+     * @apiSuccess {String}  [data.userName]  客户姓名
+     * @apiSuccess {String}  [data.userRoles]  客户角色
+     * @apiSuccess {String}  [data.userStatus]  客户状态
      * */
     @ResponseBody
     @RequestMapping(value = "/getUserByUserName", method = {

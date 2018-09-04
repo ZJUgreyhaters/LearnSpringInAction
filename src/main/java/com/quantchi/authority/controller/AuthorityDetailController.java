@@ -103,7 +103,8 @@ public class AuthorityDetailController {
      * @apiParam {Int} [authId] 权限ID
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
-     * @apiParamExample {json} Request-example:{"authId":1}
+     * @apiParamExample {json} Request-example:
+     * {"authId":1}
      * */
     @ResponseBody
     @RequestMapping(value = "/deleAuth", method = {

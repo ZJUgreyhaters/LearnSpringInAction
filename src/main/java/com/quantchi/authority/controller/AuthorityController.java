@@ -26,29 +26,8 @@ public class AuthorityController {
     private AuthorityService authorityService;
     @Autowired
     private AuthorityDetailService authoritydetailService;
-     /**@api {post} /api/authorityRole 查询所有角色
-     * @apiVersion 1.0.0
-     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/authorityRole
-     * @apiName authorityRole
-     * @apiGroup AuthorityController
-     * @apiSuccess {String} code 成功或者错误代码200成功，500错误
-     * @apiSuccess {String} msg  成功或者错误信息
-     * @apiSuccess {List} [data] 返回数据 指标信息列表
-     * @apiSuccess {String} [data.l_roleid] 角色id
-     * @apiSuccess {String} [data.c_rolename] 角色名称
-     * @apiSuccess {String} [data.c_isenable] 是否有效
-     * @apiSuccess {String} [data.c_roledesc] 角色描述信息
-     *
-     **/
-    @ResponseBody
-    @RequestMapping(value = "/authorityRole", method = {
-            RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-    public String authorityRole(){
 
-        return    authorityService.selectRoleList();
-
-    }
-    /**@api {post} /api/listRoleByFilter 根据条件查询角色
+    /**@api {post} /api/listRoleByFilter 根据条件查询角色 传空则返回所有
      * @apiVersion 1.0.0
      * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/listRoleByFilter
      * @apiName listRoleByFilter
@@ -66,7 +45,10 @@ public class AuthorityController {
     @RequestMapping(value = "/listRoleByFilter", method = {
             RequestMethod.POST}, produces = "application/json;charset=UTF-8")
     public String listRoleByFilter(@RequestBody  Map<String, Object> requestMap){
-
+        String  c_rolename =(String)requestMap.get("c_rolename");
+        if (c_rolename.equals("") ){
+            return authorityService.selectRoleList();
+        }
         return    authorityService.getRoleByFilter(requestMap);
     }
     /**@api {post} /api/listRoleByRoleid 根据角色ID 查询角色明细
@@ -96,29 +78,8 @@ public class AuthorityController {
 
 
 
-    /**@api {post} /api/selectAllAuth 查询所有权限
-     * @apiVersion 1.0.0
-     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/selectAllAuth
-     * @apiName selectAllAuth
-     * @apiGroup AuthorityController
-     * @apiSuccess {String} code 成功或者错误代码200成功，500错误
-     * @apiSuccess {String} msg  成功或者错误信息
-     * @apiSuccess {List} [data] 返回数据 指标信息列表
-     * @apiSuccess {String} [data.c_authname] 权限名称
-     * @apiSuccess {String} [data.c_authtype] 权限类型 0:功能权限  1:数据权限
-     * @apiSuccess {date} [data.d_createdate] 权限创造时间
-     * @apiSuccess {String} [data.c_isenable] 是否有效
-     * @apiSuccess {String} [data.l_datatype] 数据权限类型 0表示非数据权限 1表示表权限 2 表示字段权限 3 表示行数据权限
-     * @apiSuccess {Int} [data.l_authid] 权限ID
-     **/
-    @ResponseBody
-    @RequestMapping(value = "/selectAllAuth", method = {
-            RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-    public String selectAllAuth(){
-        return authorityService.selectAuthList();
-    }
 
-    /**@api {post} /api/selectAuthByFilter 根据权限名称查权限
+    /**@api {post} /api/selectAuthByFilter 根据权限名称查权限 传空则返回所有
      * @apiVersion 1.0.0
      * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/selectAuthByFilter
      * @apiName selectAuthByFilter
@@ -141,6 +102,10 @@ public class AuthorityController {
     @RequestMapping(value = "/selectAuthByFilter", method = {
             RequestMethod.POST}, produces = "application/json;charset=UTF-8")
     public String selectAuthByFilter(@RequestBody Map<String, Object> requestMap){
+        String  c_authname =(String)requestMap.get("c_authname");
+        if (c_authname.equals("")){
+            return authorityService.selectAuthList();
+        }
         return authorityService.getAuthByFilter(requestMap);
     }
 
