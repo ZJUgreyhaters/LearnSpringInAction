@@ -12,6 +12,7 @@ import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.TokenizingResult;
 import com.quantchi.intelquery.date.formatter.NormalFormatter;
 import com.quantchi.intelquery.exception.QPException;
+import com.quantchi.intelquery.node.SemanticNode;
 import com.quantchi.intelquery.pojo.QuerySentence;
 import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
@@ -291,7 +292,7 @@ public class IntelQueryController {
                       sqlQuery.toSql());
       resultMap.put("sentencesId", id);
       resultMap.put("isParseable",false);
-      return JsonResult.successJson(resultMap, ResultCode.ERROR,"get basicQuery error");
+      return JsonResult.successJson(resultMap, ResultCode.ERROR,qpe.getMessage());
 
     }catch(SQLException sqle){
       logger.info("SQLException basicQuery error {}", sqle.getMessage());
@@ -299,7 +300,7 @@ public class IntelQueryController {
               sqlQuery.toSql());
       resultMap.put("sentencesId", id);
       resultMap.put("isParseable",false);
-      return JsonResult.successJson(resultMap, ResultCode.ERROR,"get basicQuery error");
+      return JsonResult.successJson(resultMap, ResultCode.ERROR,sqle.getMessage());
     }
     catch (Exception e) {
       logger.info("get basicQuery error", e);

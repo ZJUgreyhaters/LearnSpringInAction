@@ -204,16 +204,19 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         if(colMap == null){
           colMap = new HashMap<>();
           reIndex = false;
+          colMap.put(colKey,arrayList);
         }
         else if(reIndex){
           colKey = ColName+"_"+colMap.entrySet().size();
           reIndex =false;
+          colMap.put(colKey,arrayList);
         }
         else
           arrayList = (ArrayList<Object>) colMap.get(colKey);
 
+        if(arrayList == null)
+          System.out.print("get null");
         arrayList.addAll(((ComplexTable.NormBlock)nb).getRowData());
-        colMap.put(colKey,arrayList);
         retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);
       }
 
