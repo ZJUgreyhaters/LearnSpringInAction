@@ -31,9 +31,8 @@ public class MyUrlFilter extends AccessControlFilter {
     public boolean isAccessAllowed(ServletRequest request,ServletResponse response, Object mappedValue){
         String loginUrl = getLoginUrl();
         //System.out.println(mappedValue.toString());
-        System.out.println("--- MyUrlFilter --- Method: isAccessAllowed");
+        logger.warn("--- MyUrlFilter --- Method: isAccessAllowed");
         System.out.println("--- MyUrlFilter --- LoginUrl: " + loginUrl);
-        setLoginUrl("");
 
         return true;
     }

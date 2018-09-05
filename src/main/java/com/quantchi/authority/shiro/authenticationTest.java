@@ -39,7 +39,8 @@ public class authenticationTest {
         System.out.println("是否通过验证：" + subject.isAuthenticated());
         System.out.println("是否有角色admin：" + subject.hasRole("admin"));
         System.out.println("是否有角色user：" + subject.hasRole("user"));
-
+        System.out.println("是否拥有权限： " + subject.isPermitted("user:add"));
+        subject.checkPermission("user:delete");
 
         subject.logout();
         System.out.println("用户退出" + subject.isAuthenticated());
@@ -69,8 +70,8 @@ public class authenticationTest {
         System.out.println("多个权限认证：" + isPermittedAll);
 
         Boolean ishasRole = subject.hasRole("role1");
-        Boolean ishasRoleAll = subject.hasAllRoles(Arrays.asList("role1","role2"));
-        System.out.println("单个角色验证："+ishasRole+" | 多个角色验证"+ishasRoleAll);
+        //Boolean ishasRoleAll = subject.hasAllRoles(Arrays.asList("role1","role2"));
+        //System.out.println("单个角色验证："+ishasRole+" | 多个角色验证"+ishasRoleAll);
 
         Hashtable<String,String> testHashTable = new Hashtable<>();
         testHashTable.put("Tom", "anhui");
