@@ -180,8 +180,8 @@ public class AuthorityController {
      * @apiName modifyRole
      * @apiGroup AuthorityController
      * @apiParam {Object} [role] 角色
-     * @apiParam {String} [role.c_isenable] 权限名称
-     * @apiParam {String} [role.c_roledesc] 是否生效
+     * @apiParam {String} [role.c_isenable]  是否生效
+     * @apiParam {String} [role.c_roledesc] 角色描述
      * @apiParam {String} [role.c_rolename] 角色名称
      * @apiParam {Int} [role.l_roleid] 角色ID
      * @apiParam {List} [addauthRoleRela] 表数据权限明细 可以装入多个
@@ -189,7 +189,7 @@ public class AuthorityController {
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiParamExample {json} Request-example:例子:
-    * {"role":{"c_isenable":"0","c_roledesc":"xxxx","c_rolename":"xxxxxx","l_roleid":0},
+    * {"role":{"c_isenable":"0","c_roledesc":"xxxx","c_rolename":"xxxxxx","l_roleid":8},"addauthRoleRela":[{"l_authid":23},{"l_authid":21}]}
     * */
     @ResponseBody
     @RequestMapping(value = "/modifyRole", method = {

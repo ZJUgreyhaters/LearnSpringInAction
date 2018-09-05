@@ -280,6 +280,10 @@ public class AuthorityDetailServiceImpl implements  AuthorityDetailService {
     public   String getAuthdetail(Map<String, Object> map){
          Integer authId= (Integer) map.get("l_authid");
          List<Map<String,Object>> authroitys =  authorityMapper.getAuthByAuthId(authId);
+
+         if (authroitys.isEmpty()){
+             return JsonResult.successJson("该权限不存在");
+         }
         Map<String,Object>authroity = authroitys.get(authroitys.size()-1);
          Map<String,Object> authDetail =new HashMap<String, Object>();
          authDetail.put("authiorty" , authroity);
