@@ -9,6 +9,7 @@
     c_isenable,
     c_roledesc
     from tuserrole
+    order by l_roleid desc
   </select>
   <select id="getAuthRoleAndUserCount" resultType="java.util.Map">
     select
@@ -19,6 +20,7 @@
     x.usercount
     from tuserrole t
     left join (select count(1) as usercount, l_roleid from tuserrolerela group by l_roleid) x  on t.l_roleid=x.l_roleid
+    order by t.l_roleid desc
   </select>
   <select id ="getRoleByFilter" resultType="java.util.Map" parameterType="java.util.Map">
     select
@@ -33,7 +35,7 @@
     <if test="c_rolename != null and c_rolename.toString().length()>0">
       or  c_rolename like CONCAT(CONCAT('%',#{c_rolename}), '%')
     </if>
-
+    order by  l_roleid desc
   </select>
   <insert id="insertRole" parameterType="map"  useGeneratedKeys="true" keyProperty="l_roleid">
   INSERT INTO tuserrole (c_rolename,c_isenable,c_roledesc)

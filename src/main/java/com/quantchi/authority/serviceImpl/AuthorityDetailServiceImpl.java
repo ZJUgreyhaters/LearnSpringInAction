@@ -313,4 +313,11 @@ public class AuthorityDetailServiceImpl implements  AuthorityDetailService {
         authDetail.put("authDetail",details);
         return JsonResult.successJson(authDetail);
     }
+
+    @Override
+    public  String getFuncDetailList(){
+       List<Map<String,Object>> lists = funcDetailMapper.selectFuncDetail();
+       String total=lists.size()+"";
+        return  JsonResult.successJson(total,lists);
+    }
 }

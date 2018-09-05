@@ -17,6 +17,7 @@
     left join (select l_authid from  tauthtablerela   group by l_authid ) t on tauthority.l_authid = t.l_authid
     left join (select l_authid from  tauthcolrela  group by l_authid ) t2 on tauthority.l_authid = t2.l_authid
     left join (select l_authid from  tauthlinerela group by l_authid )  t3 on tauthority.l_authid = t3.l_authid
+    order by tauthority.l_authid desc
   </select>
   <select id="getAuthByFilter" resultType="Map" parameterType="map" >
     select
@@ -30,9 +31,9 @@
     when t.l_authid is null  and t3.l_authid is null then '2'
     when t.l_authid is null and t2.l_authid is null  then '3' end  as l_datatype
     from tauthority a
-    left join (select l_authid from  tauthtablerela   group by l_authid ) t on tauthority.l_authid = t.l_authid
-    left join (select l_authid from  tauthcolrela  group by l_authid ) t2 on tauthority.l_authid = t2.l_authid
-    left join (select l_authid from  tauthlinerela group by l_authid )  t3 on tauthority.l_authid = t3.l_authid
+    left join (select l_authid from  tauthtablerela  group by l_authid ) t on a.l_authid = t.l_authid
+    left join (select l_authid from  tauthcolrela  group by l_authid ) t2 on a.l_authid = t2.l_authid
+    left join (select l_authid from  tauthlinerela group by l_authid )  t3 on a.l_authid = t3.l_authid
     where 1=2
     <if test="l_authid != null and l_authid>0">
      or  a.l_authid= #{l_authid}
@@ -43,6 +44,10 @@
     <if test="c_authtype != null and c_authtype.toString().length()>0">
       and  a.c_authtype = #{c_authtype}
     </if>
+    <if test="l_funcdetailid != null and l_funcdetailid.toString().length()>0">
+      or  a.l_authid in (select l_authid from tauthfuncrela where l_funcdetail= #{l_funcdetailid} )
+    </if>
+    order by a.l_authid desc
   </select>
 
   <select id="getAuthByAuthId" parameterType="java.lang.Integer" resultType="map">

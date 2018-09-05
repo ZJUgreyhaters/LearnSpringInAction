@@ -87,6 +87,7 @@ public class AuthorityController {
      * @apiGroup AuthorityController
      * @apiParam {String} [c_authname] 权限名称
      * @apiParam {String} [c_authtype] 权限类型 0:功能权限  1:数据权限
+     * @apiParam {Int} [l_funcdetailid]  根据功能权限id 查权限名字
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiSuccess {List} [data] 返回数据 指标信息列表
@@ -106,7 +107,10 @@ public class AuthorityController {
             RequestMethod.POST}, produces = "application/json;charset=UTF-8")
     public String selectAuthByFilter(@RequestBody Map<String, Object> requestMap){
         String  c_authname =(String)requestMap.get("c_authname");
-        if (c_authname.equals("")){
+        Integer  l_funcdetailid =(Integer)requestMap.get("l_funcdetailid");
+        if ((!( l_funcdetailid == null )) &&  (l_funcdetailid>0)){
+            return authorityService.getAuthByFilter(requestMap);
+        }if (c_authname.isEmpty()||(c_authname.equals("")) ){
             return authorityService.selectAuthList();
         }
         else{
