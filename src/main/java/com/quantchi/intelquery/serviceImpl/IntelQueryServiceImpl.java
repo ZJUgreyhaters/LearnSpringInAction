@@ -170,12 +170,9 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     List<Map<String, Object>> normHeaders = ct.getNormHeaders();
 		lh.getData().forEach((i) -> retData.put(i.getRowData(),null));
 		for(Map<String, Object> normalColumn : normHeaders){
-			for(String col:normalColumn.keySet()){
-        Map<String,Object> colHeader = new HashMap<>();
-        setColHeaderAndData(retData,colHeader,colHeader,col,normalColumn);
-        retHeader.add(colHeader);
-			}
-
+      Map<String,Object> colHeader = new HashMap<>();
+      setColHeaderAndData(retData,colHeader,colHeader,"",normalColumn);
+      retHeader.add(colHeader);
 		}
     ret.put("data",retData);
     ret.put("header",retHeader);
@@ -197,11 +194,13 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         parentHeader.put(ColName,((LeafHeader) normalColumn).getTitles().stream().collect(Collectors.toMap(i->i,i->"")));
 
       String colKey = ColName;
-      boolean reIndex = true;
-			Map<String,Object> colMap = null;
+			LinkedHashMap<String,Object> colMap = null;
       ArrayList<Object> arrayList = new ArrayList<>();
+      boolean reIndex = true;
+      //((LeafHeader)normalColumn).getData().forEach((i)->arrayList.addAll(i.getRowData()));
+
       for(ComplexTable.Block nb:((LeafHeader)normalColumn).getData()){
-        colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
+        /*colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
         if(colMap == null){
           colMap = new HashMap<>();
           reIndex = false;
@@ -222,6 +221,26 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 				}
 
 				arrayList.addAll(((ComplexTable.NormBlock)nb).getRowData());
+        retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);*/
+        colMap = (LinkedHashMap<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
+        if(colMap == null){
+          reIndex = false;
+          colMap = new LinkedHashMap<>();
+        }
+        else if(reIndex){
+          reIndex = false;
+          colKey = ColName+"_"+colMap.entrySet().size();
+        }
+        else{
+          arrayList = (ArrayList<Object>) colMap.get(colKey);
+          if(arrayList == null)
+            arrayList = new ArrayList<>();
+        }
+        if(((LeafHeader)normalColumn).getTitles().size() == 0)
+          arrayList.addAll(((ComplexTable.NormBlock)nb).getRowData());
+        else
+          arrayList.add(((ComplexTable.NormBlock)nb).getRowData());
+        colMap.put(colKey,arrayList);
         retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);
       }
 
