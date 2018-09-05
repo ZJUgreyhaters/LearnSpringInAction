@@ -14,9 +14,9 @@
     when t.l_authid is null  and t3.l_authid is null then '2'
     when t.l_authid is null and t2.l_authid is null  then '3' end  as l_datatype
     from tauthority
-    left join tauthtablerela t on tauthority.l_authid = t.l_authid
-    left join tauthcolrela t2 on tauthority.l_authid = t2.l_authid
-    left join tauthlinerela  t3 on tauthority.l_authid = t3.l_authid
+    left join (select l_authid from  tauthtablerela   group by l_authid ) t on tauthority.l_authid = t.l_authid
+    left join (select l_authid from  tauthcolrela  group by l_authid ) t2 on tauthority.l_authid = t2.l_authid
+    left join (select l_authid from  tauthlinerela group by l_authid )  t3 on tauthority.l_authid = t3.l_authid
   </select>
   <select id="getAuthByFilter" resultType="Map" parameterType="map" >
     select
@@ -30,9 +30,9 @@
     when t.l_authid is null  and t3.l_authid is null then '2'
     when t.l_authid is null and t2.l_authid is null  then '3' end  as l_datatype
     from tauthority a
-    left join tauthtablerela t on a.l_authid = t.l_authid
-    left join tauthcolrela t2 on a.l_authid = t2.l_authid
-    left join tauthlinerela  t3 on a.l_authid = t3.l_authid
+    left join (select l_authid from  tauthtablerela   group by l_authid ) t on tauthority.l_authid = t.l_authid
+    left join (select l_authid from  tauthcolrela  group by l_authid ) t2 on tauthority.l_authid = t2.l_authid
+    left join (select l_authid from  tauthlinerela group by l_authid )  t3 on tauthority.l_authid = t3.l_authid
     where 1=2
     <if test="l_authid != null and l_authid>0">
      or  a.l_authid= #{l_authid}
@@ -57,9 +57,9 @@
     when t.l_authid is null  and t3.l_authid is null then '2'
     when t.l_authid is null and t2.l_authid is null  then '3' end  as l_datatype
     from tauthority
-    left join tauthtablerela t on tauthority.l_authid = t.l_authid
-    left join tauthcolrela t2 on tauthority.l_authid = t2.l_authid
-    left join tauthlinerela  t3 on tauthority.l_authid = t3.l_authid
+   left join (select l_authid from  tauthtablerela   group by l_authid ) t on tauthority.l_authid = t.l_authid
+    left join (select l_authid from  tauthcolrela  group by l_authid ) t2 on tauthority.l_authid = t2.l_authid
+    left join (select l_authid from  tauthlinerela group by l_authid )  t3 on tauthority.l_authid = t3.l_authid
     where  tauthority.l_authid= #{authid,jdbcType=INTEGER}
   </select>
 
