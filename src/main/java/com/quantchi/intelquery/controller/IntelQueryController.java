@@ -1,5 +1,6 @@
 package com.quantchi.intelquery.controller;
 
+import com.quantchi.common.ExportUtil;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
 import com.quantchi.common.ResultCode;
@@ -340,31 +341,24 @@ public class IntelQueryController {
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/download
    * @apiName download
    * @apiGroup IntelQueryController
-   * @apiParam {String} queryWithNodes 查询语句的序列化
+   * @apiParam {String} query 查询语句
    */
-  @ResponseBody
-  @RequestMapping(value = "/download", method = {
-      RequestMethod.GET}, produces = "application/json;charset=UTF-8")
-  public String download(HttpServletResponse response, String queryWithNodes, String page,
-      String page_size) {
-    try {
-      Map<String, Object> map = new HashMap<>();
-      map.put("page", page);
-      map.put("page_size", page_size);
-      QueryWithNodes queryWithNode = SerializationUtils.fromSerializedString(queryWithNodes);
-      StepResult result = QueryParser.getInstance().parse(queryWithNode);
-      QueryWithTree queryTree = result.getFinalTree();
-      SqlFormatter formatter = new Builder()
-          .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
-          .build();
-      SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
-      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
-      TreeNode columnRelation = sqlQuery.getColumnRelation();
+  @RequestMapping(value = "/download", method = RequestMethod.GET)
+  public void download(HttpServletResponse response, @RequestParam(value = "query") String query) throws Exception {
+    BasicQuery basicquery = new BasicQuery(query);
+    StepResult result = QueryParser.getInstance().parse(basicquery);
+    QueryWithTree queryTree = result.getFinalTree();
+    SqlFormatter formatter = new Builder()
+            .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+            .selectRelated(true)
+            .selectKey(true)
+            .selectName(true)
+            .build();
+    SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
 
-      return JsonResult.successJson("下载成功！");
-    } catch (Exception e) {
-      return JsonResult.successJson("下载失败！");
-    }
+    ComplexTable complexTable = intelQueryService.getComplexTable(sqlQuery);
+    ExportUtil.ExportIntelQueryExcel exportIntelQueryExcel = new ExportUtil.ExportIntelQueryExcel();
+    exportIntelQueryExcel.export(response, "智能取数结果", complexTable);
   }
 
   /**
