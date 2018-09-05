@@ -9,6 +9,12 @@ import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
 import com.quantchi.metadatamgr.data.mapper.DSEntityInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
+import com.quantchi.termInfo.mapper.PhysicalTableInfoMapper;
+import com.quantchi.termInfo.pojo.PhysicalTableInfo;
+import com.quantchi.termInfo.pojo.PhysicalTableInfoExample;
+import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +26,16 @@ import java.util.Map;
 @Service
 public class MetaDataMgrEntityApiService {
 
+  private static final Logger logger = LoggerFactory.getLogger(MetaDataMgrEntityApiService.class);
+
   @Autowired
   private DSEntityInfoDBMapper dsEntityInfoDBMapper;
 
   @Autowired
   private DSMetaInfoDBMapper dsMetaInfoDBMapper;
+
+  @Autowired
+  private PhysicalTableInfoMapper tableInfoMapper;
 
   public int createEntity(JSONObject json) {
     DSEntityInfoDB dsEntityInfoDB = new DSEntityInfoDB();
@@ -48,8 +59,41 @@ public class MetaDataMgrEntityApiService {
       nonMainTable = String.join(",", (List) json.get("non_main_table_id"));
     }
     dsEntityInfoDB.setNonMainTable(nonMainTable);
-
+    insertDomain(dsEntityInfoDB);
     return dsEntityInfoDBMapper.insert(dsEntityInfoDB);
+  }
+
+  private void insertDomain(DSEntityInfoDB info) {
+    Map<String, Object> row = new HashMap<>();
+    row.put("domainId", info.getEntityName());
+    row.put("domainName", info.getEntityName());
+    row.put("businessTypeId", info.getBusiness());
+    row.put("businessTypeName", info.getBusiness());
+    List<String> tables = new ArrayList<>();
+    tables.add(info.getMainTable());
+    tables.addAll(Arrays.asList(info.getNonMainTable().split(",")));
+    for (int i = 0; i < tables.size(); i++) {
+      String dbTable = tables.get(i);
+      row.put("tableId", dbTable);
+      String db = info.getMainTable().substring(0, dbTable.indexOf('.'));
+      String table = info.getMainTable().substring(dbTable.indexOf('.') + 1);
+      if (i == 0) {
+        row.put("isMain", Boolean.TRUE);
+        row.put("nameField", info.getMainEntityFieldName());
+      } else {
+        row.put("isMain", Boolean.FALSE);
+        row.put("nameField", null);
+      }
+      PhysicalTableInfoExample example = new PhysicalTableInfoExample();
+      example.createCriteria().andPhysicalDbEqualTo(db).andPhysicalTableEqualTo(table);
+      List<PhysicalTableInfo> physicalTables = tableInfoMapper.selectByExample(example);
+      if (physicalTables.isEmpty()) {
+        logger.warn("Failed to get physical table: " + dbTable);
+      } else {
+        row.put("tableName", physicalTables.get(0).getTableName());
+        dsEntityInfoDBMapper.insertDomain(row);
+      }
+    }
   }
 
   public int modifyEntity(JSONObject json) {
