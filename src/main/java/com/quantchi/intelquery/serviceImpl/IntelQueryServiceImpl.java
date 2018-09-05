@@ -190,13 +190,29 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         setColHeaderAndData(retData,subColHeader,colHeader,subCol.toString(),subNormalCol);
       }
     }else if(normalColumn instanceof LeafHeader){
-      parentHeader.put(ColName,((LeafHeader) normalColumn).getTitles());
+      if(((LeafHeader) normalColumn).getTitles().size() == 0)
+        parentHeader.put(ColName,"");
+      else
+        parentHeader.put(ColName,((LeafHeader) normalColumn).getTitles().stream().collect(Collectors.toMap(i->i,i->"")));
 
+      String colKey = ColName;
+      boolean reIndex = true;
+      ArrayList<Object> arrayList = new ArrayList<>();
       for(ComplexTable.Block nb:((LeafHeader)normalColumn).getData()){
         Map<String,Object> colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
-        if(colMap == null)
+        if(colMap == null){
           colMap = new HashMap<>();
-        colMap.put(ColName,((ComplexTable.NormBlock)nb).getRowData());
+          reIndex = false;
+        }
+        else if(reIndex){
+          colKey = ColName+"_"+colMap.entrySet().size();
+          reIndex =false;
+        }
+        else
+          arrayList = (ArrayList<Object>) colMap.get(colKey);
+
+        arrayList.addAll(((ComplexTable.NormBlock)nb).getRowData());
+        colMap.put(colKey,arrayList);
         retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);
       }
 
@@ -472,18 +488,24 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       String businessName,
       String query,
       boolean isParseable,
-      String sql) throws Exception {
+      String sql){
 
-    QuerySentence qs = new QuerySentence();
-    qs.setUsername(username);
-    qs.setBusinessName(businessName);
-    qs.setQuery(query);
-    qs.setParseable(isParseable);
-    qs.setQuerySql(sql);
-    qs.setIntelqueryVer(INTELQUERYVERSION);
+    try{
+      QuerySentence qs = new QuerySentence();
+      qs.setUsername(username);
+      qs.setBusinessName(businessName);
+      qs.setQuery(query);
+      qs.setParseable(isParseable);
+      qs.setQuerySql(sql);
+      qs.setIntelqueryVer(INTELQUERYVERSION);
 
-    SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-    return engObj.addQuerySentence(qs);
+      SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
+      return engObj.addQuerySentence(qs);
+    }catch (Exception e){
+      logger.error("add sentence happened error: {}",e.getMessage());
+      return "";
+    }
+
   }
 
   public List<QuerySentence> getCorrelativeSentence(String query) throws Exception {

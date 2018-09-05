@@ -2,6 +2,7 @@ package com.quantchi.intelquery.controller;
 
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
+import com.quantchi.common.ResultCode;
 import com.quantchi.common.Util;
 import com.quantchi.intelquery.QueryParser;
 import com.quantchi.intelquery.SqlFormatter;
@@ -9,6 +10,7 @@ import com.quantchi.intelquery.SqlFormatter.Builder;
 import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.TokenizingResult;
 import com.quantchi.intelquery.date.formatter.NormalFormatter;
+import com.quantchi.intelquery.exception.QPException;
 import com.quantchi.intelquery.pojo.QuerySentence;
 import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
@@ -23,6 +25,7 @@ import com.quantchi.intelquery.utils.SerializationUtils;
 import com.quantchi.intelquery.utils.ComplexTable;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -211,10 +214,13 @@ public class IntelQueryController {
   @RequestMapping(value = "/basicQuery", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String basicQuery(@RequestBody Map<String, Object> map) {
+    String businessName = "";
+    String query = "";
+    SqlQuery sqlQuery = null;
+    Map<String, Object> resultMap = new HashMap();
     try {
-      Map<String, Object> resultMap = new HashMap();
-      String query = map.get("q").toString();
-      String businessName = map.get("businessName").toString();
+      query = map.get("q").toString();
+      businessName = map.get("businessName").toString();
       List<Object> metricsRet = intelQueryService.getMetricsRet(query);
       String total = String.valueOf(metricsRet.size());
       int page = 1;
@@ -246,7 +252,7 @@ public class IntelQueryController {
           .selectKey(true)
           .selectName(true)
           .build();
-      SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
+      sqlQuery = queryTree.getSqlQuery(formatter);
 
       ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql()+" limit 100", map);
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
@@ -258,7 +264,7 @@ public class IntelQueryController {
 
       if (stepsList.size() > 0) {
         String id = intelQueryService
-            .addQuerySentence("testUser", businessName, query, (stepsList.size() > 0),
+            .addQuerySentence("testUser", businessName, query, true,
                 sqlQuery.toSql());
         resultMap.put("sentencesId", id);
       }
@@ -269,10 +275,26 @@ public class IntelQueryController {
       resultMap.put("steps", stepsList);
       resultMap.put("queryWithNodes", SerializationUtils.toSerializedString(queryWithNodes));
       resultMap.put("candidates", candidates);
-
+      resultMap.put("isParseable",false);
       return JsonResult.successJson(resultMap);
-    } catch (Exception e) {
-      e.printStackTrace();
+
+    }catch(QPException qpe){
+      logger.info("QPException basicQuery error {}", qpe.getMessage());
+      String id = intelQueryService.addQuerySentence("testUser", businessName, query, false,
+                      sqlQuery.toSql());
+      resultMap.put("sentencesId", id);
+      resultMap.put("isParseable",false);
+      return JsonResult.successJson(resultMap, ResultCode.ERROR,"get basicQuery error");
+
+    }catch(SQLException sqle){
+      logger.info("SQLException basicQuery error {}", sqle.getMessage());
+      String id = intelQueryService.addQuerySentence("testUser", businessName, query, false,
+              sqlQuery.toSql());
+      resultMap.put("sentencesId", id);
+      resultMap.put("isParseable",false);
+      return JsonResult.successJson(resultMap, ResultCode.ERROR,"get basicQuery error");
+    }
+    catch (Exception e) {
       logger.info("get basicQuery error", e);
       return JsonResult.errorJson("get basicQuery error");
     }
