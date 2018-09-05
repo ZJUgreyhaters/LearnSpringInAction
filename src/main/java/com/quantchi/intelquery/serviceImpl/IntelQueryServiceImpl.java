@@ -198,9 +198,10 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
       String colKey = ColName;
       boolean reIndex = true;
+			Map<String,Object> colMap = null;
       ArrayList<Object> arrayList = new ArrayList<>();
       for(ComplexTable.Block nb:((LeafHeader)normalColumn).getData()){
-        Map<String,Object> colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
+        colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
         if(colMap == null){
           colMap = new HashMap<>();
           reIndex = false;
@@ -211,12 +212,16 @@ public class IntelQueryServiceImpl implements IntelQueryService {
           reIndex =false;
           colMap.put(colKey,arrayList);
         }
-        else
-          arrayList = (ArrayList<Object>) colMap.get(colKey);
+        else{
+					arrayList = (ArrayList<Object>) colMap.get(colKey);
+					if(arrayList == null){
+            arrayList = new ArrayList<>();
+            colMap.put(colKey,arrayList);
+          }
 
-        if(arrayList == null)
-          System.out.print("get null");
-        arrayList.addAll(((ComplexTable.NormBlock)nb).getRowData());
+				}
+
+				arrayList.addAll(((ComplexTable.NormBlock)nb).getRowData());
         retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);
       }
 
