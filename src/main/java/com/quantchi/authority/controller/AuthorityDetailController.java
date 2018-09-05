@@ -167,6 +167,7 @@ public class AuthorityDetailController {
      * @apiSuccess {List} [data.tables] 表
      * @apiSuccess {String} [tables.tableName] 表名
      * @apiSuccess {List} [tables.columns] 字段名称
+     * @apiSuccess {String} [data.total] 返回总条数
      * */
     @ResponseBody
     @RequestMapping(value = "/getTableColumn", method = {

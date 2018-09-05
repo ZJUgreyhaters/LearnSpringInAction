@@ -40,6 +40,7 @@ public class AuthorityController {
      * @apiSuccess {String} [data.c_rolename] 角色名称
      * @apiSuccess {String} [data.c_isenable] 是否有效
      * @apiSuccess {String} [data.c_roledesc] 角色描述信息
+     * @apiSuccess {String} [data.total] 返回总条数
      **/
     @ResponseBody
     @RequestMapping(value = "/listRoleByFilter", method = {
@@ -95,6 +96,7 @@ public class AuthorityController {
      * @apiSuccess {String} [data.c_isenable] 是否有效
      * @apiSuccess {String} [data.c_isenable] d_createdate
      * @apiSuccess {Int} [data.l_datatype] 数据权限类型 0表示非数据权限 1表示表权限 2 表示字段权限 3 表示行数据权限
+     * @apiSuccess {String} [total] 返回总条数
      * @apiParamExample {json} Request-example:
      * {"c_authname":"xxx"}    或者 {"c_authname":"xxxxx","c_authtype":"0"}
      *

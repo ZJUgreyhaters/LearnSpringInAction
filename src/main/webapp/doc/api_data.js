@@ -296,6 +296,13 @@ define({ "api": [
             "optional": true,
             "field": "data.c_roledesc",
             "description": "<p>角色描述信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.total",
+            "description": "<p>返回总条数</p>"
           }
         ]
       }
@@ -601,6 +608,13 @@ define({ "api": [
             "optional": true,
             "field": "data.l_datatype",
             "description": "<p>数据权限类型 0表示非数据权限 1表示表权限 2 表示字段权限 3 表示行数据权限</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "total",
+            "description": "<p>返回总条数</p>"
           }
         ]
       }
@@ -831,6 +845,13 @@ define({ "api": [
             "optional": true,
             "field": "tables.columns",
             "description": "<p>字段名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.total",
+            "description": "<p>返回总条数</p>"
           }
         ]
       }
@@ -1004,87 +1025,17 @@ define({ "api": [
             "optional": true,
             "field": "userName",
             "description": "<p>角色姓名</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "branchno",
+            "description": "<p>所在营业部id</p>"
           }
         ]
       }
     },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "code",
-            "description": "<p>成功或者错误代码200成功，500错误</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "msg",
-            "description": "<p>成功或者错误信息</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "List",
-            "optional": true,
-            "field": "data",
-            "description": "<p>返回数据 指标信息列表</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "data.userAccount",
-            "description": "<p>客户账号</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "data.userId",
-            "description": "<p>&quot;:]  客户id</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "data.userName",
-            "description": "<p>客户姓名</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "data.userRoles",
-            "description": "<p>客户角色</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "data.userStatus",
-            "description": "<p>客户状态</p>"
-          }
-        ]
-      }
-    },
-    "filename": "../../java/com/quantchi/authority/controller/AuthorityUserController.java",
-    "groupTitle": "AuthorityUserController"
-  },
-  {
-    "type": "post",
-    "url": "/api/getUserList",
-    "title": "查员工",
-    "version": "1.0.0",
-    "sampleRequest": [
-      {
-        "url": "http://192.168.2.61:8082/quantchiAPI/api/getUserList"
-      }
-    ],
-    "name": "getUserList",
-    "group": "AuthorityUserController",
     "success": {
       "fields": {
         "Success 200": [

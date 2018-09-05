@@ -6,6 +6,7 @@ import com.quantchi.authority.mapper.*;
 import com.quantchi.authority.pojo.*;
 import com.quantchi.authority.service.AuthorityService;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import com.quantchi.common.JsonResult;
@@ -36,7 +37,8 @@ public class AuthorityServiceImpl implements AuthorityService {
     public String selectRoleList( ) {
         try {
             List<Map<String, Object>> list = authRoleMapper.getAuthRole();
-            return JsonResult.successJson(list);
+            String total = list.size() + "";
+            return JsonResult.successJson(total,list);
         } catch (Exception e) {
             e.printStackTrace();
             return JsonResult.errorJson("select error！");
@@ -90,7 +92,8 @@ public class AuthorityServiceImpl implements AuthorityService {
     public String selectAuthList(){
         try {
             List<Map<String,Object>> list=authorityMapper.selectAuth();
-            return JsonResult.successJson(list);
+            String total = list.size() + "";
+            return JsonResult.successJson(total,list);
         }catch (Exception e){
             e.printStackTrace();
             return JsonResult.errorJson("select error!");
@@ -298,13 +301,15 @@ public class AuthorityServiceImpl implements AuthorityService {
 
     @Override
     public String getAuthByFilter(Map<String, Object> map){
-      return  JsonResult.successJson(authorityMapper.getAuthByFilter(map));
+        List<Map<String,Object>> list =authorityMapper.getAuthByFilter(map);
+        String total = list.size() + "";
+        return  JsonResult.successJson(total,list);
     }
 
     @Override
     public  String getRoleByFilter(Map<String, Object> map){
-
         List<Map<String, Object>> list = authRoleMapper.getRoleByFilter(map);
-        return JsonResult.successJson(list);
+        String total = list.size() + "";
+        return JsonResult.successJson(total,list);
     }
 }
