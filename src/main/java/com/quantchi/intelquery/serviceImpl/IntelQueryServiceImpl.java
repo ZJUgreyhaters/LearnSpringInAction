@@ -197,31 +197,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 			LinkedHashMap<String,Object> colMap = null;
       ArrayList<Object> arrayList = new ArrayList<>();
       boolean reIndex = true;
-      //((LeafHeader)normalColumn).getData().forEach((i)->arrayList.addAll(i.getRowData()));
-
       for(ComplexTable.Block nb:((LeafHeader)normalColumn).getData()){
-        /*colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
-        if(colMap == null){
-          colMap = new HashMap<>();
-          reIndex = false;
-          colMap.put(colKey,arrayList);
-        }
-        else if(reIndex){
-          colKey = ColName+"_"+colMap.entrySet().size();
-          reIndex =false;
-          colMap.put(colKey,arrayList);
-        }
-        else{
-					arrayList = (ArrayList<Object>) colMap.get(colKey);
-					if(arrayList == null){
-            arrayList = new ArrayList<>();
-            colMap.put(colKey,arrayList);
-          }
-
-				}
-
-				arrayList.addAll(((ComplexTable.NormBlock)nb).getRowData());
-        retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);*/
         colMap = (LinkedHashMap<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
         if(colMap == null){
           reIndex = false;
