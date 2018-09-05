@@ -255,7 +255,7 @@ public class IntelQueryController {
           .build();
       sqlQuery = queryTree.getSqlQuery(formatter);
 
-      ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql()+" limit 100", map);
+      ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql(), map);
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
       TreeNode columnRelation = sqlQuery.getColumnRelation();
       Map<String,Object> complexDataAndHeader = intelQueryService.getComplexData(tabulate,columnRelation,page,page_size);
@@ -263,20 +263,26 @@ public class IntelQueryController {
       List<Object> complexData = Paging.pagingPlugObject(((Map<List<String>,Object>)complexDataAndHeader.get("data")).entrySet().stream().collect(Collectors.toList()), page_size,page);
 
 
-      if (stepsList.size() > 0) {
-        String id = intelQueryService
+
+      String id = intelQueryService
             .addQuerySentence("testUser", businessName, query, true,
                 sqlQuery.toSql());
-        resultMap.put("sentencesId", id);
+      resultMap.put("sentencesId", id);
+
+      if(result instanceof TokenizingResult){
+        QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
+        resultMap.put("queryWithNodes", SerializationUtils.toSerializedString(queryWithNodes));
+      }else{
+        resultMap.put("queryWithNodes","");
       }
 
-      QueryWithNodes queryWithNodes = ((TokenizingResult) result).getQuery();
+
       resultMap.put("tabulate", complexData);
       resultMap.put("columnRelation", complexDataAndHeader.get("header"));
       resultMap.put("steps", stepsList);
-      resultMap.put("queryWithNodes", SerializationUtils.toSerializedString(queryWithNodes));
+
       resultMap.put("candidates", candidates);
-      resultMap.put("isParseable",false);
+      resultMap.put("isParseable",true);
       return JsonResult.successJson(resultMap);
 
     }catch(QPException qpe){

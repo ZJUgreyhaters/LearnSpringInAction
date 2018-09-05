@@ -524,6 +524,14 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
     List<QuerySentence> sentences = engObj.getCorrelativeSentence();
     removeSameDomainSentence(sentences);
+
+		Collections.sort(sentences, new Comparator<QuerySentence>() {
+			@Override
+			public int compare(QuerySentence qsFirst, QuerySentence qsSec) {
+				return Integer.parseInt(qsSec.getCount().toString()) - Integer.parseInt(qsFirst.getCount().toString());
+			}
+		});
+
     return sentences;
   }
 
