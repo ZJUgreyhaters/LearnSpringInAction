@@ -39,7 +39,7 @@ public class SolrEng extends SearchEng {
   private static final String SEARCHDOCFILED = AppProperties.getWithDefault("searchDocField", "query");
 
   private static final String highlightField = AppProperties
-      .getWithDefault("highlightField", "seg_name");
+      .getWithDefault("highlightField", "cn_name");
   private static final String colsField = AppProperties.getWithDefault("colsField", "cn_name");
 
   private static final String WEIGHT = "weight";
@@ -70,13 +70,16 @@ public class SolrEng extends SearchEng {
   @Override
   public List<Object> getMetrics() throws Exception {
     QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCommParam,SEARCHFILED);
-    return documentListToObjectList(processDocs(qr, false));
+		Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.handle");
+		double threshold = Double.parseDouble(solrParam.get("threshold"));
+    return documentListToObjectList(processDocs(qr, false,threshold));
   }
 
   @Override
   public List<Object> getQuickMacro() throws Exception {
     QueryResponse qr = searchSolr(solrQuickParam,SEARCHFILED);
-    SolrDocumentList solrDocuments = processDocs(qr, true);
+    //键盘精灵里因为分词原因调低阈值
+    SolrDocumentList solrDocuments = processDocs(qr, true,0.2);
     return documentListToObjectList(setReplaceOrigin(solrDocuments, qr.getHighlighting()));
   }
 
@@ -131,11 +134,11 @@ public class SolrEng extends SearchEng {
     return qs;
   }
 
-  private SolrDocumentList processDocs(QueryResponse qr, boolean filterRepeat)
+  private SolrDocumentList processDocs(QueryResponse qr, boolean filterRepeat,double threshold)
       throws IOException, QPException {
     SolrDocumentList result = new SolrDocumentList();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.handle");
-    double threshold = Double.parseDouble(solrParam.get("threshold"));   //阈值
+    //double threshold = Double.parseDouble(solrParam.get("threshold"));   //阈值
 
     //对每个doc做处理
     for (SolrDocument doc : qr.getResults()) {
