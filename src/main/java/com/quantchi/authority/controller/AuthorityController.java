@@ -107,7 +107,9 @@ public class AuthorityController {
         if (c_authname.equals("")){
             return authorityService.selectAuthList();
         }
+        else{
         return authorityService.getAuthByFilter(requestMap);
+        }
     }
 
     /** @api {post} /api/addRole 插入新角色
@@ -182,8 +184,6 @@ public class AuthorityController {
      * @apiParam {Int} [role.l_roleid] 角色ID
      * @apiParam {List} [addauthRoleRela] 表数据权限明细 可以装入多个
      * @apiParam {Int} [addauthRoleRela.l_authid] 权限ID
-     * @apiParam {Int} [addauthRoleRela.l_roleauthid] 关系id
-     * @apiParam {Int} [addauthRoleRela.l_roleid]  角色ID
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiParamExample {json} Request-example:例子:

@@ -40,13 +40,12 @@ public class AuthorityDetailController {
      * @apiParam {String} [authority.c_authtype] 权限类型  0:功能权限  1:数据权限'
      * @apiParam {String} [authority.l_datatype] 数据权限类型  0表示非数据权限 1表示表权限 2 表示字段权限 3 表示行数据权限
      * @apiParam {Int} [authority.l_authid] 权限id   因为还未插入表 填0
+     * @apiParam String} [authDetail.c_database] 库名字
      * @apiParam {List} [authDetail]  权限明细 可以装入多个
      * @apiParam {Int} [authDetail.l_authdetailid] 明细权限ID    因为还未插入表 填0
      * @apiParam {String} [authDetail.c_tablename] 表名字
      * @apiParam {String} [authDetail.c_column] 表字段名字
-     * @apiParam {String} [authDetail.c_fiterdesc] 过滤描述
      * @apiParam {String} [authDetail.c_fiter]  过滤条件
-     * @apiParam {String} [authDetail.c_funcname] 功能名称
      * @apiParam {String} [authDetail.c_url]功能路径
      * @apiParam {String} [authDetail.c_isenable]  是否有效
      * @apiParamExample {json} Request-example:
@@ -124,7 +123,7 @@ public class AuthorityDetailController {
      * @apiVersion 1.0.0
      * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/modifyAuth
      * @apiName modifyAuth
-     * @apiGroup AuthorityController
+     * @apiGroup AuthorityDetailController
      * @apiParam {Object} [authority] 权限
      * @apiParam {String} [authority.c_isenable] 是否有效
      * @apiParam {String} [authority.c_authname] 权限名称
@@ -133,11 +132,10 @@ public class AuthorityDetailController {
      * @apiParam {String} [authority.l_datatype] 数据权限类型 0表示非数据权限 1表示表权限 2 表示字段权限 3 表示行数据权限
      * @apiParam {List} [authDetail]  权限明细 可以装入多个
      * @apiParam {Int} [authDetail.l_authdetailid] 明细权限ID
+     * @apiParam String} [authDetail.c_database] 库名字
      * @apiParam {String} [authDetail.c_tablename] 表名字
      * @apiParam {String} [authDetail.c_column] 表字段名字
-     * @apiParam {String} [authDetail.c_fiterdesc] 过滤描述
      * @apiParam {String} [authDetail.c_fiter]  过滤条件
-     * @apiParam {String} [authDetail.c_funcname] 功能名称
      * @apiParam {String} [authDetail.c_url]功能路径
      * @apiParam {String} [authDetail.c_isenable]  是否有效
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
@@ -157,11 +155,11 @@ public class AuthorityDetailController {
             return JsonResult.errorJson("error!");
         }
     }
-    /**@api {post} /api/getTableColumn 修改权限说明
+    /**@api {post} /api/getTableColumn 获取库表字段信息
      * @apiVersion 1.0.0
      * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/getTableColumn
      * @apiName modifyAuth
-     * @apiGroup AuthorityController
+     * @apiGroup AuthorityDetailController
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiSuccess {List} [data] 返回数据 指标信息列表

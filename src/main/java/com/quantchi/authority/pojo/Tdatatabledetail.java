@@ -7,7 +7,15 @@ public class Tdatatabledetail {
   private String c_Tablename;
   private String c_Isenable;
   private String c_Policytype;
+  private String c_Database;
 
+  public String getC_Database() {
+    return c_Database;
+  }
+
+  public void setC_Database(String c_Database) {
+    this.c_Database = c_Database;
+  }
 
   public long getL_datatabledetailid() {
     return l_Datatabledetailid;

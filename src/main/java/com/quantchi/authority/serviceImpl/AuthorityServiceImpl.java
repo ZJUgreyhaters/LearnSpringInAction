@@ -70,6 +70,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     public  void addRoleAuth(Map<String, Object> map){
 
          Map<String, Object> roleMap = (Map<String, Object>) map.get("role") ;
+
          authRoleMapper.insertRole(roleMap);
         Long roleid =  Long.parseLong(roleMap.get( "l_roleid").toString()) ;
 
@@ -172,6 +173,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 
         for (Tauthrolerela tauthrolerela:roleRelas){
             Map<String, Object> tauthrolerelaMap =  oMapper.convertValue(tauthrolerela, Map.class);
+            tauthrolerelaMap.put("l_roleid",roldId);
             authorityMapper.inertAuthRoleRela(tauthrolerelaMap);
         }
         ;
