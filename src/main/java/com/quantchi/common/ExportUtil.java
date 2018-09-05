@@ -42,7 +42,7 @@ public class ExportUtil {
       OutputStream os = response.getOutputStream();
       response.reset();// 清空输出流
       response.setHeader("Content-disposition",
-          "attachment; filename=" + new String(fileName.getBytes("GB2312"), "ISO8859-1") + ".xls");
+          "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1") + ".xls");
       response.setContentType("application/msexcel");
 
       WritableWorkbook workbook = Workbook.createWorkbook(os);
@@ -116,6 +116,10 @@ public class ExportUtil {
     // 递归输出普通列
     private final int exportNormalCols (Map<String, Object> normHeader, int curCol, int curRow)
       throws Exception {
+      if (curRow > headerBottomRow) {
+        headerBottomRow = curRow;
+      }
+
       // 先生成表头
       Set<String> colNames = normHeader.keySet();
 
@@ -141,6 +145,11 @@ public class ExportUtil {
             exportNormData((List<NormBlock>) leafHeader.getData(), curCol, curRow + 1);
 
             --curRow;
+          } else {
+            // 再生成表数据
+            exportNormData((List<NormBlock>) leafHeader.getData(), curCol, curRow + 1);
+
+            ++rightmostCol;
           }
         } else {
           String msg = "ComplexTable数据格式不对";
@@ -189,7 +198,7 @@ public class ExportUtil {
       OutputStream os = response.getOutputStream();
       response.reset();// 清空输出流
       response.setHeader("Content-disposition",
-              "attachment; filename=" + new String(fileName.getBytes("GB2312"), "ISO8859-1") + ".xls");
+              "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1") + ".xls");
       response.setContentType("application/msexcel");
 
       WritableWorkbook workbook = Workbook.createWorkbook(os);
@@ -215,7 +224,7 @@ public class ExportUtil {
       // 先生成表右边的普通列，后生成左边的基本主体(prime)列
 
       int curRow = 0;
-      int curCol = primeHeader.getData().size();
+      int curCol = primeHeader.getTitles().size();
 
       // 依次生成每个普通列
       List<Map<String, Object>> normHeaders = complexTable.getNormHeaders();

@@ -319,11 +319,11 @@ public class IntelQueryController {
    * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/download
    * @apiName download
    * @apiGroup IntelQueryController
-   * @apiParam {String} queryWithNodes 查询语句的序列化
+   * @apiParam {String} query 查询语句
    */
   @RequestMapping(value = "/download", method = RequestMethod.GET)
-  public void download(HttpServletResponse response, String queryWithNodes) throws Exception {
-    BasicQuery basicquery = new BasicQuery(queryWithNodes);
+  public void download(HttpServletResponse response, @RequestParam(value = "query") String query) throws Exception {
+    BasicQuery basicquery = new BasicQuery(query);
     StepResult result = QueryParser.getInstance().parse(basicquery);
     QueryWithTree queryTree = result.getFinalTree();
     SqlFormatter formatter = new Builder()
