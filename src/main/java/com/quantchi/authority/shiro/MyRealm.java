@@ -41,7 +41,7 @@ public class MyRealm extends AuthorizingRealm {
         else{
             System.out.println("Hello, " + userCode);
         }
-        //查询密码为222
+        // 查询密码为222
         String password="222";
 
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userCode,password,"testRealm");
@@ -56,7 +56,10 @@ public class MyRealm extends AuthorizingRealm {
         Set<String> role = new HashSet<>();
         role.add("admin");
         simpleAuthorizationInfo.setRoles(role);
-
+        simpleAuthorizationInfo.addRole("user");
+        System.out.println("Role: " + simpleAuthorizationInfo.getRoles().toString());
+        simpleAuthorizationInfo.addStringPermission("user:add:*");
+        System.out.println("--- doGetAuthorizationInfo ---");
         return simpleAuthorizationInfo;
     }
 }

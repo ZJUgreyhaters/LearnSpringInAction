@@ -28,16 +28,23 @@ public class MyUrlFilter extends AccessControlFilter {
 //    }
 
     // AccessControlFilter
-    public boolean isAccessAllowed(ServletRequest request,ServletResponse response,Object mappedValue){
-        logger.info("--- AccessControlFilter --- >_>");
-        System.out.println("--- AccessControlFilter --- >_>");
-        return false;
+    public boolean isAccessAllowed(ServletRequest request,ServletResponse response, Object mappedValue){
+        String loginUrl = getLoginUrl();
+        //System.out.println(mappedValue.toString());
+        System.out.println("--- MyUrlFilter --- Method: isAccessAllowed");
+        System.out.println("--- MyUrlFilter --- LoginUrl: " + loginUrl);
+        setLoginUrl("");
+
+        return true;
     }
 
     public boolean onAccessDenied(ServletRequest request,ServletResponse response, Object mappedValue){
-        return false;
+        System.out.println("onAccessDenied++");
+        return true;
     }
+
     public boolean onAccessDenied(ServletRequest request, ServletResponse response){
-        return false;
+        System.out.println("onAccessDenied--");
+        return true;
     }
 }

@@ -37,7 +37,9 @@ public class authenticationTest {
             //ex.printStackTrace();
         }
         System.out.println("是否通过验证：" + subject.isAuthenticated());
-        System.out.println("是否有角色：" + subject.hasRole("admin"));
+        System.out.println("是否有角色admin：" + subject.hasRole("admin"));
+        System.out.println("是否有角色user：" + subject.hasRole("user"));
+
 
         subject.logout();
         System.out.println("用户退出" + subject.isAuthenticated());
