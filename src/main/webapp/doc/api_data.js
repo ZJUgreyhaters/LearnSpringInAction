@@ -441,14 +441,14 @@ define({ "api": [
             "type": "String",
             "optional": true,
             "field": "role.c_isenable",
-            "description": "<p>权限名称</p>"
+            "description": "<p>是否生效</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "role.c_roledesc",
-            "description": "<p>是否生效</p>"
+            "description": "<p>角色描述</p>"
           },
           {
             "group": "Parameter",
@@ -483,7 +483,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Request-example:例子:",
-          "content": "{\"role\":{\"c_isenable\":\"0\",\"c_roledesc\":\"xxxx\",\"c_rolename\":\"xxxxxx\",\"l_roleid\":0},",
+          "content": "{\"role\":{\"c_isenable\":\"0\",\"c_roledesc\":\"xxxx\",\"c_rolename\":\"xxxxxx\",\"l_roleid\":8},\"addauthRoleRela\":[{\"l_authid\":23},{\"l_authid\":21}]}",
           "type": "json"
         }
       ]
@@ -1030,7 +1030,7 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": true,
-            "field": "branchno",
+            "field": "branch_no",
             "description": "<p>所在营业部id</p>"
           }
         ]
@@ -1093,7 +1093,7 @@ define({ "api": [
             "type": "String",
             "optional": true,
             "field": "data.userStatus",
-            "description": "<p>客户状态</p>"
+            "description": "<p>客户状态 0失效 1有效</p>"
           }
         ]
       }
@@ -1674,8 +1674,8 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "queryWithNodes",
-            "description": "<p>查询语句的序列化</p>"
+            "field": "query",
+            "description": "<p>查询语句</p>"
           }
         ]
       }

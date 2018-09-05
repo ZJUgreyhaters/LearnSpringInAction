@@ -83,7 +83,6 @@ public class AuthorityDetailController {
     public String getDataAuthDetail(@RequestBody Map<String, Object> requestMap){
         try {
             return  authoritydetailService.getAuthdetail(requestMap) ;
-
         }catch (Exception e ){
             e.printStackTrace();
             return JsonResult.errorJson("error!");

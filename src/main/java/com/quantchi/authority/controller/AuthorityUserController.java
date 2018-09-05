@@ -41,20 +41,20 @@ public class AuthorityUserController {
         Map<String,Object> depart =  new HashMap<String,Object>();
         Map<String,Object> team =  new HashMap<String,Object>();
         depart.put("branchname","武林路营业部");
-        depart.put("branchno","001");
+        depart.put("branch_no","001");
         departs.add(depart);
 
         depart =  new HashMap<String,Object>();
         depart.put("branchname","滨盛路营业部");
-        depart.put("branchno","002");
+        depart.put("branch_no","002");
         departs.add(depart);
         depart =  new HashMap<String,Object>();
         depart.put("branchname","天目山营业部");
-        depart.put("branchno","003");
+        depart.put("branch_no","003");
         departs.add(depart);
 
         userTree.put("company","杭州第一分公司");
-        userTree.put("branchno","001,002,003");
+        userTree.put("branch_no","001,002,003");
         userTree.put("depart", departs);
 
         companyTree.add(userTree);
@@ -63,11 +63,11 @@ public class AuthorityUserController {
         departs=new ArrayList< Map<String,Object>>();
         depart =  new HashMap<String,Object>();
         depart.put("branchname","上海陆家嘴营业部");
-        depart.put("branchno","011");
+        depart.put("branch_no","011");
         departs.add(depart);
         depart =  new HashMap<String,Object>();
         depart.put("branchname","上海徐汇区营业部");
-        depart.put("branchno","012");
+        depart.put("branch_no","012");
         departs.add(depart);
         depart =  new HashMap<String,Object>();
         depart.put("branchname","上海宝山区营业部");
@@ -75,7 +75,7 @@ public class AuthorityUserController {
         departs.add(depart);
 
         userTree.put("company","上海直属营业部");
-        userTree.put("branchno","011,012,013");
+        userTree.put("branch_no","011,012,013");
         userTree.put("depart", departs);
 
         companyTree.add(userTree);
@@ -90,7 +90,7 @@ public class AuthorityUserController {
         user.put("userId","20123");
         user.put("userAccount","139111201232");
         user.put("userRoles","营销部业务员,营销部销售");
-        user.put("userStatus","0");
+        user.put("userStatus","1");
         users.add(user);
 
 
@@ -99,7 +99,7 @@ public class AuthorityUserController {
         user.put("userId","20128");
         user.put("userAccount","139111201282");
         user.put("userRoles","技术部运维");
-        user.put("userStatus","0");
+        user.put("userStatus","1");
         users.add(user);
 
         user = new HashMap<String,Object>();
@@ -107,7 +107,7 @@ public class AuthorityUserController {
         user.put("userId","20134");
         user.put("userAccount","13911120134");
         user.put("userRoles","营销部业务员");
-        user.put("userStatus","0");
+        user.put("userStatus","1");
         users.add(user);
         String total =users.size()+"";
         return JsonResult.successJson(total,users);
@@ -118,7 +118,7 @@ public class AuthorityUserController {
      * @apiName getUserByUserName
      * @apiGroup AuthorityUserController
      * @apiParam {String} [userName] 角色姓名
-     * @apiParam {String} [branchno] 所在营业部id
+     * @apiParam {String} [branch_no] 所在营业部id
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiSuccess {List} [data] 返回数据 指标信息列表
@@ -126,7 +126,7 @@ public class AuthorityUserController {
      * @apiSuccess {String}  [data.userId":]  客户id
      * @apiSuccess {String}  [data.userName]  客户姓名
      * @apiSuccess {String}  [data.userRoles]  客户角色
-     * @apiSuccess {String}  [data.userStatus]  客户状态
+     * @apiSuccess {String}  [data.userStatus]  客户状态 0失效 1有效
      * */
     @ResponseBody
     @RequestMapping(value = "/getUserByUserName", method = {
@@ -137,7 +137,7 @@ public class AuthorityUserController {
         Map<String,Object> user = new HashMap<String,Object>();
 
         String userName = (String) map.get("userName");
-        String branchno = (String) map.get("branchno");
+        String branchno = (String) map.get("branch_no");
 
        if(userName.equals("") &&  userName.equals("")) {
            return getUserList();
@@ -147,7 +147,7 @@ public class AuthorityUserController {
            user.put("userId", "20123");
            user.put("userAccount", "139111201232");
            user.put("userRoles", "营销部业务员,营销部销售");
-           user.put("userStatus", "0");
+           user.put("userStatus", "1");
            users.add(user);
 
            String total =users.size()+"";
@@ -159,7 +159,7 @@ public class AuthorityUserController {
             user.put("userId", "20123");
             user.put("userAccount", "139111201232");
             user.put("userRoles", "营销部业务员,营销部销售");
-            user.put("userStatus", "0");
+            user.put("userStatus", "1");
             users.add(user);
         }
         if (userName.equals(  "汪达尔" )) {
@@ -168,7 +168,7 @@ public class AuthorityUserController {
             user.put("userId", "20128");
             user.put("userAccount", "139111201282");
             user.put("userRoles", "技术部运维");
-            user.put("userStatus", "0");
+            user.put("userStatus", "1");
             users.add(user);
         }
         if (userName.equals( "王晓梅") ) {
@@ -177,7 +177,7 @@ public class AuthorityUserController {
             user.put("userId", "20134");
             user.put("userAccount", "13911120134");
             user.put("userRoles", "营销部业务员");
-            user.put("userStatus", "0");
+            user.put("userStatus", "1");
             users.add(user);
         }
 
