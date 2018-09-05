@@ -34,7 +34,7 @@ public interface IntelQueryService {
       String businessName,
       String query,
       boolean isParseable,
-      String sql) throws Exception;
+      String sql);
 
   List<QuerySentence> getCorrelativeSentence(String query) throws Exception;
 

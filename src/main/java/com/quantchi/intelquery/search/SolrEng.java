@@ -136,9 +136,6 @@ public class SolrEng extends SearchEng {
     SolrDocumentList result = new SolrDocumentList();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.handle");
     double threshold = Double.parseDouble(solrParam.get("threshold"));   //阈值
-    String segQuery = qr.getDebugMap().get("parsedquery").toString();
-    segQuery = segQuery.substring(2,segQuery.length()-3);
-    segQuery = segQuery.replaceAll(SEARCHFILED+":","");
 
     //对每个doc做处理
     for (SolrDocument doc : qr.getResults()) {
@@ -148,27 +145,7 @@ public class SolrEng extends SearchEng {
         continue;
       }
 
-      //System.out.print(segQuery);
-      //String seg_name = (String) doc.get(SEARCHFILED);
-      String seg_name = segQuery;
-      List<String> queryWord = segment();
-      Set<String> queryWords = new HashSet<>();
-
-      for (String word : queryWord) {
-        queryWords.add(word);
-      }
-      List<String> nameWords = java.util.Arrays.asList(seg_name.split(" "));
-
-      double nameWordNum = nameWords.size(); //中文名的单词数
-      double matchNum = 0; //匹配到的数量
-
-      for (String word : queryWords) {
-        if (nameWords.contains(word)) {
-          matchNum++;
-        }
-      }
-
-      double ratio = matchNum / nameWordNum;
+			double ratio = getRatioTmp(doc,qr);
 
       //如果比例大于等于阈值，添加到结果集合中
       if (ratio >= threshold) {
@@ -178,6 +155,53 @@ public class SolrEng extends SearchEng {
     }
     return result;
   }
+
+  private double getRatio(SolrDocument doc,QueryResponse qr) throws IOException, QPException {
+
+		//默认id 先写死
+		String id = (String) doc.get("id");
+
+		//String seg_name = id;
+		List<String> queryWord = segment();
+		Set<String> queryWords = new HashSet<>();
+
+		for (String word : queryWord) {
+			queryWords.add(word);
+		}
+		//List<String> nameWords = java.util.Arrays.asList(seg_name.split(" "));
+		List<String> nameWords = getHitWords(qr.getHighlighting().get(id).get(SEARCHFILED));
+
+		double nameWordNum = nameWords.size(); //中文名的单词数
+		double matchNum = 0; //匹配到的数量
+
+		for (String word : queryWords) {
+			if (nameWords.contains(word)) {
+				matchNum++;
+			}
+		}
+
+		return matchNum / nameWordNum;
+
+	}
+
+	//only word count to get ratio
+	private double getRatioTmp(SolrDocument doc,QueryResponse qr) throws IOException, QPException {
+
+		//默认id 先写死
+		String id = (String) doc.get("id");
+		String query = (String) doc.get(SEARCHFILED);
+		List<String> nameWords = getHitWords(qr.getHighlighting().get(id).get(SEARCHFILED));
+
+		double nameWordNum = query.length(); //中文字数
+		double matchNum = 0; //匹配字数
+
+		for (String word : nameWords) {
+			matchNum+=word.length();
+		}
+
+		return matchNum / nameWordNum;
+
+	}
 
   private QueryResponse searchSolrWithoutSeg(String str,Map<String, String> param,String field) throws Exception {
     SolrQuery query = new SolrQuery();

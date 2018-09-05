@@ -88,7 +88,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from ds_entity_info
     where id = #{id,jdbcType=INTEGER}
@@ -104,12 +104,19 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDB" >
-    insert into ds_entity_info (id, entity_name, business, 
-      datasource_id, main_table, entity_field, 
+    insert into ds_entity_info (id, entity_name, business,
+      datasource_id, main_table, entity_field,
       non_main_table,main_entity_field_name)
-    values (#{id,jdbcType=INTEGER}, #{entityName,jdbcType=VARCHAR}, #{business,jdbcType=VARCHAR}, 
-      #{datasourceId,jdbcType=VARCHAR}, #{mainTable,jdbcType=VARCHAR}, #{entityField,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{entityName,jdbcType=VARCHAR}, #{business,jdbcType=VARCHAR},
+      #{datasourceId,jdbcType=VARCHAR}, #{mainTable,jdbcType=VARCHAR}, #{entityField,jdbcType=VARCHAR},
       #{nonMainTable,jdbcType=VARCHAR},#{mainEntityFieldName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertDomain">
+    insert into md_domain_info (
+      business_type_id, business_type_name, domain_id, domain_name,
+      table_id, table_name, is_main, name_field)
+    values (#{businessTypeId}, #{businessTypeName}, #{domainId}, #{domainName},
+            #{tableId}, #{tableName}, #{isMain}, #{nameField})
   </insert>
   <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDB" >
     insert into ds_entity_info
