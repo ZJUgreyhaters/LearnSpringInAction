@@ -23,6 +23,7 @@ import com.quantchi.intelquery.search.SolrEng;
 import com.quantchi.intelquery.service.IntelQueryService;
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import com.quantchi.intelquery.sqlquery.SqlQuery;
+import com.quantchi.intelquery.utils.ComplexTable;
 import com.quantchi.intelquery.utils.SerializationUtils;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -213,10 +214,13 @@ public class IntelQueryController {
   @RequestMapping(value = "/basicQuery", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String basicQuery(@RequestBody Map<String, Object> map) {
+    SqlQuery sqlQuery = null;
+    String businessName = "";
+    String query = "";
+    Map<String, Object> resultMap = new HashMap();
     try {
-      Map<String, Object> resultMap = new HashMap();
-      String query = map.get("q").toString();
-      String businessName = map.get("businessName").toString();
+      query = map.get("q").toString();
+      businessName = map.get("businessName").toString();
       String businessDefinition = null;
       if (map.get("businessDefinition") != null) {
         businessDefinition = map.get("businessDefinition").toString();
