@@ -231,11 +231,10 @@ public class MetaDataMgrApiController {
   @RequestMapping(value = "/relation/list", method = {RequestMethod.POST})
   public
   @ResponseBody
-  Map<String, Object> relationList(@RequestBody String bodyString) {
+  Map<String, Object> relationList(@RequestBody Map<String,Object> mapRequest) {
     Map<String, Object> responseMap = new HashMap<>();
     try {
-      JSONObject json = JSONObject.parseObject(bodyString);
-      Map<String, Object> map = metaDataMgrApiService.relationList(json);
+      Map<String, Object> map = metaDataMgrApiService.relationList(mapRequest);
       responseMap.put("data", map);
       responseMap.put("code", 200);
       responseMap.put("msg", "查询成功");

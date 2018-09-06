@@ -30,15 +30,8 @@ public class MetaDataMgrEntityApiService {
     DSEntityInfoDB dsEntityInfoDB = new DSEntityInfoDB();
     dsEntityInfoDB.setEntityName(json.getString("entity_name"));
     dsEntityInfoDB.setBusiness(json.getString("business"));
-    String dsName = json.getString("data_source_name");
-    String dsId = json.getString("data_source_id");
-    if (dsName != null && !dsName.equals("")) {
-      DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
-      dsMetaInfoDBExample.createCriteria().andDsNameEqualTo(dsName);
-      List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper
-          .selectAllByExample(dsMetaInfoDBExample);
-      dsId = dsMetaInfoDBList.get(0).getId().toString();
-    }
+    //String dsName = json.getString("data_source_name");
+    String dsId = json.getString("data_source_name");
     dsEntityInfoDB.setDatasourceId(dsId);
     dsEntityInfoDB.setMainTable(json.getString("main_table_id"));
     dsEntityInfoDB.setEntityField(json.getString("main_entity_field_id"));

@@ -33,4 +33,6 @@ public interface DSFieldInfoDBMapper {
 
     @MapKey("key")
     Map<String,Object> selectAll(List<Map<String,Object>> list);
+
+    List<Map<String, Object>> selectFieldInfo(Map<String,Object> map);
 }

@@ -14,8 +14,6 @@ import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.query.QueryWithNodes;
 import com.quantchi.intelquery.query.QueryWithTree;
-import com.quantchi.intelquery.search.SearchEng;
-import com.quantchi.intelquery.search.SolrEng;
 import com.quantchi.intelquery.service.IntelQueryService;
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import com.quantchi.intelquery.sqlquery.SqlQuery;
@@ -122,8 +120,9 @@ public class IntelQueryController {
   @ResponseBody
   Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
     try {
-      if("".equals(keyword))
+      if ("".equals(keyword)) {
         return Util.genRet(200, null, "", 0);
+      }
 
       List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword);
       return Util.genRet(200, sentences, "", 0);
@@ -220,7 +219,8 @@ public class IntelQueryController {
       if (map.get("businessId") != null) {
         businessId = map.get("businessId").toString();
       }
-      List<Object> metricsRet = intelQueryService.getMetricsRet(query, businessDefinition,businessId);
+      List<Object> metricsRet = intelQueryService
+          .getMetricsRet(query, businessDefinition, businessId);
       String total = String.valueOf(metricsRet.size());
       int page = 1;
       int page_size = 20;
@@ -392,10 +392,10 @@ public class IntelQueryController {
       QueryNodes queryNodes = queryWithNodes.getNodes();
 
       List<Map<String, Object>> candidates = (List<Map<String, Object>>) map.get("candidates");
-      for (Map candidateMap : candidates) {
-        String begIndex = candidateMap.get("begIndex").toString();
-        String endIndex = candidateMap.get("endIndex").toString();
-        String serializeNode = candidateMap.get("serializeNode").toString();
+      for (int i = 0; i < candidates.size(); i++) {
+        String begIndex = candidates.get(i).get("begIndex").toString();
+        String endIndex = candidates.get(i).get("endIndex").toString();
+        String serializeNode = candidates.get(i).get("serializeNode").toString();
         QueryNodes candidate = SerializationUtils.fromSerializedString(serializeNode);
         queryNodes.replace(Integer.parseInt(begIndex), Integer.parseInt(endIndex),
             candidate); // 调用 replace API 将原来的Nodes替换成用户选择的候选项
