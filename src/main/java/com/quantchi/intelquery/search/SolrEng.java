@@ -192,7 +192,8 @@ public class SolrEng extends SearchEng {
 
 		//默认id 先写死
 		String id = (String) doc.get("id");
-		String query = (String) doc.get(SEARCHFILED);
+		//String query = (String) doc.get(SEARCHFILED);
+    String query = getQuery();
 		List<String> nameWords = getHitWords(qr.getHighlighting().get(id).get(SEARCHFILED));
 
 		double nameWordNum = query.length(); //中文字数

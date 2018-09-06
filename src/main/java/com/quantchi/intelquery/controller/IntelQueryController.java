@@ -288,17 +288,21 @@ public class IntelQueryController {
 
     }catch(QPException qpe){
       logger.info("QPException basicQuery error {}", qpe.getMessage());
-      String id = intelQueryService.addQuerySentence("testUser", businessName, query, false,
-                      sqlQuery.toSql());
-      resultMap.put("sentencesId", id);
+      if(sqlQuery != null){
+        String id = intelQueryService.addQuerySentence("testUser", businessName, query, false,
+                sqlQuery.toSql());
+        resultMap.put("sentencesId", id);
+      }
       resultMap.put("isParseable",false);
       return JsonResult.successJson(resultMap, ResultCode.ERROR,qpe.getMessage());
 
     }catch(SQLException sqle){
       logger.info("SQLException basicQuery error {}", sqle.getMessage());
-      String id = intelQueryService.addQuerySentence("testUser", businessName, query, false,
-              sqlQuery.toSql());
-      resultMap.put("sentencesId", id);
+      if(sqlQuery != null){
+        String id = intelQueryService.addQuerySentence("testUser", businessName, query, false,
+                sqlQuery.toSql());
+        resultMap.put("sentencesId", id);
+      }
       resultMap.put("isParseable",false);
       return JsonResult.successJson(resultMap, ResultCode.ERROR,sqle.getMessage());
     }
