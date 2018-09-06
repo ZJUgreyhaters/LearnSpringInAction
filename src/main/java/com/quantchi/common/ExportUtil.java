@@ -188,7 +188,9 @@ public class ExportUtil {
           }
           ++curRow;
         }
-        primeBlockInfos.get(primeBlock).primeBlockBottomRow = curRow - 1;
+        if (curRow - 1 > primeBlockInfos.get(primeBlock).primeBlockBottomRow) {
+          primeBlockInfos.get(primeBlock).primeBlockBottomRow = curRow - 1;
+        }
       }
     }
 
