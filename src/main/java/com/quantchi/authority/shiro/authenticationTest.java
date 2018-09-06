@@ -27,16 +27,18 @@ public class authenticationTest {
     @Test
     public void testLogin(){
         Factory<SecurityManager> securityManagerFactory = new IniSecurityManagerFactory("classpath:shiroLearn.ini");
+
         SecurityManager securityManager = securityManagerFactory.getInstance();
         SecurityUtils.setSecurityManager(securityManager);
         org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("wbchen", "222");
+        System.out.println("=====" + subject.hasRole("user"));
         try {
             subject.login(usernamePasswordToken);
         }catch (AuthenticationException ex){
             //ex.printStackTrace();
         }
-        System.out.println("是否通过验证：" + subject.isAuthenticated());
+        System.out.println("---是否通过验证：" + subject.isAuthenticated());
         System.out.println("是否有角色admin：" + subject.hasRole("admin"));
         System.out.println("是否有角色user：" + subject.hasRole("user"));
         System.out.println("是否拥有权限： " + subject.isPermitted("user:add"));
