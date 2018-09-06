@@ -31,7 +31,7 @@ public class SqlAspect {
 	}
 
 	private String modifySqlByDataAuth(String sql){
-		sql = sql + " limit 5";
+		//sql = sql + " limit 5";
 		return sql;
 	}
 
