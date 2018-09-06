@@ -611,6 +611,13 @@ define({ "api": [
           },
           {
             "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.d_createdate",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
             "type": "Int",
             "optional": true,
             "field": "data.l_datatype",
