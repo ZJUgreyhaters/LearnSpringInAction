@@ -92,6 +92,19 @@
     from ds_field_releation
     where relation_id = #{relationId,jdbcType=INTEGER}
   </select>
+  <select id="selectJoinPair" resultType="map" parameterType="java.lang.String">
+    select t1.table_english_name as t1, f1.field_english_name as f1,
+      t2.table_english_name as t2 ,f2.field_english_name as f2 FROM dmp.ds_field_releation fr
+      join dmp.ds_table_info t1 on fr.table_id = t1.id
+      join dmp.ds_table_info t2 on fr.foreign_table_id = t2.id
+      join dmp.ds_field_info f1 on fr.field_id = f1.id
+      join dmp.ds_field_info f2 on fr.foreign_field_id = f2.id
+    where t1.datasource_id = #{dataSourceId} and t2.datasource_id = #{dataSourceId};
+  </select>
+  <insert id="insertJoinInfo">
+    insert into md_join_info (field_name, table_name, join_union_id)
+    VALUES (#{fieldName,jdbcType=VARCHAR}, #{tableName,jdbcType=VARCHAR}, #{unionId,jdbcType=INTEGER})
+  </insert>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ds_field_releation
     where relation_id = #{relationId,jdbcType=INTEGER}
@@ -221,7 +234,6 @@
       foreign_table_id = #{foreignTableId,jdbcType=VARCHAR}
     where relation_id = #{relationId,jdbcType=INTEGER}
   </update>
-
   <insert id="insertReleations">
     INSERT INTO ds_field_releation(table_id,field_id,foreign_table_id,foreign_field_id,isprimary)
     VALUES (#{tableName},#{field},#{foreignTable},#{foreignFieldId},#{isprimary})

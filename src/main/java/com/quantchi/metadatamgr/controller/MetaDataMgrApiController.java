@@ -314,6 +314,7 @@ public class MetaDataMgrApiController {
       if (json.getString("data_source_id") == null) {
         throw new Exception("miss data source id");
       }
+      metaDataMgrApiService.insertJoinInfo(json.getString("data_source_id"));
       responseMap = metaDataMgrApiService.createTerm(json.getString("data_source_id"));
       return responseMap;
     } catch (Exception e) {
