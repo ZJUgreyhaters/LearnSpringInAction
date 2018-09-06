@@ -611,6 +611,13 @@ define({ "api": [
           },
           {
             "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.d_createdate",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
             "type": "Int",
             "optional": true,
             "field": "data.l_datatype",
@@ -705,6 +712,13 @@ define({ "api": [
             "optional": true,
             "field": "authDetail.l_authdetailid",
             "description": "<p>明细权限ID    因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authDetail.c_database",
+            "description": "<p>库名字</p>"
           },
           {
             "group": "Parameter",
