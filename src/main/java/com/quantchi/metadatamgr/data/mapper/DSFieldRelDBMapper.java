@@ -12,7 +12,7 @@ public interface DSFieldRelDBMapper {
 
   int deleteByPrimaryKey(Integer relationId);
 
-  int insert(DSFieldRelDB record);
+  int insert(Map<String, Object> map);
 
   int insertSelective(DSFieldRelDB record);
 
@@ -28,7 +28,7 @@ public interface DSFieldRelDBMapper {
 
   int updateByPrimaryKeySelective(DSFieldRelDB record);
 
-  int updateByPrimaryKey(DSFieldRelDB record);
+  int updateByPrimaryKey(Map<String, Object> map);
 
   int insertReleations(@Param("tableName") String tableName, @Param("field") String field,
       @Param("foreignTable") String foreignTable, @Param("foreignFieldId") String foreignFieldId,

@@ -197,16 +197,16 @@
       <if test="relation != null" >
         relation = #{relation,jdbcType=VARCHAR},
       </if>
-      <if test="fieldId != null" >
+      <if test="fieldId != null and fieldId.toString().length()>0" >
         field_id = #{fieldId,jdbcType=VARCHAR},
       </if>
-      <if test="tableId != null" >
+      <if test="tableId != null and tableId.toString().length()>0" >
         table_id = #{tableId,jdbcType=VARCHAR},
       </if>
-      <if test="foreignFieldId != null" >
+      <if test="foreignFieldId != null and foreignFieldId.toString().length()>0" >
         foreign_field_id = #{foreignFieldId,jdbcType=VARCHAR},
       </if>
-      <if test="foreignTableId != null" >
+      <if test="foreignTableId != null and foreignTableId.toString().length()>0" >
         foreign_table_id = #{foreignTableId,jdbcType=VARCHAR},
       </if>
     </set>

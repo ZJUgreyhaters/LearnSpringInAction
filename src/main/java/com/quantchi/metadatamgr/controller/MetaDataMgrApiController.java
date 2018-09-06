@@ -251,20 +251,10 @@ public class MetaDataMgrApiController {
   @RequestMapping(value = "/relation/save", method = RequestMethod.POST)
   public
   @ResponseBody
-  Map<String, Object> relationSave(@RequestBody String bodyString) {
+  Map<String, Object> relationSave(@RequestBody Map<String,Object> map) {
     Map<String, Object> responseMap = new HashMap<>();
     try {
-      JSONObject json = JSONObject.parseObject(bodyString);
-      if (json.getString("from") == null) {
-        throw new Exception("miss from");
-      }
-      if (json.getString("to") == null) {
-        throw new Exception("miss to");
-      }
-      if (json.getString("relation") == null) {
-        throw new Exception("miss relation");
-      }
-      if (metaDataMgrApiService.relationSave(json) <= 0) {
+      if (metaDataMgrApiService.relationSave(map) <= 0) {
         throw new Exception("save fail");
       }
       responseMap.put("code", 200);

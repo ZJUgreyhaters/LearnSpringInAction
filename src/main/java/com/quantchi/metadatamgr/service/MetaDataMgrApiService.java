@@ -12,7 +12,6 @@ import com.quantchi.metadatamgr.data.entity.DSEntityInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSEntityInfoDBExample;
 import com.quantchi.metadatamgr.data.entity.DSFieldInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSFieldInfoDBExample;
-import com.quantchi.metadatamgr.data.entity.DSFieldRelDB;
 import com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
@@ -545,35 +544,11 @@ public class MetaDataMgrApiService {
     return responseMap;
   }
 
-  public int relationSave(JSONObject jsonParam) {
-    Map<String, Object> map = new HashMap<>();
-    DSFieldRelDB dsFieldRelDB = new DSFieldRelDB();
-    String from = jsonParam.getString("from");
-    String from_field = jsonParam.getString("from_field");
-    dsFieldRelDB.setTableId(from);
-
-    DSFieldInfoDBExample dsFieldInfoDBExample = new DSFieldInfoDBExample();
-    dsFieldInfoDBExample.createCriteria().andTableIdEqualTo(from)
-        .andFieldEnglishNameEqualTo(from_field);
-    List<DSFieldInfoDB> dsFieldInfoDBList = dsFieldInfoDBMapper
-        .selectByExample(dsFieldInfoDBExample);
-    dsFieldRelDB.setFieldId(dsFieldInfoDBList.get(0).getId().toString());
-
-    String to = jsonParam.getString("to");
-    String to_field = jsonParam.getString("to_field");
-    dsFieldRelDB.setForeignTableId(to);
-
-    DSFieldInfoDBExample dsforeign = new DSFieldInfoDBExample();
-    dsforeign.createCriteria().andTableIdEqualTo(to).andFieldEnglishNameEqualTo(to_field);
-    List<DSFieldInfoDB> dsforeignList = dsFieldInfoDBMapper.selectByExample(dsforeign);
-    dsFieldRelDB.setForeignFieldId(dsforeignList.get(0).getId().toString());
-    dsFieldRelDB.setRelation(jsonParam.getString("relation"));
-    if (jsonParam.getString("relation_id") == null || jsonParam.getString("relation_id")
-        .equals("")) {
-      return dsFieldRelDBMapper.insert(dsFieldRelDB);
+  public int relationSave(Map<String,Object> map) {
+    if (map.get("relation_id") == null || map.get("relation_id").toString().trim().length()==0) {
+      return dsFieldRelDBMapper.insert(map);
     } else {
-      dsFieldRelDB.setRelationId(Integer.parseInt(jsonParam.getString("relation_id")));
-      return dsFieldRelDBMapper.updateByPrimaryKey(dsFieldRelDB);
+      return dsFieldRelDBMapper.updateByPrimaryKey(map);
     }
 
   }
