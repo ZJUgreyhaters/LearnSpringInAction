@@ -24,6 +24,8 @@ public class MyShiroFilterFactoryBean extends ShiroFilterFactoryBean {
 
     public static String definition = "";
 
+
+
     @Override
     public void setFilterChainDefinitions(String definitions){
 
@@ -58,20 +60,8 @@ public class MyShiroFilterFactoryBean extends ShiroFilterFactoryBean {
         // 从数据库取出url过滤的规则：[url] [过滤器名称]()
 
         filter.put("/api/getRecommendQuery", "MyUrlFilter");
-        //filter.put("/api/getBusiCate", "MyUrlFilter");
 
         return filter;
     }
-
-//    @Override
-//    public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap){
-//        Map<String, String> filterMap = new HashMap<>();
-//
-//        filterMap.put("/**", "anno");
-//        filterMap.put("/term", "authc");
-//        logger.info("---- ---- init factory");
-//        super.setFilterChainDefinitionMap(filterMap);
-//
-//    }
 
 }

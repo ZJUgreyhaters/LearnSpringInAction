@@ -87,7 +87,6 @@ public class AuthorityServiceImpl implements AuthorityService {
         }
     }
 
-
     @Override
     public String selectAuthList(){
         try {
@@ -118,7 +117,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     @Override
     public String getRoleAuthDetail(Integer roleId){
         try {
-            List<Map<String,Object>> list=authRoleMapper.getRoleAuthDetail(roleId);
+            List<Map<String,Object>> list = authRoleMapper.getRoleAuthDetail(roleId);
             return JsonResult.successJson(list);
         }catch (Exception e){
             e.printStackTrace();
@@ -130,7 +129,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     @Override
     public String getRoleAuthDetailByName(String name){
         try {
-            List<Map<String,Object>> list=authRoleMapper.getRoleAuthDetailByName(name);
+            List<Map<String,Object>> list = authRoleMapper.getRoleAuthDetailByName(name);
             return JsonResult.successJson(list);
         }catch (Exception e){
             e.printStackTrace();
@@ -301,7 +300,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 
     @Override
     public String getAuthByFilter(Map<String, Object> map){
-        List<Map<String,Object>> list =authorityMapper.getAuthByFilter(map);
+        List<Map<String,Object>> list = authorityMapper.getAuthByFilter(map);
         String total = list.size() + "";
         return  JsonResult.successJson(total,list);
     }

@@ -27,7 +27,7 @@ public class MyRoleFilter extends AuthorizationFilter {
 //        SecurityManager securityManager = securityManagerFactory.getInstance();
 //        SecurityUtils.setSecurityManager(securityManager);
 //        org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("wbchen", "222");
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("wbchen2", "222");
         Subject subject = getSubject(req, resp);
         subject.login(usernamePasswordToken);
         String[] rolesArray = (String[]) mappedValue;
