@@ -20,7 +20,7 @@
         <property name="filterChainDefinitions">
             <value>
                 /test/* MyUrlFilter
-                /api/getBusiCate MyUrlFilter, roles["user1,admin"], perms[]
+                /api/getBusiCate MyUrlFilter, roles["user1,admin"]
             </value>
         </property>
     </bean>
