@@ -106,5 +106,7 @@ public interface AuthorityDetailService {
    /*查询权限的明细*/
     String getAuthdetail(Map<String, Object> map);
 
+    /*查询功能权限的明细*/
+    String getFuncDetailList();
 
 }

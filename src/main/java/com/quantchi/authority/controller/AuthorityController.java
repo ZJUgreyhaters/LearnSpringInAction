@@ -40,6 +40,7 @@ public class AuthorityController {
      * @apiSuccess {String} [data.c_rolename] 角色名称
      * @apiSuccess {String} [data.c_isenable] 是否有效
      * @apiSuccess {String} [data.c_roledesc] 角色描述信息
+     * @apiSuccess {String} [data.total] 返回总条数
      **/
     @ResponseBody
     @RequestMapping(value = "/listRoleByFilter", method = {
@@ -86,6 +87,7 @@ public class AuthorityController {
      * @apiGroup AuthorityController
      * @apiParam {String} [c_authname] 权限名称
      * @apiParam {String} [c_authtype] 权限类型 0:功能权限  1:数据权限
+     * @apiParam {Int} [l_funcdetailid]  根据功能权限id 查权限名字
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiSuccess {List} [data] 返回数据 指标信息列表
@@ -95,6 +97,7 @@ public class AuthorityController {
      * @apiSuccess {String} [data.c_isenable] 是否有效
      * @apiSuccess {String} [data.c_isenable] d_createdate
      * @apiSuccess {Int} [data.l_datatype] 数据权限类型 0表示非数据权限 1表示表权限 2 表示字段权限 3 表示行数据权限
+     * @apiSuccess {String} [total] 返回总条数
      * @apiParamExample {json} Request-example:
      * {"c_authname":"xxx"}    或者 {"c_authname":"xxxxx","c_authtype":"0"}
      *
@@ -104,10 +107,15 @@ public class AuthorityController {
             RequestMethod.POST}, produces = "application/json;charset=UTF-8")
     public String selectAuthByFilter(@RequestBody Map<String, Object> requestMap){
         String  c_authname =(String)requestMap.get("c_authname");
-        if (c_authname.equals("")){
+        Integer  l_funcdetailid =(Integer)requestMap.get("l_funcdetailid");
+        if ((!( l_funcdetailid == null )) &&  (l_funcdetailid>0)){
+            return authorityService.getAuthByFilter(requestMap);
+        }if (c_authname.isEmpty()||(c_authname.equals("")) ){
             return authorityService.selectAuthList();
         }
+        else{
         return authorityService.getAuthByFilter(requestMap);
+        }
     }
 
     /** @api {post} /api/addRole 插入新角色
@@ -176,18 +184,16 @@ public class AuthorityController {
      * @apiName modifyRole
      * @apiGroup AuthorityController
      * @apiParam {Object} [role] 角色
-     * @apiParam {String} [role.c_isenable] 权限名称
-     * @apiParam {String} [role.c_roledesc] 是否生效
+     * @apiParam {String} [role.c_isenable]  是否生效
+     * @apiParam {String} [role.c_roledesc] 角色描述
      * @apiParam {String} [role.c_rolename] 角色名称
      * @apiParam {Int} [role.l_roleid] 角色ID
      * @apiParam {List} [addauthRoleRela] 表数据权限明细 可以装入多个
      * @apiParam {Int} [addauthRoleRela.l_authid] 权限ID
-     * @apiParam {Int} [addauthRoleRela.l_roleauthid] 关系id
-     * @apiParam {Int} [addauthRoleRela.l_roleid]  角色ID
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiParamExample {json} Request-example:例子:
-    * {"role":{"c_isenable":"0","c_roledesc":"xxxx","c_rolename":"xxxxxx","l_roleid":0},
+    * {"role":{"c_isenable":"0","c_roledesc":"xxxx","c_rolename":"xxxxxx","l_roleid":8},"addauthRoleRela":[{"l_authid":23},{"l_authid":21}]}
     * */
     @ResponseBody
     @RequestMapping(value = "/modifyRole", method = {

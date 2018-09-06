@@ -17,6 +17,7 @@ import com.quantchi.intelquery.search.SearchEng;
 import com.quantchi.intelquery.service.IntelQueryService;
 import com.quantchi.intelquery.sqlquery.ColumnInfo;
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
+import com.quantchi.intelquery.sqlquery.SqlQuery;
 import com.quantchi.intelquery.tokenize.search.Replacement;
 import com.quantchi.intelquery.utils.ComplexTable;
 import com.quantchi.intelquery.utils.ComplexTable.LeafHeader;
@@ -169,27 +170,68 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     List<Map<String, Object>> normHeaders = ct.getNormHeaders();
 		lh.getData().forEach((i) -> retData.put(i.getRowData(),null));
 		for(Map<String, Object> normalColumn : normHeaders){
-			for(String col:normalColumn.keySet()){
-        int index = normalColumn.keySet().stream().collect(Collectors.toList()).indexOf(col);
-        String colKey = col;
-        Map<String,Object> colHeader = new HashMap<>();
-        colHeader.put(col,((LeafHeader)normalColumn.get(col)).getTitles());
-        retHeader.add(colHeader);
-        for(ComplexTable.Block nb:((LeafHeader)normalColumn.get(col)).getData()){
-          Map<String,Object> colMap = (Map<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
-          if(colMap == null)
-            colMap = new HashMap<>();
-          else
-            colKey = col+"_"+index;
-          colMap.put(colKey,((ComplexTable.NormBlock)nb).getRowData());
-          retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);
-        }
-			}
-
+      Map<String,Object> colHeader = new HashMap<>();
+      setColHeaderAndData(retData,colHeader,colHeader,"",normalColumn);
+      retHeader.add(colHeader);
 		}
     ret.put("data",retData);
     ret.put("header",retHeader);
 		return ret;
+  }
+
+  private void setColHeaderAndData(Map<List<String>,Object> retData,Map<String,Object> colHeader,Map<String,Object> parentHeader,String ColName,Object normalColumn){
+    if(normalColumn instanceof HashMap){
+      for(Object subCol:((HashMap) normalColumn).keySet()){
+        Map<String,Object> subColHeader = new HashMap<>();
+        colHeader.put(subCol.toString(),subColHeader);
+        Object subNormalCol = ((HashMap) normalColumn).get(subCol);
+        setColHeaderAndData(retData,subColHeader,colHeader,subCol.toString(),subNormalCol);
+      }
+    }else if(normalColumn instanceof LeafHeader){
+      if(((LeafHeader) normalColumn).getTitles().size() == 0)
+        parentHeader.put(ColName,"");
+      else
+        parentHeader.put(ColName,((LeafHeader) normalColumn).getTitles().stream().collect(Collectors.toMap(i->i,i->"")));
+
+      String colKey = ColName;
+			LinkedHashMap<String,Object> colMap = null;
+      ArrayList<Object> arrayList = new ArrayList<>();
+      boolean reIndex = true;
+      for(ComplexTable.Block nb:((LeafHeader)normalColumn).getData()){
+        colMap = (LinkedHashMap<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
+        if(colMap == null){
+          reIndex = false;
+          colMap = new LinkedHashMap<>();
+        }
+        else if(reIndex){
+          reIndex = false;
+          colKey = ColName+"_"+colMap.entrySet().size();
+        }
+        else{
+          arrayList = (ArrayList<Object>) colMap.get(colKey);
+          if(arrayList == null)
+            arrayList = new ArrayList<>();
+        }
+        if(((LeafHeader)normalColumn).getTitles().size() == 0)
+          arrayList.addAll(((ComplexTable.NormBlock)nb).getRowData());
+        else
+          arrayList.add(((ComplexTable.NormBlock)nb).getRowData());
+        colMap.put(colKey,arrayList);
+        retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);
+      }
+
+    }
+  }
+
+  // 生成下载Excel文件用的数据
+  @Override
+  public ComplexTable getComplexTable(SqlQuery sqlQuery) throws Exception {
+    ResultSet tabulate = execsqlWithResultSet(sqlQuery.toSql(), null);
+    TreeNode columnRelation = sqlQuery.getColumnRelation();
+
+    // 生成展示用的ComplexTable
+    ComplexTable ct = new ComplexTable(tabulate, columnRelation);
+    return ct;
   }
 
   @Override
@@ -461,24 +503,38 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       String businessName,
       String query,
       boolean isParseable,
-      String sql) throws Exception {
+      String sql){
 
-    QuerySentence qs = new QuerySentence();
-    qs.setUsername(username);
-    qs.setBusinessName(businessName);
-    qs.setQuery(query);
-    qs.setParseable(isParseable);
-    qs.setQuerySql(sql);
-    qs.setIntelqueryVer(INTELQUERYVERSION);
+    try{
+      QuerySentence qs = new QuerySentence();
+      qs.setUsername(username);
+      qs.setBusinessName(businessName);
+      qs.setQuery(query);
+      qs.setParseable(isParseable);
+      qs.setQuerySql(sql);
+      qs.setIntelqueryVer(INTELQUERYVERSION);
 
-    SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-    return engObj.addQuerySentence(qs);
+      SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
+      return engObj.addQuerySentence(qs);
+    }catch (Exception e){
+      logger.error("add sentence happened error: {}",e.getMessage());
+      return "";
+    }
+
   }
 
   public List<QuerySentence> getCorrelativeSentence(String query) throws Exception {
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
     List<QuerySentence> sentences = engObj.getCorrelativeSentence();
     removeSameDomainSentence(sentences);
+
+		Collections.sort(sentences, new Comparator<QuerySentence>() {
+			@Override
+			public int compare(QuerySentence qsFirst, QuerySentence qsSec) {
+				return Integer.parseInt(qsSec.getCount().toString()) - Integer.parseInt(qsFirst.getCount().toString());
+			}
+		});
+
     return sentences;
   }
 
