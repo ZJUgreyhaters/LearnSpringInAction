@@ -80,25 +80,7 @@
       </exclusions>
     </dependency>
 
-    <!--<dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.5.8</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.5.8</version>
-    </dependency>-->
 
-
-    <!--mysql驱动包-->
-    <!--<dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.34</version>
-    </dependency>-->
     <dependency>
       <groupId>com.github.pagehelper</groupId>
       <artifactId>pagehelper</artifactId>
@@ -237,10 +219,7 @@
           <artifactId>commons-pool2</artifactId>
           <groupId>commons-pool</groupId>
         </exclusion>
-        <!--<exclusion>
-            <artifactId>redis.clients</artifactId>
-            <groupId>redis</groupId>
-        </exclusion>-->
+
       </exclusions>
     </dependency>
 

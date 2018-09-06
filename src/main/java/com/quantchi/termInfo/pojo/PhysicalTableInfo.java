@@ -25,6 +25,16 @@ public class PhysicalTableInfo {
 
     private String foreignKey;
 
+    private String timeField;
+
+    public String getTimeField() {
+        return timeField;
+    }
+
+    public void setTimeField(String timeField) {
+        this.timeField = timeField;
+    }
+
     public Integer getId() {
         return id;
     }
