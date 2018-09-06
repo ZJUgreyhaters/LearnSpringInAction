@@ -95,7 +95,7 @@ public class AuthorityController {
      * @apiSuccess {String} [data.c_authtype] 权限类型 0:功能权限  1:数据权限
      * @apiSuccess {Int} [data.l_authid] 权限id
      * @apiSuccess {String} [data.c_isenable] 是否有效
-     * @apiSuccess {String} [data.c_isenable] d_createdate
+     * @apiSuccess {String} [data.d_createdate]  创建时间
      * @apiSuccess {Int} [data.l_datatype] 数据权限类型 0表示非数据权限 1表示表权限 2 表示字段权限 3 表示行数据权限
      * @apiSuccess {String} [total] 返回总条数
      * @apiParamExample {json} Request-example:

@@ -7,7 +7,7 @@
     tauthority.l_authid,
     tauthority.c_authname,
     tauthority.c_isenable,
-    tauthority.d_createdate,
+    DATE_FORMAT(tauthority.d_createdate,"%Y-%m-%d") d_createdate ,
     tauthority.c_authtype,
     case when t.l_authid is null and t2.l_authid is null and t3.l_authid is null  then '0'
     when  t2.l_authid is null and t3.l_authid is null  then '1'
@@ -24,7 +24,7 @@
     a.l_authid,
     a.c_authname,
     a.c_isenable,
-    a.d_createdate,
+    DATE_FORMAT(a.d_createdate,"%Y-%m-%d") d_createdate ,
     a.c_authtype,
     case when t.l_authid is null and t2.l_authid is null and t3.l_authid is null  then '0'
     when  t2.l_authid is null and t3.l_authid is null  then '1'
@@ -55,7 +55,7 @@
     tauthority.l_authid,
     tauthority.c_authname,
     tauthority.c_isenable,
-    DATE_FORMAT(tauthority.d_createdate,'yyyy-mm-dd') d_createdate ,
+    DATE_FORMAT(tauthority.d_createdate,"%Y-%m-%d") d_createdate ,
     tauthority.c_authtype,
     case when t.l_authid is null and t2.l_authid is null and t3.l_authid is null  then '0'
     when  t2.l_authid is null and t3.l_authid is null  then '1'
@@ -71,7 +71,7 @@
   <insert id="insertAuth" parameterType="map"
           useGeneratedKeys="true" keyProperty="l_authid">
   INSERT INTO tauthority (c_authname,c_isenable,c_authtype,d_createdate)
-  VALUES (#{c_authname}, #{c_isenable}, #{c_authtype},#{d_createdate} )
+  VALUES (#{c_authname}, #{c_isenable}, #{c_authtype},CURDATE())
   </insert>
 
   <insert id="inertAuthRoleRela" parameterType="map" >
