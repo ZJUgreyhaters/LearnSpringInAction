@@ -50,7 +50,7 @@
     tauthority.l_authid,
     tauthority.c_authname,
     tauthority.c_isenable,
-    tauthority.d_createdate,
+    DATE_FORMAT(tauthority.d_createdate,'yyyy-mm-dd') d_createdate ,
     tauthority.c_authtype,
     case when t.l_authid is null and t2.l_authid is null and t3.l_authid is null  then '0'
     when  t2.l_authid is null and t3.l_authid is null  then '1'

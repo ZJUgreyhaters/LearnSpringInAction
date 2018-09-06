@@ -14,6 +14,8 @@ import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
 import com.quantchi.intelquery.query.QueryWithNodes;
 import com.quantchi.intelquery.query.QueryWithTree;
+import com.quantchi.intelquery.search.SearchEng;
+import com.quantchi.intelquery.search.SolrEng;
 import com.quantchi.intelquery.service.IntelQueryService;
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import com.quantchi.intelquery.sqlquery.SqlQuery;
@@ -120,6 +122,9 @@ public class IntelQueryController {
   @ResponseBody
   Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
     try {
+      if("".equals(keyword))
+        return Util.genRet(200, null, "", 0);
+
       List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword);
       return Util.genRet(200, sentences, "", 0);
     } catch (Exception e) {
