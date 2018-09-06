@@ -611,6 +611,7 @@ public class MetaDataMgrApiService {
       physicalTableInfo.setPhysicalDb(db);
       physicalTableInfo.setPhysicalTable(tableName);
       physicalTableInfo.setPrimaryKey(dsTableInfoDB.getPrimaryKey());
+      physicalTableInfo.setTimeField(dsTableInfoDB.getTimeFiled());
       termGenInfo.setTableInfo(physicalTableInfo);
 
       //获取表的所有列

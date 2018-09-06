@@ -135,11 +135,11 @@
     insert into md_physical_table_info (id, physical_table_hash, physical_table, 
       physical_db, table_type, table_name, 
       table_desc, last_modified_time, partition_flag, 
-      primary_key, foreign_key)
+      primary_key, foreign_key, time_field)
     values (#{id,jdbcType=INTEGER}, #{physicalTableHash,jdbcType=VARCHAR}, #{physicalTable,jdbcType=VARCHAR}, 
       #{physicalDb,jdbcType=VARCHAR}, #{tableType,jdbcType=VARCHAR}, #{tableName,jdbcType=VARCHAR}, 
       #{tableDesc,jdbcType=VARCHAR}, #{lastModifiedTime,jdbcType=TIMESTAMP}, #{partitionFlag,jdbcType=VARCHAR}, 
-      #{primaryKey,jdbcType=LONGVARCHAR}, #{foreignKey,jdbcType=LONGVARCHAR})
+      #{primaryKey,jdbcType=LONGVARCHAR}, #{foreignKey,jdbcType=LONGVARCHAR}, #{timeField,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.quantchi.termInfo.pojo.PhysicalTableInfo" >
     insert into md_physical_table_info
