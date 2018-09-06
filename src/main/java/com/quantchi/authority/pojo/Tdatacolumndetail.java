@@ -8,7 +8,7 @@ public class Tdatacolumndetail {
   private String c_Column;
   private String c_Isenable;
   private String c_Policytype;
-
+  private String c_Database;
 
   public long getL_columndeailid() {
     return l_Columndetailid;
@@ -18,6 +18,13 @@ public class Tdatacolumndetail {
     this.l_Columndetailid = l_Columndeailid;
   }
 
+  public String getC_Database() {
+    return c_Database;
+  }
+
+  public void setC_Database(String c_Database) {
+    this.c_Database = c_Database;
+  }
 
   public String getC_tablename() {
     return c_Tablename;

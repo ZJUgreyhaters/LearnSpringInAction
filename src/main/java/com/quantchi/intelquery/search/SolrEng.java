@@ -3,33 +3,43 @@ package com.quantchi.intelquery.search;
 import com.quantchi.common.AppProperties;
 import com.quantchi.intelquery.exception.QPException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import com.quantchi.intelquery.pojo.QuerySentence;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.impl.XMLResponseParser;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.util.SimpleOrderedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SolrEng extends SearchEng {
+
+  private static final Logger logger = LoggerFactory.getLogger(SolrEng.class);
+
+  private static SolrEng instance = null;
 
   private final Map<String, String> solrCommParam = AppProperties.getPropertiesMap("solr.param");
   private final Map<String, String> solrQuickParam = AppProperties
       .getPropertiesMap("solr.instance");
 
+  private final Map<String, String> solrCorSentenceParam = AppProperties
+          .getPropertiesMap("solr.sentence");
+
   private final String solrUrl = AppProperties.get("solr.url");
 
-  private static final String SEARCHFILED = AppProperties.getWithDefault("searchField", "seg_name");
+  //private static final String SEARCHFILED = AppProperties.getWithDefault("searchField", "seg_name");
+  private static final String SEARCHFILED = AppProperties.getWithDefault("searchField", "cn_name");
+  private static final String SEARCHDOCFILED = AppProperties.getWithDefault("searchDocField", "query");
 
   private static final String highlightField = AppProperties
-      .getWithDefault("highlightField", "seg_name");
+      .getWithDefault("highlightField", "cn_name");
   private static final String colsField = AppProperties.getWithDefault("colsField", "cn_name");
 
   private static final String WEIGHT = "weight";
@@ -39,30 +49,96 @@ public class SolrEng extends SearchEng {
 
   private HttpSolrClient httpSolr = null;
 
-  public SolrEng(String query, String type) {
+  private SolrEng(String query, String type) {
     super(query, type);
     httpSolr = new HttpSolrClient.Builder(solrUrl).build();
     httpSolr.setParser(new XMLResponseParser());
   }
 
+  public static SolrEng getInstance(String query, String type){
+    if (instance == null) {
+      instance = new SolrEng(query,type);
+    }else{
+      instance.init(query);
+    }
+
+    return instance;
+  }
+
+
+
   @Override
   public List<Object> getMetrics() throws Exception {
-    QueryResponse qr = searchSolr(solrCommParam);
-    return documentListToObjectList(processDocs(qr, false));
+    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCommParam,SEARCHFILED);
+		Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.handle");
+		double threshold = Double.parseDouble(solrParam.get("threshold"));
+    return documentListToObjectList(processDocs(qr, false,threshold));
   }
 
   @Override
   public List<Object> getQuickMacro() throws Exception {
-    QueryResponse qr = searchSolr(solrQuickParam);
-    SolrDocumentList solrDocuments = processDocs(qr, true);
+    QueryResponse qr = searchSolr(solrQuickParam,SEARCHFILED);
+    //键盘精灵里因为分词原因调低阈值
+    SolrDocumentList solrDocuments = processDocs(qr, true,0.2);
     return documentListToObjectList(setReplaceOrigin(solrDocuments, qr.getHighlighting()));
   }
 
-  private SolrDocumentList processDocs(QueryResponse qr, boolean filterRepeat)
+  @Override
+  public String addQuerySentence(QuerySentence qs){
+    String qsId = "";
+    try {
+      QuerySentence solrRet = checkDocInSolr(qs.getQuery());
+      //add doc into solr
+      if(solrRet == null){
+        httpSolr.addBean(qs);
+        httpSolr.commit();
+        qsId = qs.getId();
+      }
+      //update count
+      else{
+        SolrInputDocument newDoc = new SolrInputDocument();
+        newDoc.addField("id", solrRet.getId());
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("inc", 1);
+        newDoc.addField("times", map);
+        httpSolr.add(newDoc);
+        httpSolr.commit();
+        qsId = solrRet.getId();
+      }
+
+
+    }catch (SolrServerException serverEx){
+      logger.error("solr add doc :{} error,and error info is: {}",qs.getQuery(),serverEx.getMessage());
+    }catch (IOException ioEx){
+      logger.error("solr commit doc :{} error,and error info is: {}",qs.getQuery(),ioEx.getMessage());
+    } catch (Exception ex) {
+      logger.error("solr check doc :{} error,and error info is: {}",qs.getQuery(),ex.getMessage());
+    }
+    return qsId;
+  }
+
+  @Override
+  public List<QuerySentence> getCorrelativeSentence() throws Exception{
+    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCorSentenceParam,SEARCHDOCFILED);
+    return qr.getBeans(QuerySentence.class);
+  }
+
+  private QuerySentence checkDocInSolr(String queryStr) throws Exception {
+    QuerySentence qs = null;
+    SolrQuery query = new SolrQuery();
+    query.setQuery(SEARCHDOCFILED + ":\"" + queryStr + "\"");
+    QueryResponse qr = httpSolr.query(query);
+    if(qr.getResults().size() > 0){
+      qs = qr.getBeans(QuerySentence.class).get(0);
+    }
+    return qs;
+  }
+
+  private SolrDocumentList processDocs(QueryResponse qr, boolean filterRepeat,double threshold)
       throws IOException, QPException {
     SolrDocumentList result = new SolrDocumentList();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.handle");
-    double threshold = Double.parseDouble(solrParam.get("threshold"));   //阈值
+    //double threshold = Double.parseDouble(solrParam.get("threshold"));   //阈值
 
     //对每个doc做处理
     for (SolrDocument doc : qr.getResults()) {
@@ -72,25 +148,7 @@ public class SolrEng extends SearchEng {
         continue;
       }
 
-      String seg_name = (String) doc.get(SEARCHFILED);
-      List<String> queryWord = segment();
-      Set<String> queryWords = new HashSet<>();
-
-      for (String word : queryWord) {
-        queryWords.add(word);
-      }
-      List<String> nameWords = java.util.Arrays.asList(seg_name.split(" "));
-
-      double nameWordNum = nameWords.size(); //中文名的单词数
-      double matchNum = 0; //匹配到的数量
-
-      for (String word : queryWords) {
-        if (nameWords.contains(word)) {
-          matchNum++;
-        }
-      }
-
-      double ratio = matchNum / nameWordNum;
+			double ratio = getRatioTmp(doc,qr);
 
       //如果比例大于等于阈值，添加到结果集合中
       if (ratio >= threshold) {
@@ -101,11 +159,57 @@ public class SolrEng extends SearchEng {
     return result;
   }
 
-  private QueryResponse searchSolr(Map<String, String> param) throws Exception {
-    String str = String.join(" ",segment());;
+  private double getRatio(SolrDocument doc,QueryResponse qr) throws IOException, QPException {
+
+		//默认id 先写死
+		String id = (String) doc.get("id");
+
+		//String seg_name = id;
+		List<String> queryWord = segment();
+		Set<String> queryWords = new HashSet<>();
+
+		for (String word : queryWord) {
+			queryWords.add(word);
+		}
+		//List<String> nameWords = java.util.Arrays.asList(seg_name.split(" "));
+		List<String> nameWords = getHitWords(qr.getHighlighting().get(id).get(SEARCHFILED));
+
+		double nameWordNum = nameWords.size(); //中文名的单词数
+		double matchNum = 0; //匹配到的数量
+
+		for (String word : queryWords) {
+			if (nameWords.contains(word)) {
+				matchNum++;
+			}
+		}
+
+		return matchNum / nameWordNum;
+
+	}
+
+	//only word count to get ratio
+	private double getRatioTmp(SolrDocument doc,QueryResponse qr) throws IOException, QPException {
+
+		//默认id 先写死
+		String id = (String) doc.get("id");
+		String query = (String) doc.get(SEARCHFILED);
+		List<String> nameWords = getHitWords(qr.getHighlighting().get(id).get(SEARCHFILED));
+
+		double nameWordNum = query.length(); //中文字数
+		double matchNum = 0; //匹配字数
+
+		for (String word : nameWords) {
+			matchNum+=word.length();
+		}
+
+		return matchNum / nameWordNum;
+
+	}
+
+  private QueryResponse searchSolrWithoutSeg(String str,Map<String, String> param,String field) throws Exception {
     SolrQuery query = new SolrQuery();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.search");
-    query.setQuery(SEARCHFILED + ":(" + str + ")");
+    query.setQuery(field + ":(" + str + ")");
 
     if (param != null) {
       for (Map.Entry<String, String> entry : param.entrySet()) {
@@ -119,6 +223,11 @@ public class SolrEng extends SearchEng {
 
     QueryResponse response = httpSolr.query(query);
     return response;
+  }
+
+  private QueryResponse searchSolr(Map<String, String> param,String field) throws Exception {
+    String str = String.join(" ",segment());
+    return searchSolrWithoutSeg(str,param,field);
   }
 
   private SolrDocumentList setReplaceOrigin(SolrDocumentList docs,
@@ -238,6 +347,36 @@ public class SolrEng extends SearchEng {
       documentList.add(doc);
     }
     return documentList;
+  }
+
+
+  public int metricsImport(){
+    int affectnum = 0;
+    SolrQuery startQuery = new SolrQuery();
+    startQuery.setRequestHandler("/dataimport");
+    startQuery.set("command", "full-import");
+    startQuery.set("verbose", "false");
+    startQuery.set("clean", "false");
+    startQuery.set("commit", "true");
+    startQuery.set("core", "dmp");
+    startQuery.set("entity", "metrics");
+    startQuery.set("name", "dataimport");
+
+    try{
+      QueryResponse response = httpSolr.query(startQuery);
+      affectnum = Integer.parseInt(((SimpleOrderedMap)response.getResponse().get("statusMessages")).get("Total Documents Processed").toString());
+    }
+    catch (SolrServerException e){
+      logger.error("solr server exception: {}",e.getMessage());
+    }
+    catch (IOException e){
+      logger.error("solr io exception: {}",e.getMessage());
+    }
+    catch (Exception e){
+      logger.error("normal exception happend while import data: {} ",e.getMessage());
+    }
+    return affectnum;
+
   }
 
 }

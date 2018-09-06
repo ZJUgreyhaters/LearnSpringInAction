@@ -4,15 +4,37 @@
 <mapper namespace="com.quantchi.authority.mapper.TabColumnDetailMapper">
   <select id="selectTabColDetail" resultType="Map">
     select
-    l_columndeailid,
+    l_columndetailid,
     c_tablename,
     c_column,
-    c_isenable
+    c_isenable,
+    c_database
     from tdatacolumndetail
   </select>
+  <select id="getTabColDetailRelaByAuthId" resultType="Map" parameterType="java.lang.Integer">
+    select
+     l_authid,
+     l_authcolrelaid,
+     l_columndetailid
+    from tauthcolrela
+    where l_authid=#{authId,jdbcType=INTEGER}
+  </select>
+  <select id="getTabColDetailByAuthId" resultType="Map" parameterType="java.lang.Integer">
+    select
+     a.l_authid,
+     l_authcolrelaid,
+     a.l_columndetailid,
+     t.c_tablename,
+     t.c_column,
+     t.c_isenable,
+    t.c_database
+    from tauthcolrela a
+    left join tdatacolumndetail t on t.l_columndetailid=a.l_columndetailid
+    where a.l_authid=#{authId,jdbcType=INTEGER}
+  </select>
   <insert id="insertTabColDetail"  parameterType="map"  useGeneratedKeys="true" keyProperty="l_columndetailid">
-  INSERT INTO tdatacolumndetail (c_tablename,c_column,c_isenable)
-  VALUES (#{c_tablename}, #{c_column}, #{c_isenable})
+  INSERT INTO tdatacolumndetail (c_tablename,c_column,c_isenable,c_database)
+  VALUES (#{c_tablename}, #{c_column}, #{c_isenable},#{c_database})
   </insert>
   <insert id="insertColDetailRela"  parameterType="map">
   INSERT INTO tauthcolrela (l_authid,l_columndetailid)
@@ -20,12 +42,6 @@
   </insert>
   <delete id="deleAuthColRela" parameterType="java.lang.Integer">
     delete  from  tauthcolrela where l_authid=#{authId,jdbcType=INTEGER}
-  </delete>
-
-  <delete id="deleColByAuthid" parameterType="java.lang.Integer">
-    delete  from  tdatacolumndetail where l_columndetailid in  (
-    select tauthcolrela.l_columndetailid from tauthcolrela where l_authid=#{authId,jdbcType=INTEGER}
-    )
   </delete>
 
   <delete id="deleAuthColRelaByColId" parameterType="java.lang.Integer">
@@ -36,7 +52,7 @@
     delete  from  tdatacolumndetail where l_columndetailid =#{colId,jdbcType=INTEGER}
   </delete>
   <update id="modifyColuDetail" parameterType="map">
-    update tdatacolumndetail set c_tablename=#{c_tablename},c_isenable=#{c_isenable},c_column=#{c_column}
+    update tdatacolumndetail set c_tablename=#{c_tablename},c_isenable=#{c_isenable},c_column=#{c_column},c_database=#{c_database}
     where l_columndetailid=#{l_columndetailid}
   </update>
 </mapper>

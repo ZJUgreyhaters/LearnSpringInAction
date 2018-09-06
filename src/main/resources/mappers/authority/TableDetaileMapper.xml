@@ -6,12 +6,31 @@
     select
     l_datatabledetailid,
     c_tablename,
-    c_isenable
+    c_isenable,c_database
     from tdatatabledetail
   </select>
+  <select id="getTableDetailRelaByAuthId" resultType="Map" parameterType="java.lang.Integer" >
+    select
+    l_datatabledetailid,
+    l_authid,
+    l_authtabrelaid
+    from tauthtablerela
+    where l_authid=#{authId,jdbcType=INTEGER}
+  </select>
+  <select id="getTableDetailByAuthId" resultType="Map" parameterType="java.lang.Integer" >
+    select
+    a.l_datatabledetailid,
+    l_authid,
+    l_authtabrelaid,
+    t.c_tablename,t.c_isenable,
+    t.c_database
+    from tauthtablerela a
+    left join tdatatabledetail t on a.l_datatabledetailid=t.l_datatabledetailid
+    where l_authid=#{authId,jdbcType=INTEGER}
+  </select>
   <insert id="insertTableDetail" parameterType="map"  useGeneratedKeys="true" keyProperty="l_datatabledetailid">
-  INSERT INTO tdatatabledetail (c_tablename,c_isenable)
-  VALUES (#{c_tablename}, #{c_isenable})
+  INSERT INTO tdatatabledetail (c_tablename,c_isenable,c_database)
+  VALUES (#{c_tablename}, #{c_isenable},#{c_database})
   </insert>
   <insert id="insertTableDetailRela" parameterType="map">
   INSERT INTO tauthtablerela (l_authid,l_datatabledetailid)
@@ -19,12 +38,6 @@
   </insert>
   <delete id="deleAuthTabRela" parameterType="java.lang.Integer">
     delete  from  tauthtablerela where l_authid=#{authId,jdbcType=INTEGER}
-  </delete>
-
-  <delete id="deleTabByAuthid" parameterType="java.lang.Integer">
-    delete  from  tdatatabledetail where l_datatabledetailid in  (
-    select tauthtablerela.l_datatabledetailid from tauthtablerela where l_authid=#{authId,jdbcType=INTEGER}
-    )
   </delete>
 
   <delete id="deleAuthTabRelaByTabId" parameterType="java.lang.Integer">
@@ -35,7 +48,7 @@
     delete  from  tdatatabledetail where l_datatabledetailid =#{tabId,jdbcType=INTEGER}
   </delete>
   <update id="modifyTableDetail" parameterType="map">
-    update tdatatabledetail set c_tablename=#{c_tablename},c_isenable=#{c_isenable}
+    update tdatatabledetail set c_tablename=#{c_tablename},c_isenable=#{c_isenable},c_database=#{c_database}
     where l_datatabledetailid=#{l_datatabledetailid}
   </update>
 </mapper>

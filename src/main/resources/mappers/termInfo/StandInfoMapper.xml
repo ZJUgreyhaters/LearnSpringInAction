@@ -181,11 +181,8 @@
     ifnull(business_type_name,'')AS businessTypeName,
     ifnull(domain_id,'') AS domainId,
     ifnull(domain_name,'') AS domainName,
-    ifnull(domain_desc,'') AS domainDesc,
-    ifnull(logic_table_id,'') AS logicTableId,
-    ifnull(logic_table_name,'') AS logicTableName,
-    ifnull(table_name,'') AS tableName,
-    ifnull(logic_entity,'') AS logicEntity
+    ifnull(table_id,'') AS logicTableId,
+    ifnull(table_name,'') AS tableName
     from md_domain_info
     <where>
       <if test="entityCategory !=null and entityCategory.toString().length()>0">

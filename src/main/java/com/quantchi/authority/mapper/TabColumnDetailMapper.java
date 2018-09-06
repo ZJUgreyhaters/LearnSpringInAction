@@ -12,12 +12,14 @@ public interface TabColumnDetailMapper {
 
     void deleAuthColRela(Integer authId);
 
-    void deleColByAuthid(Integer authId);
-
     void deleAuthColRelaByColId(Integer colId);
 
     void deleColByColId(Integer colId);
 
     void modifyColuDetail(Map<String, Object> map);
+
+    List<Map<String, Object>> getTabColDetailRelaByAuthId(Integer authId);
+
+    List<Map<String, Object>> getTabColDetailByAuthId(Integer authId);
 
 }

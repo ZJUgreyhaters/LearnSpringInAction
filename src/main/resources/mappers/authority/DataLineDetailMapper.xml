@@ -9,27 +9,44 @@
     c_column,
     c_fiter,
     c_fiterdesc,
-    c_tablename
+    c_tablename,
+    c_database
     from ttablelinedetail
   </select>
   <insert id="insertLineDetail" parameterType="map"
           useGeneratedKeys="true" keyProperty="l_linedetailid">
-  INSERT INTO ttablelinedetail (c_isenable,c_column, c_fiter, c_fiterdesc, c_tablename)
-  VALUES (#{c_isenable}, #{c_column}, #{c_fiter}, #{c_fiterdesc}, #{c_tablename})
+  INSERT INTO ttablelinedetail (c_isenable,c_column, c_fiter, c_fiterdesc, c_tablename,
+    c_database)
+  VALUES (#{c_isenable}, #{c_column}, #{c_fiter}, #{c_fiterdesc}, #{c_tablename}, #{c_database})
   </insert>
   <insert id="insertLineDetailRela" parameterType="map">
   INSERT INTO tauthlinerela (l_authid,l_linedetailid)
   VALUES (#{l_authid}, #{l_linedetailid})
   </insert>
-
+  <select id="selectLineDetRelaByAuthId" parameterType="java.lang.Integer" resultType="Map">
+    select
+    l_linedetailid,
+    l_authid,
+    l_authlinerelaid
+    from tauthlinerela
+    where l_authid=#{authId,jdbcType=INTEGER}
+  </select>
+  <select id="selectLineDetByAuthId" parameterType="java.lang.Integer" resultType="Map">
+    select
+    t.l_linedetailid,
+    l_authid,
+    l_authlinerelaid,
+    t.c_column,
+    t.c_tablename,
+    t.c_fiterdesc,
+    t.c_fiter,
+    t.c_database
+    from tauthlinerela
+    left join ttablelinedetail t on tauthlinerela.l_linedetailid = t.l_linedetailid
+    where l_authid=#{authId,jdbcType=INTEGER}
+  </select>
   <delete id="deleAuthLineRela" parameterType="java.lang.Integer">
     delete  from  tauthlinerela where l_authid=#{authId,jdbcType=INTEGER}
-  </delete>
-
-  <delete id="deleLineByAuthid" parameterType="java.lang.Integer">
-    delete  from  ttablelinedetail where l_linedetailid in  (
-    select tauthlinerela.l_linedetailid from tauthlinerela where l_authid=#{authId,jdbcType=INTEGER}
-    )
   </delete>
 
   <delete id="deleAuthLineRelaByLineId" parameterType="java.lang.Integer">
@@ -40,7 +57,7 @@
     delete  from  ttablelinedetail where l_linedetailid =#{lineId,jdbcType=INTEGER}
   </delete>
   <update id="modifyLineDetail" parameterType="map">
-    update ttablelinedetail set c_isenable=#{c_isenable},c_fiter=#{c_fiter},c_column=#{c_column},c_tablename=#{c_tablename},c_fiterdesc=#{c_fiterdesc}
+    update ttablelinedetail set c_isenable=#{c_isenable},c_fiter=#{c_fiter},c_column=#{c_column},c_tablename=#{c_tablename},c_database=#{c_database}
     where l_linedetailid=#{l_linedetailid}
   </update>
 

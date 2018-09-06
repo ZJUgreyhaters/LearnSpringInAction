@@ -10,6 +10,24 @@
     c_url
     from tfuncdetail
   </select>
+  <select id="getFuncDetailRelaByAuthId" resultType="Map" parameterType="java.lang.Integer">
+    select
+    l_funcdetail ,
+    l_authid,
+    l_authfuncrelaid
+    from tauthfuncrela
+    where l_authid = #{authId,jdbcType=INTEGER}
+  </select>
+  <select id="getFuncDetailByAuth" resultType="Map" parameterType="java.lang.Integer">
+    select
+    t.l_funcdetail ,
+    l_authid,
+    l_authfuncrelaid,
+    t.c_isenable,t.c_funcname,t.c_url
+    from tauthfuncrela a
+    left join tfuncdetail t on a.l_funcdetail=t.l_funcdetail
+    where l_authid = #{authId,jdbcType=INTEGER}
+  </select>
   <insert id="insertFuncDetail" parameterType="map"  useGeneratedKeys="true" keyProperty="l_funcdetail">
   INSERT INTO tfuncdetail (c_funcname,c_url,c_isenable)
   VALUES (#{c_funcname}, #{c_url}, #{c_isenable})
@@ -20,12 +38,6 @@
   </insert>
   <delete id="deleAuthFuncRela" parameterType="java.lang.Integer">
     delete  from  tauthfuncrela where l_authid=#{authId,jdbcType=INTEGER}
-  </delete>
-
-  <delete id="deleFuncByAuthid" parameterType="java.lang.Integer">
-    delete  from  tfuncdetail where l_funcdetail in  (
-    select tauthfuncrela.l_funcdetail from tauthfuncrela where l_authid=#{authId,jdbcType=INTEGER}
-    )
   </delete>
 
   <delete id="deleAuthFuncRelaByFuncId" parameterType="java.lang.Integer">
