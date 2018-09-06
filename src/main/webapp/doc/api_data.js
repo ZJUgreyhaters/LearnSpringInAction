@@ -717,6 +717,13 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": true,
+            "field": "authDetail.c_database",
+            "description": "<p>库名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
             "field": "authDetail.c_tablename",
             "description": "<p>表名字</p>"
           },

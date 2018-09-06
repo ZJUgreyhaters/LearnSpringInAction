@@ -43,7 +43,7 @@ public class AuthorityDetailController {
      * @apiParam String} [authDetail.c_database] 库名字
      * @apiParam {List} [authDetail]  权限明细 可以装入多个
      * @apiParam {Int} [authDetail.l_authdetailid] 明细权限ID    因为还未插入表 填0
-     * @apiParam {String} [authDetail.c_tablename] 表名字
+     * @apiParam {String} [authDetail.c_database] 库名字
      * @apiParam {String} [authDetail.c_tablename] 表名字
      * @apiParam {String} [authDetail.c_column] 表字段名字
      * @apiParam {String} [authDetail.c_fiter]  过滤条件
