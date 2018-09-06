@@ -43,6 +43,7 @@ public class AuthorityDetailController {
      * @apiParam String} [authDetail.c_database] 库名字
      * @apiParam {List} [authDetail]  权限明细 可以装入多个
      * @apiParam {Int} [authDetail.l_authdetailid] 明细权限ID    因为还未插入表 填0
+     * @apiParam {String} [authDetail.c_database] 库名字
      * @apiParam {String} [authDetail.c_tablename] 表名字
      * @apiParam {String} [authDetail.c_column] 表字段名字
      * @apiParam {String} [authDetail.c_fiter]  过滤条件
@@ -256,4 +257,28 @@ public class AuthorityDetailController {
         }
     }
 
+    /**@api {post} /api/getFuncDetailList 获取功能权限
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/getFuncDetailList
+     * @apiName modifyAuth
+     * @apiGroup AuthorityDetailController
+     * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+     * @apiSuccess {String} msg  成功或者错误信息
+     * @apiSuccess {List} [data] 返回数据 指标信息列表
+     * @apiSuccess {List} [data.c_url] 路径
+     * @apiSuccess {String} [data.l_funcdetail] 功能权限id
+     * @apiSuccess {String} [data.total] 返回总条数
+     * */
+    @ResponseBody
+    @RequestMapping(value = "/getFuncDetailList", method = {
+            RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+    public String getFuncDetailList(){
+        try {
+            return  authoritydetailService.getFuncDetailList() ;
+        }catch (Exception e )
+        {
+            return JsonResult.errorJson("error!");
+        }
+
+    }
 }

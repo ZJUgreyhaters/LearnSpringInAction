@@ -223,7 +223,7 @@ public class MetaDataMgrApiController {
         return Util.genRet(201, _ret, "失败", 0);
       }
     } catch (Exception e) {
-      logger.error("extractTables func err:", e.getMessage());
+      logger.error("extractTables func err:", e);
       return Util.genRet(500, null, "保存失败", 0);
     }
   }

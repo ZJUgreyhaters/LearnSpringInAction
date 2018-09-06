@@ -31,7 +31,6 @@ import com.quantchi.termInfo.pojo.TermLogicCatagory;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -328,7 +327,7 @@ public class MetaDataMgrApiService {
           .selectByExample(dsTableInfoDBExample);
       if (dsTableInfoDBSList.size() > 0) {
         oldTable += tableName;
-        continue;
+//        continue;
       }
       Map<String, String> tableMap = new HashMap<>();
       tableMap.put("table_english_name", tableName);
@@ -343,10 +342,10 @@ public class MetaDataMgrApiService {
     if (tableList.size() == 0) {
       return true;
     }
-
-    if (dsTableInfoDBMapper.insertTables(tableList) <= 0) {
-      _ret = false;
-    }
+//
+//    if (dsTableInfoDBMapper.insertTables(tableList) <= 0) {
+//      _ret = false;
+//    }
 
     //2.save fields in local db
     for (Map<String, String> tableMap : tableList) {
@@ -372,94 +371,45 @@ public class MetaDataMgrApiService {
         mapList.add(fieldMap);
       }
     }
-    if (dsFieldInfoDBMapper.insertFields(mapList) <= 0) {
-      _ret = false;
-    }
-    Map<String, Object> insertFeildMap = dsFieldInfoDBMapper.selectAll(mapList);
+//    if (dsFieldInfoDBMapper.insertFields(mapList) <= 0) {
+//      _ret = false;
+//    }
+    Map<String, Object> insertFieldMap = dsFieldInfoDBMapper.selectAll(mapList);
     //3.add relation
-    int i = 0;
-    String[] dbName = new String[100000];
-    String[] name = new String[100000];
+    int count = 0;
+    String[] dbName = new String[100];
+    String[] name = new String[10000];
     for (String tableName : tables) {
       String[] dbTableName = tableName.split("\\.");
-      dbName[i] = dbTableName[0];
-      name[i] = dbTableName[1];
-      i++;
+      dbName[count] = dbTableName[0];
+      name[count] = dbTableName[1];
+      count++;
     }
-//        String[] names = new String[100000];
-    ArrayList<String> nameList = new ArrayList<>();
+    List<String> nameList = new ArrayList<>();
     int j = 1, k = 1, isprimary = 0;
-    nameList.add(dbName[0]);
-    for (; j < i; j++) {
+    nameList.add(name[0]);
+    for (; j < count; j++) {
       if (dbName[j].equals(dbName[j - 1])) {
         nameList.add(name[j]);
       } else {
-        nameList = new ArrayList<>();
-        Set<KeyInfo> set = hiveExtractImp
-            .getKeyInfo(dbName[j - 1], (String[]) nameList.toArray(new String[nameList.size()]));
-        Iterator it = set.iterator();
-        while (it.hasNext()) {
-          KeyInfo keyInfo = (KeyInfo) it.next();
-          String foreignFieldId;
-          if (keyInfo.getKeyType() == "PK") {
-            isprimary = 1;
-          } else {
-            isprimary = 0;
-          }
-          String tbname = dbName[j - 1] + "." + keyInfo.getTblName();
-          DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-          dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tbname)
-              .andDatasourceIdEqualTo(dsId);
-          List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
-          String tbId = list.get(0).getId().toString();
-          String fieldName = keyInfo.getFieldName();
-          //获取列字段的id
-          Map<String, Integer> feildIdMap = (Map<String, Integer>) insertFeildMap
-              .get(tbId + "." + fieldName);
-          String fieldId = feildIdMap.get("value").toString();
-          if (keyInfo.getIncidenceTBL() == null) {
-            foreignFieldId = null;
-            if (!oldTable.contains(tbId)) {
-              dsFieldRelDBMapper.insertReleations(tbId, fieldId, null, foreignFieldId, isprimary);
-            }
-          } else {
-            //获取外键表字段id
-            String foreignTbName = keyInfo.getIncidenceTBL();
-            DSTableInfoDBExample dsForeignTableInfoDBExample = new DSTableInfoDBExample();
-            dsForeignTableInfoDBExample.createCriteria()
-                .andTableEnglishNameEqualTo(dbName[j - 1] + "." + foreignTbName)
-                .andDatasourceIdEqualTo(dsId);
-            List<DSTableInfoDB> foreignList = dsTableInfoDBMapper
-                .selectByExample(dsForeignTableInfoDBExample);
-            String foreignId = foreignList.get(0).getId().toString();
-            Map<String, Integer> foreignFeildIdMap = (Map<String, Integer>) insertFeildMap
-                .get(foreignId + "." + fieldName);
-            foreignFieldId = foreignFeildIdMap.get("value").toString();
-
-            String foreigntb = dbName[j - 1] + "." + keyInfo.getIncidenceTBL();
-            DSTableInfoDBExample ds = new DSTableInfoDBExample();
-            ds.createCriteria().andTableEnglishNameEqualTo(foreigntb);
-            if (!oldTable.contains(list.get(0).getId().toString())) {
-              dsFieldRelDBMapper
-                  .insertReleations(tbId, fieldId, foreignId, foreignFieldId, isprimary);
-            }
-          }
-
-        }
+        fuckJavaGroup(j, hiveExtractImp, dbName, oldTable, nameList, dsId, insertFieldMap);
       }
     }
+    fuckJavaGroup(j, hiveExtractImp, dbName, oldTable, nameList, dsId, insertFieldMap);
+    return _ret;
+  }
+
+  private void fuckJavaGroup(int j, HiveExtractImp hiveExtractImp, String[] dbName, String oldTable,
+      List<String> nameList, String dsId, Map<String, Object> insertFieldMap) throws Exception {
     Set<KeyInfo> set = hiveExtractImp
-        .getKeyInfo(dbName[j - 1], (String[]) nameList.toArray(new String[nameList.size()]));
-    Iterator it = set.iterator();
-    String tbname = tables.get(tables.size() - 1);
-    while (it.hasNext()) {
-      KeyInfo keyInfo = (KeyInfo) it.next();
-      if (keyInfo.getKeyType() == "PK") {
+        .getKeyInfo(dbName[j - 1], nameList.toArray(new String[nameList.size()]));
+    for (KeyInfo keyInfo : set) {
+      int isprimary;
+      if (keyInfo.getKeyType().equals("PK")) {
         isprimary = 1;
       } else {
         isprimary = 0;
       }
-      String foreignFieldId;
       DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
       dsTableInfoDBExample.createCriteria()
           .andTableEnglishNameEqualTo(dbName[j - 1] + "." + keyInfo.getTblName())
@@ -468,39 +418,45 @@ public class MetaDataMgrApiService {
       String tbId = list.get(0).getId().toString();
       String fieldName = keyInfo.getFieldName();
       //获取列字段的id
-      Map<String, Integer> feildIdMap = (Map<String, Integer>) insertFeildMap
+      Map<String, Integer> fieldIdMap = (Map<String, Integer>) insertFieldMap
           .get(tbId + "." + fieldName);
-      String fieldId = feildIdMap.get("value").toString();
-      if (keyInfo.getIncidenceTBL() == null) {
-        foreignFieldId = null;
-        if (!oldTable.contains(tbId)) {
-          dsFieldRelDBMapper.insertReleations(tbId, fieldId, null, foreignFieldId, isprimary);
-        }
-      } else {
-        //获取外键表字段id
-        String foreignTbName = keyInfo.getIncidenceTBL();
-        DSTableInfoDBExample dsForeignTableInfoDBExample = new DSTableInfoDBExample();
-        dsForeignTableInfoDBExample.createCriteria()
-            .andTableEnglishNameEqualTo(dbName[j - 1] + "." + foreignTbName)
-            .andDatasourceIdEqualTo(dsId);
-        List<DSTableInfoDB> foreignList = dsTableInfoDBMapper
-            .selectByExample(dsForeignTableInfoDBExample);
-        String foreignId = foreignList.get(0).getId().toString();
-        Map<String, Integer> foreignFeildIdMap = (Map<String, Integer>) insertFeildMap
-            .get(foreignId + "." + fieldName);
-        foreignFieldId = foreignFeildIdMap.get("value").toString();
-
-        String foreigntb = dbName[j - 1] + "." + keyInfo.getIncidenceTBL();
-        DSTableInfoDBExample ds = new DSTableInfoDBExample();
-        ds.createCriteria().andTableEnglishNameEqualTo(foreigntb);
-        if (!oldTable.contains(list.get(0).getId().toString())) {
-          dsFieldRelDBMapper.insertReleations(tbId, fieldId, foreignId, foreignFieldId, isprimary);
-        }
-      }
-
+      String fieldId = fieldIdMap.get("value").toString();
+      fuckHBY(dsId, oldTable, insertFieldMap, dbName, j, isprimary, keyInfo, list, tbId, fieldName,
+          fieldId);
     }
+  }
 
-    return _ret;
+  private void fuckHBY(String dsId, String oldTable, Map<String, Object> insertFeildMap,
+      String[] dbName, int j, int isprimary, KeyInfo keyInfo, List<DSTableInfoDB> list, String tbId,
+      String fieldName, String fieldId) {
+    String foreignFieldId;
+    if (keyInfo.getIncidenceTBL() == null) {
+      foreignFieldId = null;
+      if (!oldTable.contains(tbId)) {
+        dsFieldRelDBMapper.insertReleations(tbId, fieldId, null, foreignFieldId, isprimary);
+      }
+    } else {
+      //获取外键表字段id
+      String foreignTbName = keyInfo.getIncidenceTBL();
+      DSTableInfoDBExample dsForeignTableInfoDBExample = new DSTableInfoDBExample();
+      dsForeignTableInfoDBExample.createCriteria()
+          .andTableEnglishNameEqualTo(dbName[j - 1] + "." + foreignTbName)
+          .andDatasourceIdEqualTo(dsId);
+      List<DSTableInfoDB> foreignList = dsTableInfoDBMapper
+          .selectByExample(dsForeignTableInfoDBExample);
+      String foreignId = foreignList.get(0).getId().toString();
+      Map<String, Integer> foreignFeildIdMap = (Map<String, Integer>) insertFeildMap
+          .get(foreignId + "." + fieldName);
+      foreignFieldId = foreignFeildIdMap.get("value").toString();
+
+      String foreigntb = dbName[j - 1] + "." + keyInfo.getIncidenceTBL();
+      DSTableInfoDBExample ds = new DSTableInfoDBExample();
+      ds.createCriteria().andTableEnglishNameEqualTo(foreigntb);
+      if (!oldTable.contains(list.get(0).getId().toString())) {
+        dsFieldRelDBMapper
+            .insertReleations(tbId, fieldId, foreignId, foreignFieldId, isprimary);
+      }
+    }
   }
 
   public Map<String, Object> relationList(JSONObject json) throws Exception {
@@ -641,7 +597,8 @@ public class MetaDataMgrApiService {
 
     DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
     //dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getDsName());
-    dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getId().toString());
+    dsTableInfoDBExample.createCriteria()
+        .andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getId().toString());
     List<DSTableInfoDB> tableInfoDBList = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
     //遍历所有表
     for (DSTableInfoDB dsTableInfoDB : tableInfoDBList) {
@@ -654,6 +611,7 @@ public class MetaDataMgrApiService {
       physicalTableInfo.setPhysicalDb(db);
       physicalTableInfo.setPhysicalTable(tableName);
       physicalTableInfo.setPrimaryKey(dsTableInfoDB.getPrimaryKey());
+      physicalTableInfo.setTimeField(dsTableInfoDB.getTimeFiled());
       termGenInfo.setTableInfo(physicalTableInfo);
 
       //获取表的所有列
@@ -706,7 +664,7 @@ public class MetaDataMgrApiService {
     /*dsEntityInfoDBExample.createCriteria()
         .andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getDsName());*/
     dsEntityInfoDBExample.createCriteria()
-            .andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getId().toString());
+        .andDatasourceIdEqualTo(dsMetaInfoDBList.get(0).getId().toString());
     List<DSEntityInfoDB> dsEntityInfoDBList = dsEntityInfoDBMapper
         .selectByExample(dsEntityInfoDBExample);
     for (DSEntityInfoDB dsEntityInfoDB : dsEntityInfoDBList) {

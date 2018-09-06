@@ -539,6 +539,13 @@ define({ "api": [
             "optional": true,
             "field": "c_authtype",
             "description": "<p>权限类型 0:功能权限  1:数据权限</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "l_funcdetailid",
+            "description": "<p>根据功能权限id 查权限名字</p>"
           }
         ]
       },
@@ -601,6 +608,13 @@ define({ "api": [
             "optional": true,
             "field": "data.c_isenable",
             "description": "<p>是否有效</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.d_createdate",
+            "description": "<p>创建时间</p>"
           },
           {
             "group": "Success 200",
@@ -698,6 +712,13 @@ define({ "api": [
             "optional": true,
             "field": "authDetail.l_authdetailid",
             "description": "<p>明细权限ID    因为还未插入表 填0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "authDetail.c_database",
+            "description": "<p>库名字</p>"
           },
           {
             "group": "Parameter",
@@ -845,6 +866,69 @@ define({ "api": [
             "optional": true,
             "field": "tables.columns",
             "description": "<p>字段名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.total",
+            "description": "<p>返回总条数</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
+    "groupTitle": "AuthorityDetailController"
+  },
+  {
+    "type": "post",
+    "url": "/api/getFuncDetailList",
+    "title": "获取功能权限",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/getFuncDetailList"
+      }
+    ],
+    "name": "modifyAuth",
+    "group": "AuthorityDetailController",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据 指标信息列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.c_url",
+            "description": "<p>路径</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.l_funcdetail",
+            "description": "<p>功能权限id</p>"
           },
           {
             "group": "Success 200",
