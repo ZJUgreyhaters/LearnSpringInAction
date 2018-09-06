@@ -14,6 +14,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,7 @@ public class SolrEng extends SearchEng {
 
 
   @Override
-  public List<Object> getMetrics() throws Exception {
+  public List<Object> getMetrics(Map<String, String> queryMap) throws Exception {
     QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCommParam,SEARCHFILED);
 		Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.handle");
 		double threshold = Double.parseDouble(solrParam.get("threshold"));
@@ -140,7 +141,6 @@ public class SolrEng extends SearchEng {
     return qs;
   }
 
-  private SolrDocumentList processDocs(QueryResponse qr, boolean filterRepeat,double threshold)
   private QuerySentence checkDocInSolrById(String id) throws Exception {
     QuerySentence qs = null;
     SolrQuery query = new SolrQuery();
@@ -152,11 +152,9 @@ public class SolrEng extends SearchEng {
     return qs;
   }
 
-  private SolrDocumentList processDocs(QueryResponse qr, boolean filterRepeat)
+  private SolrDocumentList processDocs(QueryResponse qr, boolean filterRepeat,double threshold)
       throws IOException, QPException {
     SolrDocumentList result = new SolrDocumentList();
-    Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.handle");
-    //double threshold = Double.parseDouble(solrParam.get("threshold"));   //阈值
 
     //对每个doc做处理
     for (SolrDocument doc : qr.getResults()) {
