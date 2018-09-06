@@ -18,7 +18,7 @@ import java.util.Hashtable;
  * @Description: TODO
  * @Author: wbchen
  * @Date: 2018/8/31 15:14
- * @Version 1.0.0
+ * @Version 1.0.1
  **/
 
 public class authenticationTest {
