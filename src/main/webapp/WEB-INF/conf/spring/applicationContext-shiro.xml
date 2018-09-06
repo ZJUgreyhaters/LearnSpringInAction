@@ -6,7 +6,7 @@
     <!-- shiro的web过滤器 -->
     <!-- 与web.xml对应 -->
     <!--<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">-->
-    <bean id="shiroFilter" class="com.quantchi.authority.shiro.MyShiroFilterFactoryBean">
+    <bean id="shiroFilter" class="com.quantchi.authority.shiro.ShiroPermissionFactory">
         <property name="securityManager" ref="securityManager" />
         <property name="loginUrl" value="/" />
         <property name="unauthorizedUrl" value="/error.jsp" />
