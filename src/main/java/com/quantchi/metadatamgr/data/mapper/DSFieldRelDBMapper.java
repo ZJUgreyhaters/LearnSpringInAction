@@ -1,38 +1,44 @@
 package com.quantchi.metadatamgr.data.mapper;
 
-import com.quantchi.metadatamgr.data.KeyInfo;
 import com.quantchi.metadatamgr.data.entity.DSFieldRelDB;
 import com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample;
+import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
-import java.util.Set;
-
 public interface DSFieldRelDBMapper {
-    int deleteByExample(DSFieldRelDBExample example);
 
-    int deleteByPrimaryKey(Integer relationId);
+  int deleteByExample(DSFieldRelDBExample example);
 
-    int insert(DSFieldRelDB record);
+  int deleteByPrimaryKey(Integer relationId);
 
-    int insertSelective(DSFieldRelDB record);
+  int insert(Map<String, Object> map);
 
-    int insertJoinInfo(Map<String, Object> joinInfo);
+  int insertSelective(DSFieldRelDB record);
 
-    List<Map<String, String>> selectJoinPair(String dataSourceId);
+  List<DSFieldRelDB> selectByExample(DSFieldRelDBExample example);
 
-    List<DSFieldRelDB> selectByExample(DSFieldRelDBExample example);
+  int insertJoinInfo(Map<String, Object> joinInfo);
 
-    DSFieldRelDB selectByPrimaryKey(Integer relationId);
+  List<Map<String, String>> selectJoinPair(String dataSourceId);
 
-    int updateByExampleSelective(@Param("record") DSFieldRelDB record, @Param("example") DSFieldRelDBExample example);
+  DSFieldRelDB selectByPrimaryKey(Integer relationId);
 
-    int updateByExample(@Param("record") DSFieldRelDB record, @Param("example") DSFieldRelDBExample example);
+  int updateByExampleSelective(@Param("record") DSFieldRelDB record,
+      @Param("example") DSFieldRelDBExample example);
 
-    int updateByPrimaryKeySelective(DSFieldRelDB record);
+  int updateByExample(@Param("record") DSFieldRelDB record,
+      @Param("example") DSFieldRelDBExample example);
 
-    int updateByPrimaryKey(DSFieldRelDB record);
+  int updateByPrimaryKeySelective(DSFieldRelDB record);
 
-    int insertReleations(@Param("tableName")String tableName,@Param("field")String field, @Param("foreignTable")String foreignTable, @Param("foreignFieldId")String foreignFieldId, @Param("isprimary")Integer isprimary);
+  int updateByPrimaryKey(Map<String, Object> map);
+
+  int insertReleations(@Param("tableName") String tableName, @Param("field") String field,
+      @Param("foreignTable") String foreignTable, @Param("foreignFieldId") String foreignFieldId,
+      @Param("isprimary") Integer isprimary);
+
+  List<Map<String, String>> foreignkeys(Map<String, Object> map);
+
+  List<Map<String, String>> selectReleation(@Param("ids") String id);
 }
