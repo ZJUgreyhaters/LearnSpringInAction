@@ -268,9 +268,11 @@ public class IntelQueryController {
       Map<String, Object> complexDataAndHeader = intelQueryService
           .getComplexData(tabulate, columnRelation, page, page_size);
 
+      List<Object> complexTotalData =  ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
+              .collect(Collectors.toList());
+      resultMap.put("total", complexTotalData.size());
       List<Object> complexData = Paging.pagingPlugObject(
-          ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
-              .collect(Collectors.toList()), page_size, page);
+              complexTotalData, page_size, page);
 
 
       String id = intelQueryService
