@@ -18,7 +18,7 @@ public class Parser {
 
         String[] testSql = new String[10];
         String[] table = new String[10];
-        testSql[0] = "Select s.name, s.age from student as s where s.major = 'Math'";
+        testSql[8] = "Select s.name, s.age from student as s where s.major = 'Math'";
         testSql[1] = "select s.id, t.name, t.salary  from (select name, salary, id from teacher) as t left outer join student as s on s.id = t.id";
         testSql[2] = "select t.name as namess, s.name from teacher as t , student as s where s.age > 10";
         testSql[3] = "select t.name as namess, s.name from teacher as t , student as s, admin as a where s.age > 10";
@@ -33,12 +33,12 @@ public class Parser {
                 " where x.init_date >=   '20180101' \n" +
                 " and x.init_date<= '20180131'  ";
         testSql[7] = "select sum(id) as sum_id from teacher";
-        testSql[8] = "select a from (select a from student)";
+        testSql[0] = "select a from student";
 
         table[0] = "student";
         table[1] = "teacher";
         table[2] = "admin";
-        table[3] = "fact_cust_compact_detail";
+        table[3] = "dim_branch";
 
         //行权限
         RowPermission rowPermission = new RowPermission();
@@ -51,10 +51,12 @@ public class Parser {
         columnPermission.addSimpleColumnRule(table[1],"salary");
         columnPermission.addSimpleColumnRule(table[2],"name");
         columnPermission.addSimpleColumnRule(table[3],"occur_balance");
+        //columnPermission.addSimpleColumnRule(table[3], "branch_no");
         //通过addSimpleRowRule()方法添加一条行规则
         rowPermission.addSimpleRowRule(table[0],"id>10");
         rowPermission.addSimpleRowRule(table[1],"department in ('Math','China')");
         rowPermission.addSimpleRowRule(table[2],"age >= 15");
+        rowPermission.addSimpleRowRule(table[3], "id > 10");
 
         for(int i = 0;i < 9;i++){
             System.out.println("@sql测试语句" + i + "-------------------");
@@ -66,7 +68,6 @@ public class Parser {
             //getIdealSQL()方法获得最终的sql
             System.out.println(sqlGen.getIdealSQL() + "\n+++++++++++++++++\n\n");
         }
-
         //
     }
 }

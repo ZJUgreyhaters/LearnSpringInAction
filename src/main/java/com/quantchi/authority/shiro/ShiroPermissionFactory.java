@@ -23,6 +23,8 @@ public class ShiroPermissionFactory extends ShiroFilterFactoryBean {
 
     public static String definition = "";
 
+
+
     @Override
     public void setFilterChainDefinitions(String definitions){
 
@@ -57,7 +59,6 @@ public class ShiroPermissionFactory extends ShiroFilterFactoryBean {
         // 从数据库取出url过滤的规则：[url] [过滤器名称]()
 
         filter.put("/api/getRecommendQuery", "MyUrlFilter");
-        //filter.put("/api/getBusiCate", "MyUrlFilter");
 
         return filter;
     }

@@ -1,17 +1,27 @@
 package com.quantchi.authority.shiro;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.quantchi.authority.mapper.AuthorityRoleMapper;
+import com.quantchi.authority.service.AuthorityService;
+import com.quantchi.authority.serviceImpl.AuthorityServiceImpl;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.util.Factory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: authenticationTest
@@ -21,18 +31,34 @@ import java.util.Hashtable;
  * @Version 1.0.1
  **/
 
+@ContextConfiguration(locations = {"/applicationContext.xml"})
 public class authenticationTest {
     private static final Logger logger = LoggerFactory.getLogger(authenticationTest.class);
+    @Autowired
+    private AuthorityRoleMapper authorityRoleMapper;
+
+    @Test
+    public void testJson(){
+        Integer id = 48;
+        //AuthorityServiceImpl impl = new AuthorityServiceImpl();
+        authorityRoleMapper.getRoleAuthDetail(id);
+        //String auth = impl.getRoleAuthDetail(id);
+        //System.out.println(auth.size());
+    }
 
     @Test
     public void testLogin(){
+
+
         Factory<SecurityManager> securityManagerFactory = new IniSecurityManagerFactory("classpath:shiroLearn.ini");
 
         SecurityManager securityManager = securityManagerFactory.getInstance();
         SecurityUtils.setSecurityManager(securityManager);
         org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("wbchen", "222");
+        subject.hasRole("user");
         System.out.println("=====" + subject.hasRole("user"));
+
         try {
             subject.login(usernamePasswordToken);
         }catch (AuthenticationException ex){
