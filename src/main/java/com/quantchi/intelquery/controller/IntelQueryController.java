@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -263,9 +264,11 @@ public class IntelQueryController {
       Map<String, Object> complexDataAndHeader = intelQueryService
           .getComplexData(tabulate, columnRelation, page, page_size);
 
+      List<Object> complexTotalData =  ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
+              .collect(Collectors.toList());
+      resultMap.put("total", complexTotalData.size());
       List<Object> complexData = Paging.pagingPlugObject(
-          ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
-              .collect(Collectors.toList()), page_size, page);
+              complexTotalData, page_size, page);
 
 
       String id = intelQueryService
@@ -351,7 +354,8 @@ public class IntelQueryController {
    * @apiParam {String} query 查询语句
    */
   @RequestMapping(value = "/download", method = RequestMethod.GET)
-  public void download(HttpServletResponse response, @RequestParam(value = "query") String query) throws Exception {
+  public void download(HttpServletRequest request, HttpServletResponse response,
+                       @RequestParam(value = "query") String query) throws Exception {
     BasicQuery basicquery = new BasicQuery(query);
     StepResult result = QueryParser.getInstance().parse(basicquery);
     QueryWithTree queryTree = result.getFinalTree();
@@ -365,7 +369,7 @@ public class IntelQueryController {
 
     ComplexTable complexTable = intelQueryService.getComplexTable(sqlQuery);
     ExportUtil.ExportIntelQueryExcel exportIntelQueryExcel = new ExportUtil.ExportIntelQueryExcel();
-    exportIntelQueryExcel.export(response, "智能取数结果", complexTable);
+    exportIntelQueryExcel.export(request, response, "智能取数结果", complexTable);
   }
 
   /**
