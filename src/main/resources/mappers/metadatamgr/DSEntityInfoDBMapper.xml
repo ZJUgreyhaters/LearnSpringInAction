@@ -112,7 +112,7 @@
       #{nonMainTable,jdbcType=VARCHAR},#{mainEntityFieldName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertDomain">
-    insert into md_domain_info (
+    insert into iq_domain_info (
       business_type_id, business_type_name, domain_id, domain_name,
       table_id, table_name, is_main, name_field)
     values (#{businessTypeId}, #{businessTypeName}, #{domainId}, #{domainName},
