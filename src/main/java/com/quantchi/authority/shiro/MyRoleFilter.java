@@ -1,15 +1,18 @@
 package com.quantchi.authority.shiro;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.config.IniSecurityManagerFactory;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.Factory;
 import org.apache.shiro.web.filter.authz.AuthorizationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName: MyRoleFilter
@@ -20,13 +23,28 @@ import javax.servlet.ServletResponse;
  **/
 
 public class MyRoleFilter extends AuthorizationFilter {
+
+    private static final String USERID = "userId";
+
+    private static final Logger logger = LoggerFactory.getLogger(MyRoleFilter.class);
+
     @Override
     public boolean isAccessAllowed(ServletRequest req, ServletResponse resp, Object mappedValue) throws Exception {
 
+        //不使用session ,由于login不在一个系统里，只能通过cookie传递,暂时认为传递的是userId
 
-
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("wbchen", "222");
         Subject subject = getSubject(req, resp);
+        Cookie[] cookies = ((HttpServletRequest)req).getCookies();
+        String useId = "";
+        Collection<Cookie> cookiesLst = Arrays.stream(cookies).collect(Collectors.toList());
+        for(Cookie cookie : cookiesLst){
+            if(USERID.equals(cookie.getName())){
+                useId = cookie.getValue();
+                break;
+            }
+        }
+
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(useId, "");
         subject.login(usernamePasswordToken);
         String[] rolesArray = (String[]) mappedValue;
         if(rolesArray == null || rolesArray.length == 0){
@@ -36,9 +54,7 @@ public class MyRoleFilter extends AuthorizationFilter {
             if(subject.hasRole(rolesArray[i])){
                 return true;
             }
-            System.out.println("--- MyRoleFilter ---" + rolesArray[i]);
         }
-        System.out.println("Done.");
         return false;
     }
 

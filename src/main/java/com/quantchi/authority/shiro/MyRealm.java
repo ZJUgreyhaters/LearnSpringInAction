@@ -11,6 +11,7 @@ import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,39 +28,25 @@ import java.util.Set;
 public class MyRealm extends AuthorizingRealm {
     //private Logger log;
 
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MyRealm.class);
+
     @Override
     protected AuthenticationInfo  doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException{
         //authenticationToken为用户输入信息
-        String userCode = (String) authenticationToken.getPrincipal();
-        String pwd =  new String((char[])authenticationToken.getCredentials());
-        System.out.println("pwd -> " + pwd);
-        //模拟数据库操作查询用户
-        if(!userCode.equals("wbchen")){
-            System.out.println("user must be wbchen!");
-            return null;
-        }
-        else{
-            System.out.println("Hello, " + userCode);
-        }
-        // 查询密码为222
-        String password="222";
-
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userCode,password,"testRealm");
-
+        String userId = (String) authenticationToken.getPrincipal();
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userId,"","testRealm");
         return info;
     }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        //log.info("--- AuthorizationInfo doGetAuthorizationInfo ---");
+
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        Set<String> role = new HashSet<>();
-        role.add("admin");
-        simpleAuthorizationInfo.setRoles(role);
-        simpleAuthorizationInfo.addRole("user");
-        System.out.println("Role: " + simpleAuthorizationInfo.getRoles().toString());
-        simpleAuthorizationInfo.addStringPermission("user:delete");
-        System.out.println("--- doGetAuthorizationInfo ---");
+
+        //TODO get roleId by userId from db
+
+
+        simpleAuthorizationInfo.addRole("1");
         return simpleAuthorizationInfo;
     }
 }
