@@ -23,7 +23,8 @@ public interface IntelQueryService {
 
   List<Object> getQuickMacroQuery(String query) throws Exception;
 
-  List<Object> getMetricsRet(String query,String businessDefinition,String businessId) throws Exception;
+  List<Object> getMetricsRet(String query, String businessId)
+      throws Exception;
 
   Map<String, Object> execsql(String sql, Map<String, Object> map) throws Exception;
 
@@ -49,11 +50,12 @@ public interface IntelQueryService {
   Map<String, Object> tabulateMapping(TreeNode columnRelation, Map<String, Object> tabulate);
 
   //Map<List<String>,Object> getComplexData(ResultSet rs,TreeNode columnRelation,int page,int pagesize) throws SQLException;
-  Map<String,Object> getComplexData(ResultSet rs,TreeNode columnRelation,int page,int pagesize) throws SQLException;
+  Map<String, Object> getComplexData(ResultSet rs, TreeNode columnRelation, int page, int pagesize)
+      throws SQLException;
 
   // 生成下载Excel文件用的数据
   ComplexTable getComplexTable(SqlQuery sqlQuery) throws Exception;
 
-  String likenum(QuerySentence querySentence) throws Exception;
+  void likenum(QuerySentence querySentence) throws Exception;
 }
 

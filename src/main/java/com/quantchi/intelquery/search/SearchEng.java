@@ -33,7 +33,7 @@ public abstract class SearchEng {
     this.query = query;
   }
 
-  protected void init(String query){
+  protected void init(String query) {
     this.query = query;
   }
 
@@ -50,29 +50,34 @@ public abstract class SearchEng {
     return obj;
   }
 
-  public abstract List<Object> getMetrics(Map<String,String> queryMap) throws Exception;
+  public abstract List<Object> getMetrics(Map<String, String> queryMap) throws Exception;
+
   public abstract List<Object> getQuickMacro() throws Exception;
+
   public abstract String addQuerySentence(QuerySentence qs) throws Exception;
+
+  public abstract void addQueryLikeSentence(QuerySentence qs) throws Exception;
+
   public abstract List<QuerySentence> getCorrelativeSentence() throws Exception;
 
   protected List<String> segment() throws QPException, IOException {
-		return segmentWithLTP(getQuery());
+    return segmentWithLTP(getQuery());
   }
 
-	protected List<String> segmentWithLTP(String query) throws QPException, IOException {
-		List<String> list = new ArrayList<>();
-		String ltp = AppProperties.get("ltp.addr");
-		QueryNodes _nodes = LtpTokenizer.tokenize(query, ltp);
+  protected List<String> segmentWithLTP(String query) throws QPException, IOException {
+    List<String> list = new ArrayList<>();
+    String ltp = AppProperties.get("ltp.addr");
+    QueryNodes _nodes = LtpTokenizer.tokenize(query, ltp);
 
-		for (SemanticNode node : _nodes) {
-			list.add(node.getText());
-		}
+    for (SemanticNode node : _nodes) {
+      list.add(node.getText());
+    }
 
-		//添加分词后处理策略
-		removeName_with_seg_xx(list);
+    //添加分词后处理策略
+    removeName_with_seg_xx(list);
 
-		return list;
-	}
+    return list;
+  }
 
   //XX 被分词了，所以针对人名去除分词，但是人名xx的提示将不会出来
   private void removeName_with_seg_xx(List<String> segList) {

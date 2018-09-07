@@ -12,7 +12,6 @@ import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.TokenizingResult;
 import com.quantchi.intelquery.date.formatter.NormalFormatter;
 import com.quantchi.intelquery.exception.QPException;
-import com.quantchi.intelquery.node.SemanticNode;
 import com.quantchi.intelquery.pojo.QuerySentence;
 import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
@@ -220,16 +219,12 @@ public class IntelQueryController {
     try {
       query = map.get("q").toString();
       businessName = map.get("businessName").toString();
-      String businessDefinition = null;
-      if (map.get("businessDefinition") != null) {
-        businessDefinition = map.get("businessDefinition").toString();
-      }
       String businessId = null;
       if (map.get("businessId") != null) {
         businessId = map.get("businessId").toString();
       }
       List<Object> metricsRet = intelQueryService
-          .getMetricsRet(query, businessDefinition, businessId);
+          .getMetricsRet(query, businessId);
       String total = String.valueOf(metricsRet.size());
       int page = 1;
       int page_size = 20;
