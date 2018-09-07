@@ -35,6 +35,9 @@
     <if test="c_rolename != null and c_rolename.toString().length()>0">
       or  c_rolename like CONCAT(CONCAT('%',#{c_rolename}), '%')
     </if>
+    <if test="l_authid != null and l_authid >0">
+      or  l_roleid in (select l_roleid from tauthrolerela where l_authid=#{l_authid} )
+    </if>
     order by  l_roleid desc
   </select>
   <insert id="insertRole" parameterType="map"  useGeneratedKeys="true" keyProperty="l_roleid">
