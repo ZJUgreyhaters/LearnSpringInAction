@@ -231,11 +231,10 @@ public class MetaDataMgrApiController {
   @RequestMapping(value = "/relation/list", method = {RequestMethod.POST})
   public
   @ResponseBody
-  Map<String, Object> relationList(@RequestBody String bodyString) {
+  Map<String, Object> relationList(@RequestBody Map<String,Object> mapRequest) {
     Map<String, Object> responseMap = new HashMap<>();
     try {
-      JSONObject json = JSONObject.parseObject(bodyString);
-      Map<String, Object> map = metaDataMgrApiService.relationList(json);
+      Map<String, Object> map = metaDataMgrApiService.relationList(mapRequest);
       responseMap.put("data", map);
       responseMap.put("code", 200);
       responseMap.put("msg", "查询成功");
@@ -252,20 +251,10 @@ public class MetaDataMgrApiController {
   @RequestMapping(value = "/relation/save", method = RequestMethod.POST)
   public
   @ResponseBody
-  Map<String, Object> relationSave(@RequestBody String bodyString) {
+  Map<String, Object> relationSave(@RequestBody Map<String,Object> map) {
     Map<String, Object> responseMap = new HashMap<>();
     try {
-      JSONObject json = JSONObject.parseObject(bodyString);
-      if (json.getString("from") == null) {
-        throw new Exception("miss from");
-      }
-      if (json.getString("to") == null) {
-        throw new Exception("miss to");
-      }
-      if (json.getString("relation") == null) {
-        throw new Exception("miss relation");
-      }
-      if (metaDataMgrApiService.relationSave(json) <= 0) {
+      if (metaDataMgrApiService.relationSave(map) <= 0) {
         throw new Exception("save fail");
       }
       responseMap.put("code", 200);

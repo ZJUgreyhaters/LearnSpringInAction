@@ -35,6 +35,7 @@ public class QuerySentence {
 
 	@Field("disfavor")
 	private Long dislikeNums = 0L;
+
 	private String type;
 
 	public String getType() {
