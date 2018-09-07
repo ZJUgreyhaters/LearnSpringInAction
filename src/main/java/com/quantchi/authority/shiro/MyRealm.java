@@ -33,8 +33,8 @@ public class MyRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo  doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException{
         //authenticationToken为用户输入信息
-        String userId = (String) authenticationToken.getPrincipal();
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userId,"","testRealm");
+        String roleId = (String) authenticationToken.getPrincipal();
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(roleId,"","testRealm");
         return info;
     }
 
@@ -44,9 +44,8 @@ public class MyRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
 
         //TODO get roleId by userId from db
-
-
-        simpleAuthorizationInfo.addRole("1");
+        Object roleId =  principalCollection.getPrimaryPrincipal();
+        simpleAuthorizationInfo.addRole(roleId.toString());
         return simpleAuthorizationInfo;
     }
 }
