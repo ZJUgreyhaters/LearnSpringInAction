@@ -360,7 +360,11 @@ public class MetaDataMgrApiService {
             .andTableEnglishNameEqualTo(tableMap.get("table_english_name"))
             .andDatasourceIdEqualTo(dsId);
         List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
-        fieldMap.put("table_id", list.get(0).getId());
+        if (list.isEmpty()) {
+          fieldMap.put("table_id", -1);
+        } else {
+          fieldMap.put("table_id", list.get(0).getId());
+        }
         fieldMap.put("field_english_name", fieldEntity.getName());
         String field = fieldEntity.getType();
         fieldMap.put("field_type", field);
@@ -416,6 +420,9 @@ public class MetaDataMgrApiService {
           .andTableEnglishNameEqualTo(dbName[j - 1] + "." + keyInfo.getTblName())
           .andDatasourceIdEqualTo(dsId);
       List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
+      if (list.isEmpty()) {
+        continue;
+      }
       String tbId = list.get(0).getId().toString();
       String fieldName = keyInfo.getFieldName();
       //获取列字段的id
@@ -489,7 +496,7 @@ public class MetaDataMgrApiService {
       StringBuilder total = new StringBuilder();
       if (from_field_id > to_field_id) {
         total.append(to_field_id).append("--").append(from_field_id);
-      }else{
+      } else {
         total.append(from_field_id).append("--").append(to_field_id);
       }
       if (!ids.contains(total.toString())) {
@@ -502,8 +509,8 @@ public class MetaDataMgrApiService {
     return responseMap;
   }
 
-  public int relationSave(Map<String,Object> map) {
-    if (map.get("relation_id") == null || map.get("relation_id").toString().trim().length()==0) {
+  public int relationSave(Map<String, Object> map) {
+    if (map.get("relation_id") == null || map.get("relation_id").toString().trim().length() == 0) {
       return dsFieldRelDBMapper.insert(map);
     } else {
       return dsFieldRelDBMapper.updateByPrimaryKey(map);
