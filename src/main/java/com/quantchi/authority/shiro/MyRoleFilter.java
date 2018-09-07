@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class MyRoleFilter extends AuthorizationFilter {
 
-    private static final String USERID = "userId";
+    private static final String ROLEID = "roleId";
 
     private static final Logger logger = LoggerFactory.getLogger(MyRoleFilter.class);
 
@@ -35,16 +35,17 @@ public class MyRoleFilter extends AuthorizationFilter {
 
         Subject subject = getSubject(req, resp);
         Cookie[] cookies = ((HttpServletRequest)req).getCookies();
-        String useId = "";
-        Collection<Cookie> cookiesLst = Arrays.stream(cookies).collect(Collectors.toList());
-        for(Cookie cookie : cookiesLst){
-            if(USERID.equals(cookie.getName())){
-                useId = cookie.getValue();
-                break;
+        String roleId = "-1";
+        if(cookies != null){
+            Collection<Cookie> cookiesLst = Arrays.stream(cookies).collect(Collectors.toList());
+            for(Cookie cookie : cookiesLst){
+                if(ROLEID.equals(cookie.getName())){
+                    roleId = cookie.getValue();
+                    break;
+                }
             }
         }
-
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(useId, "");
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(roleId, "");
         subject.login(usernamePasswordToken);
         String[] rolesArray = (String[]) mappedValue;
         if(rolesArray == null || rolesArray.length == 0){
