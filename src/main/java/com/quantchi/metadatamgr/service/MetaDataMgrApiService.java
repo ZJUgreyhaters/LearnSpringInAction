@@ -328,7 +328,7 @@ public class MetaDataMgrApiService {
           .selectByExample(dsTableInfoDBExample);
       if (dsTableInfoDBSList.size() > 0) {
         oldTable += tableName;
-//        continue;
+        continue;
       }
       Map<String, String> tableMap = new HashMap<>();
       tableMap.put("table_english_name", tableName);
@@ -344,9 +344,9 @@ public class MetaDataMgrApiService {
       return true;
     }
 //
-//    if (dsTableInfoDBMapper.insertTables(tableList) <= 0) {
-//      _ret = false;
-//    }
+    if (dsTableInfoDBMapper.insertTables(tableList) <= 0) {
+      _ret = false;
+    }
 
     //2.save fields in local db
     for (Map<String, String> tableMap : tableList) {
@@ -376,13 +376,13 @@ public class MetaDataMgrApiService {
         mapList.add(fieldMap);
       }
     }
-//    if (dsFieldInfoDBMapper.insertFields(mapList) <= 0) {
-//      _ret = false;
-//    }
+    if (dsFieldInfoDBMapper.insertFields(mapList) <= 0) {
+      _ret = false;
+    }
     Map<String, Object> insertFieldMap = dsFieldInfoDBMapper.selectAll(mapList);
     //3.add relation
     int count = 0;
-    String[] dbName = new String[100];
+    String[] dbName = new String[10000];
     String[] name = new String[10000];
     for (String tableName : tables) {
       String[] dbTableName = tableName.split("\\.");
