@@ -52,6 +52,30 @@ public class AuthorityController {
         }
         return    authorityService.getRoleByFilter(requestMap);
     }
+    /**@api {post} /api/listRoleByAuthid 根据条件查询角色 传空则返回所有
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/listRoleByAuthid
+     * @apiName listRoleByAuthid
+     * @apiGroup AuthorityController
+     * @apiParam {Integer} [l_authid] 权限id
+     * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+     * @apiSuccess {String} msg  成功或者错误信息
+     * @apiSuccess {List} [data] 返回数据 指标信息列表
+     * @apiSuccess {String} [data.l_roleid] 角色id
+     * @apiSuccess {String} [data.c_rolename] 角色名称
+     * @apiSuccess {String} [data.c_isenable] 是否有效
+     * @apiSuccess {String} [data.c_roledesc] 角色描述信息
+     * @apiSuccess {String} [data.total] 返回总条数
+     **/
+    @ResponseBody
+    @RequestMapping(value = "/listRoleByAuthid", method = {
+            RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+    public String listRoleByAuthid(@RequestBody  Map<String, Object> requestMap){
+        Integer  l_authid =(Integer)requestMap.get("l_authid");
+
+        return    authorityService.getRoleByFilter(requestMap);
+    }
+
     /**@api {post} /api/listRoleByRoleid 根据角色ID 查询角色明细
      * @apiVersion 1.0.0
      * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/listRoleByRoleid
