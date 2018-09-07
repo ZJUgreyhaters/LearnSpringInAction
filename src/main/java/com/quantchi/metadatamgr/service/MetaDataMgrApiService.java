@@ -12,7 +12,6 @@ import com.quantchi.metadatamgr.data.entity.DSEntityInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSEntityInfoDBExample;
 import com.quantchi.metadatamgr.data.entity.DSFieldInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSFieldInfoDBExample;
-import com.quantchi.metadatamgr.data.entity.DSFieldRelDB;
 import com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
@@ -461,122 +460,53 @@ public class MetaDataMgrApiService {
     }
   }
 
-  public Map<String, Object> relationList(JSONObject json) throws Exception {
+  public Map<String, Object> relationList(Map<String, Object> mapRequest) throws Exception {
 
     Map<String, Object> responseMap = new HashMap<>();
-    List<Object> tableInfo = new ArrayList<>();
     List<Object> tableRelation = new ArrayList<>();
-
-    String dsId = json.getString("data_source_id");
-    String dsName = json.getString("data_source_name");
-    if (dsName != null && !dsName.equals("")) {
-      DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
-      dsMetaInfoDBExample.createCriteria().andDsNameEqualTo(dsName);
-      List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper
-          .selectAllByExample(dsMetaInfoDBExample);
-      dsId = dsMetaInfoDBList.get(0).getId().toString();
+    //获取数据源表信息
+    List<Map<String, Object>> TableInfoList = dsTableInfoDBMapper.selectTableInfo(mapRequest);
+    StringBuilder tableIdBuilder = new StringBuilder();
+    //循环获取表字段信息
+    int a = 1;
+    for (Map<String, Object> map : TableInfoList) {
+      List<Map<String, Object>> FieldInfolist = dsFieldInfoDBMapper.selectFieldInfo(map);
+      map.put("fields", FieldInfolist);
+      if (a == 1) {
+        tableIdBuilder.append("'").append(map.get("id")).append("'");
+      } else {
+        tableIdBuilder.append(",").append("'").append(map.get("id")).append("'");
+      }
+      a++;
     }
-    List<String> tbList = (List<String>) json.get("table_list");
-
-    if (tbList == null) {
-      tbList = new ArrayList<>();
-      //获取dsName对应得所有表
-      DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-      dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsId);
-      List<DSTableInfoDB> tableInfoDBList = dsTableInfoDBMapper
-          .selectByExample(dsTableInfoDBExample);
-      for (DSTableInfoDB dsTableInfoDB : tableInfoDBList) {
-        tbList.add(dsTableInfoDB.getTableEnglishName());
+    //获取字段关联信息
+    List<Map<String, String>> ReleationList = dsFieldRelDBMapper
+        .selectReleation(tableIdBuilder.toString());
+    List<String> ids = new ArrayList<>();
+    for (Map<String, String> map : ReleationList) {
+      Integer from_field_id = Integer.parseInt(map.get("from_field_id"));
+      Integer to_field_id = Integer.parseInt(map.get("to_field_id"));
+      StringBuilder total = new StringBuilder();
+      if (from_field_id > to_field_id) {
+        total.append(to_field_id).append("--").append(from_field_id);
+      }else{
+        total.append(from_field_id).append("--").append(to_field_id);
+      }
+      if (!ids.contains(total.toString())) {
+        ids.add(total.toString());
+        tableRelation.add(map);
       }
     }
-    for (int i = 0; i < tbList.size(); i++) {
-      Map<String, Object> fieldMap = new HashMap<>();
-      //获取表id
-      DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-      dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsId)
-          .andTableEnglishNameEqualTo(tbList.get(i));
-      List<DSTableInfoDB> tableInfoDBList = dsTableInfoDBMapper
-          .selectByExample(dsTableInfoDBExample);
-      fieldMap.put("id", tableInfoDBList.get(0).getId());
-      fieldMap.put("name", tbList.get(i));
-
-      //获取表列
-      DSFieldInfoDBExample dsFieldInfoDBExample = new DSFieldInfoDBExample();
-      dsFieldInfoDBExample.createCriteria().andDatasourceIdEqualTo(dsId)
-          .andTableIdEqualTo(tableInfoDBList.get(0).getId().toString());
-      List<DSFieldInfoDB> fieldList = dsFieldInfoDBMapper.selectByExample(dsFieldInfoDBExample);
-
-      List<Map<String, String>> resultList = new ArrayList<>();
-      for (DSFieldInfoDB list : fieldList) {
-        Map<String, String> resultMap = new HashMap<>();
-        resultMap.put("field", list.getFieldEnglishName());
-        resultMap.put("name", list.getFieldEnglishName());
-        resultList.add(resultMap);
-      }
-      fieldMap.put("fields", resultList);
-      tableInfo.add(fieldMap);
-
-      //获取表列关联关系
-      for (int j = 0; j < tbList.size(); j++) {
-        DSTableInfoDBExample ds = new DSTableInfoDBExample();
-        ds.createCriteria().andDatasourceIdEqualTo(dsId).andTableEnglishNameEqualTo(tbList.get(j));
-        List<DSTableInfoDB> foreignTableInfoDBList = dsTableInfoDBMapper.selectByExample(ds);
-
-        DSFieldRelDBExample dsFieldRelDBExample = new DSFieldRelDBExample();
-        dsFieldRelDBExample.createCriteria()
-            .andTableIdEqualTo(tableInfoDBList.get(0).getId().toString())
-            .andForeignTableIdEqualTo(foreignTableInfoDBList.get(0).getId().toString());
-        List<DSFieldRelDB> relationList = dsFieldRelDBMapper.selectByExample(dsFieldRelDBExample);
-        for (DSFieldRelDB dsFieldRelDB : relationList) {
-          Map<String, String> relationResultMap = new HashMap<>();
-          relationResultMap.put("from", dsFieldRelDB.getTableId());
-          relationResultMap.put("to", dsFieldRelDB.getForeignTableId());
-          relationResultMap.put("relation_id", dsFieldRelDB.getRelationId().toString());
-          relationResultMap.put("relation", dsFieldRelDB.getRelation());
-          DSFieldInfoDB dsFieldInfoDB = dsFieldInfoDBMapper
-              .selectByPrimaryKey(Integer.parseInt(dsFieldRelDB.getFieldId()));
-          relationResultMap.put("from_field", dsFieldInfoDB.getFieldEnglishName());
-          DSFieldInfoDB ForeignDsFieldInfoDB = dsFieldInfoDBMapper
-              .selectByPrimaryKey(Integer.parseInt(dsFieldRelDB.getForeignFieldId()));
-          relationResultMap.put("to_field", ForeignDsFieldInfoDB.getFieldEnglishName());
-          tableRelation.add(relationResultMap);
-        }
-      }
-    }
-    responseMap.put("table_info", tableInfo);
+    responseMap.put("table_info", TableInfoList);
     responseMap.put("table_relation", tableRelation);
     return responseMap;
   }
 
-  public int relationSave(JSONObject jsonParam) {
-    Map<String, Object> map = new HashMap<>();
-    DSFieldRelDB dsFieldRelDB = new DSFieldRelDB();
-    String from = jsonParam.getString("from");
-    String from_field = jsonParam.getString("from_field");
-    dsFieldRelDB.setTableId(from);
-
-    DSFieldInfoDBExample dsFieldInfoDBExample = new DSFieldInfoDBExample();
-    dsFieldInfoDBExample.createCriteria().andTableIdEqualTo(from)
-        .andFieldEnglishNameEqualTo(from_field);
-    List<DSFieldInfoDB> dsFieldInfoDBList = dsFieldInfoDBMapper
-        .selectByExample(dsFieldInfoDBExample);
-    dsFieldRelDB.setFieldId(dsFieldInfoDBList.get(0).getId().toString());
-
-    String to = jsonParam.getString("to");
-    String to_field = jsonParam.getString("to_field");
-    dsFieldRelDB.setForeignTableId(to);
-
-    DSFieldInfoDBExample dsforeign = new DSFieldInfoDBExample();
-    dsforeign.createCriteria().andTableIdEqualTo(to).andFieldEnglishNameEqualTo(to_field);
-    List<DSFieldInfoDB> dsforeignList = dsFieldInfoDBMapper.selectByExample(dsforeign);
-    dsFieldRelDB.setForeignFieldId(dsforeignList.get(0).getId().toString());
-    dsFieldRelDB.setRelation(jsonParam.getString("relation"));
-    if (jsonParam.getString("relation_id") == null || jsonParam.getString("relation_id")
-        .equals("")) {
-      return dsFieldRelDBMapper.insert(dsFieldRelDB);
+  public int relationSave(Map<String,Object> map) {
+    if (map.get("relation_id") == null || map.get("relation_id").toString().trim().length()==0) {
+      return dsFieldRelDBMapper.insert(map);
     } else {
-      dsFieldRelDB.setRelationId(Integer.parseInt(jsonParam.getString("relation_id")));
-      return dsFieldRelDBMapper.updateByPrimaryKey(dsFieldRelDB);
+      return dsFieldRelDBMapper.updateByPrimaryKey(map);
     }
 
   }
