@@ -39,47 +39,103 @@ public class AuthorityUserController {
         Map<String,Object> userTree = new HashMap<String,Object>();
         List< Map<String,Object>> departs= new ArrayList< Map<String,Object>>();
         Map<String,Object> depart =  new HashMap<String,Object>();
+        List<Map<String,Object>> teams= new ArrayList<Map<String,Object>>();
+
         Map<String,Object> team =  new HashMap<String,Object>();
+        team.put("branchname","业务组");
+        team.put("branch_no","0111");
+        team.put("children",new ArrayList< Map<String,Object>>());
+        team.put("parentid","011");
+        team.put("id","0111");
+        teams.add(team);
         depart.put("branchname","武林路营业部");
-        depart.put("branch_no","001");
+        depart.put("branch_no","011");
+        depart.put("children",teams);
+        depart.put("parentid","01");
+        depart.put("id","011");
         departs.add(depart);
 
         depart =  new HashMap<String,Object>();
+        teams= new ArrayList<Map<String,Object>>();
+        team =  new HashMap<String,Object>();
+        team.put("branchname","业务组");
+        team.put("branch_no","0121");
+        team.put("children",new ArrayList< Map<String,Object>>());
+        team.put("parentid","012");
+        team.put("id","0121");
+        teams.add(team);
         depart.put("branchname","滨盛路营业部");
-        depart.put("branch_no","002");
+        depart.put("branch_no","012");
+        depart.put("children",teams);
+        depart.put("parentid","01");
+        depart.put("id","012");
         departs.add(depart);
         depart =  new HashMap<String,Object>();
         depart.put("branchname","天目山营业部");
-        depart.put("branch_no","003");
+        depart.put("branch_no","013");
+        depart.put("parentid","01");
+        depart.put("id","013");
+        depart.put("children",new ArrayList<Map<String,Object>>());
         departs.add(depart);
 
-        userTree.put("company","杭州第一分公司");
-        userTree.put("branch_no","001,002,003");
-        userTree.put("depart", departs);
+        userTree.put("branchname","杭州第一分公司");
+        userTree.put("branch_no","011,012,013");
+        userTree.put("id","01");
+        userTree.put("parentid","1");
+        userTree.put("children", departs);
 
         companyTree.add(userTree);
 
         userTree = new HashMap<String,Object>();
         departs=new ArrayList< Map<String,Object>>();
         depart =  new HashMap<String,Object>();
-        depart.put("branchname","上海陆家嘴营业部");
-        depart.put("branch_no","011");
+        teams= new ArrayList<Map<String,Object>>();
+        team =  new HashMap<String,Object>();
+        team.put("branchname","运营组");
+        team.put("branch_no","0211");
+        team.put("children",new ArrayList< Map<String,Object>>());
+        team.put("parentid","021");
+        team.put("id","0211");
+        teams.add(team);
+        depart.put("branchname","上海宝山区营业部");
+        depart.put("branch_no","021");
+        depart.put("children",teams);
+        depart.put("parentid","02");
+        depart.put("id","021");
         departs.add(depart);
+
         depart =  new HashMap<String,Object>();
         depart.put("branchname","上海徐汇区营业部");
-        depart.put("branch_no","012");
+        depart.put("branch_no","022");
+        depart.put("children",new ArrayList<Map<String,Object>>());
+        depart.put("parentid","02");
+        depart.put("id","022");
         departs.add(depart);
         depart =  new HashMap<String,Object>();
-        depart.put("branchname","上海宝山区营业部");
-        depart.put("branchno","013");
+        depart.put("branchname","上海陆家嘴营业部");
+        depart.put("branch_no","023");
+        depart.put("parentid","02");
+        depart.put("id","023");
+        depart.put("children",new ArrayList<Map<String,Object>>());
         departs.add(depart);
 
-        userTree.put("company","上海直属营业部");
-        userTree.put("branch_no","011,012,013");
-        userTree.put("depart", departs);
-
+        userTree.put("branchname","上海分公司");
+        userTree.put("branch_no","021,022,023");
+        userTree.put("id","02");
+        userTree.put("parentid","1");
+        userTree.put("children", departs);
         companyTree.add(userTree);
-        return JsonResult.successJson(companyTree);
+
+        List<Map<String,Object>> headquarterss= new ArrayList<Map<String,Object>>();
+        Map<String,Object> headquarters = new HashMap<String,Object>();
+
+        headquarters.put("branchname","总部");
+        headquarters.put("branch_no","011,012,013,001,002,003");
+        headquarters.put("id","1");
+        headquarters.put("parentid","");
+        headquarters.put("children", companyTree);
+        headquarterss.add(headquarters);
+        return JsonResult.successJson(headquarterss);
 
     }
 
@@ -139,10 +195,13 @@ public class AuthorityUserController {
         String userName = (String) map.get("userName");
         String branchno = (String) map.get("branch_no");
 
-       if(userName.equals("") &&  userName.equals("")) {
+       if(userName ==  null  ||  userName.equals("")   ) {
+           if (branchno == null ||branchno.equals("1")){
            return getUserList();
+           }
        }
-       if(branchno.equals("001") || branchno.equals("001,002,003") ){
+
+       if(branchno.startsWith("01") ){
            user.put("userName", "王小二");
            user.put("userId", "20123");
            user.put("userAccount", "139111201232");
@@ -153,6 +212,17 @@ public class AuthorityUserController {
            String total =users.size()+"";
            return JsonResult.successJson(total,users);
        }
+        if(branchno.startsWith("02")  ){
+            user = new HashMap<String, Object>();
+            user.put("userName", "汪达尔");
+            user.put("userId", "20128");
+            user.put("userAccount", "139111201282");
+            user.put("userRoles", "技术部运维");
+            user.put("userStatus", "1");
+            users.add(user);
+            String total =users.size()+"";
+            return JsonResult.successJson(total,users);
+        }
         if (userName.equals( "王小二" )) {
 
             user.put("userName", "王小二");

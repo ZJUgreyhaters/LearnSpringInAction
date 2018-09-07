@@ -73,16 +73,19 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     return intelQueryMapper.getRecommendQuery(businessTypeId);
   }
 
-  public List<Object> getMetricsRet(String query) throws Exception {
-    //TODO get metrics
-    //if return [] , call intelquery
+  public List<Object> getMetricsRet(String query,String businessDefinition,String businessId) throws Exception {
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-    return engObj.getMetrics();
+    Map<String,String> queryMap = new HashMap<>();
+    queryMap.put("seg_name",query);
+    if(businessDefinition!=null && businessDefinition.trim().length()>0){
+      queryMap.put("definition",businessDefinition);
+    }
+    if(businessId!=null && businessId.trim().length()>0){
+      queryMap.put("businessId",businessId);
+    }
+    return engObj.getMetrics(queryMap);
   }
 
-  public void getIntelQuery() {
-
-  }
 
   public List<Object> getQuickMacroQuery(String query) throws Exception {
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
