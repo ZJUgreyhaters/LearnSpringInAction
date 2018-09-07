@@ -55,15 +55,9 @@ public class MetaDataMgrTableApiController {
     //表外键搜索接口
     @ResponseBody
     @RequestMapping(value = "foreignkeys",  method = {RequestMethod.POST},produces = "application/json;charset=UTF-8")
-    public Map<String,Object> foreignkeys(@RequestBody Map<String,String> requestMap){
+    public Map<String,Object> foreignkeys(@RequestBody Map<String, Object> requestMap){
         Map<String,Object> responseMap = new HashMap<>();
         try{
-            if (requestMap.get("data_source_name") == null || requestMap.get("data_source_name").equals("")) {
-                throw new Exception("miss data source name");
-            }
-            if(requestMap.get("table_name") == null || requestMap.get("table_name").equals("")){
-                throw new Exception("miss table name");
-            }
             List<Map<String,String>> mapList = metaDataMgrTableApiService.foreignkeys(requestMap);
             responseMap.put("data",mapList);
             responseMap.put("code",200);
