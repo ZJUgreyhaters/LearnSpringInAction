@@ -17,11 +17,10 @@ public interface DSFieldRelDBMapper {
   int insertSelective(DSFieldRelDB record);
 
   List<DSFieldRelDB> selectByExample(DSFieldRelDBExample example);
-    int insertJoinInfo(Map<String, Object> joinInfo);
 
-    List<Map<String, String>> selectJoinPair(String dataSourceId);
+  int insertJoinInfo(Map<String, Object> joinInfo);
 
-    List<DSFieldRelDB> selectByExample(DSFieldRelDBExample example);
+  List<Map<String, String>> selectJoinPair(String dataSourceId);
 
   DSFieldRelDB selectByPrimaryKey(Integer relationId);
 
