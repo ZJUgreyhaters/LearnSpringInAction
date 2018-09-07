@@ -126,6 +126,7 @@ public class AuthorityUserController {
         userTree.put("children", departs);
         companyTree.add(userTree);
 
+        List<Map<String,Object>> headquarterss= new ArrayList<Map<String,Object>>();
         Map<String,Object> headquarters = new HashMap<String,Object>();
 
         headquarters.put("branchname","总部");
@@ -133,8 +134,8 @@ public class AuthorityUserController {
         headquarters.put("id","1");
         headquarters.put("parentid","");
         headquarters.put("children", companyTree);
-
-        return JsonResult.successJson(headquarters);
+        headquarterss.add(headquarters);
+        return JsonResult.successJson(headquarterss);
 
     }
 
