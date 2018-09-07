@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.quantchi.sqlanalysis.utils.Utils;
@@ -322,7 +323,8 @@ public class IntelQueryController {
    * @apiParam {String} query 查询语句
    */
   @RequestMapping(value = "/download", method = RequestMethod.GET)
-  public void download(HttpServletResponse response, @RequestParam(value = "query") String query) throws Exception {
+  public void download(HttpServletRequest request, HttpServletResponse response,
+                       @RequestParam(value = "query") String query) throws Exception {
     BasicQuery basicquery = new BasicQuery(query);
     StepResult result = QueryParser.getInstance().parse(basicquery);
     QueryWithTree queryTree = result.getFinalTree();
@@ -336,7 +338,7 @@ public class IntelQueryController {
 
     ComplexTable complexTable = intelQueryService.getComplexTable(sqlQuery);
     ExportUtil.ExportIntelQueryExcel exportIntelQueryExcel = new ExportUtil.ExportIntelQueryExcel();
-    exportIntelQueryExcel.export(response, "智能取数结果", complexTable);
+    exportIntelQueryExcel.export(request, response, "智能取数结果", complexTable);
   }
 
   /**
