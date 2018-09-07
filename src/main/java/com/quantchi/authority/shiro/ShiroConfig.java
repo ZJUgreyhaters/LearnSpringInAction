@@ -52,8 +52,7 @@ public class ShiroConfig {
 		Map<String, String> filterItemMap = sysPermissionInitService.selectAll();
 
 		for (String urlKey : filterItemMap.keySet()) {
-			filterChainDefinitionMap.put(urlKey,
-							filterItemMap.get(urlKey));
+			filterChainDefinitionMap.put(urlKey, filterItemMap.get(urlKey));
 		}
 
 		shiroFilterFactoryBean

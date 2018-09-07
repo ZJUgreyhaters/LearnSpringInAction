@@ -18,7 +18,7 @@ import java.util.*;
  **/
 @Service
 public class SysPermissionInitService {
-    private Map<String, String> sysPermissionInits;
+    private Map<String, String> sysPermissionInits = new HashMap<>();
     @Autowired
     private AuthorityDetailService authorityDetailService;
     @Autowired
@@ -44,7 +44,6 @@ public class SysPermissionInitService {
         for(int i = 0;i < funcDetailJSONArray.size();i++) {
             String url = funcDetailJSONArray.getJSONObject(i).getString("c_url");
 
-
             Integer funcdetailID = funcDetailJSONArray.getJSONObject(i).getInteger("l_funcdetail");
 
             Map<String, Object> requestAuth = new HashMap<>();
@@ -57,12 +56,39 @@ public class SysPermissionInitService {
             for(int j = 0;j < authDetailJSONArray.size();j++) {
                 Integer authID = authDetailJSONArray.getJSONObject(j).getInteger("l_authid");
 
+                Map<String, Object> requestRole = new HashMap<>();
+                requestRole.put("l_authid", authID);
+                String roleDetail = authorityService.getRoleByFilter(requestRole);
+                JSONObject roleDetailJSON = JSONObject.parseObject(roleDetail);
+                JSONArray roleDetailJSONArray = roleDetailJSON.getJSONArray("data");
+                for(int k = 0;k < roleDetailJSONArray.size();k++) {
+                    String roleName = roleDetailJSONArray.getJSONObject(k).getString("c_rolename");
+                    roleSet.add(roleName);
+                }
             }
+            if(urlPermItems.containsKey(url)){
+                for(String roleItem: urlPermItems.get(url)){
+                    roleSet.add(roleItem);
+                }
+            }
+            urlPermItems.put(url, roleSet);
+        }
 
-            if(sysPermissionInits.containsKey(url)){
+        for(String urlKey: urlPermItems.keySet()) {
+            if(urlKey!=null) {
+                StringBuilder tmp = new StringBuilder();
+                Set<String> roleItems = urlPermItems.get(urlKey);
+                Iterator<String> it = roleItems.iterator();
 
-            }else {
+                while (it.hasNext()){
+                    tmp.append(it.next());
+                    if(it.hasNext()){
+                        tmp.append(", ");
+                    }
+                }
 
+                String filter = "MyRoleFilter[\"" + tmp + "\"]";
+                sysPermissionInits.put(urlKey, filter);
             }
 
         }
