@@ -248,11 +248,13 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         Map<String, Object> categoryMap = intelQueryMapper.selectCategory(dbFieldMap);
         if (categoryMap != null) {
           List<Map<String, Object>> businessList = standInfoMapper.selectBusiness(categoryMap);
-          StringBuilder str = new StringBuilder();
-          str.append(businessList.get(0).get("businessTypeName")).append("<")
-              .append(businessList.get(0).get("domainName")).append("<")
-              .append(businessList.get(0).get("logicTableName"));
-          objectMap.put("entityCategory", str);
+          if(businessList.size() > 0){
+            StringBuilder str = new StringBuilder();
+            str.append(businessList.get(0).get("businessTypeName")).append("<")
+                    .append(businessList.get(0).get("domainName")).append("<")
+                    .append(businessList.get(0).get("logicTableName"));
+            objectMap.put("entityCategory", str);
+          }
         }
       }
     }

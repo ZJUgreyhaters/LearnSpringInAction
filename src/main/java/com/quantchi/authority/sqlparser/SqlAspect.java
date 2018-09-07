@@ -17,10 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Aspect
 @Component
@@ -49,7 +46,6 @@ public class SqlAspect {
 	}
 
 	private String modifySqlByDataAuth(String sql){
-		//sql = sql + " limit 5";
 
 		RowPermission rowPermission = new RowPermission();
 		ColumnPermission columnPermission = new ColumnPermission();
@@ -74,11 +70,10 @@ public class SqlAspect {
 
 				String dataType = authTableJson.getJSONObject("data").getJSONObject("authiorty").getString("l_datatype");
 				JSONArray authTableJsonArray = authTableJson.getJSONObject("data").getJSONArray("authDetail");
-				//行权限
-				if(dataType.equals("3")) {
+
+				if(dataType.equals("3")) {// 行权限
 
 					for(int j = 0;j < authTableJsonArray.size();j++) {
-						// 加行权限
 						String tableName = authTableJsonArray.getJSONObject(j).getString("c_tablename");
 						String filterCondition = authTableJsonArray.getJSONObject(j).getString("c_fiter");
 						rowPermission.addSimpleRowRule(tableName, filterCondition);
@@ -95,15 +90,16 @@ public class SqlAspect {
 				}else if(dataType.equals("1")) {
 
 				}
-
-			}else {
-				// 功能权限
 			}
 		}
 
 		PermissionResult permissionResult = new PermissionParser().parse(sql, rowPermission.getRowPermissionJson(), columnPermission.getColumnPermissionJson());
+
+		Set<String> limit = permissionResult.getLimitedFields();
 		IdealSQLGen idealSQLGen = new IdealSQLGen(permissionResult.getLimitedFields(), permissionResult.getSql());
 
+		String re = idealSQLGen.getIdealSQL();
+		re += "";
 		return idealSQLGen.getIdealSQL();
 	}
 

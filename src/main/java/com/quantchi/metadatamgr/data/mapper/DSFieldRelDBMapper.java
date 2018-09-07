@@ -3,6 +3,7 @@ package com.quantchi.metadatamgr.data.mapper;
 import com.quantchi.metadatamgr.data.KeyInfo;
 import com.quantchi.metadatamgr.data.entity.DSFieldRelDB;
 import com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample;
+import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -16,6 +17,10 @@ public interface DSFieldRelDBMapper {
     int insert(DSFieldRelDB record);
 
     int insertSelective(DSFieldRelDB record);
+
+    int insertJoinInfo(Map<String, Object> joinInfo);
+
+    List<Map<String, String>> selectJoinPair(String dataSourceId);
 
     List<DSFieldRelDB> selectByExample(DSFieldRelDBExample example);
 

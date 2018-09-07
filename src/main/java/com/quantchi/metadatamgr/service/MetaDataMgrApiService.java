@@ -29,10 +29,12 @@ import com.quantchi.termInfo.pojo.PhysicalTableInfo;
 import com.quantchi.termInfo.pojo.TermGenInfo;
 import com.quantchi.termInfo.pojo.TermLogicCatagory;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -586,7 +588,6 @@ public class MetaDataMgrApiService {
   public Map<String, Object> createTerm(String data_source_id) throws Exception {
     Map<String, Object> responseMap = new HashMap<>();
     List<TermGenInfo> termGenInfoList = new ArrayList<>();
-    List<TermLogicCatagory> termLogicCatagoryTabelList = new ArrayList<>();
     List<TermLogicCatagory> termLogicCatagoryEntityList = new ArrayList<>();
 
     //根据data_source_name获取所有表
@@ -611,6 +612,7 @@ public class MetaDataMgrApiService {
       physicalTableInfo.setPhysicalDb(db);
       physicalTableInfo.setPhysicalTable(tableName);
       physicalTableInfo.setPrimaryKey(dsTableInfoDB.getPrimaryKey());
+      physicalTableInfo.setTimeField(dsTableInfoDB.getTimeFiled());
       termGenInfo.setTableInfo(physicalTableInfo);
 
       //获取表的所有列
@@ -841,6 +843,42 @@ public class MetaDataMgrApiService {
     } catch (Exception e) {
       e.printStackTrace();
       return JsonResult.errorJson("error");
+    }
+  }
+
+  public void insertJoinInfo(String sourceId) {
+    List<Map<String, String>> joinPairs = dsFieldRelDBMapper.selectJoinPair(sourceId);
+    int newUnionId = 0;
+    Map<List<String>, Integer> joinUnionMap = new HashMap<>();
+    for (Map<String, String> pair : joinPairs) {
+      String firstTableName = pair.get("t1");
+      String firstFieldName = pair.get("f1");
+      String secondTableName = pair.get("t2");
+      String secondFieldName = pair.get("f2");
+      List<String> firstTuple = Arrays.asList(firstTableName, firstFieldName);
+      if (!joinUnionMap.containsKey(firstTuple)) {
+        joinUnionMap.put(firstTuple, newUnionId);
+        newUnionId++;
+      }
+      Integer firstTupleUnionId = joinUnionMap.get(firstTuple);
+      List<String> secondTuple = Arrays.asList(secondTableName, secondFieldName);
+      if (!joinUnionMap.containsKey(secondTuple)) {
+        joinUnionMap.put(secondTuple, joinUnionMap.get(firstTuple));
+      } else {
+        for (Entry<List<String>, Integer> entry : joinUnionMap.entrySet()) {
+          if (entry.getValue().equals(joinUnionMap.get(secondTuple))) {
+            joinUnionMap.put(entry.getKey(), firstTupleUnionId);
+          }
+        }
+        joinUnionMap.put(secondTuple, firstTupleUnionId);
+      }
+    }
+    for (Entry<List<String>, Integer> entry : joinUnionMap.entrySet()) {
+      Map<String, Object> row = new HashMap<>(5);
+      row.put("tableName", entry.getKey().get(0));
+      row.put("fieldName", entry.getKey().get(0) + "." + entry.getKey().get(1));
+      row.put("unionId", entry.getValue());
+      dsFieldRelDBMapper.insertJoinInfo(row);
     }
   }
 }
