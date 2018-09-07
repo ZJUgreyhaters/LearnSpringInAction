@@ -4,7 +4,6 @@ import org.apache.shiro.config.Ini;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.util.CollectionUtils;
 import org.apache.shiro.web.config.IniFilterChainResolverFactory;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +18,8 @@ import java.util.Map;
  * @Version 1.0.0
  **/
 
-public class MyShiroFilterFactoryBean extends ShiroFilterFactoryBean {
-    private static final Logger logger = LoggerFactory.getLogger(MyShiroFilterFactoryBean.class);
+public class ShiroPermissionFactory extends ShiroFilterFactoryBean {
+    private static final Logger logger = LoggerFactory.getLogger(ShiroPermissionFactory.class);
 
     public static String definition = "";
 
