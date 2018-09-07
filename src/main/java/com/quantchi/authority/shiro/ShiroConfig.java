@@ -13,13 +13,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
 
-	/*@Autowired
-	SysPermissionInitService sysPermissionInitService;*/
+	@Autowired
+	SysPermissionInitService sysPermissionInitService;
 
 	@Value("${spring.redis.host}")
 	private String host;
@@ -48,12 +49,12 @@ public class ShiroConfig {
 
 		filterChainDefinitionMap.put("/api/getRecommendQuery", "MyRoleFilter[1,2,3]");
 		// 从数据库获取
-		/*List<SysPermissionInit> list = sysPermissionInitService.selectAll();
+		Map<String, String> filterItemMap = sysPermissionInitService.selectAll();
 
-		for (SysPermissionInit sysPermissionInit : list) {
-			filterChainDefinitionMap.put(sysPermissionInit.getUrl(),
-							sysPermissionInit.getPermissionInit());
-		}*/
+		for (String urlKey : filterItemMap.keySet()) {
+			filterChainDefinitionMap.put(urlKey,
+							filterItemMap.get(urlKey));
+		}
 
 		shiroFilterFactoryBean
 						.setFilterChainDefinitionMap(filterChainDefinitionMap);

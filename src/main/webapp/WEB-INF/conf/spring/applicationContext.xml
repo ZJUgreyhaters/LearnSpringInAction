@@ -73,7 +73,7 @@
 
 
 	<bean id="MyRoleFilter" class="com.quantchi.authority.shiro.MyRoleFilter" />
-	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+	<!--<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>-->
 	<!--<bean id="intelquery" class="com.quantchi.intelquery.intelQuery"></bean>-->
 
 	<!-- define the SqlSessionFactory -->
