@@ -18,7 +18,7 @@ public class Parser {
 
         String[] testSql = new String[10];
         String[] table = new String[10];
-        testSql[8] = "Select s.name, s.age from student as s where s.major = 'Math'";
+        testSql[0] = "Select s.name, s.age from student as s where s.major = 'Math'";
         testSql[1] = "select s.id, t.name, t.salary  from (select name, salary, id from teacher) as t left outer join student as s on s.id = t.id";
         testSql[2] = "select t.name as namess, s.name from teacher as t , student as s where s.age > 10";
         testSql[3] = "select t.name as namess, s.name from teacher as t , student as s, admin as a where s.age > 10";
@@ -33,7 +33,15 @@ public class Parser {
                 " where x.init_date >=   '20180101' \n" +
                 " and x.init_date<= '20180131'  ";
         testSql[7] = "select sum(id) as sum_id from teacher";
-        testSql[0] = "select a from student";
+        testSql[8] = "SELECT agg_cust_statistics.`fin_balance` AS `融资余额`,\n" +
+                "\tdim_branch.`branch_no` AS test,\n" +
+                "\tdim_branch.`branch_name` AS `营业部名称`,\n" +
+                "\tagg_cust_statistics.`init_date` AS `日期`,\n" +
+                "\tdim_branch.`branch_short_name` AS `营业部简称`\n" +
+                "FROM mtoi.dim_branch AS `dim_branch`\n" +
+                "JOIN mtoi.agg_cust_statistics AS `agg_cust_statistics`\n" +
+                "ON dim_branch.`branch_no`=agg_cust_statistics.`branch_no`\n" +
+                "WHERE ((agg_cust_statistics.`init_date`>=20160106 AND agg_cust_statistics.`init_date`<20160108) AND dim_branch.`branch_short_name`='下沙')";
 
         table[0] = "student";
         table[1] = "teacher";
@@ -51,7 +59,7 @@ public class Parser {
         columnPermission.addSimpleColumnRule(table[1],"salary");
         columnPermission.addSimpleColumnRule(table[2],"name");
         columnPermission.addSimpleColumnRule(table[3],"occur_balance");
-        //columnPermission.addSimpleColumnRule(table[3], "branch_no");
+        columnPermission.addSimpleColumnRule(table[3], "branch_no");
         //通过addSimpleRowRule()方法添加一条行规则
         rowPermission.addSimpleRowRule(table[0],"id>10");
         rowPermission.addSimpleRowRule(table[1],"department in ('Math','China')");

@@ -46,6 +46,9 @@ public class SqlAspect {
 
 	private String modifySqlByDataAuth(String sql){
 
+
+
+
 		RowPermission rowPermission = new RowPermission();
 		ColumnPermission columnPermission = new ColumnPermission();
 		Integer roleId = 48;
