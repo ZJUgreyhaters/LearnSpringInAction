@@ -132,9 +132,15 @@ public class AuthorityController {
     public String selectAuthByFilter(@RequestBody Map<String, Object> requestMap){
         String  c_authname =(String)requestMap.get("c_authname");
         Integer  l_funcdetailid =(Integer)requestMap.get("l_funcdetailid");
+        String c_authtype =(String)requestMap.get("c_authtype");
         if ((!( l_funcdetailid == null )) &&  (l_funcdetailid>0)){
             return authorityService.getAuthByFilter(requestMap);
-        }if (c_authname.isEmpty()||(c_authname.equals("")) ){
+        }if(c_authtype != null){
+            if (c_authtype.isEmpty()||(c_authtype.equals("")) ){
+            return authorityService.getAuthByFilter(requestMap);
+             }
+        }
+        if (c_authname.isEmpty()||(c_authname.equals("")) ){
             return authorityService.selectAuthList();
         }
         else{
