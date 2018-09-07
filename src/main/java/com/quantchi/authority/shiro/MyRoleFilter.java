@@ -22,11 +22,9 @@ import javax.servlet.ServletResponse;
 public class MyRoleFilter extends AuthorizationFilter {
     @Override
     public boolean isAccessAllowed(ServletRequest req, ServletResponse resp, Object mappedValue) throws Exception {
-//        Factory<SecurityManager> securityManagerFactory = new IniSecurityManagerFactory("classpath:shiroLearn.ini");
-//
-//        SecurityManager securityManager = securityManagerFactory.getInstance();
-//        SecurityUtils.setSecurityManager(securityManager);
-//        org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
+
+
+
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("wbchen", "222");
         Subject subject = getSubject(req, resp);
         subject.login(usernamePasswordToken);
@@ -41,7 +39,7 @@ public class MyRoleFilter extends AuthorizationFilter {
             System.out.println("--- MyRoleFilter ---" + rolesArray[i]);
         }
         System.out.println("Done.");
-        return true;
+        return false;
     }
 
 }

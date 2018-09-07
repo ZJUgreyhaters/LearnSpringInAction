@@ -3,6 +3,7 @@ package com.quantchi.authority.controller;
 import com.quantchi.authority.service.AuthorityDetailService;
 import com.quantchi.authority.service.AuthorityService;
 import com.quantchi.common.JsonResult;
+import com.quantchi.common.ResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,6 +210,13 @@ public class AuthorityController {
         }
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/noauth", method = {
+            RequestMethod.GET}, produces = "application/json;charset=UTF-8")
+    public String noauth(){
 
+        return JsonResult.successJson(null,ResultCode.NO_AUTH,"no auth to access");
+
+    }
 
 }
