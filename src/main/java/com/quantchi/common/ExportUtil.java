@@ -1,7 +1,9 @@
 package com.quantchi.common;
 
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.quantchi.intelquery.utils.ComplexTable;
@@ -194,13 +196,18 @@ public class ExportUtil {
       }
     }
 
-    public final void export(HttpServletResponse response, String fileName, ComplexTable complexTable)
-            throws Exception {
-
+    public final void export(HttpServletRequest request, HttpServletResponse response,
+                             String fileName, ComplexTable complexTable) throws Exception {
       OutputStream os = response.getOutputStream();
       response.reset();// 清空输出流
-      response.setHeader("Content-disposition",
-              "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1") + ".xls");
+      // 针对IE浏览器下载时文件名乱码处理
+      String header = request.getHeader("User-Agent").toUpperCase();
+      if (header.contains("MSIE") || header.contains("TRIDENT") || header.contains("EDGE")) {
+        fileName = URLEncoder.encode(fileName, "utf-8");
+      } else {
+        fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
+      }
+      response.setHeader("Content-disposition", "attachment; filename=" + fileName + ".xls");
       response.setContentType("application/msexcel");
 
       WritableWorkbook workbook = Workbook.createWorkbook(os);
