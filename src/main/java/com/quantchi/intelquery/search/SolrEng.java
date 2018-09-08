@@ -68,7 +68,7 @@ public class SolrEng extends SearchEng {
 
   @Override
   public List<Object> getMetrics(Map<String, String> queryMap) throws Exception {
-    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCommParam,SEARCHFILED);
+    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCommParam,queryMap);
 		Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.handle");
 		double threshold = Double.parseDouble(solrParam.get("threshold"));
     return documentListToObjectList(processDocs(qr, false,threshold));
@@ -110,7 +110,6 @@ public class SolrEng extends SearchEng {
         qsId = solrRet.getId();
       }
 
-
     } catch (SolrServerException serverEx) {
       logger.error("solr add doc :{} error,and error info is: {}", qs.getQuery(),
           serverEx.getMessage());
@@ -122,6 +121,43 @@ public class SolrEng extends SearchEng {
           .error("solr check doc :{} error,and error info is: {}", qs.getQuery(), ex.getMessage());
     }
     return qsId;
+  }
+
+  @Override
+  public void addQueryLikeSentence(QuerySentence qs) {
+    try {
+      QuerySentence solrRet = checkDocInSolrById(qs.getId());
+      //add doc into solr
+      if (solrRet == null) {
+        httpSolr.addBean(qs);
+        httpSolr.commit();
+      }
+      //update count
+      else {
+        SolrInputDocument newDoc = new SolrInputDocument();
+        newDoc.addField("id", solrRet.getId());
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("inc", 1);
+        newDoc.addField("times", map);
+        if ("0".equals(qs.getType())) {
+          newDoc.addField("disfavor", map);
+        } else {
+          newDoc.addField("favor", map);
+        }
+        httpSolr.add(newDoc);
+        httpSolr.commit();
+      }
+
+    } catch (SolrServerException serverEx) {
+      logger.error("solr add doc :{} error,and error info is: {}", qs.getQuery(),
+          serverEx.getMessage());
+    } catch (IOException ioEx) {
+      logger.error("solr commit doc :{} error,and error info is: {}", qs.getQuery(),
+          ioEx.getMessage());
+    } catch (Exception ex) {
+      logger
+          .error("solr check doc :{} error,and error info is: {}", qs.getQuery(), ex.getMessage());
+    }
   }
 
   @Override
@@ -248,8 +284,8 @@ public class SolrEng extends SearchEng {
     SolrQuery query = new SolrQuery();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.search");
     StringBuilder builderQuery = new StringBuilder();
-    builderQuery.append("seg_name:").append(str);
-    builderQuery.append(" OR ").append("definition").append(":").append(mapQuery.get("definition"));
+    builderQuery.append("cn_name:").append(str);
+    builderQuery.append(" OR ").append("definition").append(":").append(str);
     builderQuery.append(" AND ").append("businessId").append(":")
         .append(mapQuery.get("businessId"));
     query.setQuery(builderQuery.toString());
