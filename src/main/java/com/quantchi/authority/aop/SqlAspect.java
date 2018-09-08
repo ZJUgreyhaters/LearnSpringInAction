@@ -5,14 +5,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.quantchi.authority.service.AuthorityDetailService;
 import com.quantchi.authority.service.AuthorityService;
 import com.quantchi.authority.serviceImpl.AuthorityServiceImpl;
+import com.quantchi.authority.shiro.MyRealm;
 import com.quantchi.authority.sqlparser.ColumnPermission;
 import com.quantchi.authority.sqlparser.IdealSQLGen;
 import com.quantchi.authority.sqlparser.RowPermission;
 import com.quantchi.sqlanalysis.PermissionParser;
 import com.quantchi.sqlanalysis.model.permission.PermissionResult;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.RealmSecurityManager;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -49,13 +55,18 @@ public class SqlAspect {
 		return retVal;
 	}
 
-	/*private List<String> getRoles(){
+
+
+	private List<String> getRoles(){
 		Subject subject = SecurityUtils.getSubject();
-		//subject.getPrincipals().getRealmNames()
+		String realname = subject.getPrincipals().getRealmNames().iterator().next();
 		RealmSecurityManager securityManager =
 						(RealmSecurityManager) SecurityUtils.getSecurityManager();
-
-	}*/
+		MyRealm shiroRealm =  (MyRealm)securityManager.getRealms().iterator().next();
+		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("-1", "");
+		Cache<Object, AuthorizationInfo> authCache = shiroRealm.getAuthorizationCache();
+		return  null;
+	}
 
 	private String modifySqlByDataAuth(String sql){
 
