@@ -40,7 +40,7 @@ public class AuthorityServiceImpl implements AuthorityService {
         try {
 
             List<Map<String, Object>> list = authRoleMapper.getAuthRole();
-
+            String total = list.size() + "";
             Integer page= (Integer) map.get("page");
             Integer pageSize =(Integer)map.get("page_size");
 
@@ -48,7 +48,7 @@ public class AuthorityServiceImpl implements AuthorityService {
                 list = Paging .pagingPlug(list, pageSize, page);
             }
 
-            String total = list.size() + "";
+
             return JsonResult.successJson(total,list);
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,13 +103,13 @@ public class AuthorityServiceImpl implements AuthorityService {
     public String selectAuthList(Map<String, Object> map){
         try {
             List<Map<String,Object>> list=authorityMapper.selectAuth();
+            String total = list.size() + "";
             Integer page= (Integer) map.get("page");
             Integer pageSize =(Integer)map.get("page_size");
-
             if (page != null && pageSize != null) {
                 list = Paging .pagingPlug(list, pageSize, page);
             }
-            String total = list.size() + "";
+
             return JsonResult.successJson(total,list);
         }catch (Exception e){
             e.printStackTrace();
@@ -320,13 +320,13 @@ public class AuthorityServiceImpl implements AuthorityService {
     public String getAuthByFilter(Map<String, Object> map) {
 
         List<Map<String, Object>> list = authorityMapper.getAuthByFilter(map);
-         Integer page = (Integer) map.get("page");
+        String total = list.size() + "";
+        Integer page = (Integer) map.get("page");
         Integer pageSize = (Integer) map.get("page_size");
-
         if (page != null && pageSize != null) {
             list = Paging.pagingPlug(list, pageSize, page);
         }
-            String total = list.size() + "";
+
             return JsonResult.successJson(total, list);
 
     }
@@ -334,14 +334,14 @@ public class AuthorityServiceImpl implements AuthorityService {
     @Override
     public  String getRoleByFilter(Map<String, Object> map){
         List<Map<String, Object>> list = authRoleMapper.getRoleByFilter(map);
-
+        String total = list.size() + "";
         Integer page= (Integer) map.get("page");
         Integer pageSize =(Integer)map.get("page_size");
 
         if (page != null && pageSize != null) {
             list = Paging .pagingPlug(list, pageSize, page);
         }
-        String total = list.size() + "";
+
         return JsonResult.successJson(total,list);
     }
 }
