@@ -46,7 +46,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
   private static final String SEARCHTYPE = "solr";
   private static final String INTELQUERYVERSION = AppProperties.get("intelquery.version");
-  ;
+  private static final int PREVLINENUM = 50;
 
   private static final Logger logger = LoggerFactory.getLogger(ExecSqlApiService.class);
 
@@ -224,9 +224,16 @@ public class IntelQueryServiceImpl implements IntelQueryService {
           }
         }
         if (((LeafHeader) normalColumn).getTitles().size() == 0) {
-          arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData());
+          //if(arrayList.size() < PREVLINENUM){
+            //int subSize = ((ComplexTable.NormBlock) nb).getRowData().size(); // (((ComplexTable.NormBlock) nb).getRowData().size() > PREVLINENUM)? PREVLINENUM:((ComplexTable.NormBlock) nb).getRowData().size();
+            //arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData().subList(0,subSize));
+						int subSize = ((ComplexTable.NormBlock) nb).getRowData().size();
+            arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData());
+          //}
+          //
         } else {
-          arrayList.add(((ComplexTable.NormBlock) nb).getRowData());
+          //if(arrayList.size() < PREVLINENUM)
+            arrayList.add(((ComplexTable.NormBlock) nb).getRowData());
         }
         colMap.put(colKey, arrayList);
         retData.put(((ComplexTable.NormBlock) nb).getBelongTo().getRowData(), colMap);
