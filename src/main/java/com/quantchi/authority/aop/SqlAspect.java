@@ -9,6 +9,10 @@ import com.quantchi.authority.sqlparser.IdealSQLGen;
 import com.quantchi.authority.sqlparser.RowPermission;
 import com.quantchi.sqlanalysis.PermissionParser;
 import com.quantchi.sqlanalysis.model.permission.PermissionResult;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.mgt.RealmSecurityManager;
+import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
@@ -27,6 +31,9 @@ public class SqlAspect {
 	private AuthorityServiceImpl authorityService;
 
 	@Autowired
+	private static CacheManager cacheManager;
+
+	@Autowired
 	private AuthorityDetailService authorityDetailService;
 
 	public SqlAspect(){
@@ -42,6 +49,14 @@ public class SqlAspect {
 		args[0] = modifySqlByDataAuth(args[0].toString());
 		Object retVal = pjp.proceed(args);
 		return retVal;
+	}
+
+	private List<String> getRoles(){
+		Subject subject = SecurityUtils.getSubject();
+		//subject.getPrincipals().getRealmNames()
+		RealmSecurityManager securityManager =
+						(RealmSecurityManager) SecurityUtils.getSecurityManager();
+
 	}
 
 	private String modifySqlByDataAuth(String sql){
