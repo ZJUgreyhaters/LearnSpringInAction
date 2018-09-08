@@ -126,7 +126,7 @@ public class IntelQueryController {
   public
   @ResponseBody
   Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword,
-                                      @RequestParam(value = "businessId") String businessId) {
+                                      @RequestParam(value = "businessId",required=false) String businessId) {
     try {
       if ("".equals(keyword)) {
         return Util.genRet(200, null, "", 0);
