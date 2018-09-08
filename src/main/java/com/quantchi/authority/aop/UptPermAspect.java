@@ -22,7 +22,7 @@ public class UptPermAspect {
 		System.out.print("******UptPermAspect is loading*****");
 	}
 
-	@Pointcut("execution(public * com.quantchi.authority.serviceImpl.*.addAuthAndDataDetail(..))")
+	@Pointcut("execution(public * com.quantchi.authority.serviceImpl.*.modifyRole(..))")
 	public void callUptMethod(){}
 
 	@After("callUptMethod()")
