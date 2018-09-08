@@ -18,9 +18,7 @@ import java.util.Map;
 public class ColumnPermission {
     private Map<String, List<String>> columnPermission = new HashMap<>();
 
-    ColumnPermission() {
-
-    }
+    public ColumnPermission() {}
 
     public void addSimpleColumnRule(String tableName, String columnRule){
         if(columnPermission.containsKey(tableName)){

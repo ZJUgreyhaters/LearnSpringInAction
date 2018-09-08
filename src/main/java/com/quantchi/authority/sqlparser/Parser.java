@@ -1,13 +1,8 @@
 package com.quantchi.authority.sqlparser;
 
-
 import com.alibaba.fastjson.JSON;
 import com.quantchi.sqlanalysis.v1.PermissionParser;
 import com.quantchi.sqlanalysis.model.permission.PermissionResult;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONArray;
-
-import java.util.*;
 
 /**
  * @ClassName: Parser
@@ -18,6 +13,7 @@ import java.util.*;
  **/
 
 public class Parser {
+
     public static void main(String[] args){
 
         String[] testSql = new String[10];
@@ -37,12 +33,20 @@ public class Parser {
                 " where x.init_date >=   '20180101' \n" +
                 " and x.init_date<= '20180131'  ";
         testSql[7] = "select sum(id) as sum_id from teacher";
-        testSql[8] = "select a from (select a from student)";
+        testSql[8] = "SELECT agg_cust_statistics.`fin_balance` AS `融资余额`,\n" +
+                "\tdim_branch.`branch_no` AS test,\n" +
+                "\tdim_branch.`branch_name` AS `营业部名称`,\n" +
+                "\tagg_cust_statistics.`init_date` AS `日期`,\n" +
+                "\tdim_branch.`branch_short_name` AS `营业部简称`\n" +
+                "FROM mtoi.dim_branch AS `dim_branch`\n" +
+                "JOIN mtoi.agg_cust_statistics AS `agg_cust_statistics`\n" +
+                "ON dim_branch.`branch_no`=agg_cust_statistics.`branch_no`\n" +
+                "WHERE ((agg_cust_statistics.`init_date`>=20160106 AND agg_cust_statistics.`init_date`<20160108) AND dim_branch.`branch_short_name`='下沙')";
 
         table[0] = "student";
         table[1] = "teacher";
         table[2] = "admin";
-        table[3] = "fact_cust_compact_detail";
+        table[3] = "dim_branch";
 
         //行权限
         RowPermission rowPermission = new RowPermission();
@@ -55,10 +59,12 @@ public class Parser {
         columnPermission.addSimpleColumnRule(table[1],"salary");
         columnPermission.addSimpleColumnRule(table[2],"name");
         columnPermission.addSimpleColumnRule(table[3],"occur_balance");
+        columnPermission.addSimpleColumnRule(table[3], "branch_no");
         //通过addSimpleRowRule()方法添加一条行规则
         rowPermission.addSimpleRowRule(table[0],"id>10");
         rowPermission.addSimpleRowRule(table[1],"department in ('Math','China')");
         rowPermission.addSimpleRowRule(table[2],"age >= 15");
+        rowPermission.addSimpleRowRule(table[3], "id > 10");
 
         for(int i = 0;i < 9;i++){
             System.out.println("@sql测试语句" + i + "-------------------");
@@ -70,7 +76,6 @@ public class Parser {
             //getIdealSQL()方法获得最终的sql
             System.out.println(sqlGen.getIdealSQL() + "\n+++++++++++++++++\n\n");
         }
-
         //
     }
 }

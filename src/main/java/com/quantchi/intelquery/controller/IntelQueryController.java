@@ -69,6 +69,7 @@ public class IntelQueryController {
   @ResponseBody
   String getBusiCate() {
     try {
+      logger.info("--- --- --- > : getBusiCate()");
       List<Map<String, Object>> busiCate = intelQueryService.getBusiCate();
       return JsonResult.successJson(busiCate);
     } catch (Exception e) {
