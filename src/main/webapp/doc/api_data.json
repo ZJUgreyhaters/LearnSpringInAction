@@ -1346,6 +1346,20 @@
             "optional": true,
             "field": "branch_no",
             "description": "<p>所在营业部id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "page",
+            "description": "<p>页数</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": true,
+            "field": "page_size",
+            "description": "<p>每页数量</p>"
           }
         ]
       }

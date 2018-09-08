@@ -143,8 +143,7 @@ public class AuthorityController {
         }
         if(c_authtype != null){
             if ((!c_authtype.isEmpty())&&(!c_authtype.equals("")) ){
-                System.out.print("1");
-            return authorityService.getAuthByFilter(requestMap);
+             return authorityService.getAuthByFilter(requestMap);
              }
         }
         if (c_authname.isEmpty()||(c_authname.equals("")) ){
