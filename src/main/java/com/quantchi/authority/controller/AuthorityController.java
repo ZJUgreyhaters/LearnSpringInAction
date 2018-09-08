@@ -42,6 +42,7 @@ public class AuthorityController {
      * @apiSuccess {String} [data.c_rolename] 角色名称
      * @apiSuccess {String} [data.c_isenable] 是否有效
      * @apiSuccess {String} [data.c_roledesc] 角色描述信息
+     * @apiSuccess {String} [data.containtUser] 该角色有多少用户
      * @apiSuccess {String} [data.total] 返回总条数
      **/
     @ResponseBody

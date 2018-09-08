@@ -181,6 +181,7 @@ public class AuthorityUserController {
      * @apiGroup AuthorityUserController
      * @apiParam {String} [userName] 角色姓名
      * @apiParam {String} [branch_no] 所在营业部id
+     * @apiParam {String} [roleId] 角色id查询
      * @apiParam {Int} [page] 页数
      * @apiParam {Int} [page_size] 每页数量
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
@@ -202,8 +203,32 @@ public class AuthorityUserController {
 
         String userName = (String) map.get("userName");
         String branchno = (String) map.get("branch_no");
+        String roleId =  map.get("roleId").toString();
+        if (roleId !=  null  && (!roleId.equals("") )){
+            user.put("userName", "王小二");
+            user.put("userId", "20123");
+            user.put("userAccount", "139111201232");
+            user.put("userRoles", "营销部业务员,营销部销售");
+            user.put("userStatus", "1");
+            users.add(user);
+            user = new HashMap<String, Object>();
+            user.put("userName", "王晓梅");
+            user.put("userId", "20134");
+            user.put("userAccount", "13911120134");
+            user.put("userRoles", "营销部业务员");
+            user.put("userStatus", "1");
+            users.add(user);
+            String total =users.size()+"";
+            Integer page = (Integer) map.get("page");
+            Integer pageSize = (Integer) map.get("page_size");
+            if (page != null && pageSize != null) {
+                users = Paging.pagingPlug(users, pageSize, page);
+            }
+            return JsonResult.successJson(total,users);
 
-       if(userName ==  null  ||  userName.equals("")   ) {
+        }
+
+            if(userName ==  null  ||  userName.equals("")   ) {
            if (branchno == null ||branchno.equals("1")){
                Integer page = (Integer) map.get("page");
                Integer pageSize = (Integer) map.get("page_size");
@@ -283,4 +308,6 @@ public class AuthorityUserController {
 
         return JsonResult.successJson(total,users);
     }
+
+
 }

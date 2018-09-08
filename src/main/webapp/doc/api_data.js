@@ -405,6 +405,13 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": true,
+            "field": "data.containtUser",
+            "description": "<p>该角色有多少用户</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
             "field": "data.total",
             "description": "<p>返回总条数</p>"
           }
@@ -1346,6 +1353,13 @@ define({ "api": [
             "optional": true,
             "field": "branch_no",
             "description": "<p>所在营业部id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "roleId",
+            "description": "<p>角色id查询</p>"
           },
           {
             "group": "Parameter",

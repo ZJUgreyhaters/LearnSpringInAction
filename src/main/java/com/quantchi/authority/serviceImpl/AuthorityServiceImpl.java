@@ -6,10 +6,8 @@ import com.quantchi.authority.mapper.*;
 import com.quantchi.authority.pojo.*;
 import com.quantchi.authority.service.AuthorityService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
+
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +38,22 @@ public class AuthorityServiceImpl implements AuthorityService {
         try {
 
             List<Map<String, Object>> list = authRoleMapper.getAuthRole();
-            String total = list.size() + "";
+            List<Map<String, Object>> resList = new ArrayList<Map<String, Object>>();
+
+            for(Map<String, Object> Role :list )
+            {
+                Role.put("containtUser", new Random().nextInt(5));
+                resList.add(Role);
+
+            }
+            String total = resList.size() + "";
             Integer page= (Integer) map.get("page");
             Integer pageSize =(Integer)map.get("page_size");
 
             if (page != null && pageSize != null) {
-                list = Paging .pagingPlug(list, pageSize, page);
+                resList = Paging .pagingPlug(resList, pageSize, page);
             }
-
-
-            return JsonResult.successJson(total,list);
+            return JsonResult.successJson(total,resList);
         } catch (Exception e) {
             e.printStackTrace();
             return JsonResult.errorJson("select error！");
@@ -334,14 +338,24 @@ public class AuthorityServiceImpl implements AuthorityService {
     @Override
     public  String getRoleByFilter(Map<String, Object> map){
         List<Map<String, Object>> list = authRoleMapper.getRoleByFilter(map);
-        String total = list.size() + "";
+
+        List<Map<String, Object>> resList = new ArrayList<Map<String, Object>>();
+
+        for(Map<String, Object> Role :list )
+        {
+            Role.put("containtUser", new Random().nextInt(5) );
+            resList.add(Role);
+
+        }
+
+        String total = resList.size() + "";
         Integer page= (Integer) map.get("page");
         Integer pageSize =(Integer)map.get("page_size");
 
         if (page != null && pageSize != null) {
-            list = Paging .pagingPlug(list, pageSize, page);
+            resList = Paging .pagingPlug(resList, pageSize, page);
         }
 
-        return JsonResult.successJson(total,list);
+        return JsonResult.successJson(total,resList);
     }
 }
