@@ -16,9 +16,8 @@ public class IdealSQLGen {
     private String toBeModifiedSQL;
     private String idealSQL;
 
-    IdealSQLGen(){
+    public IdealSQLGen(){}
 
-    }
     public IdealSQLGen(Set<String> limitField,String toBeModifiedSQL){
         this.limitField = limitField;
         this.toBeModifiedSQL = toBeModifiedSQL;

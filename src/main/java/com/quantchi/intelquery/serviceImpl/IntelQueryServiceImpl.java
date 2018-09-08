@@ -46,7 +46,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
   private static final String SEARCHTYPE = "solr";
   private static final String INTELQUERYVERSION = AppProperties.get("intelquery.version");
-  ;
+  private static final int PREVLINENUM = 50;
 
   private static final Logger logger = LoggerFactory.getLogger(ExecSqlApiService.class);
 
@@ -93,6 +93,8 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   public Map<String, Object> execsql(String sql, Map<String, Object> map) throws Exception {
+    //for explore dump
+    sql = sql + " limit 1000 ";
     List<Map<String, Object>> resultList = HiveConnection.selectHive(sql, jdbcPool);
     Integer total = resultList.size();
     if (map.get("page_size") != null && map.get("page") != null) {
@@ -106,6 +108,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   public ResultSet execsqlWithResultSet(String sql, Map<String, Object> map) throws Exception {
+    sql = sql + " limit 1000 ";
     return HiveConnection.selectHiveWithRs(sql, jdbcPool);
   }
 
@@ -210,6 +213,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         if (colMap == null) {
           reIndex = false;
           colMap = new LinkedHashMap<>();
+          arrayList = new ArrayList<>();
         } else if (reIndex) {
           reIndex = false;
           colKey = ColName + "_" + colMap.entrySet().size();
@@ -220,9 +224,16 @@ public class IntelQueryServiceImpl implements IntelQueryService {
           }
         }
         if (((LeafHeader) normalColumn).getTitles().size() == 0) {
-          arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData());
+          //if(arrayList.size() < PREVLINENUM){
+            //int subSize = ((ComplexTable.NormBlock) nb).getRowData().size(); // (((ComplexTable.NormBlock) nb).getRowData().size() > PREVLINENUM)? PREVLINENUM:((ComplexTable.NormBlock) nb).getRowData().size();
+            //arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData().subList(0,subSize));
+						int subSize = ((ComplexTable.NormBlock) nb).getRowData().size();
+            arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData());
+          //}
+          //
         } else {
-          arrayList.add(((ComplexTable.NormBlock) nb).getRowData());
+          //if(arrayList.size() < PREVLINENUM)
+            arrayList.add(((ComplexTable.NormBlock) nb).getRowData());
         }
         colMap.put(colKey, arrayList);
         retData.put(((ComplexTable.NormBlock) nb).getBelongTo().getRowData(), colMap);

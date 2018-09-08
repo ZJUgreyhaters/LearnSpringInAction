@@ -5,7 +5,7 @@
   <select id="getAuthRole" resultType="java.util.Map">
     select
     l_roleid,
-    c_rolename  ,
+    c_rolename,
     c_isenable,
     c_roledesc
     from tuserrole
@@ -14,7 +14,7 @@
   <select id="getAuthRoleAndUserCount" resultType="java.util.Map">
     select
     t.l_roleid,
-    t.c_rolename  ,
+    t.c_rolename,
     t.c_isenable,
     t.c_roledesc,
     x.usercount

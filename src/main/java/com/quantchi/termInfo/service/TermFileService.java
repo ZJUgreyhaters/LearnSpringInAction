@@ -14,6 +14,8 @@ public interface TermFileService {
 
   void updateStandard(Map<String, Object> map);
 
+  void updatePhysicalFieldChineseName(Map<String, Object> map);
+
   List<Map<String, Object>> selectPhysicalInfo(Map<String, Object> map);
 
   void insertPhysicalFile(Map<String, Object> map);

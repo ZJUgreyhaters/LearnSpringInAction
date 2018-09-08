@@ -32,6 +32,11 @@ public class TermFileServiceImpl implements TermFileService {
   }
 
   @Override
+  public void updatePhysicalFieldChineseName(Map<String, Object> map) {
+    termFileMapper.updatePhysicalFieldChineseName(map);
+  }
+
+  @Override
   public List<Map<String, Object>> selectPhysicalInfo(Map<String, Object> map) {
     return termFileMapper.selectPhysicalInfo(map);
   }
