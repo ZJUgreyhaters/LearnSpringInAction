@@ -213,6 +213,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         if (colMap == null) {
           reIndex = false;
           colMap = new LinkedHashMap<>();
+          arrayList = new ArrayList<>();
         } else if (reIndex) {
           reIndex = false;
           colKey = ColName + "_" + colMap.entrySet().size();
