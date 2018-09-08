@@ -86,7 +86,7 @@ public class SolrEng extends SearchEng {
   public String addQuerySentence(QuerySentence qs) {
     String qsId = "";
     try {
-      QuerySentence solrRet = checkDocInSolrById(qs.getId());
+      QuerySentence solrRet = checkDocInSolr(qs.getQuery());
       //add doc into solr
       if (solrRet == null) {
         httpSolr.addBean(qs);

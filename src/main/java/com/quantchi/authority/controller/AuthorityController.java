@@ -33,6 +33,8 @@ public class AuthorityController {
      * @apiName listRoleByFilter
      * @apiGroup AuthorityController
      * @apiParam {String} [c_rolename] 角色名字
+     * @apiParam {Int} [page] 页数
+     * @apiParam {Int} [page_size] 每页数量
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiSuccess {List} [data] 返回数据 指标信息列表
@@ -48,11 +50,11 @@ public class AuthorityController {
     public String listRoleByFilter(@RequestBody  Map<String, Object> requestMap){
         String  c_rolename =(String)requestMap.get("c_rolename");
         if (c_rolename.equals("") ){
-            return authorityService.selectRoleList();
+            return authorityService.selectRoleList( requestMap );
         }
         return    authorityService.getRoleByFilter(requestMap);
     }
-    /**@api {post} /api/listRoleByAuthid 根据条件查询角色 传空则返回所有
+    /**@api {post} /api/listRoleByAuthid 根据权限id查询角色 传空则返回所有
      * @apiVersion 1.0.0
      * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/listRoleByAuthid
      * @apiName listRoleByAuthid
@@ -112,6 +114,8 @@ public class AuthorityController {
      * @apiParam {String} [c_authname] 权限名称
      * @apiParam {String} [c_authtype] 权限类型 0:功能权限  1:数据权限
      * @apiParam {Int} [l_funcdetailid]  根据功能权限id 查权限名字
+     * @apiParam {Int} [page] 页数
+     * @apiParam {Int} [page_size] 每页数量
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiSuccess {List} [data] 返回数据 指标信息列表
@@ -132,10 +136,19 @@ public class AuthorityController {
     public String selectAuthByFilter(@RequestBody Map<String, Object> requestMap){
         String  c_authname =(String)requestMap.get("c_authname");
         Integer  l_funcdetailid =(Integer)requestMap.get("l_funcdetailid");
-        if ((!( l_funcdetailid == null )) &&  (l_funcdetailid>0)){
+        String c_authtype =(String)requestMap.get("c_authtype");
+
+        if ((  l_funcdetailid != null )  &&  (l_funcdetailid>0)){
             return authorityService.getAuthByFilter(requestMap);
-        }if (c_authname.isEmpty()||(c_authname.equals("")) ){
-            return authorityService.selectAuthList();
+        }
+        if(c_authtype != null){
+            if ((!c_authtype.isEmpty())&&(!c_authtype.equals("")) ){
+                System.out.print("1");
+            return authorityService.getAuthByFilter(requestMap);
+             }
+        }
+        if (c_authname.isEmpty()||(c_authname.equals("")) ){
+            return authorityService.selectAuthList(requestMap);
         }
         else{
         return authorityService.getAuthByFilter(requestMap);
