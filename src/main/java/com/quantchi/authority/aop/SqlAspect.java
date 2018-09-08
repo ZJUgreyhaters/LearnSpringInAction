@@ -6,6 +6,7 @@ import com.quantchi.authority.service.AuthorityDetailService;
 import com.quantchi.authority.service.AuthorityService;
 import com.quantchi.authority.serviceImpl.AuthorityServiceImpl;
 import com.quantchi.authority.shiro.MyRealm;
+import com.quantchi.authority.shiro.SysPermissionInitService;
 import com.quantchi.authority.sqlparser.ColumnPermission;
 import com.quantchi.authority.sqlparser.IdealSQLGen;
 import com.quantchi.authority.sqlparser.RowPermission;
@@ -40,6 +41,9 @@ public class SqlAspect {
 	@Autowired
 	private AuthorityDetailService authorityDetailService;
 
+	@Autowired
+	SysPermissionInitService sysPermissionInitService;
+
 	public SqlAspect(){
 		System.out.print("******SqlAspect is loading*****");
 	}
@@ -70,12 +74,28 @@ public class SqlAspect {
 
 	private String modifySqlByDataAuth(String sql){
 
-		getRoles();
+		//getRoles();
 
 		RowPermission rowPermission = new RowPermission();
 		ColumnPermission columnPermission = new ColumnPermission();
-		Integer roleId = 48;
+		//Integer roleId = 48;
 
+		List<String> roleIdList = sysPermissionInitService.getRolesFromDB();
+		for(String roleId:roleIdList){
+			setDataPermission(Integer.parseInt(roleId),rowPermission,columnPermission);
+		}
+
+		PermissionResult permissionResult = new PermissionParser().parse(sql, rowPermission.getRowPermissionJson(), columnPermission.getColumnPermissionJson());
+
+		Set<String> limit = permissionResult.getLimitedFields();
+		IdealSQLGen idealSQLGen = new IdealSQLGen(permissionResult.getLimitedFields(), permissionResult.getSql());
+
+		String re = idealSQLGen.getIdealSQL();
+		re += "";
+		return idealSQLGen.getIdealSQL();
+	}
+
+	private void setDataPermission(Integer roleId,RowPermission rowPermission,ColumnPermission columnPermission){
 		String authByRoleId = authorityService.getRoleAuthDetail(roleId);
 
 		JSONObject roleAuthJson = JSONObject.parseObject(authByRoleId);
@@ -117,15 +137,6 @@ public class SqlAspect {
 				}
 			}
 		}
-
-		PermissionResult permissionResult = new PermissionParser().parse(sql, rowPermission.getRowPermissionJson(), columnPermission.getColumnPermissionJson());
-
-		Set<String> limit = permissionResult.getLimitedFields();
-		IdealSQLGen idealSQLGen = new IdealSQLGen(permissionResult.getLimitedFields(), permissionResult.getSql());
-
-		String re = idealSQLGen.getIdealSQL();
-		re += "";
-		return idealSQLGen.getIdealSQL();
 	}
 
 }
