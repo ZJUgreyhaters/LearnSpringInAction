@@ -2,12 +2,14 @@ package com.quantchi.authority.shiro;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.quantchi.authority.mapper.AuthorityRoleMapper;
 import com.quantchi.authority.service.AuthorityDetailService;
 import com.quantchi.authority.service.AuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName: SysPermissionInitService
@@ -23,6 +25,9 @@ public class SysPermissionInitService {
     private AuthorityDetailService authorityDetailService;
     @Autowired
     private AuthorityService authorityService;
+
+    @Autowired
+    private AuthorityRoleMapper authRoleMapper;
 
     SysPermissionInitService(){}
 
@@ -97,5 +102,10 @@ public class SysPermissionInitService {
 
         sysPermissionInits.put("/api/get*", "DeniyAllFilter");
         return this.sysPermissionInits;
+    }
+
+    public List<String> getRolesFromDB(){
+        List<Map<String, Object>> roleList = authRoleMapper.getAuthRole();
+        return roleList.stream().map(i->i.get("l_roleid").toString()).collect(Collectors.toList());
     }
 }
