@@ -535,6 +535,9 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
   public List<QuerySentence> getCorrelativeSentence(String query,String businessId) throws Exception {
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
+    Map<String,String> queryMap = new HashMap<>();
+    queryMap.put("businessId",businessId);
+    engObj.setQueryMap(queryMap);
     List<QuerySentence> sentences = engObj.getCorrelativeSentence();
     removeSameDomainSentence(sentences);
 
