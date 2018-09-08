@@ -93,6 +93,8 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   public Map<String, Object> execsql(String sql, Map<String, Object> map) throws Exception {
+    //for explore dump
+    sql = sql + " limit 1000 ";
     List<Map<String, Object>> resultList = HiveConnection.selectHive(sql, jdbcPool);
     Integer total = resultList.size();
     if (map.get("page_size") != null && map.get("page") != null) {
@@ -106,6 +108,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   public ResultSet execsqlWithResultSet(String sql, Map<String, Object> map) throws Exception {
+    sql = sql + " limit 1000 ";
     return HiveConnection.selectHiveWithRs(sql, jdbcPool);
   }
 
