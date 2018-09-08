@@ -22,6 +22,9 @@ public class ShiroService {
 	@Autowired
 	ShiroFilterFactoryBean shiroFilterFactoryBean;
 
+	@Autowired
+	SysPermissionInitService sysPermissionInitService;
+
 	/**
 	 * 初始化权限
 	 */
@@ -34,6 +37,8 @@ public class ShiroService {
 			filterChainDefinitionMap.put(sysPermissionInit.getUrl(),
 							sysPermissionInit.getPermissionInit());
 		}*/
+		filterChainDefinitionMap = sysPermissionInitService.selectAll();
+
 		return filterChainDefinitionMap;
 	}
 
