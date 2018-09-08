@@ -41,4 +41,7 @@ public interface DSFieldRelDBMapper {
   List<Map<String, String>> foreignkeys(Map<String, Object> map);
 
   List<Map<String, String>> selectReleation(@Param("ids") String id);
+
+  List<Map<String, Object>> selectReleationByfieldId(Map<String, Object> map);
+
 }

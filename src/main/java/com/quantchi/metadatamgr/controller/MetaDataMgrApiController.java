@@ -254,7 +254,13 @@ public class MetaDataMgrApiController {
   Map<String, Object> relationSave(@RequestBody Map<String,Object> map) {
     Map<String, Object> responseMap = new HashMap<>();
     try {
-      if (metaDataMgrApiService.relationSave(map) <= 0) {
+      int a =metaDataMgrApiService.relationSave(map);
+      if (a ==-1) {
+        responseMap.put("code", 500);
+        responseMap.put("msg", "关联关系已存在！");
+        return responseMap;
+      }
+      if (a <= 0) {
         throw new Exception("save fail");
       }
       responseMap.put("code", 200);
