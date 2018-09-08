@@ -51,7 +51,7 @@ public abstract class SearchEng {
     return obj;
   }
 
-  public abstract List<Object> getMetrics(Map<String, String> queryMap) throws Exception;
+  public abstract List<Object> getMetrics() throws Exception;
 
   public abstract List<Object> getQuickMacro() throws Exception;
 

@@ -77,11 +77,13 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       throws Exception {
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
     Map<String, String> queryMap = new HashMap<>();
-    queryMap.put("seg_name", query);
+    /*queryMap.put("seg_name", query);*/
+    //queryMap.put("cn_name", query);
     if (businessId != null && businessId.trim().length() > 0) {
       queryMap.put("businessId", businessId);
     }
-    return engObj.getMetrics(queryMap);
+    engObj.setQueryMap(queryMap);
+    return engObj.getMetrics();
   }
 
 

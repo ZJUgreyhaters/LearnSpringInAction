@@ -67,8 +67,8 @@ public class SolrEng extends SearchEng {
 
 
   @Override
-  public List<Object> getMetrics(Map<String, String> queryMap) throws Exception {
-    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCommParam,queryMap);
+  public List<Object> getMetrics() throws Exception {
+    QueryResponse qr = searchSolrWithoutSeg(getQuery(),solrCommParam,SEARCHFILED,getQueryMap());
 		Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.handle");
 		double threshold = Double.parseDouble(solrParam.get("threshold"));
     return documentListToObjectList(processDocs(qr, false,threshold));
@@ -279,12 +279,12 @@ public class SolrEng extends SearchEng {
     return response;
   }
 
-  private QueryResponse searchSolrWithoutSeg(String str, Map<String, String> param,
+  private QueryResponse searchSolrWithoutSeg(String str, Map<String, String> param,String field,
       Map<String, String> mapQuery) throws Exception {
     SolrQuery query = new SolrQuery();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.search");
     StringBuilder builderQuery = new StringBuilder();
-    builderQuery.append("cn_name:").append(str);
+    builderQuery.append(field+":").append(str);
     builderQuery.append(" OR ").append("definition").append(":").append(str);
     builderQuery.append(" AND ").append("businessId").append(":")
         .append(mapQuery.get("businessId"));
@@ -311,11 +311,11 @@ public class SolrEng extends SearchEng {
   }
 
 
-  private QueryResponse searchSolr(Map<String, String> param, Map<String, String> queryMap)
+  /*private QueryResponse searchSolr(Map<String, String> param, Map<String, String> queryMap)
       throws Exception {
     String str = String.join(" ", segment());
     return searchSolrWithoutSeg(str, param, queryMap);
-  }
+  }*/
 
   private SolrDocumentList setReplaceOrigin(SolrDocumentList docs,
       Map<String, Map<String, List<String>>> highlight)
