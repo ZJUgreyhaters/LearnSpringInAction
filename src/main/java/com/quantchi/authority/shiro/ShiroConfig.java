@@ -57,6 +57,7 @@ public class ShiroConfig {
 
 		shiroFilterFactoryBean
 						.setFilterChainDefinitionMap(filterChainDefinitionMap);
+
 		System.out.println("Shiro拦截器工厂类注入成功");
 		return shiroFilterFactoryBean;
 	}
