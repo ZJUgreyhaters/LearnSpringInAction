@@ -73,6 +73,7 @@
 
 
 	<bean id="MyRoleFilter" class="com.quantchi.authority.shiro.MyRoleFilter" />
+	<bean id="DeniyAllFilter" class="com.quantchi.authority.shiro.DeniyAllFilter" />
 	<!--<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>-->
 	<!--<bean id="intelquery" class="com.quantchi.intelquery.intelQuery"></bean>-->
 

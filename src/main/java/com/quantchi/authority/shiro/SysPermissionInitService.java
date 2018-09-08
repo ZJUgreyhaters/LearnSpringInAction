@@ -18,7 +18,7 @@ import java.util.*;
  **/
 @Service
 public class SysPermissionInitService {
-    private Map<String, String> sysPermissionInits = new HashMap<>();
+    private Map<String, String> sysPermissionInits = new LinkedHashMap<>();
     @Autowired
     private AuthorityDetailService authorityDetailService;
     @Autowired
@@ -35,7 +35,7 @@ public class SysPermissionInitService {
     }
 
     public Map<String, String> selectAll(){
-        Map<String, Set<Integer>> urlPermItems = new HashMap<>();
+        Map<String, Set<Integer>> urlPermItems = new LinkedHashMap<>();
 
         String funcDetail = authorityDetailService.getFuncDetailList();
         JSONObject funcDetailJSON = JSONObject.parseObject(funcDetail);
@@ -95,6 +95,7 @@ public class SysPermissionInitService {
             }
         }
 
+        sysPermissionInits.put("/api/get*", "DeniyAllFilter");
         return this.sysPermissionInits;
     }
 }

@@ -28,8 +28,6 @@ public class ShiroConfig {
 	@Value ("#{6379}")
 	private int port;
 
-//	@Autowired
-//	ShiroFilterFactoryBean shiroFilterFactoryBean;
 
 	@Bean
 	public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {

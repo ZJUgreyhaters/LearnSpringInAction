@@ -36,7 +36,7 @@ public class MyRoleFilter extends AuthorizationFilter {
         Subject subject = getSubject(req, resp);
         Cookie[] cookies = ((HttpServletRequest)req).getCookies();
         String roleId = "-1";
-        if(cookies != null){
+        if(cookies != null) {
             Collection<Cookie> cookiesLst = Arrays.stream(cookies).collect(Collectors.toList());
             for(Cookie cookie : cookiesLst){
                 if(ROLEID.equals(cookie.getName())){
@@ -48,7 +48,7 @@ public class MyRoleFilter extends AuthorizationFilter {
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(roleId, "");
         subject.login(usernamePasswordToken);
         String[] rolesArray = (String[]) mappedValue;
-        if(rolesArray == null || rolesArray.length == 0){
+        if(rolesArray == null || rolesArray.length == 0) {
             return true;
         }
         for(int i = 0;i < rolesArray.length; i++) {

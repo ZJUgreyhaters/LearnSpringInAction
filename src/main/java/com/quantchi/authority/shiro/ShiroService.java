@@ -31,12 +31,7 @@ public class ShiroService {
 	public Map<String, String> loadFilterChainDefinitions() {
 		// 权限控制map.从数据库获取
 		Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-		/*List<SysPermissionInit> list = sysPermissionInitService.selectAll();
 
-		for (SysPermissionInit sysPermissionInit : list) {
-			filterChainDefinitionMap.put(sysPermissionInit.getUrl(),
-							sysPermissionInit.getPermissionInit());
-		}*/
 		filterChainDefinitionMap = sysPermissionInitService.selectAll();
 
 		return filterChainDefinitionMap;
