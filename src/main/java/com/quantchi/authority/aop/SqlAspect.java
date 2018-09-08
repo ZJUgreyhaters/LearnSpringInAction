@@ -30,8 +30,7 @@ public class SqlAspect {
 	@Autowired
 	private AuthorityServiceImpl authorityService;
 
-	@Autowired
-	private static CacheManager cacheManager;
+
 
 	@Autowired
 	private AuthorityDetailService authorityDetailService;
@@ -51,13 +50,13 @@ public class SqlAspect {
 		return retVal;
 	}
 
-	private List<String> getRoles(){
-		Subject subject = SecurityUtils.getSubject();
-		//subject.getPrincipals().getRealmNames()
-		RealmSecurityManager securityManager =
-						(RealmSecurityManager) SecurityUtils.getSecurityManager();
-
-	}
+//	private List<String> getRoles(){
+//		Subject subject = SecurityUtils.getSubject();
+//		//subject.getPrincipals().getRealmNames()
+//		RealmSecurityManager securityManager =
+//						(RealmSecurityManager) SecurityUtils.getSecurityManager();
+//
+//	}
 
 	private String modifySqlByDataAuth(String sql){
 
