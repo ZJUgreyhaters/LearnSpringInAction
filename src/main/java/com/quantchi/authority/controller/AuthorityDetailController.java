@@ -60,8 +60,12 @@ public class AuthorityDetailController {
             RequestMethod.POST}, produces = "application/json;charset=UTF-8")
     public String addDataAuth(@RequestBody Map<String, Object> requestMap){
         Map<String, Object> auth = (Map<String, Object>) requestMap.get("authority") ;
-        String authid =auth.get("l_authid").toString();
-        if(authid == null || authid.isEmpty()||authid.equals("")||authid.equals("0"))
+
+        String authid  = new String();
+        if(auth.get("l_authid") != null){
+          authid =auth.toString();
+        }
+        if( authid.isEmpty()||authid.equals("")||authid.equals("0"))
         {
             try {
                 authoritydetailService.addAuthAndDataDetail(requestMap);
@@ -72,6 +76,7 @@ public class AuthorityDetailController {
                 return JsonResult.errorJson("error!");
             }
         }
+
         try {
             authorityService.modifyAuth(requestMap);
             return JsonResult.successJson();
