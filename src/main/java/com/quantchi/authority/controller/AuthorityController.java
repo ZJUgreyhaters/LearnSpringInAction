@@ -51,7 +51,7 @@ public class AuthorityController {
             RequestMethod.POST}, produces = "application/json;charset=UTF-8")
     public String listRoleByFilter(@RequestBody  Map<String, Object> requestMap){
         String  c_rolename =(String)requestMap.get("c_rolename");
-        if (c_rolename.equals("") ){
+        if (c_rolename == null || c_rolename.equals("") ){
             return authorityService.selectRoleList( requestMap );
         }
         return    authorityService.getRoleByFilter(requestMap);

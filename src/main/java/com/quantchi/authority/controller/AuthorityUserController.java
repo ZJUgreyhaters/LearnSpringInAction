@@ -203,7 +203,13 @@ public class AuthorityUserController {
 
         String userName = (String) map.get("userName");
         String branchno = (String) map.get("branch_no");
-        String roleId =  map.get("roleId").toString();
+        String roleId = new String();
+        if ( map.get("roleId") !=null)
+        {
+            roleId = map.get("roleId").toString();
+        }
+
+
         if (roleId !=  null  && (!roleId.equals("") )){
             user.put("userName", "王小二");
             user.put("userId", "20123");
