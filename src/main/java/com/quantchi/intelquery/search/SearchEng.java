@@ -117,17 +117,19 @@ public abstract class SearchEng {
     String rightTag = solrParam.get("rightTag");
 
     List<String> hits = new ArrayList<>();
-    String _hl = highlights.get(0).toString();
-    String _hit = "";
-    int _start = _hl.indexOf(leftTag);
-    int _end = _hl.indexOf(rightTag);
+    if(highlights != null && highlights.size() > 0){
+      String _hl = highlights.get(0).toString();
+      String _hit = "";
+      int _start = _hl.indexOf(leftTag);
+      int _end = _hl.indexOf(rightTag);
 
-    while (_start != -1 && _end != -1) {
-      _hit = _hl.substring(_start + 4, _end);
-      hits.add(_hit);
-      _hl = _hl.substring(_end + 1);
-      _start = _hl.indexOf(leftTag);
-      _end = _hl.indexOf(rightTag);
+      while (_start != -1 && _end != -1) {
+        _hit = _hl.substring(_start + 4, _end);
+        hits.add(_hit);
+        _hl = _hl.substring(_end + 1);
+        _start = _hl.indexOf(leftTag);
+        _end = _hl.indexOf(rightTag);
+      }
     }
 
     return hits;

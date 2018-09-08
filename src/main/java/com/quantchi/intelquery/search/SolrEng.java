@@ -225,7 +225,7 @@ public class SolrEng extends SearchEng {
 		}
 		//List<String> nameWords = java.util.Arrays.asList(seg_name.split(" "));
 		List<String> nameWords = getHitWords(qr.getHighlighting().get(id).get(SEARCHFILED));
-
+		if(nameWords.size() == 0) return 1.0;
 		double nameWordNum = nameWords.size(); //中文名的单词数
 		double matchNum = 0; //匹配到的数量
 
