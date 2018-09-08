@@ -35,4 +35,6 @@ public interface DSFieldInfoDBMapper {
     Map<String,Object> selectAll(List<Map<String,Object>> list);
 
     List<Map<String, Object>> selectFieldInfo(Map<String,Object> map);
+
+    List<DSFieldInfoDB> selectFieldInfoBytableId(Map<String,Object> map);
 }

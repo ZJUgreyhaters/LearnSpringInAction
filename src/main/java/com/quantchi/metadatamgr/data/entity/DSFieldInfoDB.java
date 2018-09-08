@@ -9,6 +9,8 @@ public class DSFieldInfoDB {
 
     private String tableId;
 
+    private String tableName;
+
     private String datasourceId;
 
     private String fieldType;
@@ -18,6 +20,14 @@ public class DSFieldInfoDB {
     private Integer isterm;
 
     private String datasourceName;
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
     public String getDatasourceName() {
         return datasourceName;

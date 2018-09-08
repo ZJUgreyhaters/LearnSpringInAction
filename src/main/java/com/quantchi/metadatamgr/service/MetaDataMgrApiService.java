@@ -511,6 +511,10 @@ public class MetaDataMgrApiService {
 
   public int relationSave(Map<String, Object> map) {
     if (map.get("relation_id") == null || map.get("relation_id").toString().trim().length() == 0) {
+      List<Map<String, Object>> list = dsFieldRelDBMapper.selectReleationByfieldId(map);
+      if (list != null && !list.isEmpty()) {
+       return -1;
+      }
       return dsFieldRelDBMapper.insert(map);
     } else {
       return dsFieldRelDBMapper.updateByPrimaryKey(map);
