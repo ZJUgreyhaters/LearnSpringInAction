@@ -59,7 +59,7 @@ public class SqlAspect {
 
 	private List<String> getRoles(){
 		Subject subject = SecurityUtils.getSubject();
-		String realname = subject.getPrincipals().getRealmNames().iterator().next();
+		//String realname = subject.getPrincipals().getRealmNames().iterator().next();
 		RealmSecurityManager securityManager =
 						(RealmSecurityManager) SecurityUtils.getSecurityManager();
 		MyRealm shiroRealm =  (MyRealm)securityManager.getRealms().iterator().next();
@@ -69,6 +69,8 @@ public class SqlAspect {
 	}
 
 	private String modifySqlByDataAuth(String sql){
+
+		getRoles();
 
 		RowPermission rowPermission = new RowPermission();
 		ColumnPermission columnPermission = new ColumnPermission();
