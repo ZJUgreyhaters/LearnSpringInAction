@@ -1,27 +1,20 @@
 package com.quantchi.metadatamgr.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.quantchi.metadatamgr.data.entity.DSEntityInfoDB;
-import com.quantchi.metadatamgr.data.entity.DSEntityInfoDBExample;
-import com.quantchi.metadatamgr.data.entity.DSMetaInfoDB;
-import com.quantchi.metadatamgr.data.entity.DSMetaInfoDBExample;
+import com.quantchi.common.Paging;
 import com.quantchi.metadatamgr.data.mapper.DSEntityInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
 import com.quantchi.termInfo.mapper.PhysicalTableInfoMapper;
 import com.quantchi.termInfo.pojo.PhysicalTableInfo;
 import com.quantchi.termInfo.pojo.PhysicalTableInfoExample;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class MetaDataMgrEntityApiService {
@@ -37,42 +30,32 @@ public class MetaDataMgrEntityApiService {
   @Autowired
   private PhysicalTableInfoMapper tableInfoMapper;
 
-  public int createEntity(JSONObject json) {
-    DSEntityInfoDB dsEntityInfoDB = new DSEntityInfoDB();
-    dsEntityInfoDB.setEntityName(json.getString("entity_name"));
-    dsEntityInfoDB.setBusiness(json.getString("business"));
-    //String dsName = json.getString("data_source_name");
-    String dsId = json.getString("data_source_name");
-    dsEntityInfoDB.setDatasourceId(dsId);
-    dsEntityInfoDB.setMainTable(json.getString("main_table_id"));
-    dsEntityInfoDB.setEntityField(json.getString("main_entity_field_id"));
-    dsEntityInfoDB.setMainEntityFieldName(json.getString("main_entity_field_name"));
-    String nonMainTable = "";
-    if (json.get("non_main_table_id") != null) {
-      nonMainTable = String.join(",", (List) json.get("non_main_table_id"));
+  public int createEntity(Map<String, String> map) {
+    List<Map<String, Object>> entityNameList = dsEntityInfoDBMapper.getEntityName(map);
+    if (entityNameList != null && !entityNameList.isEmpty()) {
+      return -1;
     }
-    dsEntityInfoDB.setNonMainTable(nonMainTable);
-    insertDomain(dsEntityInfoDB);
-    return dsEntityInfoDBMapper.insert(dsEntityInfoDB);
+    insertDomain(map);
+    return dsEntityInfoDBMapper.insert(map);
   }
 
-  private void insertDomain(DSEntityInfoDB info) {
+  private void insertDomain(Map<String, String> map) {
     Map<String, Object> row = new HashMap<>();
-    row.put("domainId", info.getEntityName());
-    row.put("domainName", info.getEntityName());
-    row.put("businessTypeId", info.getBusiness());
-    row.put("businessTypeName", info.getBusiness());
+    row.put("domainId", map.get("entity_name"));
+    row.put("domainName", map.get("entity_name"));
+    row.put("businessTypeId", map.get("business"));
+    row.put("businessTypeName", map.get("business"));
     List<String> tables = new ArrayList<>();
-    tables.add(info.getMainTable());
-    tables.addAll(Arrays.asList(info.getNonMainTable().split(",")));
+    tables.add(map.get("non_main_table_name"));
+    tables.addAll(Arrays.asList(map.get("non_main_table_name").split(",")));
     for (int i = 0; i < tables.size(); i++) {
       String dbTable = tables.get(i);
       row.put("tableId", dbTable);
-      String db = info.getMainTable().substring(0, dbTable.indexOf('.'));
-      String table = info.getMainTable().substring(dbTable.indexOf('.') + 1);
+      String db = map.get("non_main_table_name").substring(0, dbTable.indexOf('.'));
+      String table = map.get("non_main_table_name").substring(dbTable.indexOf('.') + 1);
       if (i == 0) {
         row.put("isMain", Boolean.TRUE);
-        row.put("nameField", info.getMainEntityFieldName());
+        row.put("nameField", map.get("main_entity_field_name_id"));
       } else {
         row.put("isMain", Boolean.FALSE);
         row.put("nameField", null);
@@ -89,72 +72,26 @@ public class MetaDataMgrEntityApiService {
     }
   }
 
-  public int modifyEntity(JSONObject json) {
-    DSEntityInfoDB dsEntityInfoDB = new DSEntityInfoDB();
-    dsEntityInfoDB.setId(Integer.parseInt(json.getString("entity_id")));
-    dsEntityInfoDB.setEntityName(json.getString("entity_name"));
-    dsEntityInfoDB.setBusiness(json.getString("business"));
-
-    String dsName = json.getString("data_source_name");
-    String dsId = json.getString("data_source_id");
-    if (dsName != null && !dsName.equals("")) {
-      DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
-      dsMetaInfoDBExample.createCriteria().andDsNameEqualTo(dsName);
-      List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper
-          .selectAllByExample(dsMetaInfoDBExample);
-      dsId = dsMetaInfoDBList.get(0).getId().toString();
+  public int modifyEntity(Map<String, String> map) {
+    List<Map<String, Object>> entityNameList = dsEntityInfoDBMapper.getEntityName(map);
+    if (entityNameList != null && !entityNameList.isEmpty()) {
+      return -1;
     }
-    dsEntityInfoDB.setDatasourceId(dsId);
-    dsEntityInfoDB.setMainTable(json.getString("main_table_id"));
-    dsEntityInfoDB.setEntityField(json.getString("main_entity_field_id"));
-    String nonMainTable = String.join(",", (List) json.get("non_main_table_id"));
-    dsEntityInfoDB.setNonMainTable(nonMainTable);
-    dsEntityInfoDB.setMainEntityFieldName("main_entity_field_name");
-    return dsEntityInfoDBMapper.updateByPrimaryKeySelective(dsEntityInfoDB);
+    return dsEntityInfoDBMapper.updateByPrimaryKeySelective(map);
   }
 
-  public Map<String, Object> searchEntity(JSONObject json) {
+  public Map<String, Object> searchEntity(Map<String, String> map) {
     Map<String, Object> responseMap = new HashMap<>();
-    DSEntityInfoDBExample dsEntityInfoDBExample = new DSEntityInfoDBExample();
-    DSEntityInfoDBExample.Criteria _cr = dsEntityInfoDBExample.createCriteria();
-    if (json.getString("business") != null && !json.getString("business").equals("")) {
-      _cr.andBusinessEqualTo(json.getString("business"));
-    }
-    if (json.getString("keywords") != null && !json.getString("keywords").equals("")) {
-      _cr.andEntityNameLike("%" + json.getString("keywords") + "%");
-    }
-    int page = Integer.parseInt(json.getString("page"));
-    int page_size = Integer.parseInt(json.getString("page_size"));
-    PageHelper.startPage(page, page_size);
-    List<DSEntityInfoDB> list = dsEntityInfoDBMapper.selectByExample(dsEntityInfoDBExample);
 
-    PageInfo<DSEntityInfoDB> pageInfo = new PageInfo<>(list);
-    List<Map<String, Object>> responseList = new ArrayList<>();
-    List<DSEntityInfoDB> dsList = pageInfo.getList();
-    for (DSEntityInfoDB dsEntityInfoDB : dsList) {
-      Map<String, Object> map = new HashMap<>();
-      map.put("id", dsEntityInfoDB.getId());
-      map.put("entity_name", dsEntityInfoDB.getEntityName());
-      map.put("business", dsEntityInfoDB.getBusiness());
-
-      String dsId = dsEntityInfoDB.getDatasourceId();
-      if (dsId.matches("^[0-9]*$")) {
-        DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
-        dsMetaInfoDBExample.createCriteria().andIdEqualTo(Integer.parseInt(dsId));
-        List<DSMetaInfoDB> dsMetaInfoDBList = dsMetaInfoDBMapper
-            .selectAllByExample(dsMetaInfoDBExample);
-        map.put("data_source_name", dsMetaInfoDBList.get(0).getDsName());
-      } else {
-        map.put("data_source_name", dsId);
-      }
-      map.put("main_table_id", dsEntityInfoDB.getMainTable());
-      map.put("main_entity_field_id", dsEntityInfoDB.getEntityField());
-      map.put("non_main_table_id", dsEntityInfoDB.getNonMainTable());
-      map.put("main_entity_field_name", dsEntityInfoDB.getMainEntityFieldName());
-      responseList.add(map);
+    List<Map<String, Object>> list = dsEntityInfoDBMapper.selectEntityInfo(map);
+    int total = list.size();
+    if (map.get("page") != null && map.get("page_size") != null) {
+      int page = Integer.parseInt(map.get("page"));
+      int page_size = Integer.parseInt(map.get("page_size"));
+      list = Paging.pagingPlug(list,page_size,page);
     }
-    responseMap.put("data", responseList);
-    responseMap.put("total", pageInfo.getTotal());
+    responseMap.put("data", list);
+    responseMap.put("total", total);
     return responseMap;
   }
 
