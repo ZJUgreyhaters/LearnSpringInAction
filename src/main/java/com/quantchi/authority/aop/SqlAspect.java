@@ -28,9 +28,7 @@ public class SqlAspect {
 
 	private static final Logger logger = LoggerFactory.getLogger(SqlAspect.class);
 	@Autowired
-	private AuthorityServiceImpl authorityService;
-
-
+	private AuthorityService authorityService;
 
 	@Autowired
 	private AuthorityDetailService authorityDetailService;
@@ -50,13 +48,13 @@ public class SqlAspect {
 		return retVal;
 	}
 
-//	private List<String> getRoles(){
-//		Subject subject = SecurityUtils.getSubject();
-//		//subject.getPrincipals().getRealmNames()
-//		RealmSecurityManager securityManager =
-//						(RealmSecurityManager) SecurityUtils.getSecurityManager();
-//
-//	}
+	/*private List<String> getRoles(){
+		Subject subject = SecurityUtils.getSubject();
+		//subject.getPrincipals().getRealmNames()
+		RealmSecurityManager securityManager =
+						(RealmSecurityManager) SecurityUtils.getSecurityManager();
+
+	}*/
 
 	private String modifySqlByDataAuth(String sql){
 
