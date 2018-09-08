@@ -227,6 +227,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
           //if(arrayList.size() < PREVLINENUM){
             //int subSize = ((ComplexTable.NormBlock) nb).getRowData().size(); // (((ComplexTable.NormBlock) nb).getRowData().size() > PREVLINENUM)? PREVLINENUM:((ComplexTable.NormBlock) nb).getRowData().size();
             //arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData().subList(0,subSize));
+						int subSize = ((ComplexTable.NormBlock) nb).getRowData().size();
             arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData());
           //}
           //

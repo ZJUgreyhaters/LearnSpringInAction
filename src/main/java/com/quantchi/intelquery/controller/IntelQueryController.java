@@ -266,7 +266,7 @@ public class IntelQueryController {
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
       TreeNode columnRelation = sqlQuery.getColumnRelation();
       Map<String, Object> complexDataAndHeader = intelQueryService
-          .getComplexData(tabulate, columnRelation, page, page_size);
+              .getComplexData(tabulate, columnRelation, page, page_size);
 
       List<Object> complexTotalData =  ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
               .collect(Collectors.toList());
@@ -488,15 +488,31 @@ public class IntelQueryController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String stepsQuery(@RequestBody Map<String, Object> map) {
     try {
+      int page = 1;
+      int page_size = 20;
+      if (map.get("page_size") != null && map.get("page") != null) {
+        page = Integer.parseInt(map.get("page").toString());
+        page_size = Integer.parseInt(map.get("page_size").toString());
+      }
+      Map<String, Object> resultMap = new HashMap<>();
       QueryWithTree queryTree = SerializationUtils
           .fromSerializedString(map.get("querySerialize").toString());
       SqlFormatter formatter = new Builder()
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
-      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
-      Map<String, Object> resultMap = new HashMap<>();
-      resultMap.put("tabulate", tabulate);
+      ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql(), map);
+      TreeNode columnRelation = sqlQuery.getColumnRelation();
+      Map<String, Object> complexDataAndHeader = intelQueryService
+              .getComplexData(tabulate, columnRelation, page, page_size);
+      List<Object> complexTotalData =  ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
+              .collect(Collectors.toList());
+      resultMap.put("total", complexTotalData.size());
+      List<Object> complexData = Paging.pagingPlugObject(
+              complexTotalData, page_size, page);
+      resultMap.put("columnRelation", complexDataAndHeader.get("header"));
+      resultMap.put("tabulate", complexData);
+      resultMap.put("isParseable",true);
       return JsonResult.successJson(resultMap);
     } catch (Exception e) {
       e.printStackTrace();
