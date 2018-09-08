@@ -106,7 +106,7 @@ public class SqlAspect {
 		for(int i = 0;i < roleAuthJsonArray.size();i++) {
 			String authType = roleAuthJsonArray.getJSONObject(i).getString("c_authtype");
 
-			if(authType.equals("1")){// authType == "1" 为数据权限
+			if("1".equals(authType)){// authType == "1" 为数据权限
 				Integer authId = roleAuthJsonArray.getJSONObject(i).getInteger("l_authid");
 				// 取行权限
 				requestMap.put("l_authid", authId);
