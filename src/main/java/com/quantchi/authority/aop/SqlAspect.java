@@ -3,6 +3,7 @@ package com.quantchi.authority.aop;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.quantchi.authority.service.AuthorityDetailService;
+import com.quantchi.authority.service.AuthorityService;
 import com.quantchi.authority.serviceImpl.AuthorityServiceImpl;
 import com.quantchi.authority.sqlparser.ColumnPermission;
 import com.quantchi.authority.sqlparser.IdealSQLGen;
@@ -28,10 +29,7 @@ public class SqlAspect {
 
 	private static final Logger logger = LoggerFactory.getLogger(SqlAspect.class);
 	@Autowired
-	private AuthorityServiceImpl authorityService;
-
-	@Autowired
-	private static CacheManager cacheManager;
+	private AuthorityService authorityService;
 
 	@Autowired
 	private AuthorityDetailService authorityDetailService;
@@ -51,13 +49,13 @@ public class SqlAspect {
 		return retVal;
 	}
 
-	private List<String> getRoles(){
+	/*private List<String> getRoles(){
 		Subject subject = SecurityUtils.getSubject();
 		//subject.getPrincipals().getRealmNames()
 		RealmSecurityManager securityManager =
 						(RealmSecurityManager) SecurityUtils.getSecurityManager();
 
-	}
+	}*/
 
 	private String modifySqlByDataAuth(String sql){
 
