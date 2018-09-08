@@ -17,8 +17,6 @@ public class ShiroService {
 	@Autowired
 	ShiroFilterFactoryBean shiroFilterFactoryBean;
 
-
-
 	/**
 	 * 初始化权限
 	 */

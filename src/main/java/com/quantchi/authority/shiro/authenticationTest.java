@@ -18,10 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName: authenticationTest
@@ -31,7 +28,6 @@ import java.util.Map;
  * @Version 1.0.1
  **/
 
-@ContextConfiguration(locations = {"/applicationContext.xml"})
 public class authenticationTest {
     private static final Logger logger = LoggerFactory.getLogger(authenticationTest.class);
     @Autowired
@@ -48,7 +44,6 @@ public class authenticationTest {
 
     @Test
     public void testLogin(){
-
 
         Factory<SecurityManager> securityManagerFactory = new IniSecurityManagerFactory("classpath:shiroLearn.ini");
 

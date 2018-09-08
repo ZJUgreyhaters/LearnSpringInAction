@@ -21,9 +21,7 @@ public class RowPermission {
      */
     private Map<String, List<String>> rowPermission = new HashMap<>();
 
-    RowPermission(){
-
-    }
+    public RowPermission(){}
 
     public void addSimpleRowRule(String tableName,String rowRule){
         if(rowPermission.containsKey(tableName)){

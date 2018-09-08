@@ -32,7 +32,7 @@ public class MyRoleFilter extends AuthorizationFilter {
     public boolean isAccessAllowed(ServletRequest req, ServletResponse resp, Object mappedValue) throws Exception {
 
         //不使用session ,由于login不在一个系统里，只能通过cookie传递,暂时认为传递的是userId
-
+        logger.info("Cookie-login-hasrole");
         Subject subject = getSubject(req, resp);
         Cookie[] cookies = ((HttpServletRequest)req).getCookies();
         String roleId = "-1";

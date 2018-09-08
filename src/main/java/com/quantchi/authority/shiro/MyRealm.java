@@ -46,6 +46,7 @@ public class MyRealm extends AuthorizingRealm {
         //TODO get roleId by userId from db
         Object roleId =  principalCollection.getPrimaryPrincipal();
         simpleAuthorizationInfo.addRole(roleId.toString());
+        logger.info("roleId: " + roleId.toString());
         return simpleAuthorizationInfo;
     }
 }
