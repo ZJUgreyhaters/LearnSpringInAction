@@ -6,7 +6,12 @@ import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,16 +42,11 @@ public class ShiroService {
 	 */
 	public void updatePermission() {
 
-		synchronized (shiroFilterFactoryBean) {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		ServletContext servletContext = request.getSession().getServletContext();
+		AbstractShiroFilter shiroFilter = (AbstractShiroFilter) WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext).getBean("shiroFilter");
 
-			AbstractShiroFilter shiroFilter = null;
-			try {
-				shiroFilter = (AbstractShiroFilter) shiroFilterFactoryBean
-								.getObject();
-			} catch (Exception e) {
-				throw new RuntimeException(
-								"get ShiroFilter from shiroFilterFactoryBean error!");
-			}
+		synchronized (shiroFilter) {
 
 			PathMatchingFilterChainResolver filterChainResolver = (PathMatchingFilterChainResolver) shiroFilter
 							.getFilterChainResolver();

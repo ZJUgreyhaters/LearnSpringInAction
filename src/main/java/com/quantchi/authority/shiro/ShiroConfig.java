@@ -29,7 +29,6 @@ public class ShiroConfig {
 	private int port;
 
 
-
 	@Bean
 	public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -47,7 +46,7 @@ public class ShiroConfig {
 		// 权限控制map.
 		Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
-		// filterChainDefinitionMap.put("/api/getRecommendQuery", "MyRoleFilter[1,2,3]");
+		filterChainDefinitionMap.put("/api/getRecommendQuery", "MyRoleFilter[1,2,3]");
 		// 从数据库获取
 		Map<String, String> filterItemMap = sysPermissionInitService.selectAll();
 
