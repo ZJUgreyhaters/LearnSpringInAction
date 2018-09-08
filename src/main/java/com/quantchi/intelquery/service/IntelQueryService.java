@@ -35,12 +35,12 @@ public interface IntelQueryService {
   List<Map<String, Object>> stepsMapping(StepResult result) throws IOException;
 
   String addQuerySentence(String username,
-      String businessName,
+      String businessId,
       String query,
       boolean isParseable,
       String sql);
 
-  List<QuerySentence> getCorrelativeSentence(String query) throws Exception;
+  List<QuerySentence> getCorrelativeSentence(String query,String businessId) throws Exception;
 
   List<Object> queryInstanceMapping(List<Object> quickMacroQuery);
 

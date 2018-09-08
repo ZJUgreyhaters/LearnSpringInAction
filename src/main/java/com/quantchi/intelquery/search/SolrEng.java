@@ -162,7 +162,7 @@ public class SolrEng extends SearchEng {
 
   @Override
   public List<QuerySentence> getCorrelativeSentence() throws Exception {
-    QueryResponse qr = searchSolrWithoutSeg(getQuery(), solrCorSentenceParam, SEARCHDOCFILED);
+    QueryResponse qr = searchSolrWithoutSeg(getQuery(), solrCorSentenceParam, SEARCHDOCFILED,getQueryMap());
     return qr.getBeans(QuerySentence.class);
   }
 

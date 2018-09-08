@@ -124,13 +124,14 @@ public class IntelQueryController {
       RequestMethod.GET}, produces = "application/json;charset=UTF-8")
   public
   @ResponseBody
-  Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
+  Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword,
+                                      @RequestParam(value = "businessId") String businessId) {
     try {
       if ("".equals(keyword)) {
         return Util.genRet(200, null, "", 0);
       }
 
-      List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword);
+      List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword,businessId);
       return Util.genRet(200, sentences, "", 0);
     } catch (Exception e) {
       return Util.genRet(500, null, e.getMessage(), 0);
@@ -219,7 +220,9 @@ public class IntelQueryController {
     Map<String, Object> resultMap = new HashMap();
     try {
       query = map.get("q").toString();
-      businessName = map.get("businessName").toString();
+      if(map.get("businessName")!=null){
+        businessName = map.get("businessName").toString();
+      }
       String businessId = null;
       if (map.get("businessId") != null) {
         businessId = map.get("businessId").toString();
@@ -272,7 +275,7 @@ public class IntelQueryController {
 
 
       String id = intelQueryService
-            .addQuerySentence("testUser", businessName, query, true,
+            .addQuerySentence("testUser", businessId, query, true,
                 sqlQuery.toSql());
       resultMap.put("sentencesId", id);
 

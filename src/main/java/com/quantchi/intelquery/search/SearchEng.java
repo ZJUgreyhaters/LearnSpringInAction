@@ -15,6 +15,7 @@ public abstract class SearchEng {
 
   private final String type;
   private String query;
+  private Map<String, String> queryMap = null;
 
   public String getType() {
     return type;
@@ -59,6 +60,14 @@ public abstract class SearchEng {
   public abstract void addQueryLikeSentence(QuerySentence qs) throws Exception;
 
   public abstract List<QuerySentence> getCorrelativeSentence() throws Exception;
+
+  public void setQueryMap(Map<String, String> queryMap){
+    this.queryMap = queryMap;
+  }
+
+  protected Map<String, String>getQueryMap(){
+    return queryMap;
+  }
 
   protected List<String> segment() throws QPException, IOException {
     return segmentWithLTP(getQuery());

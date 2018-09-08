@@ -508,7 +508,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
 
   public String addQuerySentence(String username,
-      String businessName,
+      String businessId,
       String query,
       boolean isParseable,
       String sql) {
@@ -516,7 +516,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     try {
       QuerySentence qs = new QuerySentence();
       qs.setUsername(username);
-      qs.setBusinessName(businessName);
+      qs.setBusinessId(businessId);
       qs.setQuery(query);
       qs.setParseable(isParseable);
       qs.setQuerySql(sql);
@@ -531,7 +531,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
   }
 
-  public List<QuerySentence> getCorrelativeSentence(String query) throws Exception {
+  public List<QuerySentence> getCorrelativeSentence(String query,String businessId) throws Exception {
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
     List<QuerySentence> sentences = engObj.getCorrelativeSentence();
     removeSameDomainSentence(sentences);
