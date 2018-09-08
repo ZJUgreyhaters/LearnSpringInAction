@@ -279,7 +279,7 @@
     a.non_main_table AS non_main_table_id,
     a.main_entity_field_name AS main_entity_field_name_id,
     f.field_english_name AS main_entity_field_name_name,
-    a.non_main_table_name AS non_main_table_name_id
+    a.non_main_table_name AS non_main_table_name
     from ds_entity_info a
     left join business_segment b on a.business = b.id
     left join ds_meta_info c on a.datasource_id = c.id
