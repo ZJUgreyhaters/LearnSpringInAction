@@ -1,15 +1,14 @@
-package com.quantchi.authority.sqlparser;
+package com.quantchi.authority.aop;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.quantchi.authority.mapper.AuthorityRoleMapper;
 import com.quantchi.authority.service.AuthorityDetailService;
-import com.quantchi.authority.service.AuthorityService;
 import com.quantchi.authority.serviceImpl.AuthorityServiceImpl;
+import com.quantchi.authority.sqlparser.ColumnPermission;
+import com.quantchi.authority.sqlparser.IdealSQLGen;
+import com.quantchi.authority.sqlparser.RowPermission;
 import com.quantchi.sqlanalysis.PermissionParser;
 import com.quantchi.sqlanalysis.model.permission.PermissionResult;
-import org.apache.commons.collections.map.HashedMap;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
