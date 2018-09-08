@@ -10,7 +10,7 @@ public interface AuthorityService {
     * author :cjl
     * 查询所有角色
     */
-    String selectRoleList();
+    String selectRoleList(Map<String, Object> map);
     /**modify date:20180823
     * author :cjl
     * 查询所有角色和用户数
@@ -36,7 +36,7 @@ public interface AuthorityService {
      * author :cjl
      * 查询所有权限
      */
-    String selectAuthList();
+    String selectAuthList(Map<String, Object> map);
 
     /**modify date:20180823
      * author :cjl

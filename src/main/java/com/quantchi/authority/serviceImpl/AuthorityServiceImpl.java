@@ -6,10 +6,12 @@ import com.quantchi.authority.mapper.*;
 import com.quantchi.authority.pojo.*;
 import com.quantchi.authority.service.AuthorityService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import com.quantchi.common.JsonResult;
+import com.quantchi.common.Paging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,9 +36,18 @@ public class AuthorityServiceImpl implements AuthorityService {
     private ObjectMapper oMapper = new ObjectMapper();
 
     @Override
-    public String selectRoleList( ) {
+    public String selectRoleList(Map<String, Object> map) {
         try {
+
             List<Map<String, Object>> list = authRoleMapper.getAuthRole();
+
+            Integer page= (Integer) map.get("page");
+            Integer pageSize =(Integer)map.get("page_size");
+
+            if (page != null && pageSize != null) {
+                list = Paging .pagingPlug(list, pageSize, page);
+            }
+
             String total = list.size() + "";
             return JsonResult.successJson(total,list);
         } catch (Exception e) {
@@ -89,9 +100,15 @@ public class AuthorityServiceImpl implements AuthorityService {
 
 
     @Override
-    public String selectAuthList(){
+    public String selectAuthList(Map<String, Object> map){
         try {
             List<Map<String,Object>> list=authorityMapper.selectAuth();
+            Integer page= (Integer) map.get("page");
+            Integer pageSize =(Integer)map.get("page_size");
+
+            if (page != null && pageSize != null) {
+                list = Paging .pagingPlug(list, pageSize, page);
+            }
             String total = list.size() + "";
             return JsonResult.successJson(total,list);
         }catch (Exception e){
@@ -300,15 +317,30 @@ public class AuthorityServiceImpl implements AuthorityService {
 }
 
     @Override
-    public String getAuthByFilter(Map<String, Object> map){
-        List<Map<String,Object>> list =authorityMapper.getAuthByFilter(map);
-        String total = list.size() + "";
-        return  JsonResult.successJson(total,list);
+    public String getAuthByFilter(Map<String, Object> map) {
+
+        List<Map<String, Object>> list = authorityMapper.getAuthByFilter(map);
+         Integer page = (Integer) map.get("page");
+        Integer pageSize = (Integer) map.get("page_size");
+
+        if (page != null && pageSize != null) {
+            list = Paging.pagingPlug(list, pageSize, page);
+        }
+            String total = list.size() + "";
+            return JsonResult.successJson(total, list);
+
     }
 
     @Override
     public  String getRoleByFilter(Map<String, Object> map){
         List<Map<String, Object>> list = authRoleMapper.getRoleByFilter(map);
+
+        Integer page= (Integer) map.get("page");
+        Integer pageSize =(Integer)map.get("page_size");
+
+        if (page != null && pageSize != null) {
+            list = Paging .pagingPlug(list, pageSize, page);
+        }
         String total = list.size() + "";
         return JsonResult.successJson(total,list);
     }
