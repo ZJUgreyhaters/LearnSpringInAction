@@ -135,13 +135,20 @@ public class TermFileController {
             //termFileService.updatePhysicalFile(map1);
             continue;
           }*/
+
           List<Map<String, Object>> list1 = termFileService.selectTargetMain(map1);
-          if (list1 != null && !list1.isEmpty() && list1.get(0).get("technique_rule") != null
-              && list1.get(0).get("technique_rule").toString().length() > 0) {
+
+          if (list1 != null && list.size() > 0){
+            //force update physical_field_desc
             Map<String, Object> updateMap = new HashMap<>(3);
             updateMap.put("fieldId", map1.get("fieldId"));
             updateMap.put("entityDesc", list1.get(0).get("entity_desc"));
             termFileService.updatePhysicalFieldChineseName(updateMap);
+          }
+
+          if (list1 != null && !list1.isEmpty() && list1.get(0).get("technique_rule") != null
+              && list1.get(0).get("technique_rule").toString().length() > 0) {
+
             try {
               MetricLineage.loadLineage(list1.get(0).get("entity_id").toString(),
                   list1.get(0).get("technique_rule").toString());
