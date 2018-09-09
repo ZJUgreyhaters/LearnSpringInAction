@@ -12,7 +12,7 @@ public interface DSEntityInfoDBMapper {
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(DSEntityInfoDB record);
+    int insert(Map<String, String> map);
 
     int insertDomain(Map<String, Object> record);
 
@@ -26,7 +26,11 @@ public interface DSEntityInfoDBMapper {
 
     int updateByExample(@Param("record") DSEntityInfoDB record, @Param("example") DSEntityInfoDBExample example);
 
-    int updateByPrimaryKeySelective(DSEntityInfoDB record);
+    int updateByPrimaryKeySelective(Map<String, String> map);
 
     int updateByPrimaryKey(DSEntityInfoDB record);
+
+    List<Map<String,Object>> getEntityName(Map<String, String> map);
+
+    List<Map<String,Object>> selectEntityInfo(Map<String, String> map);
 }

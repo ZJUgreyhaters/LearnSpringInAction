@@ -510,7 +510,7 @@ public class MetaDataMgrApiService {
   }
 
   public int relationSave(Map<String, Object> map) {
-    if (map.get("relation_id") == null || map.get("relation_id").toString().trim().length() == 0) {
+    if (map.get("relationId") == null || map.get("relationId").toString().trim().length() == 0) {
       List<Map<String, Object>> list = dsFieldRelDBMapper.selectReleationByfieldId(map);
       if (list != null && !list.isEmpty()) {
        return -1;

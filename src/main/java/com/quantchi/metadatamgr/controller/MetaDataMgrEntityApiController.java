@@ -18,99 +18,109 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "api/metadata/entity")
-public class  MetaDataMgrEntityApiController {
+public class MetaDataMgrEntityApiController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MetaDataMgrEntityApiController.class);
+  private static final Logger logger = LoggerFactory
+      .getLogger(MetaDataMgrEntityApiController.class);
 
-    @Autowired
-    private MetaDataMgrEntityApiService metaDataMgrEntityApiService;
+  @Autowired
+  private MetaDataMgrEntityApiService metaDataMgrEntityApiService;
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String,Object> createEntity(@RequestBody String bodyString){
-        Map<String, Object> responseMap = new HashMap<>();
-        try{
-            JSONObject json = JSONObject.parseObject(bodyString);
-            if(metaDataMgrEntityApiService.createEntity(json) <= 0){
-                throw new Exception("save fail");
-            }
-            responseMap.put("code",200);
-            responseMap.put("msg","成功");
-            return responseMap;
-        }catch (DuplicateKeyException duplicateKeyException){
-            logger.error(duplicateKeyException.getMessage());
-            responseMap.put("code",500);
-            responseMap.put("msg","实体名已经存在");
-            return responseMap;
-        }catch (Exception e){
-            logger.error(e.getMessage());
-            responseMap.put("code",500);
-            responseMap.put("msg",e.getMessage());
-            return responseMap;
-        }
+  @RequestMapping(value = "/create", method = RequestMethod.POST)
+  @ResponseBody
+  public Map<String, Object> createEntity(@RequestBody Map<String, String> map) {
+    Map<String, Object> responseMap = new HashMap<>();
+    try {
+      int a = metaDataMgrEntityApiService.createEntity(map);
+      if (a == -1) {
+        responseMap.put("code", 500);
+        responseMap.put("msg", "名称已存在！");
+        return responseMap;
+      }
+      if (a <= 0) {
+        throw new Exception("save fail");
+      }
+      responseMap.put("code", 200);
+      responseMap.put("msg", "成功");
+      return responseMap;
+    } catch (DuplicateKeyException duplicateKeyException) {
+      logger.error(duplicateKeyException.getMessage());
+      responseMap.put("code", 500);
+      responseMap.put("msg", "实体名已经存在");
+      return responseMap;
+    } catch (Exception e) {
+      logger.error(e.getMessage());
+      responseMap.put("code", 500);
+      responseMap.put("msg", e.getMessage());
+      return responseMap;
     }
+  }
 
-    @RequestMapping(value = "modify", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> modifyEntity(@RequestBody String bodyString){
-        Map<String, Object> responseMap = new HashMap<>();
-        try{
-            JSONObject json = JSONObject.parseObject(bodyString);
-            if(json.get("entity_id") == null){
-                throw new Exception("miss entity id");
-            }
-            if(metaDataMgrEntityApiService.modifyEntity(json) <=0){
-                throw new Exception("update fail");
-            }
-            responseMap.put("code",200);
-            responseMap.put("msg","成功");
-            return responseMap;
-        }catch (Exception e){
-            logger.error(e.getMessage());
-            responseMap.put("code",500);
-            responseMap.put("msg",e.getMessage());
-            return responseMap;
-        }
+  @RequestMapping(value = "modify", method = RequestMethod.POST)
+  @ResponseBody
+  public Map<String, Object> modifyEntity(@RequestBody Map<String, String> map) {
+    Map<String, Object> responseMap = new HashMap<>();
+    try {
+      if (map.get("entity_id") == null) {
+        throw new Exception("miss entity id");
+      }
+      int a = metaDataMgrEntityApiService.modifyEntity(map);
+      if (a == -1) {
+        responseMap.put("code", 500);
+        responseMap.put("msg", "名称已存在！");
+        return responseMap;
+      }
+      if (a <= 0) {
+        throw new Exception("update fail");
+      }
+      responseMap.put("code", 200);
+      responseMap.put("msg", "成功");
+      return responseMap;
+    } catch (Exception e) {
+      logger.error(e.getMessage());
+      responseMap.put("code", 500);
+      responseMap.put("msg", e.getMessage());
+      return responseMap;
     }
+  }
 
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> searchEntity(@RequestBody String bodyString){
-        Map<String, Object> responseMap = new HashMap<>();
-        try{
-            JSONObject json = JSONObject.parseObject(bodyString);
-            responseMap = metaDataMgrEntityApiService.searchEntity(json);
-            responseMap.put("code",200);
-            responseMap.put("msg","成功");
-            return responseMap;
-        }catch (Exception e){
-            logger.error(e.getMessage());
-            responseMap.put("code",500);
-            responseMap.put("msg",e.getMessage());
-            return responseMap;
-        }
+  @RequestMapping(value = "/search", method = RequestMethod.POST)
+  @ResponseBody
+  public Map<String, Object> searchEntity(@RequestBody Map<String, String> map) {
+    Map<String, Object> responseMap = new HashMap<>();
+    try {
+      responseMap = metaDataMgrEntityApiService.searchEntity(map);
+      responseMap.put("code", 200);
+      responseMap.put("msg", "成功");
+      return responseMap;
+    } catch (Exception e) {
+      logger.error(e.getMessage());
+      responseMap.put("code", 500);
+      responseMap.put("msg", e.getMessage());
+      return responseMap;
     }
+  }
 
-    @RequestMapping(value = "/del", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> deleteEntity(@RequestBody String bodyString){
-        Map<String, Object> responseMap = new HashMap<>();
-        try{
-            JSONObject json = JSONObject.parseObject(bodyString);
-            if(json.getString("entity_id") == null){
-                throw new Exception("miss entity id");
-            }
-            if(metaDataMgrEntityApiService.deleteEntity(json.getString("entity_id")) <= 0){
-                throw new Exception("删除id不存在");
-            }
-            responseMap.put("code",200);
-            responseMap.put("msg","成功");
-            return responseMap;
-        }catch (Exception e){
-            logger.error(e.getMessage());
-            responseMap.put("code",500);
-            responseMap.put("msg",e.getMessage());
-            return responseMap;
-        }
+  @RequestMapping(value = "/del", method = RequestMethod.POST)
+  @ResponseBody
+  public Map<String, Object> deleteEntity(@RequestBody String bodyString) {
+    Map<String, Object> responseMap = new HashMap<>();
+    try {
+      JSONObject json = JSONObject.parseObject(bodyString);
+      if (json.getString("entity_id") == null) {
+        throw new Exception("miss entity id");
+      }
+      if (metaDataMgrEntityApiService.deleteEntity(json.getString("entity_id")) <= 0) {
+        throw new Exception("删除id不存在");
+      }
+      responseMap.put("code", 200);
+      responseMap.put("msg", "成功");
+      return responseMap;
+    } catch (Exception e) {
+      logger.error(e.getMessage());
+      responseMap.put("code", 500);
+      responseMap.put("msg", e.getMessage());
+      return responseMap;
     }
+  }
 }
