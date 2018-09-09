@@ -18,7 +18,7 @@ public class Tdatacolumndetail {
     this.l_Columndetailid = l_Columndeailid;
   }
 
-  public String getC_Database() {
+  public String getC_database() {
     return c_Database;
   }
 

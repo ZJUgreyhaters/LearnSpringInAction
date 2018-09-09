@@ -11,7 +11,7 @@ public class Ttablelinedetail {
   private String c_Isenable;
   private String c_Policytype;
   private String c_Database;
-  public String getC_Database() {
+  public String getC_database() {
     return c_Database;
   }
 
