@@ -242,7 +242,7 @@
         non_main_table_name = #{non_main_table_name,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{entity_id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey"
     parameterType="com.quantchi.metadatamgr.data.entity.DSEntityInfoDB">
@@ -260,7 +260,7 @@
     SELECT * from ds_entity_info
     where entity_name = #{entity_name}
     <if test="id !=null and id.toString().length()>0">
-      and id != #{id}
+      and id != #{entity_id}
     </if>
   </select>
 
