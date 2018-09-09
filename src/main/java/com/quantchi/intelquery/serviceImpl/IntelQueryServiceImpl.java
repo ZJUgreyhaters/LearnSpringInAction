@@ -94,7 +94,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
   public Map<String, Object> execsql(String sql, Map<String, Object> map) throws Exception {
     //for explore dump
-    sql = sql + " limit 1000 ";
+    //sql = sql + " limit 1000 ";
     List<Map<String, Object>> resultList = HiveConnection.selectHive(sql, jdbcPool);
     Integer total = resultList.size();
     if (map.get("page_size") != null && map.get("page") != null) {
@@ -108,7 +108,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   public ResultSet execsqlWithResultSet(String sql, Map<String, Object> map) throws Exception {
-    sql = sql + " limit 1000 ";
+    //sql = sql + " limit 1000 ";
     return HiveConnection.selectHiveWithRs(sql, jdbcPool);
   }
 
@@ -224,15 +224,13 @@ public class IntelQueryServiceImpl implements IntelQueryService {
           }
         }
         if (((LeafHeader) normalColumn).getTitles().size() == 0) {
-          //if(arrayList.size() < PREVLINENUM){
-            //int subSize = ((ComplexTable.NormBlock) nb).getRowData().size(); // (((ComplexTable.NormBlock) nb).getRowData().size() > PREVLINENUM)? PREVLINENUM:((ComplexTable.NormBlock) nb).getRowData().size();
-            //arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData().subList(0,subSize));
-						//int subSize = ((ComplexTable.NormBlock) nb).getRowData().size();
-            arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData());
-          //}
+          if(arrayList.size() < PREVLINENUM){
+            List<String> subResult = ((ComplexTable.NormBlock) nb).getRowData().stream().limit(PREVLINENUM).collect(Collectors.toList());
+						arrayList.addAll(subResult);
+          }
           //
         } else {
-          //if(arrayList.size() < PREVLINENUM)
+          if(arrayList.size() < PREVLINENUM)
             arrayList.add(((ComplexTable.NormBlock) nb).getRowData());
         }
         colMap.put(colKey, arrayList);
