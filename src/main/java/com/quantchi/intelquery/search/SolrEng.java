@@ -284,8 +284,8 @@ public class SolrEng extends SearchEng {
     SolrQuery query = new SolrQuery();
     Map<String, String> solrParam = AppProperties.getPropertiesMap("solr.search");
     StringBuilder builderQuery = new StringBuilder();
-    builderQuery.append(field+":").append(str);
-    builderQuery.append(" OR ").append("definition").append(":").append(str);
+    builderQuery.append("("+field+":").append(str);
+    builderQuery.append(" OR ").append("definition").append(":").append(str).append(")");
     builderQuery.append(" AND ").append("businessId").append(":")
         .append(mapQuery.get("businessId"));
     query.setQuery(builderQuery.toString());
