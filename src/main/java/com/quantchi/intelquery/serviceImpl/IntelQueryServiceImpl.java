@@ -225,9 +225,8 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         }
         if (((LeafHeader) normalColumn).getTitles().size() == 0 ) {
           if(arrayList.size() < PREVLINENUM){
-            //List<String> subResult = ((ComplexTable.NormBlock) nb).getRowData().stream().limit(PREVLINENUM).collect(Collectors.toList());
-						//arrayList.addAll(subResult);
-            arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData());
+            List<String> subResult = ((ComplexTable.NormBlock) nb).getRowData().stream().limit(PREVLINENUM).collect(Collectors.toList());
+						arrayList.addAll(subResult);
           }
           //
         } else {
