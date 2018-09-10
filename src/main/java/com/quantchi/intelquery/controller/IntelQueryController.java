@@ -135,6 +135,7 @@ public class IntelQueryController {
       List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword,businessId);
       return Util.genRet(200, sentences, "", 0);
     } catch (Exception e) {
+      logger.error("getRelatedQuery error: ",e);
       return Util.genRet(500, null, e.getMessage(), 0);
     }
   }
