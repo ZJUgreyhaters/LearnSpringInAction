@@ -223,10 +223,11 @@ public class IntelQueryServiceImpl implements IntelQueryService {
             arrayList = new ArrayList<>();
           }
         }
-        if (((LeafHeader) normalColumn).getTitles().size() == 0) {
+        if (((LeafHeader) normalColumn).getTitles().size() == 0 ) {
           if(arrayList.size() < PREVLINENUM){
-            List<String> subResult = ((ComplexTable.NormBlock) nb).getRowData().stream().limit(PREVLINENUM).collect(Collectors.toList());
-						arrayList.addAll(subResult);
+            //List<String> subResult = ((ComplexTable.NormBlock) nb).getRowData().stream().limit(PREVLINENUM).collect(Collectors.toList());
+						//arrayList.addAll(subResult);
+            arrayList.addAll(((ComplexTable.NormBlock) nb).getRowData());
           }
           //
         } else {
