@@ -578,7 +578,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       }
       startIdx++;
     }*/
-    /*List<QuerySentence> removeList = new ArrayList<>();
+    List<QuerySentence> removeList = new ArrayList<>();
     Map<Integer,QuerySentence> querySentenceMap = new HashMap<>();
     for(QuerySentence qs:sentences){
       BasicQuery bq = new BasicQuery(qs.getQuery());
@@ -590,7 +590,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       }else
         querySentenceMap.put(qsKey,qs);
     }
-    sentences.removeAll(removeList);*/
+    sentences.removeAll(removeList);
   }
 
 }
