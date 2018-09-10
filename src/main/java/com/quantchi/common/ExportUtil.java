@@ -255,9 +255,12 @@ public class ExportUtil {
         int bottowRow = primeBlockInfos.get(primeBlock).primeBlockBottomRow;
         for (String colValue : primeBlock.getRowData()) {
           sheet.addCell(new Label(curCol, curRow, colValue, wcf_center));
-          sheet.mergeCells(curCol, curRow, curCol, bottowRow);
+          if (bottowRow > curRow) {
+            sheet.mergeCells(curCol, curRow, curCol, bottowRow);
+          }
           ++curCol;
         }
+        curRow = bottowRow + 1;
       }
 
       workbook.write();
