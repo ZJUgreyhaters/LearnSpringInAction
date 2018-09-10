@@ -259,7 +259,7 @@
   <select id="getEntityName" resultType="Map">
     SELECT * from ds_entity_info
     where entity_name = #{entity_name}
-    <if test="id !=null and id.toString().length()>0">
+    <if test="entity_id !=null and entity_id.toString().length()>0">
       and id != #{entity_id}
     </if>
   </select>

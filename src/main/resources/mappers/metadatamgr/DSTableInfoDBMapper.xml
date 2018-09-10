@@ -334,4 +334,12 @@
     from  ds_table_info
     where datasource_id = #{data_source_id}
   </select>
+  <select id="selectTableName" resultType="Map">
+    select
+    id,
+    table_english_name AS name,
+    datasource_id
+    from  ds_table_info
+    where id = #{main_table_id}
+  </select>
 </mapper>

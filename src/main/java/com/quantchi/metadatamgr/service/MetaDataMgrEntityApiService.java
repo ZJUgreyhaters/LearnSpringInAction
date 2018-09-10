@@ -2,7 +2,7 @@ package com.quantchi.metadatamgr.service;
 
 import com.quantchi.common.Paging;
 import com.quantchi.metadatamgr.data.mapper.DSEntityInfoDBMapper;
-import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
 import com.quantchi.termInfo.mapper.PhysicalTableInfoMapper;
 import com.quantchi.termInfo.pojo.PhysicalTableInfo;
 import com.quantchi.termInfo.pojo.PhysicalTableInfoExample;
@@ -25,7 +25,7 @@ public class MetaDataMgrEntityApiService {
   private DSEntityInfoDBMapper dsEntityInfoDBMapper;
 
   @Autowired
-  private DSMetaInfoDBMapper dsMetaInfoDBMapper;
+  private DSTableInfoDBMapper dsTableInfoDBMapper;
 
   @Autowired
   private PhysicalTableInfoMapper tableInfoMapper;
@@ -46,7 +46,8 @@ public class MetaDataMgrEntityApiService {
     row.put("businessTypeId", map.get("business"));
     row.put("businessTypeName", map.get("business"));
     List<String> tables = new ArrayList<>();
-    tables.add(map.get("non_main_table_name"));
+    List<Map<String, Object>> list = dsTableInfoDBMapper.selectTableName(map);
+    tables.add(list.get(0).get("name").toString());
     tables.addAll(Arrays.asList(map.get("non_main_table_name").split(",")));
     for (int i = 0; i < tables.size(); i++) {
       String dbTable = tables.get(i);
