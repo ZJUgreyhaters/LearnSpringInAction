@@ -1,7 +1,9 @@
 package com.quantchi.metadatamgr.service;
 
 import com.quantchi.common.Paging;
+import com.quantchi.intelquery.mapper.IntelQueryMapper;
 import com.quantchi.metadatamgr.data.mapper.DSEntityInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.DSFieldInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
 import com.quantchi.termInfo.mapper.PhysicalTableInfoMapper;
 import com.quantchi.termInfo.pojo.PhysicalTableInfo;
@@ -30,6 +32,12 @@ public class MetaDataMgrEntityApiService {
   @Autowired
   private PhysicalTableInfoMapper tableInfoMapper;
 
+  @Autowired
+  private DSFieldInfoDBMapper dsFieldInfoDBMapper;
+
+  @Autowired
+  private IntelQueryMapper intelQueryMapper;
+
   public int createEntity(Map<String, String> map) {
     List<Map<String, Object>> entityNameList = dsEntityInfoDBMapper.getEntityName(map);
     if (entityNameList != null && !entityNameList.isEmpty()) {
@@ -42,9 +50,10 @@ public class MetaDataMgrEntityApiService {
   private void insertDomain(Map<String, String> map) {
     Map<String, Object> row = new HashMap<>();
     row.put("domainId", map.get("entity_name"));
+    List<Map<String, Object>> businessName = intelQueryMapper.getBusinessName(map);
     row.put("domainName", map.get("entity_name"));
     row.put("businessTypeId", map.get("business"));
-    row.put("businessTypeName", map.get("business"));
+    row.put("businessTypeName", businessName.get(0).get("businessTypeName"));
     List<String> tables = new ArrayList<>();
     List<Map<String, Object>> list = dsTableInfoDBMapper.selectTableName(map);
     tables.add(list.get(0).get("name").toString());
@@ -56,7 +65,8 @@ public class MetaDataMgrEntityApiService {
       String table = dbTable.substring(dbTable.indexOf('.') + 1);
       if (i == 0) {
         row.put("isMain", Boolean.TRUE);
-        row.put("nameField", map.get("main_entity_field_name_id"));
+        Map<String, Object> fieldMap = dsFieldInfoDBMapper.selectFieldInfoById(map);
+        row.put("nameField", fieldMap.get("name"));
       } else {
         row.put("isMain", Boolean.FALSE);
         row.put("nameField", null);

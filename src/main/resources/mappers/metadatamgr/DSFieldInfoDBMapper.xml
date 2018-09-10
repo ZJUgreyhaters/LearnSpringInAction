@@ -329,4 +329,12 @@
       and state = 0
     </where>
   </select>
+
+  <select id="selectFieldInfoById" resultType="Map">
+    select
+    id,
+    field_english_name as name
+    from ds_field_info
+    where id = #{main_entity_field_name_id}
+  </select>
 </mapper>

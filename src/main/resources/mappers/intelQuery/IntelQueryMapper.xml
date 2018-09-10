@@ -7,6 +7,23 @@
     id,
     business_type_name AS businessTypeName
      from business_segment
+     <where>
+       <if test="business!=null and business.toString().length()>0">
+         id = #{business}
+       </if>
+     </where>
+  </select>
+
+  <select id="getBusinessName" resultType="Map">
+    select
+    id,
+    business_type_name AS businessTypeName
+    from business_segment
+    <where>
+      <if test="business!=null and business.toString().length()>0">
+        id = #{business}
+      </if>
+    </where>
   </select>
 
   <select id="getRecommendQuery" resultType="Map">
