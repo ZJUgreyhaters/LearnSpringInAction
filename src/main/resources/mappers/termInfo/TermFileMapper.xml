@@ -23,7 +23,9 @@
   <select id="selectPhysicalInfo" resultType="java.util.Map">
    select * from  md_physical_field_info
    where
-   physical_table = #{physicalTable} and physical_field = #{physicalField}
+   physical_table = #{physicalTable}
+   and physical_field = #{physicalField}
+   and physical_db=#{physicalDb}
   </select>
 
   <select id="selectPhysicalFile" resultType="java.util.Map">
