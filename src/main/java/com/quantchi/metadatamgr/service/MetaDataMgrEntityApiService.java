@@ -52,8 +52,8 @@ public class MetaDataMgrEntityApiService {
     for (int i = 0; i < tables.size(); i++) {
       String dbTable = tables.get(i);
       row.put("tableId", dbTable);
-      String db = map.get("non_main_table_name").substring(0, dbTable.indexOf('.'));
-      String table = map.get("non_main_table_name").substring(dbTable.indexOf('.') + 1);
+      String db = dbTable.substring(0, dbTable.indexOf('.'));
+      String table = dbTable.substring(dbTable.indexOf('.') + 1);
       if (i == 0) {
         row.put("isMain", Boolean.TRUE);
         row.put("nameField", map.get("main_entity_field_name_id"));
