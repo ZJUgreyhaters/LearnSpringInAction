@@ -317,7 +317,7 @@ public class IntelQueryController {
       return JsonResult.successJson(resultMap, ResultCode.ERROR,sqle.getMessage());
     }
     catch (Exception e) {
-      logger.info("get basicQuery error : {}", e.getMessage());
+      logger.info("get basicQuery error ", e);
       return JsonResult.errorJson("get basicQuery error "+ e.getMessage());
     }
   }
