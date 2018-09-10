@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -152,109 +149,9 @@ public class AuthorityDetailController {
     }
 
 
-    /**@api {post} /api/getTableColumn 获取库表字段信息
-     * @apiVersion 1.0.0
-     * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/getTableColumn
-     * @apiName modifyAuth
-     * @apiGroup AuthorityDetailController
-     * @apiSuccess {String} code 成功或者错误代码200成功，500错误
-     * @apiSuccess {String} msg  成功或者错误信息
-     * @apiSuccess {List} [data] 返回数据 指标信息列表
-     * @apiSuccess {String} [data.database] 数据库
-     * @apiSuccess {List} [data.tables] 表
-     * @apiSuccess {String} [tables.tableName] 表名
-     * @apiSuccess {List} [tables.columns] 字段名称
-     * @apiSuccess {String} [data.total] 返回总条数
-     * */
-    @ResponseBody
-    @RequestMapping(value = "/getTableColumn", method = {
-            RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-    public String getTableColumn(){
-        try {
-             List<Map<String,Object>> list = new ArrayList<Map<String,Object>>() ;
-             List<Map<String,Object>> tablelist = new ArrayList<Map<String,Object>>() ;
-            List<String> columnlist = new ArrayList<String>() ;
 
-             Map<String,Object> database = new HashMap< String,Object>();
-             Map<String,Object> table = new HashMap< String,Object>();
-
-             database.put("database","ctprod");
-             table.put("tableName","dim_branch");
-
-             columnlist.add("branch_no");
-             columnlist.add("branch_name");
-             columnlist.add("city");
-             columnlist.add("region");
-             table.put("columns",columnlist);
-             tablelist.add(table);
-
-             table = new HashMap< String,Object>();
-             table.put("tableName","dim_customer");
-            columnlist = new ArrayList<String>() ;
-            columnlist.add("customer_no");
-            columnlist.add("customer_name");
-            columnlist.add("city");
-            columnlist.add("address");
-            table.put("columns",columnlist);
-            tablelist.add(table);
-
-            table = new HashMap< String,Object>();
-            table.put("tableName","agg_cust_statics");
-            columnlist = new ArrayList<String>() ;
-            columnlist.add("customer_no");
-            columnlist.add("customer_name");
-            columnlist.add("f_balance");
-            columnlist.add("f_avgbalance");
-            table.put("columns",columnlist);
-            tablelist.add(table);
-
-            database.put("tables",tablelist);
-            list.add(database);
-
-            tablelist = new ArrayList<Map<String,Object>>() ;
-            database = new HashMap< String,Object>();
-            database.put("database","jfprod");
-
-            table = new HashMap< String,Object>();
-            table.put("tableName","dim_branch");
-            columnlist.add("branch_no");
-            columnlist.add("branch_name");
-            columnlist.add("city");
-            columnlist.add("region");
-            table.put("columns",columnlist);
-            tablelist.add(table);
-
-            table = new HashMap< String,Object>();
-            table.put("tableName","dim_customer");
-            columnlist = new ArrayList<String>() ;
-            columnlist.add("customer_no");
-            columnlist.add("customer_name");
-            columnlist.add("city");
-            columnlist.add("address");
-            table.put("columns",columnlist);
-            tablelist.add(table);
-
-            table = new HashMap< String,Object>();
-            table.put("tableName","agg_cust_statics");
-            columnlist = new ArrayList<String>() ;
-            columnlist.add("customer_no");
-            columnlist.add("customer_name");
-            columnlist.add("f_balance");
-            columnlist.add("f_avgbalance");
-            table.put("columns",columnlist);
-            tablelist.add(table);
-
-            database.put("tables",tablelist);
-            list.add(database);
-
-            return JsonResult.successJson(list);
-        }catch (Exception e ){
-            e.printStackTrace();
-            return JsonResult.errorJson("error!");
-        }
-    }
-
-    /**@api {post} /api/getFuncDetailList 获取功能权限
+    /**
+     * @api {post} /api/getFuncDetailList 获取功能权限
      * @apiVersion 1.0.0
      * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/getFuncDetailList
      * @apiName modifyAuth
