@@ -117,7 +117,7 @@
       #{non_main_table_id,jdbcType=VARCHAR},#{main_entity_field_name_id,jdbcType=VARCHAR},#{non_main_table_name,jdbcType=VARCHAR})
   </insert>
   <insert id="insertDomain">
-    insert into iq_domain_info (
+    insert ignore into iq_domain_info (
       business_type_id, business_type_name, domain_id, domain_name,
       table_id, table_name, is_main, name_field)
     values (#{businessTypeId}, #{businessTypeName}, #{domainId}, #{domainName},
