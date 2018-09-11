@@ -1,5 +1,6 @@
 package com.quantchi.authority.sqlparser;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -7,6 +8,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 import java.util.Set;
@@ -37,8 +39,11 @@ public class IdealSQLGen {
         Set<String> tmpLimitedField = this.limitField;
         idealSQL = this.toBeModifiedSQL;
 
-        SQLStatementParser parser = new SQLStatementParser(toBeModifiedSQL);
-        SQLStatement statement = parser.parseStatement();
+			  String dbType = JdbcConstants.HIVE;
+			  List<SQLStatement> stmtList = SQLUtils.parseStatements(toBeModifiedSQL, dbType);
+			  SQLStatement statement = stmtList.get(0);
+        //SQLStatementParser parser = new SQLStatementParser(toBeModifiedSQL);
+        //SQLStatement statement = parser.parseStatement();
         if(statement instanceof SQLSelectStatement){
             SQLSelectStatement selectStatement = (SQLSelectStatement) statement;
             SQLSelect select = selectStatement.getSelect();
