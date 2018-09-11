@@ -57,7 +57,7 @@ public class IdealSQLGen {
                 if(selectItems.get(i).getAlias() != null){
                     String alias = selectItems.get(i).getAlias().toLowerCase();
                     //别名在不可见的列中
-                    if(tmpLimitedField.contains(alias)) {
+                    if(tmpLimitedField.contains(removeQuote(alias))) {
                         SQLSelectItem exchange = new SQLSelectItem(xinhao,selectItems.get(i).getAlias());
                         selectItems.set(i,exchange);
                         tmpLimitedField.remove(alias);
@@ -95,5 +95,9 @@ public class IdealSQLGen {
         }
         idealSQL = statement.toString();
         return idealSQL;
+    }
+
+    private String removeQuote(String fieldname){
+        return fieldname.replaceAll("`","");
     }
 }
