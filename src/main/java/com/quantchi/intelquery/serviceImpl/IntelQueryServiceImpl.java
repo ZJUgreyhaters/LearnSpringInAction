@@ -3,7 +3,6 @@ package com.quantchi.intelquery.serviceImpl;
 import com.quantchi.common.AppProperties;
 import com.quantchi.common.HiveConnection;
 import com.quantchi.common.Paging;
-import com.quantchi.intelquery.QueryParser;
 import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.TokenizingResult;
 import com.quantchi.intelquery.mapper.IntelQueryMapper;
@@ -29,7 +28,13 @@ import com.quantchi.transport.service.ExecSqlApiService;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -162,6 +167,13 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       stepsMap.put("serializeNode", SerializationUtils.toSerializedString(queryWithTree));
       stepsList.add(stepsMap);
     }
+
+    QueryWithTree queryTree = result.getFinalTree();
+    Map<String, Object> stepsMap = new HashMap<>();
+    stepsMap.put("node", queryTree.getTextForUser());
+    stepsMap.put("serializeNode", SerializationUtils.toSerializedString(queryTree));
+    stepsList.add(stepsMap);
+
     return stepsList;
   }
 
