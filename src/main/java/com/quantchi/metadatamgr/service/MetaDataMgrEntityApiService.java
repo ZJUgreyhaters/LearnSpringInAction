@@ -2,6 +2,8 @@ package com.quantchi.metadatamgr.service;
 
 import com.quantchi.common.Paging;
 import com.quantchi.intelquery.mapper.IntelQueryMapper;
+import com.quantchi.metadatamgr.data.entity.DSTableInfoDB;
+import com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample;
 import com.quantchi.metadatamgr.data.mapper.DSEntityInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSFieldInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
@@ -28,9 +30,6 @@ public class MetaDataMgrEntityApiService {
 
   @Autowired
   private DSTableInfoDBMapper dsTableInfoDBMapper;
-
-  @Autowired
-  private PhysicalTableInfoMapper tableInfoMapper;
 
   @Autowired
   private DSFieldInfoDBMapper dsFieldInfoDBMapper;
@@ -71,13 +70,13 @@ public class MetaDataMgrEntityApiService {
         row.put("isMain", Boolean.FALSE);
         row.put("nameField", null);
       }
-      PhysicalTableInfoExample example = new PhysicalTableInfoExample();
-      example.createCriteria().andPhysicalDbEqualTo(db).andPhysicalTableEqualTo(table);
-      List<PhysicalTableInfo> physicalTables = tableInfoMapper.selectByExample(example);
+      DSTableInfoDBExample example = new DSTableInfoDBExample();
+      example.createCriteria().andTableEnglishNameEqualTo(dbTable);
+      List<DSTableInfoDB> physicalTables = dsTableInfoDBMapper.selectByExample(example);
       if (physicalTables.isEmpty()) {
         logger.warn("Failed to get physical table: " + dbTable);
       } else {
-        row.put("tableName", physicalTables.get(0).getTableName());
+        row.put("tableName", physicalTables.get(0).getTableChineseName());
         dsEntityInfoDBMapper.insertDomain(row);
       }
     }
