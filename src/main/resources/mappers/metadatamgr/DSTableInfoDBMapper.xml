@@ -76,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List" >
     id, table_english_name, table_chinese_name, datasource_id, primary_key, business,
-    status,table_type
+    status,table_type,time_filed
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.quantchi.metadatamgr.data.entity.DSTableInfoDBExample" >
     select

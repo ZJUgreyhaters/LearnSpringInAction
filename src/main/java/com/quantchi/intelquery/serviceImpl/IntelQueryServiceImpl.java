@@ -21,6 +21,7 @@ import com.quantchi.intelquery.sqlquery.SqlQuery;
 import com.quantchi.intelquery.tokenize.search.Replacement;
 import com.quantchi.intelquery.utils.ComplexTable;
 import com.quantchi.intelquery.utils.ComplexTable.LeafHeader;
+import com.quantchi.intelquery.utils.QueryUtils;
 import com.quantchi.intelquery.utils.SerializationUtils;
 import com.quantchi.termInfo.mapper.StandInfoMapper;
 import com.quantchi.tianshu.common.JdbcPool;
@@ -562,7 +563,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   private void removeSameDomainSentence(List<QuerySentence> sentences) throws Exception {
-    int startIdx = 0;
+    /*int startIdx = 0;
     while (startIdx < sentences.size()) {
       QuerySentence first = sentences.get(startIdx);
       for (int i = startIdx + 1; i < sentences.size(); i++) {
@@ -576,7 +577,20 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         }
       }
       startIdx++;
+    }*/
+    List<QuerySentence> removeList = new ArrayList<>();
+    Map<Integer,QuerySentence> querySentenceMap = new HashMap<>();
+    for(QuerySentence qs:sentences){
+      BasicQuery bq = new BasicQuery(qs.getQuery());
+      Integer qsKey = QueryUtils.hashCodeByDomainEntity(bq.getOriginNodes());
+      if(querySentenceMap.containsKey(qsKey) == true){
+        QuerySentence prevQs = querySentenceMap.get(qsKey);
+        prevQs.setCount(prevQs.getCount() + qs.getCount());
+        removeList.add(qs);
+      }else
+        querySentenceMap.put(qsKey,qs);
     }
+    sentences.removeAll(removeList);
   }
 
 }
