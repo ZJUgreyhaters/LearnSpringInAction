@@ -68,7 +68,7 @@ public class IdealSQLGen {
                     if(tmpExpr instanceof SQLIdentifierExpr){
                         SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) tmpExpr;
                         String field = identifierExpr.getName().toLowerCase();
-                        if(tmpLimitedField.contains(field)){
+                        if(tmpLimitedField.contains(removeQuote(field))){
                             SQLSelectItem exchange = new SQLSelectItem(xinhao,identifierExpr.getName());
                             selectItems.set(i,exchange);
                             tmpLimitedField.remove(field);
@@ -77,7 +77,7 @@ public class IdealSQLGen {
                     else if(tmpExpr instanceof SQLPropertyExpr){
                         SQLPropertyExpr propertyExpr = (SQLPropertyExpr) tmpExpr;
                         String field = propertyExpr.getName().toLowerCase();
-                        if(tmpLimitedField.contains(field)){
+                        if(tmpLimitedField.contains(removeQuote(field))){
                             SQLSelectItem exchange = new SQLSelectItem(xinhao,propertyExpr.getName());
                             selectItems.set(i,exchange);
                             tmpLimitedField.remove(field);
