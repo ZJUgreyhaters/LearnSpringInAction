@@ -449,11 +449,14 @@ public class IntelQueryController {
       TreeNode columnRelation = sqlQuery.getColumnRelation();
       Map<String, Object> complexDataAndHeader = intelQueryService
           .getComplexData(tabulate, columnRelation, page, page_size);
+      resultMap.put("total", ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
+          .collect(Collectors.toList()).size());
       List<Object> complexData = Paging.pagingPlugObject(
           ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
               .collect(Collectors.toList()), page_size, page);
       resultMap.put("tabulate", complexData);
       resultMap.put("columnRelation", complexDataAndHeader.get("header"));
+      resultMap.put("steps", stepsList);
       if (stepsList.size() > 0) {
         String query = queryNodes.getTextForUser();
         String id = intelQueryService
