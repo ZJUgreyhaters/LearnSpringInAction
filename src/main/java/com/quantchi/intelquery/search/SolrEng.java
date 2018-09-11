@@ -76,7 +76,7 @@ public class SolrEng extends SearchEng {
 
   @Override
   public List<Object> getQuickMacro() throws Exception {
-    QueryResponse qr = searchSolr(solrQuickParam,SEARCHFILED);
+    QueryResponse qr = searchSolrWithoutSeg (getQuery(),solrQuickParam,SEARCHFILED);
     //键盘精灵里因为分词原因调低阈值
     SolrDocumentList solrDocuments = processDocs(qr, true,0.35);
     return documentListToObjectList(setReplaceOrigin(solrDocuments, qr.getHighlighting()));
