@@ -10,7 +10,7 @@ import com.quantchi.authority.shiro.SysPermissionInitService;
 import com.quantchi.authority.sqlparser.ColumnPermission;
 import com.quantchi.authority.sqlparser.IdealSQLGen;
 import com.quantchi.authority.sqlparser.RowPermission;
-import com.quantchi.sqlanalysis.PermissionParser;
+import com.quantchi.sqlanalysis.v1.PermissionParser;
 import com.quantchi.sqlanalysis.model.permission.PermissionResult;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationInfo;
