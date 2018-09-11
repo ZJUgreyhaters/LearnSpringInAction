@@ -169,6 +169,9 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   //public Map<List<String>,Object> getComplexData(ResultSet rs,TreeNode columnRelation,int page,int pagesize) throws SQLException{
   public Map<String, Object> getComplexData(ResultSet rs, TreeNode columnRelation, int page,
       int pagesize) throws SQLException {
+    if(rs == null)
+      throw new SQLException("====get sql error=====");
+
     Map<String, Object> ret = new HashMap<>();
     Map<List<String>, Object> retData = new HashMap<>();
     List<Object> retHeader = new ArrayList<>();
