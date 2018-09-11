@@ -455,6 +455,7 @@ public class IntelQueryController {
               .collect(Collectors.toList()), page_size, page);
       resultMap.put("tabulate", complexData);
       resultMap.put("columnRelation", complexDataAndHeader.get("header"));
+      resultMap.put("steps", stepsList);
       if (stepsList.size() > 0) {
         String query = queryNodes.getTextForUser();
         String id = intelQueryService

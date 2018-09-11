@@ -57,12 +57,14 @@ public class MetaDataMgrEntityApiService {
     List<String> tables = new ArrayList<>();
     List<Map<String, Object>> list = dsTableInfoDBMapper.selectTableName(map);
     tables.add(list.get(0).get("name").toString());
-    tables.addAll(Arrays.asList(map.get("non_main_table_name").split(",")));
+    if (map.get("non_main_table_name") != null) {
+      tables.addAll(Arrays.asList(map.get("non_main_table_name").split(",")));
+    }
     for (int i = 0; i < tables.size(); i++) {
       String dbTable = tables.get(i);
       row.put("tableId", dbTable);
-      String db = map.get("non_main_table_name").substring(0, dbTable.indexOf('.'));
-      String table = map.get("non_main_table_name").substring(dbTable.indexOf('.') + 1);
+      String db = list.get(0).get("name").toString().substring(0, dbTable.indexOf('.'));
+      String table = list.get(0).get("name").toString().substring(dbTable.indexOf('.') + 1);
       if (i == 0) {
         row.put("isMain", Boolean.TRUE);
         Map<String, Object> fieldMap = dsFieldInfoDBMapper.selectFieldInfoById(map);
@@ -99,7 +101,7 @@ public class MetaDataMgrEntityApiService {
     if (map.get("page") != null && map.get("page_size") != null) {
       int page = Integer.parseInt(map.get("page"));
       int page_size = Integer.parseInt(map.get("page_size"));
-      list = Paging.pagingPlug(list,page_size,page);
+      list = Paging.pagingPlug(list, page_size, page);
     }
     responseMap.put("data", list);
     responseMap.put("total", total);
