@@ -33,7 +33,7 @@ public class MyRealm extends AuthorizingRealm {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MyRealm.class);
 
     @Autowired
-    private AuthorityRoleMapper authRoleMapper;
+    SysPermissionInitService sysPermissionInitService;
 
     @Override
     protected AuthenticationInfo  doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException{
@@ -63,9 +63,8 @@ public class MyRealm extends AuthorizingRealm {
         //TODO get roleId by userId from db
         /*Object roleId =  principalCollection.getPrimaryPrincipal();
         simpleAuthorizationInfo.addRole(roleId.toString());*/
-        // get all roles
-        List<Map<String, Object>> roleList = authRoleMapper.getAuthRole();
-        List<String> roleIdList = roleList.stream().map(i->i.get("l_roleid").toString()).collect(Collectors.toList());
+        //get all roles
+        List<String> roleIdList = sysPermissionInitService.getRolesFromDB();
         simpleAuthorizationInfo.addRoles(roleIdList);
 
         RoleListContext.setRoles(roleIdList);

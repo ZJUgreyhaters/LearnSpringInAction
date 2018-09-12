@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.quantchi.authority.service.AuthorityDetailService;
 import com.quantchi.authority.service.AuthorityService;
 import com.quantchi.authority.serviceImpl.AuthorityServiceImpl;
-import com.quantchi.authority.shiro.RoleListContext;
 import com.quantchi.authority.sqlparser.ColumnPermission;
 import com.quantchi.authority.sqlparser.IdealSQLGen;
 import com.quantchi.authority.sqlparser.RowPermission;
@@ -35,6 +34,9 @@ public class SqlAspect {
 	@Autowired
 	private AuthorityDetailService authorityDetailService;
 
+	@Autowired
+	SysPermissionInitService sysPermissionInitService;
+
 	public SqlAspect(){
 		System.out.print("******SqlAspect is loading*****");
 	}
@@ -50,22 +52,41 @@ public class SqlAspect {
 		return retVal;
 	}
 
-	/*private List<String> getRoles(){
+
+
+	private List<String> getRoles(){
 		Subject subject = SecurityUtils.getSubject();
-		//subject.getPrincipals().getRealmNames()
+		//String realname = subject.getPrincipals().getRealmNames().iterator().next();
 		RealmSecurityManager securityManager =
 						(RealmSecurityManager) SecurityUtils.getSecurityManager();
-
-	}*/
+		MyRealm shiroRealm =  (MyRealm)securityManager.getRealms().iterator().next();
+		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("-1", "");
+		Cache<Object, AuthorizationInfo> authCache = shiroRealm.getAuthorizationCache();
+		return  null;
+	}
 
 	private String modifySqlByDataAuth(String sql){
 
 		RowPermission rowPermission = new RowPermission();
 		ColumnPermission columnPermission = new ColumnPermission();
-		Integer roleId = 55;
+		//Integer roleId = 48;
 
-		List<String> roleIds = RoleListContext.getRoles();
+		List<String> roleIdList = sysPermissionInitService.getRolesFromDB();
+		for(String roleId:roleIdList){
+			setDataPermission(Integer.parseInt(roleId),rowPermission,columnPermission);
+		}
 
+		PermissionResult permissionResult = new PermissionParser().parse(sql, rowPermission.getRowPermissionJson(), columnPermission.getColumnPermissionJson());
+
+		Set<String> limit = permissionResult.getLimitedFields();
+		IdealSQLGen idealSQLGen = new IdealSQLGen(permissionResult.getLimitedFields(), permissionResult.getSql());
+
+		String re = idealSQLGen.getIdealSQL();
+		re += "";
+		return idealSQLGen.getIdealSQL();
+	}
+
+	private void setDataPermission(Integer roleId,RowPermission rowPermission,ColumnPermission columnPermission){
 		String authByRoleId = authorityService.getRoleAuthDetail(roleId);
 
 		JSONObject roleAuthJson = JSONObject.parseObject(authByRoleId);
@@ -107,15 +128,6 @@ public class SqlAspect {
 				}
 			}
 		}
-
-		PermissionResult permissionResult = new PermissionParser().parse(sql, rowPermission.getRowPermissionJson(), columnPermission.getColumnPermissionJson());
-
-		Set<String> limit = permissionResult.getLimitedFields();
-		IdealSQLGen idealSQLGen = new IdealSQLGen(permissionResult.getLimitedFields(), permissionResult.getSql());
-
-		String re = idealSQLGen.getIdealSQL();
-		re += "";
-		return idealSQLGen.getIdealSQL();
 	}
 
 }
