@@ -53,7 +53,7 @@ public class MetaDataMgrEntityApiService {
     List<String> tables = new ArrayList<>();
     List<Map<String, Object>> list = dsTableInfoDBMapper.selectTableName(map);
     tables.add(list.get(0).get("name").toString());
-    if (map.get("non_main_table_name") != null) {
+    if (map.get("non_main_table_name") != null && map.get("non_main_table_name").trim().length()>0) {
       tables.addAll(Arrays.asList(map.get("non_main_table_name").split(",")));
     }
     for (int i = 0; i < tables.size(); i++) {
