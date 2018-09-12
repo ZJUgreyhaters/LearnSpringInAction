@@ -38,9 +38,21 @@ public class MyRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo  doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException{
         //authenticationToken为用户输入信息
-        String roleId = (String) authenticationToken.getPrincipal();
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(roleId,"","testRealm");
-        return info;
+        String username = (String) authenticationToken.getPrincipal();
+
+        if(username.equals("liangzhi")) {
+            String password = new String((char[])authenticationToken.getCredentials());
+            if(password.equals("liangzhi123")) {
+                SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(username, password, "myrealm");
+
+                return info;
+            }
+        }
+        return null;
+//        String roleId = (String) authenticationToken.getPrincipal();
+//        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(roleId,"","testRealm");
+//
+//        return info;
     }
 
     @Override
@@ -51,10 +63,13 @@ public class MyRealm extends AuthorizingRealm {
         //TODO get roleId by userId from db
         /*Object roleId =  principalCollection.getPrimaryPrincipal();
         simpleAuthorizationInfo.addRole(roleId.toString());*/
-        //get all roles
+        // get all roles
         List<Map<String, Object>> roleList = authRoleMapper.getAuthRole();
         List<String> roleIdList = roleList.stream().map(i->i.get("l_roleid").toString()).collect(Collectors.toList());
         simpleAuthorizationInfo.addRoles(roleIdList);
+
+        RoleListContext.setRoles(roleIdList);
+
         logger.info("roleIds: " + roleIdList.toString());
         return simpleAuthorizationInfo;
     }

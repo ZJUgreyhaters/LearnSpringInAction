@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.quantchi.authority.service.AuthorityDetailService;
 import com.quantchi.authority.service.AuthorityService;
 import com.quantchi.authority.serviceImpl.AuthorityServiceImpl;
+import com.quantchi.authority.shiro.RoleListContext;
 import com.quantchi.authority.sqlparser.ColumnPermission;
 import com.quantchi.authority.sqlparser.IdealSQLGen;
 import com.quantchi.authority.sqlparser.RowPermission;
@@ -61,7 +62,9 @@ public class SqlAspect {
 
 		RowPermission rowPermission = new RowPermission();
 		ColumnPermission columnPermission = new ColumnPermission();
-		Integer roleId = 48;
+		Integer roleId = 55;
+
+		List<String> roleIds = RoleListContext.getRoles();
 
 		String authByRoleId = authorityService.getRoleAuthDetail(roleId);
 
