@@ -436,8 +436,11 @@ public class IntelQueryController {
       StepResult result = QueryParser.getInstance().parse(queryWithNodes);
       QueryWithTree queryTree = result.getFinalTree();
       SqlFormatter formatter = new Builder()
-          .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
-          .build();
+              .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+              .selectRelated(true)
+              .selectKey(true)
+              .selectName(true)
+              .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
       //Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
       ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql(), map);
@@ -501,9 +504,15 @@ public class IntelQueryController {
       Map<String, Object> resultMap = new HashMap<>();
       QueryWithTree queryTree = SerializationUtils
           .fromSerializedString(map.get("querySerialize").toString());
-      SqlFormatter formatter = new Builder()
+      /*SqlFormatter formatter = new Builder()
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
-          .build();
+          .build();*/
+      SqlFormatter formatter = new Builder()
+              .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
+              .selectRelated(true)
+              .selectKey(true)
+              .selectName(true)
+              .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
       ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql(), map);
       TreeNode columnRelation = sqlQuery.getColumnRelation();
