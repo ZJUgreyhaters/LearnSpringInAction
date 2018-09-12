@@ -12,7 +12,6 @@ import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.TokenizingResult;
 import com.quantchi.intelquery.date.formatter.NormalFormatter;
 import com.quantchi.intelquery.exception.QPException;
-import com.quantchi.intelquery.node.SemanticNode;
 import com.quantchi.intelquery.pojo.QuerySentence;
 import com.quantchi.intelquery.query.BasicQuery;
 import com.quantchi.intelquery.query.QueryNodes;
@@ -126,15 +125,17 @@ public class IntelQueryController {
       RequestMethod.GET}, produces = "application/json;charset=UTF-8")
   public
   @ResponseBody
-  Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword) {
+  Map<String, Object> getRelatedQuery(@RequestParam(value = "keyword") String keyword,
+                                      @RequestParam(value = "businessId",required=false) String businessId) {
     try {
       if ("".equals(keyword)) {
         return Util.genRet(200, null, "", 0);
       }
 
-      List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword);
+      List<QuerySentence> sentences = intelQueryService.getCorrelativeSentence(keyword,businessId);
       return Util.genRet(200, sentences, "", 0);
     } catch (Exception e) {
+      logger.error("getRelatedQuery error: ",e);
       return Util.genRet(500, null, e.getMessage(), 0);
     }
   }
@@ -221,17 +222,15 @@ public class IntelQueryController {
     Map<String, Object> resultMap = new HashMap();
     try {
       query = map.get("q").toString();
-      businessName = map.get("businessName").toString();
-      String businessDefinition = null;
-      if (map.get("businessDefinition") != null) {
-        businessDefinition = map.get("businessDefinition").toString();
+      if(map.get("businessName")!=null){
+        businessName = map.get("businessName").toString();
       }
       String businessId = null;
       if (map.get("businessId") != null) {
         businessId = map.get("businessId").toString();
       }
       List<Object> metricsRet = intelQueryService
-          .getMetricsRet(query, businessDefinition, businessId);
+          .getMetricsRet(query, businessId);
       String total = String.valueOf(metricsRet.size());
       int page = 1;
       int page_size = 20;
@@ -268,7 +267,7 @@ public class IntelQueryController {
       List<Map<String, Object>> stepsList = intelQueryService.stepsMapping(result);
       TreeNode columnRelation = sqlQuery.getColumnRelation();
       Map<String, Object> complexDataAndHeader = intelQueryService
-          .getComplexData(tabulate, columnRelation, page, page_size);
+              .getComplexData(tabulate, columnRelation, page, page_size);
 
       List<Object> complexTotalData =  ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
               .collect(Collectors.toList());
@@ -278,7 +277,7 @@ public class IntelQueryController {
 
 
       String id = intelQueryService
-            .addQuerySentence("testUser", businessName, query, true,
+            .addQuerySentence("testUser", businessId, query, true,
                 sqlQuery.toSql());
       resultMap.put("sentencesId", id);
 
@@ -319,8 +318,8 @@ public class IntelQueryController {
       return JsonResult.successJson(resultMap, ResultCode.ERROR,sqle.getMessage());
     }
     catch (Exception e) {
-      logger.info("get basicQuery error", e);
-      return JsonResult.errorJson("get basicQuery error");
+      logger.info("get basicQuery error ", e);
+      return JsonResult.errorJson("get basicQuery error "+ e.getMessage());
     }
   }
 
@@ -450,11 +449,14 @@ public class IntelQueryController {
       TreeNode columnRelation = sqlQuery.getColumnRelation();
       Map<String, Object> complexDataAndHeader = intelQueryService
           .getComplexData(tabulate, columnRelation, page, page_size);
+      resultMap.put("total", ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
+          .collect(Collectors.toList()).size());
       List<Object> complexData = Paging.pagingPlugObject(
           ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
               .collect(Collectors.toList()), page_size, page);
       resultMap.put("tabulate", complexData);
       resultMap.put("columnRelation", complexDataAndHeader.get("header"));
+      resultMap.put("steps", stepsList);
       if (stepsList.size() > 0) {
         String query = queryNodes.getTextForUser();
         String id = intelQueryService
@@ -490,15 +492,31 @@ public class IntelQueryController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String stepsQuery(@RequestBody Map<String, Object> map) {
     try {
+      int page = 1;
+      int page_size = 20;
+      if (map.get("page_size") != null && map.get("page") != null) {
+        page = Integer.parseInt(map.get("page").toString());
+        page_size = Integer.parseInt(map.get("page_size").toString());
+      }
+      Map<String, Object> resultMap = new HashMap<>();
       QueryWithTree queryTree = SerializationUtils
           .fromSerializedString(map.get("querySerialize").toString());
       SqlFormatter formatter = new Builder()
           .dateFormatter(new NormalFormatter(DateTimeFormatter.BASIC_ISO_DATE))
           .build();
       SqlQuery sqlQuery = queryTree.getSqlQuery(formatter);
-      Map<String, Object> tabulate = intelQueryService.execsql(sqlQuery.toSql(), map);
-      Map<String, Object> resultMap = new HashMap<>();
-      resultMap.put("tabulate", tabulate);
+      ResultSet tabulate = intelQueryService.execsqlWithResultSet(sqlQuery.toSql(), map);
+      TreeNode columnRelation = sqlQuery.getColumnRelation();
+      Map<String, Object> complexDataAndHeader = intelQueryService
+              .getComplexData(tabulate, columnRelation, page, page_size);
+      List<Object> complexTotalData =  ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
+              .collect(Collectors.toList());
+      resultMap.put("total", complexTotalData.size());
+      List<Object> complexData = Paging.pagingPlugObject(
+              complexTotalData, page_size, page);
+      resultMap.put("columnRelation", complexDataAndHeader.get("header"));
+      resultMap.put("tabulate", complexData);
+      resultMap.put("isParseable",true);
       return JsonResult.successJson(resultMap);
     } catch (Exception e) {
       e.printStackTrace();

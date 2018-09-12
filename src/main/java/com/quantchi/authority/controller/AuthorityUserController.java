@@ -1,6 +1,7 @@
 package com.quantchi.authority.controller;
 
 import com.quantchi.common.JsonResult;
+import com.quantchi.common.Paging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -139,7 +140,7 @@ public class AuthorityUserController {
 
     }
 
-    public String getUserList(){
+    public String getUserList(Map<String, Object> map){
         List<Map<String,Object>> users = new ArrayList<Map<String,Object>>();
         Map<String,Object> user = new HashMap<String,Object>();
         user.put("userName","王小二");
@@ -166,6 +167,11 @@ public class AuthorityUserController {
         user.put("userStatus","1");
         users.add(user);
         String total =users.size()+"";
+        Integer page = (Integer) map.get("page");
+        Integer pageSize = (Integer) map.get("page_size");
+        if (page != null && pageSize != null) {
+            users = Paging.pagingPlug(users, pageSize, page);
+        }
         return JsonResult.successJson(total,users);
     }
     /**@api {post} /api/getUserByUserName 根据姓名查员工
@@ -175,6 +181,9 @@ public class AuthorityUserController {
      * @apiGroup AuthorityUserController
      * @apiParam {String} [userName] 角色姓名
      * @apiParam {String} [branch_no] 所在营业部id
+     * @apiParam {String} [roleId] 角色id查询
+     * @apiParam {Int} [page] 页数
+     * @apiParam {Int} [page_size] 每页数量
      * @apiSuccess {String} code 成功或者错误代码200成功，500错误
      * @apiSuccess {String} msg  成功或者错误信息
      * @apiSuccess {List} [data] 返回数据 指标信息列表
@@ -194,14 +203,49 @@ public class AuthorityUserController {
 
         String userName = (String) map.get("userName");
         String branchno = (String) map.get("branch_no");
+        String roleId = new String();
+        if ( map.get("roleId") !=null)
+        {
+            roleId = map.get("roleId").toString();
+        }
 
-       if(userName ==  null  ||  userName.equals("")   ) {
+
+        if (roleId !=  null  && (!roleId.equals("") )){
+            user.put("userName", "王小二");
+            user.put("userId", "20123");
+            user.put("userAccount", "139111201232");
+            user.put("userRoles", "营销部业务员,营销部销售");
+            user.put("userStatus", "1");
+            users.add(user);
+            user = new HashMap<String, Object>();
+            user.put("userName", "王晓梅");
+            user.put("userId", "20134");
+            user.put("userAccount", "13911120134");
+            user.put("userRoles", "营销部业务员");
+            user.put("userStatus", "1");
+            users.add(user);
+            String total =users.size()+"";
+            Integer page = (Integer) map.get("page");
+            Integer pageSize = (Integer) map.get("page_size");
+            if (page != null && pageSize != null) {
+                users = Paging.pagingPlug(users, pageSize, page);
+            }
+            return JsonResult.successJson(total,users);
+
+        }
+
+            if(userName ==  null  ||  userName.equals("")   ) {
            if (branchno == null ||branchno.equals("1")){
-           return getUserList();
+               Integer page = (Integer) map.get("page");
+               Integer pageSize = (Integer) map.get("page_size");
+               if (page != null && pageSize != null) {
+                   users = Paging.pagingPlug(users, pageSize, page);
+               }
+           return getUserList(map);
            }
        }
 
-       if(branchno.startsWith("01") ){
+       if(branchno != null && branchno.startsWith("01") ){
            user.put("userName", "王小二");
            user.put("userId", "20123");
            user.put("userAccount", "139111201232");
@@ -210,9 +254,14 @@ public class AuthorityUserController {
            users.add(user);
 
            String total =users.size()+"";
+           Integer page = (Integer) map.get("page");
+           Integer pageSize = (Integer) map.get("page_size");
+           if (page != null && pageSize != null) {
+               users = Paging.pagingPlug(users, pageSize, page);
+           }
            return JsonResult.successJson(total,users);
        }
-        if(branchno.startsWith("02")  ){
+        if(branchno != null &&branchno.startsWith("02")  ){
             user = new HashMap<String, Object>();
             user.put("userName", "汪达尔");
             user.put("userId", "20128");
@@ -221,6 +270,11 @@ public class AuthorityUserController {
             user.put("userStatus", "1");
             users.add(user);
             String total =users.size()+"";
+            Integer page = (Integer) map.get("page");
+            Integer pageSize = (Integer) map.get("page_size");
+            if (page != null && pageSize != null) {
+                users = Paging.pagingPlug(users, pageSize, page);
+            }
             return JsonResult.successJson(total,users);
         }
         if (userName.equals( "王小二" )) {
@@ -252,6 +306,14 @@ public class AuthorityUserController {
         }
 
         String total =users.size()+"";
+        Integer page = (Integer) map.get("page");
+        Integer pageSize = (Integer) map.get("page_size");
+        if (page != null && pageSize != null) {
+            users = Paging.pagingPlug(users, pageSize, page);
+        }
+
         return JsonResult.successJson(total,users);
     }
+
+
 }

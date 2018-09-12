@@ -3,7 +3,6 @@ package com.quantchi.intelquery.serviceImpl;
 import com.quantchi.common.AppProperties;
 import com.quantchi.common.HiveConnection;
 import com.quantchi.common.Paging;
-import com.quantchi.intelquery.QueryParser;
 import com.quantchi.intelquery.StepResult;
 import com.quantchi.intelquery.TokenizingResult;
 import com.quantchi.intelquery.mapper.IntelQueryMapper;
@@ -21,6 +20,7 @@ import com.quantchi.intelquery.sqlquery.SqlQuery;
 import com.quantchi.intelquery.tokenize.search.Replacement;
 import com.quantchi.intelquery.utils.ComplexTable;
 import com.quantchi.intelquery.utils.ComplexTable.LeafHeader;
+import com.quantchi.intelquery.utils.QueryUtils;
 import com.quantchi.intelquery.utils.SerializationUtils;
 import com.quantchi.termInfo.mapper.StandInfoMapper;
 import com.quantchi.tianshu.common.JdbcPool;
@@ -28,7 +28,13 @@ import com.quantchi.transport.service.ExecSqlApiService;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -46,7 +52,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
   private static final String SEARCHTYPE = "solr";
   private static final String INTELQUERYVERSION = AppProperties.get("intelquery.version");
-  ;
+  private static final int PREVLINENUM = 50;
 
   private static final Logger logger = LoggerFactory.getLogger(ExecSqlApiService.class);
 
@@ -73,17 +79,17 @@ public class IntelQueryServiceImpl implements IntelQueryService {
     return intelQueryMapper.getRecommendQuery(businessTypeId);
   }
 
-  public List<Object> getMetricsRet(String query,String businessDefinition,String businessId) throws Exception {
+  public List<Object> getMetricsRet(String query, String businessId)
+      throws Exception {
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
-    Map<String,String> queryMap = new HashMap<>();
-    queryMap.put("seg_name",query);
-    if(businessDefinition!=null && businessDefinition.trim().length()>0){
-      queryMap.put("definition",businessDefinition);
+    Map<String, String> queryMap = new HashMap<>();
+    /*queryMap.put("seg_name", query);*/
+    //queryMap.put("cn_name", query);
+    if (businessId != null && businessId.trim().length() > 0) {
+      queryMap.put("businessId", businessId);
     }
-    if(businessId!=null && businessId.trim().length()>0){
-      queryMap.put("businessId",businessId);
-    }
-    return engObj.getMetrics(queryMap);
+    engObj.setQueryMap(queryMap);
+    return engObj.getMetrics();
   }
 
 
@@ -93,6 +99,8 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   public Map<String, Object> execsql(String sql, Map<String, Object> map) throws Exception {
+    //for explore dump
+    //sql = sql + " limit 1000 ";
     List<Map<String, Object>> resultList = HiveConnection.selectHive(sql, jdbcPool);
     Integer total = resultList.size();
     if (map.get("page_size") != null && map.get("page") != null) {
@@ -106,6 +114,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   public ResultSet execsqlWithResultSet(String sql, Map<String, Object> map) throws Exception {
+    //sql = sql + " limit 1000 ";
     return HiveConnection.selectHiveWithRs(sql, jdbcPool);
   }
 
@@ -158,69 +167,90 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       stepsMap.put("serializeNode", SerializationUtils.toSerializedString(queryWithTree));
       stepsList.add(stepsMap);
     }
+
+    QueryWithTree queryTree = result.getFinalTree();
+    Map<String, Object> stepsMap = new HashMap<>();
+    stepsMap.put("node", queryTree.getTextForUser());
+    stepsMap.put("serializeNode", SerializationUtils.toSerializedString(queryTree));
+    stepsList.add(stepsMap);
+
     return stepsList;
   }
 
 
   //public Map<List<String>,Object> getComplexData(ResultSet rs,TreeNode columnRelation,int page,int pagesize) throws SQLException{
-  public Map<String,Object> getComplexData(ResultSet rs,TreeNode columnRelation,int page,int pagesize) throws SQLException{
-    Map<String,Object> ret = new HashMap<>();
-    Map<List<String>,Object> retData = new HashMap<>();
+  public Map<String, Object> getComplexData(ResultSet rs, TreeNode columnRelation, int page,
+      int pagesize) throws SQLException {
+    if(rs == null)
+      throw new SQLException("====get sql error=====");
+
+    Map<String, Object> ret = new HashMap<>();
+    Map<List<String>, Object> retData = new HashMap<>();
     List<Object> retHeader = new ArrayList<>();
-    ComplexTable ct = new ComplexTable(rs,columnRelation);
+    ComplexTable ct = new ComplexTable(rs, columnRelation);
     LeafHeader lh = ct.getPrimeHeader();
     retHeader.add(lh.getTitles());
     List<Map<String, Object>> normHeaders = ct.getNormHeaders();
-		lh.getData().forEach((i) -> retData.put(i.getRowData(),null));
-		for(Map<String, Object> normalColumn : normHeaders){
-      Map<String,Object> colHeader = new HashMap<>();
-      setColHeaderAndData(retData,colHeader,colHeader,"",normalColumn);
+    lh.getData().forEach((i) -> retData.put(i.getRowData(), null));
+    for (Map<String, Object> normalColumn : normHeaders) {
+      Map<String, Object> colHeader = new HashMap<>();
+      setColHeaderAndData(retData, colHeader, colHeader, "", normalColumn);
       retHeader.add(colHeader);
-		}
-    ret.put("data",retData);
-    ret.put("header",retHeader);
-		return ret;
+    }
+    ret.put("data", retData);
+    ret.put("header", retHeader);
+    return ret;
   }
 
-  private void setColHeaderAndData(Map<List<String>,Object> retData,Map<String,Object> colHeader,Map<String,Object> parentHeader,String ColName,Object normalColumn){
-    if(normalColumn instanceof HashMap){
-      for(Object subCol:((HashMap) normalColumn).keySet()){
-        Map<String,Object> subColHeader = new HashMap<>();
-        colHeader.put(subCol.toString(),subColHeader);
+  private void setColHeaderAndData(Map<List<String>, Object> retData, Map<String, Object> colHeader,
+      Map<String, Object> parentHeader, String ColName, Object normalColumn) {
+    if (normalColumn instanceof HashMap) {
+      for (Object subCol : ((HashMap) normalColumn).keySet()) {
+        Map<String, Object> subColHeader = new HashMap<>();
+        colHeader.put(subCol.toString(), subColHeader);
         Object subNormalCol = ((HashMap) normalColumn).get(subCol);
-        setColHeaderAndData(retData,subColHeader,colHeader,subCol.toString(),subNormalCol);
+        setColHeaderAndData(retData, subColHeader, colHeader, subCol.toString(), subNormalCol);
       }
-    }else if(normalColumn instanceof LeafHeader){
-      if(((LeafHeader) normalColumn).getTitles().size() == 0)
-        parentHeader.put(ColName,"");
-      else
-        parentHeader.put(ColName,((LeafHeader) normalColumn).getTitles().stream().collect(Collectors.toMap(i->i,i->"")));
+    } else if (normalColumn instanceof LeafHeader) {
+      if (((LeafHeader) normalColumn).getTitles().size() == 0) {
+        parentHeader.put(ColName, "");
+      } else {
+        parentHeader.put(ColName, ((LeafHeader) normalColumn).getTitles().stream()
+            .collect(Collectors.toMap(i -> i, i -> "")));
+      }
 
       String colKey = ColName;
-			LinkedHashMap<String,Object> colMap = null;
+      LinkedHashMap<String, Object> colMap = null;
       ArrayList<Object> arrayList = new ArrayList<>();
       boolean reIndex = true;
-      for(ComplexTable.Block nb:((LeafHeader)normalColumn).getData()){
-        colMap = (LinkedHashMap<String,Object>)retData.get(((ComplexTable.NormBlock)nb).getBelongTo().getRowData());
-        if(colMap == null){
+      for (ComplexTable.Block nb : ((LeafHeader) normalColumn).getData()) {
+        colMap = (LinkedHashMap<String, Object>) retData
+            .get(((ComplexTable.NormBlock) nb).getBelongTo().getRowData());
+        if (colMap == null) {
           reIndex = false;
           colMap = new LinkedHashMap<>();
-        }
-        else if(reIndex){
+          arrayList = new ArrayList<>();
+        } else if (reIndex) {
           reIndex = false;
-          colKey = ColName+"_"+colMap.entrySet().size();
-        }
-        else{
+          colKey = ColName + "_" + colMap.entrySet().size();
+        } else {
           arrayList = (ArrayList<Object>) colMap.get(colKey);
-          if(arrayList == null)
+          if (arrayList == null) {
             arrayList = new ArrayList<>();
+          }
         }
-        if(((LeafHeader)normalColumn).getTitles().size() == 0)
-          arrayList.addAll(((ComplexTable.NormBlock)nb).getRowData());
-        else
-          arrayList.add(((ComplexTable.NormBlock)nb).getRowData());
-        colMap.put(colKey,arrayList);
-        retData.put(((ComplexTable.NormBlock)nb).getBelongTo().getRowData(),colMap);
+        if (((LeafHeader) normalColumn).getTitles().size() == 0 ) {
+          if(arrayList.size() < PREVLINENUM){
+            List<String> subResult = ((ComplexTable.NormBlock) nb).getRowData().stream().limit(PREVLINENUM).collect(Collectors.toList());
+						arrayList.addAll(subResult);
+          }
+          //
+        } else {
+          if(arrayList.size() < PREVLINENUM)
+            arrayList.add(((ComplexTable.NormBlock) nb).getRowData());
+        }
+        colMap.put(colKey, arrayList);
+        retData.put(((ComplexTable.NormBlock) nb).getBelongTo().getRowData(), colMap);
       }
 
     }
@@ -251,11 +281,11 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         Map<String, Object> categoryMap = intelQueryMapper.selectCategory(dbFieldMap);
         if (categoryMap != null) {
           List<Map<String, Object>> businessList = standInfoMapper.selectBusiness(categoryMap);
-          if(businessList.size() > 0){
+          if (businessList.size() > 0) {
             StringBuilder str = new StringBuilder();
             str.append(businessList.get(0).get("businessTypeName")).append("<")
-                    .append(businessList.get(0).get("domainName")).append("<")
-                    .append(businessList.get(0).get("logicTableName"));
+                .append(businessList.get(0).get("domainName")).append("<")
+                .append(businessList.get(0).get("logicTableName"));
             objectMap.put("entityCategory", str);
           }
         }
@@ -436,9 +466,9 @@ public class IntelQueryServiceImpl implements IntelQueryService {
   }
 
   @Override
-  public String likenum(QuerySentence querySentence) throws Exception {
+  public void likenum(QuerySentence querySentence) throws Exception {
     SearchEng engObj = SearchEng.instanceOf(querySentence.getQuery(), SEARCHTYPE);
-    return engObj.addQuerySentence(querySentence);
+    engObj.addQueryLikeSentence(querySentence);
   }
 
   List<String> mapping(String info, Map<String, Object> tabulate) {
@@ -505,15 +535,15 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
 
   public String addQuerySentence(String username,
-      String businessName,
+      String businessId,
       String query,
       boolean isParseable,
-      String sql){
+      String sql) {
 
-    try{
+    try {
       QuerySentence qs = new QuerySentence();
       qs.setUsername(username);
-      qs.setBusinessName(businessName);
+      qs.setBusinessId(businessId);
       qs.setQuery(query);
       qs.setParseable(isParseable);
       qs.setQuerySql(sql);
@@ -521,30 +551,34 @@ public class IntelQueryServiceImpl implements IntelQueryService {
 
       SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
       return engObj.addQuerySentence(qs);
-    }catch (Exception e){
-      logger.error("add sentence happened error: {}",e.getMessage());
+    } catch (Exception e) {
+      logger.error("add sentence happened error: {}", e.getMessage());
       return "";
     }
 
   }
 
-  public List<QuerySentence> getCorrelativeSentence(String query) throws Exception {
+  public List<QuerySentence> getCorrelativeSentence(String query,String businessId) throws Exception {
     SearchEng engObj = SearchEng.instanceOf(query, SEARCHTYPE);
+    Map<String,String> queryMap = new HashMap<>();
+    queryMap.put("businessId",businessId);
+    engObj.setQueryMap(queryMap);
     List<QuerySentence> sentences = engObj.getCorrelativeSentence();
     removeSameDomainSentence(sentences);
 
-		Collections.sort(sentences, new Comparator<QuerySentence>() {
-			@Override
-			public int compare(QuerySentence qsFirst, QuerySentence qsSec) {
-				return Integer.parseInt(qsSec.getCount().toString()) - Integer.parseInt(qsFirst.getCount().toString());
-			}
-		});
+    Collections.sort(sentences, new Comparator<QuerySentence>() {
+      @Override
+      public int compare(QuerySentence qsFirst, QuerySentence qsSec) {
+        return Integer.parseInt(qsSec.getCount().toString()) - Integer
+            .parseInt(qsFirst.getCount().toString());
+      }
+    });
 
     return sentences;
   }
 
   private void removeSameDomainSentence(List<QuerySentence> sentences) throws Exception {
-    int startIdx = 0;
+    /*int startIdx = 0;
     while (startIdx < sentences.size()) {
       QuerySentence first = sentences.get(startIdx);
       for (int i = startIdx + 1; i < sentences.size(); i++) {
@@ -558,7 +592,20 @@ public class IntelQueryServiceImpl implements IntelQueryService {
         }
       }
       startIdx++;
+    }*/
+    List<QuerySentence> removeList = new ArrayList<>();
+    Map<Integer,QuerySentence> querySentenceMap = new HashMap<>();
+    for(QuerySentence qs:sentences){
+      BasicQuery bq = new BasicQuery(qs.getQuery());
+      Integer qsKey = QueryUtils.hashCodeByDomainEntity(bq.getOriginNodes());
+      if(querySentenceMap.containsKey(qsKey) == true){
+        QuerySentence prevQs = querySentenceMap.get(qsKey);
+        prevQs.setCount(prevQs.getCount() + qs.getCount());
+        removeList.add(qs);
+      }else
+        querySentenceMap.put(qsKey,qs);
     }
+    sentences.removeAll(removeList);
   }
 
 }

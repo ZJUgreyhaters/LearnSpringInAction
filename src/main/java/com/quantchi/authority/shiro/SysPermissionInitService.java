@@ -100,7 +100,7 @@ public class SysPermissionInitService {
             }
         }
 
-        sysPermissionInits.put("/api/get*", "DeniyAllFilter");
+        //sysPermissionInits.put("/api/get*", "DeniyAllFilter");
         return this.sysPermissionInits;
     }
 

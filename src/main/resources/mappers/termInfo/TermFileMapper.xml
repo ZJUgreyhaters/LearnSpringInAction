@@ -23,7 +23,9 @@
   <select id="selectPhysicalInfo" resultType="java.util.Map">
    select * from  md_physical_field_info
    where
-   physical_table = #{physicalTable} and physical_field = #{physicalField}
+   physical_table = #{physicalTable}
+   and physical_field = #{physicalField}
+   and physical_db=#{physicalDb}
   </select>
 
   <select id="selectPhysicalFile" resultType="java.util.Map">
@@ -43,10 +45,13 @@
     </set>
     where entity_id =#{entityId} and field_id = #{fieldId}
   </update>
-
+  <update id="updatePhysicalFieldChineseName">
+    update md_physical_field_info set physical_field_desc = #{entityDesc}
+    where entity_id = #{fieldId}
+  </update>
   <insert id="insertPhysicalFile">
    INSERT INTO term_field_relation (entity_id,field_id,main_flag) VALUES
-   (#{entityId},#{fieldId},0)
+   (#{entityId},#{fieldId},0);
   </insert>
   <select id="selectDomainByName" resultType="java.util.Map">
     select

@@ -9,30 +9,37 @@ import java.util.List;
 import java.util.Map;
 
 public interface DSFieldInfoDBMapper {
-    int deleteByExample(DSFieldInfoDBExample example);
 
-    int deleteByPrimaryKey(Integer id);
+  int deleteByExample(DSFieldInfoDBExample example);
 
-    int insert(DSFieldInfoDB record);
+  int deleteByPrimaryKey(Integer id);
 
-    int insertSelective(DSFieldInfoDB record);
+  int insert(DSFieldInfoDB record);
 
-    List<DSFieldInfoDB> selectByExample(DSFieldInfoDBExample example);
+  int insertSelective(DSFieldInfoDB record);
 
-    DSFieldInfoDB selectByPrimaryKey(Integer id);
+  List<DSFieldInfoDB> selectByExample(DSFieldInfoDBExample example);
 
-    int updateByExampleSelective(@Param("record") DSFieldInfoDB record, @Param("example") DSFieldInfoDBExample example);
+  DSFieldInfoDB selectByPrimaryKey(Integer id);
 
-    int updateByExample(@Param("record") DSFieldInfoDB record, @Param("example") DSFieldInfoDBExample example);
+  int updateByExampleSelective(@Param("record") DSFieldInfoDB record,
+      @Param("example") DSFieldInfoDBExample example);
 
-    int updateByPrimaryKeySelective(DSFieldInfoDB record);
+  int updateByExample(@Param("record") DSFieldInfoDB record,
+      @Param("example") DSFieldInfoDBExample example);
 
-    int updateByPrimaryKey(DSFieldInfoDB record);
+  int updateByPrimaryKeySelective(DSFieldInfoDB record);
 
-    int insertFields(List<Map<String,Object>> list);
+  int updateByPrimaryKey(DSFieldInfoDB record);
 
-    @MapKey("key")
-    Map<String,Object> selectAll(List<Map<String,Object>> list);
+  int insertFields(List<Map<String, Object>> list);
 
-    List<Map<String, Object>> selectFieldInfo(Map<String,Object> map);
+  @MapKey("key")
+  Map<String, Object> selectAll(List<Map<String, Object>> list);
+
+  List<Map<String, Object>> selectFieldInfo(Map<String, Object> map);
+
+  List<DSFieldInfoDB> selectFieldInfoBytableId(Map<String, Object> map);
+
+  Map<String, Object> selectFieldInfoById(Map<String, String> map);
 }

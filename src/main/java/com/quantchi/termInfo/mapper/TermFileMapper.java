@@ -12,6 +12,8 @@ public interface TermFileMapper {
 
   List<Map<String, Object>> selectStandard(Map<String, Object> map);
 
+  void updatePhysicalFieldChineseName(Map<String, Object> map);
+
   void updateStandard(Map<String, Object> map);
 
   List<Map<String, Object>> selectPhysicalInfo(Map<String, Object> map);

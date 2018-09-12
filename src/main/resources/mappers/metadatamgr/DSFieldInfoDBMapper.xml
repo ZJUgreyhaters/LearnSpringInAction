@@ -10,6 +10,8 @@
     <result column="datasource_id" property="datasourceId" jdbcType="VARCHAR"/>
     <result column="field_type" property="fieldType" jdbcType="VARCHAR"/>
     <result column="field_length" property="fieldLength" jdbcType="VARCHAR"/>
+    <result column="datasource_name" property="datasourceName" jdbcType="INTEGER"/>
+    <result column="table_name" property="tableName" jdbcType="INTEGER"/>
     <result column="isterm" property="isterm" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -296,5 +298,43 @@
      where table_id = #{id}
      and datasource_id =#{datasource_id}
      and state = 0
+  </select>
+
+  <select id="selectFieldInfoBytableId" resultMap="BaseResultMap">
+    select
+    a.id AS id,
+    IFNULL(a.field_english_name,"") AS field_english_name,
+    IFNULL(a.field_chinese_name,"") AS field_chinese_name,
+    IFNULL(a.table_id,"") AS table_id,
+    IFNULL(a.datasource_id,"") AS datasource_id,
+    IFNULL(a.field_type,"") AS field_type,
+    IFNULL(a.field_length,"") AS field_length,
+    IFNULL(a.isterm,"") AS isterm,
+    IFNULL(c.table_english_name,"") AS table_name,
+    IFNULL(b.ds_name,"") AS datasource_name
+    from ds_field_info a
+    LEFT JOIN ds_meta_info b ON a.datasource_id = b.id
+    LEFT JOIN ds_table_info c ON a.table_id = c.id
+    <where>
+      <if test="table_id!=null and table_id.toString().length()>0">
+        and a.table_id = #{table_id}
+      </if>
+      <if test="data_source_id!=null and data_source_id.toString().length()>0">
+        and a.datasource_id =#{data_source_id}
+      </if>
+      <if test="keywords !=null and keywords.toString().length()>0">
+        and a.field_english_name
+        LIKE CONCAT(CONCAT('%',#{keywords}), '%')
+      </if>
+      and state = 0
+    </where>
+  </select>
+
+  <select id="selectFieldInfoById" resultType="Map">
+    select
+    id,
+    field_english_name as name
+    from ds_field_info
+    where id = #{main_entity_field_name_id}
   </select>
 </mapper>

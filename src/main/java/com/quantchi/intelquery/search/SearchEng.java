@@ -15,6 +15,7 @@ public abstract class SearchEng {
 
   private final String type;
   private String query;
+  private Map<String, String> queryMap = null;
 
   public String getType() {
     return type;
@@ -33,7 +34,7 @@ public abstract class SearchEng {
     this.query = query;
   }
 
-  protected void init(String query){
+  protected void init(String query) {
     this.query = query;
   }
 
@@ -50,29 +51,42 @@ public abstract class SearchEng {
     return obj;
   }
 
-  public abstract List<Object> getMetrics(Map<String,String> queryMap) throws Exception;
+  public abstract List<Object> getMetrics() throws Exception;
+
   public abstract List<Object> getQuickMacro() throws Exception;
+
   public abstract String addQuerySentence(QuerySentence qs) throws Exception;
+
+  public abstract void addQueryLikeSentence(QuerySentence qs) throws Exception;
+
   public abstract List<QuerySentence> getCorrelativeSentence() throws Exception;
 
-  protected List<String> segment() throws QPException, IOException {
-		return segmentWithLTP(getQuery());
+  public void setQueryMap(Map<String, String> queryMap){
+    this.queryMap = queryMap;
   }
 
-	protected List<String> segmentWithLTP(String query) throws QPException, IOException {
-		List<String> list = new ArrayList<>();
-		String ltp = AppProperties.get("ltp.addr");
-		QueryNodes _nodes = LtpTokenizer.tokenize(query, ltp);
+  protected Map<String, String>getQueryMap(){
+    return queryMap;
+  }
 
-		for (SemanticNode node : _nodes) {
-			list.add(node.getText());
-		}
+  protected List<String> segment() throws QPException, IOException {
+    return segmentWithLTP(getQuery());
+  }
 
-		//添加分词后处理策略
-		removeName_with_seg_xx(list);
+  protected List<String> segmentWithLTP(String query) throws QPException, IOException {
+    List<String> list = new ArrayList<>();
+    String ltp = AppProperties.get("ltp.addr");
+    QueryNodes _nodes = LtpTokenizer.tokenize(query, ltp);
 
-		return list;
-	}
+    for (SemanticNode node : _nodes) {
+      list.add(node.getText());
+    }
+
+    //添加分词后处理策略
+    removeName_with_seg_xx(list);
+
+    return list;
+  }
 
   //XX 被分词了，所以针对人名去除分词，但是人名xx的提示将不会出来
   private void removeName_with_seg_xx(List<String> segList) {
@@ -103,17 +117,19 @@ public abstract class SearchEng {
     String rightTag = solrParam.get("rightTag");
 
     List<String> hits = new ArrayList<>();
-    String _hl = highlights.get(0).toString();
-    String _hit = "";
-    int _start = _hl.indexOf(leftTag);
-    int _end = _hl.indexOf(rightTag);
+    if(highlights != null && highlights.size() > 0){
+      String _hl = highlights.get(0).toString();
+      String _hit = "";
+      int _start = _hl.indexOf(leftTag);
+      int _end = _hl.indexOf(rightTag);
 
-    while (_start != -1 && _end != -1) {
-      _hit = _hl.substring(_start + 4, _end);
-      hits.add(_hit);
-      _hl = _hl.substring(_end + 1);
-      _start = _hl.indexOf(leftTag);
-      _end = _hl.indexOf(rightTag);
+      while (_start != -1 && _end != -1) {
+        _hit = _hl.substring(_start + 4, _end);
+        hits.add(_hit);
+        _hl = _hl.substring(_end + 1);
+        _start = _hl.indexOf(leftTag);
+        _end = _hl.indexOf(rightTag);
+      }
     }
 
     return hits;

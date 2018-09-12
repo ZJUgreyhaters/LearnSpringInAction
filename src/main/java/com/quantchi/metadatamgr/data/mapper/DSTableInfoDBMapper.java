@@ -37,8 +37,9 @@ public interface DSTableInfoDBMapper {
 
   void update(DSTableInfoDB tableInfo);
 
-  int insertTables(List<Map<String,String>> list);
+  int insertTables(List<Map<String, String>> list);
 
-  List<Map<String,Object>> selectTableInfo(Map<String,Object> mapRequest);
+  List<Map<String, Object>> selectTableInfo(Map<String, Object> mapRequest);
 
+  List<Map<String, Object>> selectTableName(Map<String, String> map);
 }

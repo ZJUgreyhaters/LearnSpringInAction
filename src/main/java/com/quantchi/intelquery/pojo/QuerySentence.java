@@ -13,12 +13,10 @@ public class QuerySentence {
 	private Long count = 1L;
 	@Field("username")
 	private String username;
-	@Field("businessName")
-	private String businessName;
+	@Field("businessId")
+	private String businessId;
 	@Field("query")
 	private	String query;
-	/*@Field("querySeg")
-	private	String querySeg;*/
 	@Field("add_time")
 	private Date	datetime = new Date();
 	@Field("isParseable")
@@ -94,12 +92,12 @@ public class QuerySentence {
 		this.username = username;
 	}
 
-	public String getBusinessName() {
-		return businessName;
+	public String getBusinessId() {
+		return businessId;
 	}
 
-	public void setBusinessName(String businessName) {
-		this.businessName = businessName;
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
 	}
 
 	public String getQuery() {

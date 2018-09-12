@@ -328,7 +328,7 @@ public class MetaDataMgrApiService {
           .selectByExample(dsTableInfoDBExample);
       if (dsTableInfoDBSList.size() > 0) {
         oldTable += tableName;
-//        continue;
+        continue;
       }
       Map<String, String> tableMap = new HashMap<>();
       tableMap.put("table_english_name", tableName);
@@ -344,9 +344,9 @@ public class MetaDataMgrApiService {
       return true;
     }
 //
-//    if (dsTableInfoDBMapper.insertTables(tableList) <= 0) {
-//      _ret = false;
-//    }
+    if (dsTableInfoDBMapper.insertTables(tableList) <= 0) {
+      _ret = false;
+    }
 
     //2.save fields in local db
     for (Map<String, String> tableMap : tableList) {
@@ -360,7 +360,11 @@ public class MetaDataMgrApiService {
             .andTableEnglishNameEqualTo(tableMap.get("table_english_name"))
             .andDatasourceIdEqualTo(dsId);
         List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
-        fieldMap.put("table_id", list.get(0).getId());
+        if (list.isEmpty()) {
+          fieldMap.put("table_id", -1);
+        } else {
+          fieldMap.put("table_id", list.get(0).getId());
+        }
         fieldMap.put("field_english_name", fieldEntity.getName());
         String field = fieldEntity.getType();
         fieldMap.put("field_type", field);
@@ -372,13 +376,13 @@ public class MetaDataMgrApiService {
         mapList.add(fieldMap);
       }
     }
-//    if (dsFieldInfoDBMapper.insertFields(mapList) <= 0) {
-//      _ret = false;
-//    }
+    if (dsFieldInfoDBMapper.insertFields(mapList) <= 0) {
+      _ret = false;
+    }
     Map<String, Object> insertFieldMap = dsFieldInfoDBMapper.selectAll(mapList);
     //3.add relation
     int count = 0;
-    String[] dbName = new String[100];
+    String[] dbName = new String[10000];
     String[] name = new String[10000];
     for (String tableName : tables) {
       String[] dbTableName = tableName.split("\\.");
@@ -416,6 +420,9 @@ public class MetaDataMgrApiService {
           .andTableEnglishNameEqualTo(dbName[j - 1] + "." + keyInfo.getTblName())
           .andDatasourceIdEqualTo(dsId);
       List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
+      if (list.isEmpty()) {
+        continue;
+      }
       String tbId = list.get(0).getId().toString();
       String fieldName = keyInfo.getFieldName();
       //获取列字段的id
@@ -489,7 +496,7 @@ public class MetaDataMgrApiService {
       StringBuilder total = new StringBuilder();
       if (from_field_id > to_field_id) {
         total.append(to_field_id).append("--").append(from_field_id);
-      }else{
+      } else {
         total.append(from_field_id).append("--").append(to_field_id);
       }
       if (!ids.contains(total.toString())) {
@@ -502,8 +509,12 @@ public class MetaDataMgrApiService {
     return responseMap;
   }
 
-  public int relationSave(Map<String,Object> map) {
-    if (map.get("relation_id") == null || map.get("relation_id").toString().trim().length()==0) {
+  public int relationSave(Map<String, Object> map) {
+    if (map.get("relationId") == null || map.get("relationId").toString().trim().length() == 0) {
+      List<Map<String, Object>> list = dsFieldRelDBMapper.selectReleationByfieldId(map);
+      if (list != null && !list.isEmpty()) {
+       return -1;
+      }
       return dsFieldRelDBMapper.insert(map);
     } else {
       return dsFieldRelDBMapper.updateByPrimaryKey(map);

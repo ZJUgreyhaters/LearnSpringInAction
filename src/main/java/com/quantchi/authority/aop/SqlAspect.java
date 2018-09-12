@@ -8,7 +8,7 @@ import com.quantchi.authority.serviceImpl.AuthorityServiceImpl;
 import com.quantchi.authority.sqlparser.ColumnPermission;
 import com.quantchi.authority.sqlparser.IdealSQLGen;
 import com.quantchi.authority.sqlparser.RowPermission;
-import com.quantchi.sqlanalysis.PermissionParser;
+import com.quantchi.sqlanalysis.v1.PermissionParser;
 import com.quantchi.sqlanalysis.model.permission.PermissionResult;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.cache.CacheManager;
@@ -97,7 +97,7 @@ public class SqlAspect {
 		for(int i = 0;i < roleAuthJsonArray.size();i++) {
 			String authType = roleAuthJsonArray.getJSONObject(i).getString("c_authtype");
 
-			if(authType.equals("1")){// authType == "1" 为数据权限
+			if("1".equals(authType)){// authType == "1" 为数据权限
 				Integer authId = roleAuthJsonArray.getJSONObject(i).getInteger("l_authid");
 				// 取行权限
 				requestMap.put("l_authid", authId);

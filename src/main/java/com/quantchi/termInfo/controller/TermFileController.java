@@ -4,6 +4,8 @@ import com.quantchi.common.ExcelUtil;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.ResultCode;
 import com.quantchi.common.SQLQueryConfig;
+import com.quantchi.intelquery.search.SearchEng;
+import com.quantchi.intelquery.search.SolrEng;
 import com.quantchi.lineage.exception.SqlParserException;
 import com.quantchi.lineage.metric.MetricLineage;
 import com.quantchi.termInfo.service.TermFileService;
@@ -34,6 +36,8 @@ public class TermFileController {
 
   @Autowired
   private TermFileService termFileService;
+
+  private static final String SEARCHTYPE = "solr";
 
   private static final Logger logger = LoggerFactory.getLogger(TermFileController.class);
 
@@ -135,9 +139,20 @@ public class TermFileController {
             //termFileService.updatePhysicalFile(map1);
             continue;
           }*/
+
           List<Map<String, Object>> list1 = termFileService.selectTargetMain(map1);
+
+          if (list1 != null && list.size() > 0){
+            //force update physical_field_desc
+            Map<String, Object> updateMap = new HashMap<>(3);
+            updateMap.put("fieldId", map1.get("fieldId"));
+            updateMap.put("entityDesc", list1.get(0).get("entity_desc"));
+            termFileService.updatePhysicalFieldChineseName(updateMap);
+          }
+
           if (list1 != null && !list1.isEmpty() && list1.get(0).get("technique_rule") != null
               && list1.get(0).get("technique_rule").toString().length() > 0) {
+
             try {
               MetricLineage.loadLineage(list1.get(0).get("entity_id").toString(),
                   list1.get(0).get("technique_rule").toString());
@@ -152,6 +167,11 @@ public class TermFileController {
             }
           }
         }
+
+        //add reIndex
+        SearchEng engObj = SearchEng.instanceOf("", SEARCHTYPE);
+        ((SolrEng)engObj).metricsImport();
+
         return JsonResult.successJson("上传成功！");
       } else if ("standard".equals(typeOne) && "common".equals(typeTwo)) {
         for (int i = 1; i < result.size(); i++) {

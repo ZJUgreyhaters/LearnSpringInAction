@@ -1,15 +1,10 @@
 package com.quantchi.authority.shiro;
 
-import com.quantchi.authority.mapper.AuthorityRoleMapper;
-import com.quantchi.authority.service.AuthorityService;
-import com.sun.tools.internal.ws.wscompile.ErrorReceiver;
-import common.Logger;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -17,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 /**
  * @ClassName: MyRealm
