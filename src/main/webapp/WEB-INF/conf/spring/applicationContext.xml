@@ -11,7 +11,7 @@
 	<import resource="applicationContext-task.xml" />-->
 	<import resource="applicationContext-dataSource.xml" />
 	<import resource="applicationContext-hive.xml" />
-	<!--<import resource="applicationContext-shiro.xml" />-->
+	<import resource="applicationContext-shiroConfig.xml" />
 	<!--<mvc:interceptors>-->
 		<!--<mvc:interceptor>-->
 			<!--<mvc:mapping path="/quantchiAPI/*"/>-->

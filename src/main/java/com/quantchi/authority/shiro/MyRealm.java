@@ -27,16 +27,27 @@ public class MyRealm extends AuthorizingRealm {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MyRealm.class);
 
-
     @Autowired
     SysPermissionInitService sysPermissionInitService;
 
     @Override
     protected AuthenticationInfo  doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException{
         //authenticationToken为用户输入信息
-        String roleId = (String) authenticationToken.getPrincipal();
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(roleId,"","testRealm");
-        return info;
+        String username = (String) authenticationToken.getPrincipal();
+
+        if(username.equals("liangzhi")) {
+            String password = new String((char[])authenticationToken.getCredentials());
+            if(password.equals("liangzhi123")) {
+                SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(username, password, "myrealm");
+
+                return info;
+            }
+        }
+        return null;
+//        String roleId = (String) authenticationToken.getPrincipal();
+//        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(roleId,"","testRealm");
+//
+//        return info;
     }
 
     @Override
@@ -50,6 +61,9 @@ public class MyRealm extends AuthorizingRealm {
         //get all roles
         List<String> roleIdList = sysPermissionInitService.getRolesFromDB();
         simpleAuthorizationInfo.addRoles(roleIdList);
+
+        RoleListContext.setRoles(roleIdList);
+
         logger.info("roleIds: " + roleIdList.toString());
         return simpleAuthorizationInfo;
     }

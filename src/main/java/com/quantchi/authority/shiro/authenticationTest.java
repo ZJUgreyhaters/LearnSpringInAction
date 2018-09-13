@@ -50,7 +50,7 @@ public class authenticationTest {
         SecurityManager securityManager = securityManagerFactory.getInstance();
         SecurityUtils.setSecurityManager(securityManager);
         org.apache.shiro.subject.Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("wbchen", "222");
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("liangzhi", "liangzhi123");
         subject.hasRole("user");
         System.out.println("=====" + subject.hasRole("user"));
 

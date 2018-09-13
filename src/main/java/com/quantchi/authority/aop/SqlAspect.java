@@ -6,6 +6,7 @@ import com.quantchi.authority.service.AuthorityDetailService;
 import com.quantchi.authority.service.AuthorityService;
 import com.quantchi.authority.serviceImpl.AuthorityServiceImpl;
 import com.quantchi.authority.shiro.MyRealm;
+import com.quantchi.authority.shiro.RoleListContext;
 import com.quantchi.authority.shiro.SysPermissionInitService;
 import com.quantchi.authority.sqlparser.ColumnPermission;
 import com.quantchi.authority.sqlparser.IdealSQLGen;
@@ -13,13 +14,11 @@ import com.quantchi.authority.sqlparser.RowPermission;
 import com.quantchi.sqlanalysis.v1.PermissionParser;
 import com.quantchi.sqlanalysis.model.permission.PermissionResult;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.RealmSecurityManager;
-import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -74,15 +73,15 @@ public class SqlAspect {
 
 	private String modifySqlByDataAuth(String sql){
 
-		//getRoles();
-
 		RowPermission rowPermission = new RowPermission();
 		ColumnPermission columnPermission = new ColumnPermission();
 		//Integer roleId = 48;
-
-		List<String> roleIdList = sysPermissionInitService.getRolesFromDB();
-		for(String roleId:roleIdList){
-			setDataPermission(Integer.parseInt(roleId),rowPermission,columnPermission);
+		List<String> roleIdList = RoleListContext.getRoles();
+//		List<String> roleIdList = sysPermissionInitService.getRolesFromDB();
+		if(roleIdList != null && roleIdList.size() > 0){
+			for(String roleId:roleIdList){
+				setDataPermission(Integer.parseInt(roleId),rowPermission,columnPermission);
+			}
 		}
 
 		PermissionResult permissionResult = new PermissionParser().parse(sql, rowPermission.getRowPermissionJson(), columnPermission.getColumnPermissionJson());
@@ -91,7 +90,7 @@ public class SqlAspect {
 		IdealSQLGen idealSQLGen = new IdealSQLGen(permissionResult.getLimitedFields(), permissionResult.getSql());
 
 		String re = idealSQLGen.getIdealSQL();
-		re += "";
+		logger.info(re);
 		return idealSQLGen.getIdealSQL();
 	}
 
