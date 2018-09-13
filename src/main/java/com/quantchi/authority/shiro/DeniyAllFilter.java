@@ -19,8 +19,8 @@ public class DeniyAllFilter extends AuthorizationFilter {
     private static final Logger logger = LoggerFactory.getLogger(DeniyAllFilter.class);
     @Override
     public boolean isAccessAllowed(ServletRequest req, ServletResponse resp, Object mappedValue) throws Exception {
-        logger.info("Access Denied.");
-        return false;
+        logger.info("Login Access.");
+        return true;
     }
 
 }
