@@ -11,6 +11,7 @@ import com.quantchi.authority.shiro.SysPermissionInitService;
 import com.quantchi.authority.sqlparser.ColumnPermission;
 import com.quantchi.authority.sqlparser.IdealSQLGen;
 import com.quantchi.authority.sqlparser.RowPermission;
+import com.quantchi.authority.sqlparser.SQLModify;
 import com.quantchi.sqlanalysis.v1.PermissionParser;
 import com.quantchi.sqlanalysis.model.permission.PermissionResult;
 import org.apache.shiro.SecurityUtils;
@@ -85,13 +86,12 @@ public class SqlAspect {
 		}
 
 		PermissionResult permissionResult = new PermissionParser().parse(sql, rowPermission.getRowPermissionJson(), columnPermission.getColumnPermissionJson());
-
-		Set<String> limit = permissionResult.getLimitedFields();
-		IdealSQLGen idealSQLGen = new IdealSQLGen(permissionResult.getLimitedFields(), permissionResult.getSql());
-
-		String re = idealSQLGen.getIdealSQL();
-		logger.info(re);
-		return idealSQLGen.getIdealSQL();
+//		Set<String> limit = permissionResult.getLimitedFields();
+        SQLModify sqlModify = new SQLModify(permissionResult.getLimitedFields(), permissionResult.getSql());
+//        String test = sqlModify.getSQL();
+//
+//		logger.info(test);
+		return sqlModify.getSQL();
 	}
 
 	private void setDataPermission(Integer roleId,RowPermission rowPermission,ColumnPermission columnPermission){

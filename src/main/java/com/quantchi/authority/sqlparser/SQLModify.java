@@ -13,16 +13,16 @@ import java.util.Set;
 public class SQLModify {
     private Set<String> limitField;
     private String toBeModifiedSQL;
-    private String idealSQL;
+    private String sql;
 
     public SQLModify(){}
 
-    public SQLModify(Set<String> limitField,String toBeModifiedSQL){
+    public SQLModify(Set<String> limitField, String toBeModifiedSQL) {
         this.limitField = limitField;
         this.toBeModifiedSQL = toBeModifiedSQL;
     }
 
-    public void setToBeModifiedSQL(String toBeModifiedSQL){
+    public void setToBeModifiedSQL(String toBeModifiedSQL) {
         this.toBeModifiedSQL = toBeModifiedSQL;
     }
 
@@ -30,7 +30,24 @@ public class SQLModify {
         this.limitField = limitField;
     }
 
+    public String getSQL() {
 
+        if(limitField != null && limitField.size() > 0){
+            for(String field: limitField) {
+                int toIndex = toBeModifiedSQL.toLowerCase().indexOf(field);
+                String sub = toBeModifiedSQL.substring(toIndex + field.length());
+                String realField = toBeModifiedSQL.substring(toIndex, toIndex + field.length());
 
+                if(sub.matches("\\s+(as|AS|As|aS)\\s+[\\s\\S]*")) {
+                    toBeModifiedSQL = toBeModifiedSQL.replace(realField, "\"***\"");
+                }else {
+                    toBeModifiedSQL = toBeModifiedSQL.replace(realField,"\"***\" as " + realField);
+                }
+            }
+        }
+
+        sql = toBeModifiedSQL;
+        return sql;
+    }
 
 }

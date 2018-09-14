@@ -63,7 +63,7 @@ public class LoginController {
         }catch (UnknownAccountException e) {
             e.printStackTrace();
             logger.info("用户名或密码错误");
-            return JsonResult.errorJson("login failed! ... UnknownAccount");
+            return JsonResult.errorJson("登录失败，用户名或密码错误");
         }catch (IncorrectCredentialsException e) {
             e.printStackTrace();
             logger.info("用户名或密码错误");
