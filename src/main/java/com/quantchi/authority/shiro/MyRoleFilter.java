@@ -1,20 +1,14 @@
 package com.quantchi.authority.shiro;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.stream.Collectors;
+
 
 /**
  * @ClassName: MyRoleFilter
