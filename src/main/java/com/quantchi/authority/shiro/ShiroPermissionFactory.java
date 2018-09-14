@@ -34,22 +34,7 @@ public class ShiroPermissionFactory extends ShiroFilterFactoryBean {
         logger.info("Default definition is : " + definition);
 
         Map<String, String> otherChains = sysPermissionInitService.selectAll();
-
-        //加载配置默认的过滤链
-        Ini ini = new Ini();
-        ini.load(definitions);
-        Ini.Section section = ini.getSection(IniFilterChainResolverFactory.URLS);
-        if (CollectionUtils.isEmpty(section)) {
-            section = ini.getSection(Ini.DEFAULT_SECTION_NAME);
-        }
-
-        //加上数据库中过滤链
-        section.putAll(otherChains);
-
-        for(String s : section.keySet()){
-            logger.info(s + " " + section.get(s));
-        }
-
-        setFilterChainDefinitionMap(section);
+        logger.info("Initial filter chain: " + otherChains.toString());
+        setFilterChainDefinitionMap(otherChains);
     }
 }

@@ -59,9 +59,10 @@ public class SqlAspect {
 		List<String> roleIdList = RoleListContext.getRoles();
 
 		if(roleIdList != null && roleIdList.size() > 0){
-			for(String roleId:roleIdList){
-				setDataPermission(Integer.parseInt(roleId),rowPermission,columnPermission);
-			}
+//			for(String roleId:roleIdList){
+//				setDataPermission(Integer.parseInt(roleId),rowPermission,columnPermission);
+//			}
+			setDataPermission(roleIdList, rowPermission,columnPermission);
 		}
 
 		PermissionResult permissionResult = new PermissionParser().parse(sql, rowPermission.getRowPermissionJson(), columnPermission.getColumnPermissionJson());
@@ -71,51 +72,38 @@ public class SqlAspect {
 		return sqlModify.getSQL();
 	}
 
-	private void setDataPermission(Integer roleId,RowPermission rowPermission,ColumnPermission columnPermission){
-		String authByRoleId = authorityService.getRoleAuthDetail(roleId);
+	private void setDataPermission(List<String> roleIdList,RowPermission rowPermission,ColumnPermission columnPermission) {
+		for(String roleId:roleIdList){
+            String authByRoleId = authorityService.getRoleAuthDetail(Integer.parseInt(roleId));
 
-		JSONObject roleAuthJson = JSONObject.parseObject(authByRoleId);
-		JSONArray roleAuthJsonArray = roleAuthJson.getJSONArray("data");
+            JSONObject roleAuthJson = JSONObject.parseObject(authByRoleId);
+            JSONArray roleAuthJsonArray = roleAuthJson.getJSONArray("data");
 
-		Map<String, Object> requestMap = new HashMap<>();
-		//遍历权限，将所有权限对应的行列规则加到Permission中
-		for(int i = 0;i < roleAuthJsonArray.size();i++) {
-			String authType = roleAuthJsonArray.getJSONObject(i).getString("c_authtype");
+            Map<String, Object> requestMap = new HashMap<>();
+            //遍历权限，将所有权限对应的行列规则加到Permission中
+            for(int i = 0;i < roleAuthJsonArray.size();i++) {
+                String authType = roleAuthJsonArray.getJSONObject(i).getString("c_authtype");
 
-			if("1".equals(authType)){// authType == "1" 为数据权限
-				Integer authId = roleAuthJsonArray.getJSONObject(i).getInteger("l_authid");
-				// 取行权限
-				requestMap.put("l_authid", authId);
-				String authTable = authorityDetailService.getAuthdetail(requestMap);
-				JSONObject authTableJson = JSONObject.parseObject(authTable);
+                if("1".equals(authType)){// authType == "1" 为数据权限
+                    Integer authId = roleAuthJsonArray.getJSONObject(i).getInteger("l_authid");
+                    // 取行权限
+                    requestMap.put("l_authid", authId);
+                    String authTable = authorityDetailService.getAuthdetail(requestMap);
+                    JSONObject authTableJson = JSONObject.parseObject(authTable);
 
-				String dataType = authTableJson.getJSONObject("data").getJSONObject("authiorty").getString("l_datatype");
-				JSONArray authTableJsonArray = authTableJson.getJSONObject("data").getJSONArray("authDetail");
+                    String dataType = authTableJson.getJSONObject("data").getJSONObject("authiorty").getString("l_datatype");
+                    JSONArray authTableJsonArray = authTableJson.getJSONObject("data").getJSONArray("authDetail");
 
-
-				if("3".equals(dataType)) {// 行权限
-					if(authTableJsonArray != null && authTableJsonArray.size() > 0){
-						rowPermission.addJsonRowRule(authTableJsonArray);
-					}
-//					for(int j = 0;j < authTableJsonArray.size();j++) {
-//						String tableName = authTableJsonArray.getJSONObject(j).getString("c_tablename");
-//						String filterCondition = authTableJsonArray.getJSONObject(j).getString("c_fiter");
-//						rowPermission.addSimpleRowRule(tableName, filterCondition);
-//					}
-
-				}else if("2".equals(dataType)) {// 列权限
-					if(authTableJsonArray != null && authTableJsonArray.size() > 0){
-						columnPermission.addJsonColumnRule(authTableJsonArray);
-					}
-//					for(int k = 0;k < authTableJsonArray.size();k++) {
-//						String tableName = authTableJsonArray.getJSONObject(k).getString("c_tablename");
-//						String filterColumn = authTableJsonArray.getJSONObject(k).getString("c_column");
-//						columnPermission.addSimpleColumnRule(tableName, filterColumn);
-//					}
-
-				}
-			}
-		}
+                    if(authTableJsonArray != null && authTableJsonArray.size() > 0){
+                        if("3".equals(dataType)) {// 行权限
+                            rowPermission.addJsonRowRule(authTableJsonArray);
+                        }else if("2".equals(dataType)) {// 列权限
+                            columnPermission.addJsonColumnRule(authTableJsonArray);
+                        }
+                    }
+                }
+            }
+        }
 	}
 
 }

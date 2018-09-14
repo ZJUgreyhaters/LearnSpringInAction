@@ -12,11 +12,7 @@
                 <entry key="MyRoleFilter" value-ref="MyRoleFilter" />
             </util:map>
         </property>
-        <property name="filterChainDefinitions">
-            <value>
-                /test/* MyRoleFilter
-            </value>
-        </property>
+        <property name="filterChainDefinitions" value="" />
     </bean>
 
     <bean id="MyRoleFilter" class="com.quantchi.authority.shiro.MyRoleFilter" />
