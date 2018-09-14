@@ -19,7 +19,7 @@ public class DeniyAllFilter extends AuthorizationFilter {
     private static final Logger logger = LoggerFactory.getLogger(DeniyAllFilter.class);
     @Override
     public boolean isAccessAllowed(ServletRequest req, ServletResponse resp, Object mappedValue) throws Exception {
-        logger.info("Login Access.");
+        logger.info("URL拦截 by DeniyAllFilter");
         return true;
     }
 

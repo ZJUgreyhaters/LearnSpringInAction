@@ -1,7 +1,5 @@
 package com.quantchi.authority.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.ResultCode;
 import org.apache.shiro.SecurityUtils;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -59,33 +56,32 @@ public class LoginController {
         Subject currentUser = SecurityUtils.getSubject();
         try{
             currentUser.login(token);
+            if(currentUser.isAuthenticated()) {
+                logger.info("用户登录！");
+                Map<String, String> res = new LinkedHashMap<>();
+                res.put("department", "研发部");
+                res.put("english_name", "Liangzhi");
+                res.put("head_portrait", "");
+                res.put("lastname", "Liang");
+                res.put("login_time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                res.put("loginid", String.valueOf((int)(Math.random() * 100)));
+                res.put("role", "Admin");
+                return JsonResult.successJson(res, ResultCode.SUCCESS, "login success!");
+            }else {
+
+            }
 
         }catch (UnknownAccountException e) {
-            e.printStackTrace();
             logger.info("用户名或密码错误");
-            return JsonResult.errorJson("login failed! ... UnknownAccount");
+            return JsonResult.errorJson("登录失败，用户名或密码错误");
         }catch (IncorrectCredentialsException e) {
-            e.printStackTrace();
             logger.info("用户名或密码错误");
-            return JsonResult.errorJson("login failed! ... IncorrectCredentials");
-        }catch(AuthenticationException e) {
+            return JsonResult.errorJson("登录失败，密码错误");
+        }catch(AuthenticationException e) { //General exception thrown due to an error during the Authentication process.
             e.printStackTrace();
         }
 
-        if(currentUser.isAuthenticated()) {
-            logger.info("用户登录！");
-            Map<String, String> res = new LinkedHashMap<>();
-            res.put("department", "研发部");
-            res.put("english_name", "Liangzhi");
-            res.put("head_portrait", "");
-            res.put("lastname", "Liang");
-            res.put("login_time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-            res.put("loginid", String.valueOf((int)(Math.random() * 100)));
-            res.put("role", "Admin");
-            return JsonResult.successJson(res, ResultCode.SUCCESS, "login success!");
-        }else {
-            return JsonResult.errorJson("login failed! ... ");
-        }
+        return JsonResult.errorJson("登录失败。");
     }
 
     @ResponseBody
@@ -93,8 +89,10 @@ public class LoginController {
             RequestMethod.GET}, produces = "application/json;charset=UTF-8")
     public String logout(){
         Subject currentUser = SecurityUtils.getSubject();
+        String prin = (String) currentUser.getPrincipal();
+        logger.info("用户：" + prin + "请求登出。");
         currentUser.logout();
-        logger.info("用户登出！");
+        logger.info("用户登出成功！");
         return JsonResult.successJson("退出成功");
     }
 

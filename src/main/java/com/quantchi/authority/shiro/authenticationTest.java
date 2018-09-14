@@ -35,11 +35,12 @@ public class authenticationTest {
 
     @Test
     public void testJson(){
-        Integer id = 48;
-        //AuthorityServiceImpl impl = new AuthorityServiceImpl();
-        authorityRoleMapper.getRoleAuthDetail(id);
-        //String auth = impl.getRoleAuthDetail(id);
-        //System.out.println(auth.size());
+        String s = "This is a  test";
+        int index = s.indexOf("is") + "is".length();
+        String ss = s.substring(index, index+1);
+        ss.replace("is", "***");
+        String xxx = s.substring(s.indexOf("test")+"test".length());
+        ss = s;
     }
 
     @Test

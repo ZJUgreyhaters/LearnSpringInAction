@@ -46,4 +46,11 @@ public class ColumnPermission {
         return reColumnJson;
     }
 
+    public void addJsonColumnRule(JSONArray authTableJsonArray){
+        for(int k = 0;k < authTableJsonArray.size();k++) {
+            String tableName = authTableJsonArray.getJSONObject(k).getString("c_tablename");
+            String filterColumn = authTableJsonArray.getJSONObject(k).getString("c_column");
+            this.addSimpleColumnRule(tableName, filterColumn);
+        }
+    }
 }

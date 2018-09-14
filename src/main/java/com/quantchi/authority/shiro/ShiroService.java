@@ -12,8 +12,6 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -30,8 +28,7 @@ public class ShiroService {
 	 */
 	public Map<String, String> loadFilterChainDefinitions() {
 		// 权限控制map.从数据库获取
-		Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-
+		Map<String, String> filterChainDefinitionMap;
 		filterChainDefinitionMap = sysPermissionInitService.selectAll();
 
 		return filterChainDefinitionMap;
