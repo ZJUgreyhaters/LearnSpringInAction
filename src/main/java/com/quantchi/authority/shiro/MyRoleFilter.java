@@ -34,28 +34,10 @@ public class MyRoleFilter extends AuthorizationFilter {
     public boolean isAccessAllowed(ServletRequest req, ServletResponse resp, Object mappedValue) throws Exception {
 
         //不使用session ,由于login不在一个系统里，只能通过cookie传递,暂时认为传递的是userId
-        logger.info("Cookie-login-hasrole");
-//        Subject subject = getSubject(req, resp);
-//        Cookie[] cookies = ((HttpServletRequest)req).getCookies();
-//        String roleId = "-1";
-//        if(cookies != null) {
-//            Collection<Cookie> cookiesLst = Arrays.stream(cookies).collect(Collectors.toList());
-//            for(Cookie cookie : cookiesLst){
-//                if(ROLEID.equals(cookie.getName())){
-//                    roleId = cookie.getValue();
-//                    break;
-//                }
-//            }
-//        }
-//        Subject subjectx = ThreadContext.getSubject();
-//        String namex = (String) subjectx.getPrincipal();
 
+        logger.info("URL拦截 by MyRoleFilter");
         Subject subject = SecurityUtils.getSubject();
-        String name = (String) subject.getPrincipal();
-//        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("liangzhi", "liangzhi123");
-//        subject.login(usernamePasswordToken);
-//        String name2 = (String) subject.getPrincipal();
-        // subject
+
         String[] rolesArray = (String[]) mappedValue;
         if(rolesArray == null || rolesArray.length == 0) {
             return true;

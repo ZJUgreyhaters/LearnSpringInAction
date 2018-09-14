@@ -27,18 +27,14 @@ public class ShiroPermissionFactory extends ShiroFilterFactoryBean {
 
     public static String definition = "";
 
-
-
     @Override
     public void setFilterChainDefinitions(String definitions){
+        if(definitions != null){
+            definition = definitions;
+        }
+        logger.info("Default definition is : " + definition);
 
-        definition = definitions;
-        System.out.println("definition -> " + definition);
-
-        // 数据库获取
-        //Map<String,String> otherChains = getFilterChainFromDataBase();
         Map<String, String> otherChains = sysPermissionInitService.selectAll();
-        //otherChains.put("/api/getRecommendQuery", "MyUrlFilter");
 
         //加载配置默认的过滤链
         Ini ini = new Ini();
@@ -47,23 +43,14 @@ public class ShiroPermissionFactory extends ShiroFilterFactoryBean {
         if (CollectionUtils.isEmpty(section)) {
             section = ini.getSection(Ini.DEFAULT_SECTION_NAME);
         }
+
         //加上数据库中过滤链
         section.putAll(otherChains);
 
         for(String s : section.keySet()){
-            System.out.println(s + " " + section.get(s));
+            logger.info(s + " " + section.get(s));
         }
 
         setFilterChainDefinitionMap(section);
     }
-
-//    public Map<String, String> getFilterChainFromDataBase() {
-//        Map<String, String> filter = new HashMap<>();
-//
-//        // 从数据库取出url过滤的规则：[url] [过滤器名称]()
-//
-//        filter.put("/api/getRecommendQuery", "MyUrlFilter");
-//
-//        return filter;
-//    }
 }

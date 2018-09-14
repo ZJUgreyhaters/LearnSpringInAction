@@ -1,5 +1,8 @@
 package com.quantchi.authority.sqlparser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Set;
 
 /**
@@ -11,9 +14,10 @@ import java.util.Set;
  **/
 
 public class SQLModify {
+    private  static final Logger logger = LoggerFactory.getLogger(SQLModify.class);
+    
     private Set<String> limitField;
     private String toBeModifiedSQL;
-    private String sql;
 
     public SQLModify(){}
 
@@ -46,8 +50,7 @@ public class SQLModify {
             }
         }
 
-        sql = toBeModifiedSQL;
-        return sql;
+        return toBeModifiedSQL;
     }
 
 }

@@ -29,7 +29,7 @@ public class SysPermissionInitService {
     @Autowired
     private AuthorityRoleMapper authRoleMapper;
 
-    SysPermissionInitService(){}
+    public SysPermissionInitService(){}
 
     public SysPermissionInitService(Map<String, String> sysPermissionInits){
         this.sysPermissionInits = sysPermissionInits;
@@ -100,7 +100,6 @@ public class SysPermissionInitService {
             }
         }
 
-        //sysPermissionInits.put("/api/get*", "DeniyAllFilter");
         sysPermissionInits.put("/api/login", "DeniyAllFilter");
         sysPermissionInits.put("/api/basicQuery", "authc, MyRoleFilter[75]");
         return this.sysPermissionInits;

@@ -9,7 +9,6 @@ import com.quantchi.authority.shiro.MyRealm;
 import com.quantchi.authority.shiro.RoleListContext;
 import com.quantchi.authority.shiro.SysPermissionInitService;
 import com.quantchi.authority.sqlparser.ColumnPermission;
-import com.quantchi.authority.sqlparser.IdealSQLGen;
 import com.quantchi.authority.sqlparser.RowPermission;
 import com.quantchi.authority.sqlparser.SQLModify;
 import com.quantchi.sqlanalysis.v1.PermissionParser;
@@ -54,31 +53,20 @@ public class SqlAspect {
 	@Around("myMethod()")
 	public Object around(ProceedingJoinPoint pjp) throws Throwable {
 		Object[] args = pjp.getArgs();
+		logger.info("修改前SQL: " + args[0].toString());
 		args[0] = modifySqlByDataAuth(args[0].toString());
+		logger.info("修改后SQL: " + args[0].toString());
 		Object retVal = pjp.proceed(args);
 		return retVal;
-	}
-
-
-
-	private List<String> getRoles(){
-		Subject subject = SecurityUtils.getSubject();
-		//String realname = subject.getPrincipals().getRealmNames().iterator().next();
-		RealmSecurityManager securityManager =
-						(RealmSecurityManager) SecurityUtils.getSecurityManager();
-		MyRealm shiroRealm =  (MyRealm)securityManager.getRealms().iterator().next();
-		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken("-1", "");
-		Cache<Object, AuthorizationInfo> authCache = shiroRealm.getAuthorizationCache();
-		return  null;
 	}
 
 	private String modifySqlByDataAuth(String sql){
 
 		RowPermission rowPermission = new RowPermission();
 		ColumnPermission columnPermission = new ColumnPermission();
-		//Integer roleId = 48;
+		// 通过ThreadLocal获取用户角色，ThreadLocal在doGetAuthorizationInfo（）中设置。
 		List<String> roleIdList = RoleListContext.getRoles();
-//		List<String> roleIdList = sysPermissionInitService.getRolesFromDB();
+
 		if(roleIdList != null && roleIdList.size() > 0){
 			for(String roleId:roleIdList){
 				setDataPermission(Integer.parseInt(roleId),rowPermission,columnPermission);
@@ -86,11 +74,9 @@ public class SqlAspect {
 		}
 
 		PermissionResult permissionResult = new PermissionParser().parse(sql, rowPermission.getRowPermissionJson(), columnPermission.getColumnPermissionJson());
-//		Set<String> limit = permissionResult.getLimitedFields();
+
         SQLModify sqlModify = new SQLModify(permissionResult.getLimitedFields(), permissionResult.getSql());
-//        String test = sqlModify.getSQL();
-//
-//		logger.info(test);
+
 		return sqlModify.getSQL();
 	}
 
@@ -115,23 +101,26 @@ public class SqlAspect {
 				String dataType = authTableJson.getJSONObject("data").getJSONObject("authiorty").getString("l_datatype");
 				JSONArray authTableJsonArray = authTableJson.getJSONObject("data").getJSONArray("authDetail");
 
-				if(dataType.equals("3")) {// 行权限
 
-					for(int j = 0;j < authTableJsonArray.size();j++) {
-						String tableName = authTableJsonArray.getJSONObject(j).getString("c_tablename");
-						String filterCondition = authTableJsonArray.getJSONObject(j).getString("c_fiter");
-						rowPermission.addSimpleRowRule(tableName, filterCondition);
+				if("3".equals(dataType)) {// 行权限
+					if(authTableJsonArray != null && authTableJsonArray.size() > 0){
+						rowPermission.addJsonRowRule(authTableJsonArray);
 					}
+//					for(int j = 0;j < authTableJsonArray.size();j++) {
+//						String tableName = authTableJsonArray.getJSONObject(j).getString("c_tablename");
+//						String filterCondition = authTableJsonArray.getJSONObject(j).getString("c_fiter");
+//						rowPermission.addSimpleRowRule(tableName, filterCondition);
+//					}
 
-				}else if(dataType.equals("2")) {// 列权限
-
-					for(int k = 0;k < authTableJsonArray.size();k++) {
-						String tableName = authTableJsonArray.getJSONObject(k).getString("c_tablename");
-						String filterColumn = authTableJsonArray.getJSONObject(k).getString("c_column");
-						columnPermission.addSimpleColumnRule(tableName, filterColumn);
+				}else if("2".equals(dataType)) {// 列权限
+					if(authTableJsonArray != null && authTableJsonArray.size() > 0){
+						columnPermission.addJsonColumnRule(authTableJsonArray);
 					}
-
-				}else if(dataType.equals("1")) {
+//					for(int k = 0;k < authTableJsonArray.size();k++) {
+//						String tableName = authTableJsonArray.getJSONObject(k).getString("c_tablename");
+//						String filterColumn = authTableJsonArray.getJSONObject(k).getString("c_column");
+//						columnPermission.addSimpleColumnRule(tableName, filterColumn);
+//					}
 
 				}
 			}

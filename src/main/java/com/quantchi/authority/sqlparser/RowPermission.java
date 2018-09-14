@@ -48,4 +48,12 @@ public class RowPermission {
         }
         return reRowJson;
     }
+
+    public void addJsonRowRule(JSONArray authTableJsonArray){
+        for(int j = 0;j < authTableJsonArray.size();j++) {
+            String tableName = authTableJsonArray.getJSONObject(j).getString("c_tablename");
+            String filterCondition = authTableJsonArray.getJSONObject(j).getString("c_fiter");
+            this.addSimpleRowRule(tableName, filterCondition);
+        }
+    }
 }

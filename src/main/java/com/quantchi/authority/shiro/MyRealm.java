@@ -32,36 +32,30 @@ public class MyRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo  doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException{
-        //authenticationToken为用户输入信息
+        logger.info("身份验证 doGetAuthenticationInfo");
+        // authenticationToken为用户输入信息
         String username = (String) authenticationToken.getPrincipal();
 
         if(username.equals("liangzhi")) {
             String password = new String((char[])authenticationToken.getCredentials());
             if(password.equals("liangzhi123")) {
                 SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(username, password, "myrealm");
-
                 return info;
             }
         }
         return null;
-//        String roleId = (String) authenticationToken.getPrincipal();
-//        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(roleId,"","testRealm");
-//
-//        return info;
     }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-
+        logger.info("权限验证 doGetAuthorizationInfo");
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
 
         //TODO get roleId by userId from db
-        /*Object roleId =  principalCollection.getPrimaryPrincipal();
-        simpleAuthorizationInfo.addRole(roleId.toString());*/
-        //get all roles
+
         List<String> roleIdList = sysPermissionInitService.getRolesFromDB();
         simpleAuthorizationInfo.addRoles(roleIdList);
-
+        // 设置threaLocal，存储用户将角色列表
         RoleListContext.setRoles(roleIdList);
 
         logger.info("roleIds: " + roleIdList.toString());

@@ -72,9 +72,9 @@ public class Parser {
             PermissionResult Test = new PermissionParser().parse(testSql[i], rowPermission.getRowPermissionJson(), columnPermission.getColumnPermissionJson());
             System.out.println("++++++JSON+++++++\n" + JSON.toJSONString(Test) + "\n+++++++++++++++++\n最后输出的sql:");
             //Test.getLimitedFields()获得需要修改的列信息，Test.getSql()得到已经加入行权限的sql语句
-            IdealSQLGen sqlGen = new IdealSQLGen(Test.getLimitedFields(), Test.getSql());
+            SQLModify sqlGen = new SQLModify(Test.getLimitedFields(), Test.getSql());
             //getIdealSQL()方法获得最终的sql
-            System.out.println(sqlGen.getIdealSQL() + "\n+++++++++++++++++\n\n");
+            System.out.println(sqlGen.getSQL() + "\n+++++++++++++++++\n\n");
         }
         //
     }
