@@ -106,7 +106,7 @@
     VALUES (#{fieldName,jdbcType=VARCHAR}, #{tableName,jdbcType=VARCHAR}, #{unionId,jdbcType=INTEGER})
   </insert>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from ds_field_releation
+    delete from md_field_releation
     where relation_id = #{relationId,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.quantchi.metadatamgr.data.entity.DSFieldRelDBExample" >
@@ -116,7 +116,7 @@
     </if>
   </delete>
   <insert id="insert">
-    insert into ds_field_releation (relation_id, relation, field_id, 
+    insert into md_field_releation (relation_id, relation, field_id,
       table_id, foreign_field_id, foreign_table_id
       )
     values (#{relationId,jdbcType=INTEGER}, #{relation,jdbcType=VARCHAR}, #{fieldId,jdbcType=VARCHAR}, 
@@ -226,7 +226,7 @@
     where relation_id = #{relationId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.quantchi.metadatamgr.data.entity.DSFieldRelDB" >
-    update ds_field_releation
+    update md_field_releation
     set relation = #{relation,jdbcType=VARCHAR},
       field_id = #{fieldId,jdbcType=VARCHAR},
       table_id = #{tableId,jdbcType=VARCHAR},
@@ -246,15 +246,15 @@
    a.foreign_field_id AS to_field_id,
    a.table_id AS from_table_id,
    a.foreign_table_id AS to_table_id,
-   b.field_english_name AS from_field,
-   c.field_english_name AS to_field,
-   d.table_english_name AS from_table,
-   e.table_english_name AS to_table
+   b.physical_field AS from_field,
+   c.physical_field AS to_field,
+   d.physical_table AS from_table,
+   e.physical_table AS to_table
    FROM  ds_field_releation a
-   LEFT JOIN ds_field_info b ON a.field_id = b.id
-   LEFT JOIN ds_field_info c ON a.foreign_field_id = c.id
-   LEFT JOIN ds_table_info d ON a.table_id = d.id
-   LEFT JOIN ds_table_info e ON a.foreign_table_id = e.id
+   LEFT JOIN md_physical_field_info b ON a.field_id = b.id
+   LEFT JOIN md_physical_field_info c ON a.foreign_field_id = c.id
+   LEFT JOIN md_physical_table_info d ON a.table_id = d.id
+   LEFT JOIN md_physical_table_info e ON a.foreign_table_id = e.id
    WHERE a.table_id = #{table_id}
   </select>
 
@@ -266,20 +266,20 @@
     a.foreign_field_id AS to_field_id,
     a.table_id AS from_table_id,
     a.foreign_table_id AS to_table_id,
-    b.field_english_name AS from_field,
-    c.field_english_name AS to_field,
-    d.table_english_name AS from_table,
-    e.table_english_name AS to_table
-    FROM  ds_field_releation a
-    LEFT JOIN ds_field_info b ON a.field_id = b.id
-    LEFT JOIN ds_field_info c ON a.foreign_field_id = c.id
-    LEFT JOIN ds_table_info d ON a.table_id = d.id
-    LEFT JOIN ds_table_info e ON a.foreign_table_id = e.id
+    b.physical_field AS from_field,
+    c.physical_field AS to_field,
+    d.physical_table AS from_table,
+    e.physical_table AS to_table
+    FROM  md_field_releation a
+    LEFT JOIN md_physical_field_info b ON a.field_id = b.id
+    LEFT JOIN md_physical_field_info c ON a.foreign_field_id = c.id
+    LEFT JOIN md_physical_table_info d ON a.table_id = d.id
+    LEFT JOIN md_physical_table_info e ON a.foreign_table_id = e.id
     WHERE a.table_id IN (${ids})
   </select>
 
   <select id="selectReleationByfieldId" resultType="Map">
-   SELECT * from ds_field_releation
+   SELECT * from md_field_releation
    where field_id = #{fieldId} and foreign_field_id =#{foreignFieldId}
   </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.quantchi.transport.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.quantchi.common.JsonResult;
 import com.quantchi.common.Util;
 import com.quantchi.transport.service.SearchApiService;
 import java.util.Map;
@@ -58,20 +59,17 @@ public class SearchApiController {
         return Util.genRet(200,data,"ok",data.size());
     }*/
 
-    @RequestMapping(value = "/queryFromSearchToData", method = { RequestMethod.POST })
-    public @ResponseBody
-    Map<String, Object> queryFromSearchToData(@RequestBody String bodyString) {
+    //@RequestMapping(value = "/queryFromSearchToData", method = { RequestMethod.POST })
+    @ResponseBody
+    @RequestMapping(value = "/queryFromSearch", method = { RequestMethod.POST })
+    public String queryFromSearchToData(@RequestBody String bodyString) {
         try {
             JSONObject json = JSONObject.parseObject(bodyString);
-            String serialization = json.get("serial").toString();
-            //Map<String, Object> _intelRet = intelquery.queryFromSearch(serialization);
-            //if (_intelRet.containsKey("data")) {
-                return Util.genRet(200,null, "ok",0);
-            //} else {
-               // return Util.genRet(500, null, null, 0);
-           // }
+            String serialization = json.get("data").toString();
+            return JsonResult.successJson("");
         }catch (Exception e){
-            return Util.genRet(500, null, e.getMessage(), 0);
+            logger.error("queryFromSearch error happen:{}",e);
+            return JsonResult.errorJson(e.getMessage());
         }
 
     }

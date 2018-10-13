@@ -21,7 +21,7 @@ import com.quantchi.intelquery.service.IntelQueryService;
 import com.quantchi.intelquery.sqlquery.ColumnRelation.TreeNode;
 import com.quantchi.intelquery.sqlquery.SqlQuery;
 import com.quantchi.intelquery.utils.ComplexTable;
-import com.quantchi.intelquery.utils.SerializationUtils;
+import com.quantchi.tianshu.common.SerializationUtils;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
@@ -239,7 +239,7 @@ public class IntelQueryController {
         page_size = Integer.parseInt(map.get("page_size").toString());
 
         metricsRet = Paging
-            .pagingPlugObject(metricsRet, Integer.parseInt(map.get("page_size").toString()),
+            .pagingPlug(metricsRet, Integer.parseInt(map.get("page_size").toString()),
                 Integer.parseInt(map.get("page").toString()));
       }
       resultMap.put("metrics", metricsRet);
@@ -272,7 +272,7 @@ public class IntelQueryController {
       List<Object> complexTotalData =  ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
               .collect(Collectors.toList());
       resultMap.put("total", complexTotalData.size());
-      List<Object> complexData = Paging.pagingPlugObject(
+      List<Object> complexData = Paging.pagingPlug(
               complexTotalData, page_size, page);
 
 
@@ -454,7 +454,7 @@ public class IntelQueryController {
           .getComplexData(tabulate, columnRelation, page, page_size);
       resultMap.put("total", ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
           .collect(Collectors.toList()).size());
-      List<Object> complexData = Paging.pagingPlugObject(
+      List<Object> complexData = Paging.pagingPlug(
           ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
               .collect(Collectors.toList()), page_size, page);
       resultMap.put("tabulate", complexData);
@@ -521,7 +521,7 @@ public class IntelQueryController {
       List<Object> complexTotalData =  ((Map<List<String>, Object>) complexDataAndHeader.get("data")).entrySet().stream()
               .collect(Collectors.toList());
       resultMap.put("total", complexTotalData.size());
-      List<Object> complexData = Paging.pagingPlugObject(
+      List<Object> complexData = Paging.pagingPlug(
               complexTotalData, page_size, page);
       resultMap.put("columnRelation", complexDataAndHeader.get("header"));
       resultMap.put("tabulate", complexData);

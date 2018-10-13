@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.SchemaDiffMapper">
+  <insert id="insertDiffJob" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO md_schema_diff_job (jobName, source, target, status)
+    VALUES (#{jobName}, #{sourceId}, #{targetId}, 1)
+  </insert>
+  <select id="getAllVersion" resultType="Map">
+    select datasource_id, version, tag, baseline, submitter,
+      DATE_FORMAT(`date`, '%Y-%m-%d %T') as `date`, `desc`,
+      table_amount, field_amount, additions, deletions, changes
+    from md_schema_diff
+    <where>
+      <if test="tag != null and tag.toString().length()>0">
+        tag like CONCAT('%', #{tag}, '%')
+      </if>
+      <if test="datasourceId != null and datasourceId.toString().length()>0">
+        and datasource_id = #{datasourceId}
+      </if>
+      <if test="baseline != null and baseline.toString().length()>0">
+        and `baseline` = #{baseline}
+      </if>
+      <if test="submitter != null and submitter.toString().length()>0">
+        and submitter like CONCAT('%', #{submitter}, '%')
+      </if>
+      <if test="dateMin != null and dateMin.toString().length()>0">
+        and `date` >= #{dateMin}
+      </if>
+      <if test="dateMax != null and dateMax.toString().length()>0">
+        and `date` &lt;= #{dateMax}
+      </if>
+    </where>
+  </select>
+  <select id="getAllJob" resultType="Map" parameterType="Map">
+    select a.id, a.jobName, a.source, a.target, a.`status`,
+    s.ds_name as sourceName, t.ds_name as targetName
+    from md_schema_diff_job a
+    join ds_meta_info s on a.source = s.id
+    join ds_meta_info t on a.target = t.id
+    <where>
+      <if test="keyword != null and keyword.toString().length()>0">
+        jobName like CONCAT('%', #{keyword}, '%')
+      </if>
+      <if test="status != null and status.toString().length()>0">
+        and `status` = #{status}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteJob">
+    delete from md_schema_diff_job where id = #{0}
+  </delete>
+  <select id="getVersionDiff" resultType="Map">
+    select diff, table_amount, field_amount
+    from md_schema_diff where datasource_id = #{0} and version >= #{1}
+                              and version &lt;= #{2} order by version
+  </select>
+  <select id="getSourceDatasource" resultType="Map">
+    select concat(t1.physical_db, '.', t1.physical_table) as `table`,
+      f1.physical_field as field,
+      f1.data_type,
+      t1.datasourceId
+    from (select source, target from md_schema_diff_job where id = #{0}) as a
+      join md_physical_table_info t1 on a.source = t1.datasourceId
+      join md_physical_field_info f1 on t1.id = f1.physical_table_id
+  </select>
+  <select id="getTargetDatasource" resultType="Map">
+    select concat(t2.physical_db, '.', t2.physical_table) as `table`,
+      f2.physical_field as field,
+      f2.data_type
+    from (select source, target from md_schema_diff_job where id = #{0}) as a
+      join md_physical_table_info t2 on a.target = t2.datasourceId
+      join md_physical_field_info f2 on t2.id = f2.physical_table_id
+  </select>
+  <update id="updateDiff">
+    update md_schema_diff
+    <set>
+      tag = #{tag}, baseline = #{isBaseline}, `date` = NOW(),
+      <if test="submitter != null and submitter.toString().length()>0">
+        submitter = #{submitter},
+      </if>
+      <if test="description != null and description.toString().length()>0">
+        `desc` = #{description}
+      </if>
+    </set>
+    where version = #{version} and datasource_id = #{datasourceId}
+  </update>
+</mapper>

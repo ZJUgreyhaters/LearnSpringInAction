@@ -53,7 +53,17 @@ public class TermMainInfo {
 
   private String remark;
 
+  private Integer page;
 
+  private Integer page_size;
+
+  private String oneName;
+
+  private String twoName;
+
+  private String threeName;
+
+  private String keyword;
 
   public String getFrequency() {
     return frequency;
@@ -237,5 +247,53 @@ public class TermMainInfo {
 
   public void setDevPolicy(String devPolicy) {
     this.devPolicy = devPolicy == null ? null : devPolicy.trim();
+  }
+
+  public Integer getPage() {
+    return page;
+  }
+
+  public void setPage(Integer page) {
+    this.page = page;
+  }
+
+  public Integer getPage_size() {
+    return page_size;
+  }
+
+  public void setPage_size(Integer page_size) {
+    this.page_size = page_size;
+  }
+
+  public String getOneName() {
+    return oneName;
+  }
+
+  public void setOneName(String oneName) {
+    this.oneName = oneName;
+  }
+
+  public String getTwoName() {
+    return twoName;
+  }
+
+  public void setTwoName(String twoName) {
+    this.twoName = twoName;
+  }
+
+  public String getThreeName() {
+    return threeName;
+  }
+
+  public void setThreeName(String threeName) {
+    this.threeName = threeName;
+  }
+
+  public String getKeyword() {
+    return keyword;
+  }
+
+  public void setKeyword(String keyword) {
+    this.keyword = keyword;
   }
 }

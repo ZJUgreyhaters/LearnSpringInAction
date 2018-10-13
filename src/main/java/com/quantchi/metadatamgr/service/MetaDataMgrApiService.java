@@ -3,11 +3,13 @@ package com.quantchi.metadatamgr.service;
 import com.alibaba.fastjson.JSONObject;
 import com.quantchi.common.AppProperties;
 import com.quantchi.common.JsonResult;
+import com.quantchi.common.Paging;
 import com.quantchi.common.Util;
 import com.quantchi.metadatamgr.data.DSMetaInfo;
 import com.quantchi.metadatamgr.data.FieldEntity;
 import com.quantchi.metadatamgr.data.HiveMetaInfo;
 import com.quantchi.metadatamgr.data.KeyInfo;
+import com.quantchi.metadatamgr.data.TableEntity;
 import com.quantchi.metadatamgr.data.entity.DSEntityInfoDB;
 import com.quantchi.metadatamgr.data.entity.DSEntityInfoDBExample;
 import com.quantchi.metadatamgr.data.entity.DSFieldInfoDB;
@@ -22,7 +24,9 @@ import com.quantchi.metadatamgr.data.mapper.DSFieldInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSFieldRelDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
-import com.quantchi.metadatamgr.extract.HiveExtractImp;
+import com.quantchi.metadatamgr.data.mapper.MDFieldInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.MDTableInfoDBMapper;
+import com.quantchi.metadatamgr.extract.HiveCollectExtractor;
 import com.quantchi.termInfo.pojo.PhysicalFieldInfo;
 import com.quantchi.termInfo.pojo.PhysicalTableInfo;
 import com.quantchi.termInfo.pojo.TermGenInfo;
@@ -35,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -47,6 +53,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.quantchi.lineage.diff.Table;
 
 @Service
 public class MetaDataMgrApiService {
@@ -60,7 +67,7 @@ public class MetaDataMgrApiService {
 
   private static final int defaultSqlStart = 0;
   private static final int defaultPageSize = 10;
-  private final Map<String, HiveExtractImp> g_DSInfoMap = new HashMap<>();
+  private final Map<String, HiveCollectExtractor> g_DSInfoMap = new HashMap<>();
 
   @Autowired
   private DSMetaInfoDBMapper dsMetaInfoDBMapper;
@@ -75,30 +82,25 @@ public class MetaDataMgrApiService {
   private DSFieldRelDBMapper dsFieldRelDBMapper;
 
   @Autowired
+  private MDTableInfoDBMapper mdTableInfoDBMapper;
+
+  @Autowired
+  private MDFieldInfoDBMapper mdFieldInfoDBMapper;
+
+  @Autowired
   private DSEntityInfoDBMapper dsEntityInfoDBMapper;
 
-  public Map<String, Object> getDSMetaInfo(String dsName, String start, String pagesize) {
+  public Map<String, Object> getDSMetaInfo(Map<String, Object> map) {
     Map<String, Object> _ret = new HashMap<>();
-    DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
-    if (!"".equals(dsName)) {
-      _ex.createCriteria().andDsNameEqualTo(dsName);
+    List<DSMetaInfoDB> _sqlRetCount = dsMetaInfoDBMapper.selectAll(map);
+    String total = String.valueOf(_sqlRetCount.size());
+    if (Paging.judgment(map)) {
+      int page = Integer.parseInt(map.get("page").toString());
+      int page_size = Integer.parseInt(map.get("page_size").toString());
+      _sqlRetCount = Paging.pagingPlug(_sqlRetCount, page_size, page);
     }
-
-    _ex.setOrderByClause("id");
-
-    List<DSMetaInfoDB> _sqlRet = null;
-    if (start != null) {
-      int _start = Integer.parseInt(start);
-      int _pagesize = Integer.parseInt(pagesize);
-      _sqlRet = dsMetaInfoDBMapper.selectByExample(_ex, (_start - 1) * _pagesize, _pagesize);
-    } else {
-      _sqlRet = dsMetaInfoDBMapper.selectAllByExample(_ex);
-    }
-
-    DSMetaInfoDBExample _exCount = new DSMetaInfoDBExample();
-    List<DSMetaInfoDB> _sqlRetCount = dsMetaInfoDBMapper.selectAllByExample(_exCount);
-    _ret.put("data", _sqlRet);
-    _ret.put("total", _sqlRetCount.size());
+    _ret.put("data", _sqlRetCount);
+    _ret.put("total", total);
     return _ret;
   }
 
@@ -107,14 +109,14 @@ public class MetaDataMgrApiService {
       String username,
       String password) {
 
-    return HiveExtractImp.connectionTest(host, port, username, password);
+    return HiveCollectExtractor.connectionTest(host, port, username, password);
   }
 
   public boolean connectMysqlTest(String url,
       String username,
       String password) {
 
-    return HiveExtractImp.connectionMysqlTest(url, username, password);
+    return HiveCollectExtractor.connectionMysqlTest(url, username, password);
   }
 
 
@@ -175,6 +177,11 @@ public class MetaDataMgrApiService {
           .selectAllByExample(dsMetaInfoDBExample);
       data_source_id = dsMetaInfoDBList.get(0).getId().toString();
     }
+    // 批量删除
+    String[] splitId = data_source_id.split(",");
+    for(String str : splitId){
+      data_source_id = str;
+
     //获取数据源表
     DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
     dsTableInfoDBExample.createCriteria().andDatasourceIdEqualTo(data_source_id);
@@ -202,6 +209,7 @@ public class MetaDataMgrApiService {
     if (_activeRows > 0) {
       ret = true;
     }
+    }
     return ret;
   }
 
@@ -221,7 +229,7 @@ public class MetaDataMgrApiService {
     Map<String, Object> _ret = new HashMap<>();
     List<Map<String, Object>> _dbs_info = new ArrayList<>();
 
-    HiveExtractImp _extract = getExtractObj(dsName);
+    HiveCollectExtractor _extract = getExtractObj(dsName);
     String _keyword = keyword;
     if (_extract != null) {
       List<String> dbs = _extract.getDatabases();
@@ -231,23 +239,23 @@ public class MetaDataMgrApiService {
         _databaseMap.put("name", database);
         _databaseMap.put("type", "db");
 
+        List<TableEntity> tbs = null;
         if (keyword != null) {
           //如果关键字在库里出现，则列举所有的表
           if (database.indexOf(keyword) != -1) {
-            _keyword = null;
+            tbs = _extract.getAllTables(database);
           } else {
-            _keyword = keyword;
+            tbs = _extract.getTables(database, keyword);
           }
         }
 
-        List<Map<String, String>> tbs = _extract.getTables(database, _keyword);
         List<Map<String, String>> _childs = new ArrayList<>();
 
-        for (Map<String, String> table : tbs) {
+        for (TableEntity table : tbs) {
           Map<String, String> _tableMap = new HashMap<>();
-          _tableMap.put("id", database + "." + table.get("TBL_NAME"));
-          _tableMap.put("name", table.get("TBL_NAME"));
-          _tableMap.put("type", table.get("TBL_TYPE"));
+          _tableMap.put("id", database + "." + table.getTblName());
+          _tableMap.put("name", table.getTblName());
+          _tableMap.put("type", table.getTblType());
           _childs.add(_tableMap);
         }
 
@@ -260,33 +268,50 @@ public class MetaDataMgrApiService {
       }
     }
 
-    _ret.put("data", _dbs_info);
+    //_ret.put("data", _dbs_info);
+    _ret.put("data", _dbs_info.stream().limit(100).collect(Collectors.toList()));
     _ret.put("total", _dbs_info.size());
     return _ret;
   }
 
-  private HiveExtractImp getExtractObj(String dsName) {
-    HiveExtractImp _extract = null;
+  private HiveCollectExtractor getExtractObj(String dsName) {
+    HiveCollectExtractor extract = null;
 
     //需要确定当ds信息还没入库时，抽取表的
 
-    DSMetaInfoDBExample _ex = new DSMetaInfoDBExample();
-    _ex.createCriteria().andDsNameEqualTo(dsName);
-    List<DSMetaInfoDB> _sqlRet = dsMetaInfoDBMapper
-        .selectByExample(_ex, defaultSqlStart, defaultPageSize);
-    if (_sqlRet.size() > 0) {
-      DSMetaInfoDB _info_from_db = _sqlRet.get(0);
-
-      DSMetaInfo _info = new DSMetaInfo();
-      HiveMetaInfo _meta = new HiveMetaInfo();
-      _meta.setMysqlUrl(_info_from_db.getHiveMetaMysqlUrl());
-      _meta.setMysqlUser(_info_from_db.getHiveMetaUsername());
-      _meta.setMysqlPass(Util.DecodePassword(_info_from_db.getHiveMetaPswd()));
-      _info.setHiveMetaInfo(_meta);
-      _extract = new HiveExtractImp(_info);
+    DSMetaInfoDBExample ex = new DSMetaInfoDBExample();
+    ex.createCriteria().andDsNameEqualTo(dsName);
+    List<DSMetaInfoDB> sqlRet = dsMetaInfoDBMapper
+        .selectByExample(ex, defaultSqlStart, defaultPageSize);
+    if (sqlRet.size() > 0) {
+      extract = setExtractImpl(sqlRet.get(0));
     }
-    return _extract;
+    return extract;
   }
+
+  private HiveCollectExtractor getExtractObjByDsId(String dsId) {
+    HiveCollectExtractor extract = null;
+    DSMetaInfoDBExample ex = new DSMetaInfoDBExample();
+    ex.createCriteria().andIdEqualTo(Integer.parseInt(dsId));
+    List<DSMetaInfoDB> sqlRet = dsMetaInfoDBMapper
+        .selectByExample(ex, defaultSqlStart, defaultPageSize);
+    if (sqlRet.size() > 0) {
+      extract = setExtractImpl(sqlRet.get(0));
+      extract.setSourceId(dsId);
+    }
+    return extract;
+  }
+
+  private HiveCollectExtractor setExtractImpl(DSMetaInfoDB dsMetaInfoDB) {
+    DSMetaInfo info = new DSMetaInfo();
+    HiveMetaInfo meta = new HiveMetaInfo();
+    meta.setMysqlUrl(dsMetaInfoDB.getHiveMetaMysqlUrl());
+    meta.setMysqlUser(dsMetaInfoDB.getHiveMetaUsername());
+    meta.setMysqlPass(Util.DecodePassword(dsMetaInfoDB.getHiveMetaPswd()));
+    info.setHiveMetaInfo(meta);
+    return new HiveCollectExtractor(info);
+  }
+
 
   @Transactional
   public boolean saveTablesAndFields(JSONObject json) throws Exception {
@@ -300,6 +325,7 @@ public class MetaDataMgrApiService {
     if (dsName == null && dsId == null) {
       throw new Exception("input data_source_name or data_source_id ");
     }
+    // 之前是传name ，所以要根据name查对应的id, 在确认之后都会传id后可以考虑废弃该逻辑
     if (dsName != null && !dsName.equals("")) {
       DSMetaInfoDBExample dsMetaInfoDBExample = new DSMetaInfoDBExample();
       dsMetaInfoDBExample.createCriteria().andDsNameEqualTo(dsName);
@@ -315,28 +341,42 @@ public class MetaDataMgrApiService {
     }
     List<Map<String, Object>> mapList = new ArrayList<>();
 
-    HiveExtractImp hiveExtractImp = getExtractObj(dsName);
+    HiveCollectExtractor hiveExtractImp = getExtractObj(dsName);
     //for(tables)
     //1.save tables in local db
     List<Map<String, String>> tableList = new ArrayList<>();
     String oldTable = "";
     for (String tableName : tables) {
-      DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
+      /*DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
       dsTableInfoDBExample.createCriteria().andTableEnglishNameEqualTo(tableName)
           .andDatasourceIdEqualTo(dsId);
       List<DSTableInfoDB> dsTableInfoDBSList = dsTableInfoDBMapper
-          .selectByExample(dsTableInfoDBExample);
-      if (dsTableInfoDBSList.size() > 0) {
+          .selectByExample(dsTableInfoDBExample);*/
+      Map<String, Object> cond = new HashMap<>();
+      String[] tableinfo = tableName.split("\\.");
+      cond.put("datasourceId", dsId);
+      cond.put("physical_db", tableinfo[0]);
+      cond.put("physical_table", tableinfo[1]);
+      List<Map<String, Object>> mdTableInfoList = mdTableInfoDBMapper.selectTableInfo(cond);
+      if (mdTableInfoList.size() > 0) {
         oldTable += tableName;
         continue;
       }
-      Map<String, String> tableMap = new HashMap<>();
+      /*Map<String, String> tableMap = new HashMap<>();
       tableMap.put("table_english_name", tableName);
       tableMap.put("datasource_id", dsId);
-      List<Map<String, String>> tbs = getExtractObj(dsName)
+      List<TableEntity> tbs = getExtractObj(dsName).getTables(tableName.split("\\.")[0], tableName.split("\\.")[1]);
+      tableMap.put("table_type", tbs.get(0).getTblType());
+      tableList.add(tableMap);*/
+      Map<String, Object> tableMap = new HashMap<>();
+      tableMap.put("physical_db", tableinfo[0]);
+      tableMap.put("physical_table", tableinfo[1]);
+      tableMap.put("datasourceId", dsId);
+      List<TableEntity> tbs = getExtractObj(dsName)
           .getTables(tableName.split("\\.")[0], tableName.split("\\.")[1]);
-      tableMap.put("table_type", tbs.get(0).get("TBL_TYPE"));
-      tableList.add(tableMap);
+      tableMap.put("table_type", tbs.get(0).getTblType());
+      //tableList.add(tableMap);
+      mdTableInfoDBMapper.insertTable(tableMap);
     }
 
     //如果是全部都是老表 不需要处理后续逻辑
@@ -344,67 +384,95 @@ public class MetaDataMgrApiService {
       return true;
     }
 //
-    if (dsTableInfoDBMapper.insertTables(tableList) <= 0) {
+    /*if (dsTableInfoDBMapper.insertTables(tableList) <= 0) {
       _ret = false;
-    }
+    }*/
 
-    //2.save fields in local db
-    for (Map<String, String> tableMap : tableList) {
-      String[] dbTableName = tableMap.get("table_english_name").split("\\.");
-      List<FieldEntity> fieldList = hiveExtractImp.getFields(dbTableName[0], dbTableName[1]);
-      for (FieldEntity fieldEntity : fieldList) {
-        Map<String, Object> fieldMap = new HashMap<>();
-        fieldMap.put("datasource_id", dsId);
-        DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
-        dsTableInfoDBExample.createCriteria()
-            .andTableEnglishNameEqualTo(tableMap.get("table_english_name"))
-            .andDatasourceIdEqualTo(dsId);
-        List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
-        if (list.isEmpty()) {
-          fieldMap.put("table_id", -1);
-        } else {
-          fieldMap.put("table_id", list.get(0).getId());
-        }
-        fieldMap.put("field_english_name", fieldEntity.getName());
-        String field = fieldEntity.getType();
-        fieldMap.put("field_type", field);
-        if (field.contains("varchar")) {
-          fieldMap.put("field_length", field.substring(field.indexOf("(") + 1, field.indexOf(")")));
-        } else {
-          fieldMap.put("field_length", null);
-        }
-        mapList.add(fieldMap);
-      }
-    }
-    if (dsFieldInfoDBMapper.insertFields(mapList) <= 0) {
-      _ret = false;
-    }
-    Map<String, Object> insertFieldMap = dsFieldInfoDBMapper.selectAll(mapList);
-    //3.add relation
-    int count = 0;
-    String[] dbName = new String[10000];
-    String[] name = new String[10000];
-    for (String tableName : tables) {
-      String[] dbTableName = tableName.split("\\.");
-      dbName[count] = dbTableName[0];
-      name[count] = dbTableName[1];
-      count++;
-    }
-    List<String> nameList = new ArrayList<>();
-    int j = 1, k = 1, isprimary = 0;
-    nameList.add(name[0]);
-    for (; j < count; j++) {
-      if (dbName[j].equals(dbName[j - 1])) {
-        nameList.add(name[j]);
-      } else {
-        fuckJavaGroup(j, hiveExtractImp, dbName, oldTable, nameList, dsId, insertFieldMap);
-      }
-    }
-    fuckJavaGroup(j, hiveExtractImp, dbName, oldTable, nameList, dsId, insertFieldMap);
-    return _ret;
+    return true;
+
+    /**
+     *  useless
+
+     //2.save fields in local db
+     for (Map<String, String> tableMap : tableList) {
+     String[] dbTableName = tableMap.get("table_english_name").split("\\.");
+     List<FieldEntity> fieldList = hiveExtractImp.getFields(dbTableName[0], dbTableName[1]);
+     for (FieldEntity fieldEntity : fieldList) {
+     Map<String, Object> fieldMap = new HashMap<>();
+     fieldMap.put("datasource_id", dsId);
+     DSTableInfoDBExample dsTableInfoDBExample = new DSTableInfoDBExample();
+     dsTableInfoDBExample.createCriteria()
+     .andTableEnglishNameEqualTo(tableMap.get("table_english_name"))
+     .andDatasourceIdEqualTo(dsId);
+     List<DSTableInfoDB> list = dsTableInfoDBMapper.selectByExample(dsTableInfoDBExample);
+     if (list.isEmpty()) {
+     fieldMap.put("table_id", -1);
+     } else {
+     fieldMap.put("table_id", list.get(0).getId());
+     }
+     fieldMap.put("field_english_name", fieldEntity.getName());
+     String field = fieldEntity.getType();
+     fieldMap.put("field_type", field);
+     if (field.contains("varchar")) {
+     fieldMap.put("field_length", field.substring(field.indexOf("(") + 1, field.indexOf(")")));
+     } else {
+     fieldMap.put("field_length", null);
+     }
+     mapList.add(fieldMap);
+     }
+     }
+     if (dsFieldInfoDBMapper.insertFields(mapList) <= 0) {
+     _ret = false;
+     }
+     Map<String, Object> insertFieldMap = dsFieldInfoDBMapper.selectAll(mapList);
+     //3.add relation
+     int count = 0;
+     String[] dbName = new String[10000];
+     String[] name = new String[10000];
+     for (String tableName : tables) {
+     String[] dbTableName = tableName.split("\\.");
+     dbName[count] = dbTableName[0];
+     name[count] = dbTableName[1];
+     count++;
+     }
+     List<String> nameList = new ArrayList<>();
+     int j = 1, k = 1, isprimary = 0;
+     nameList.add(name[0]);
+     for (; j < count; j++) {
+     if (dbName[j].equals(dbName[j - 1])) {
+     nameList.add(name[j]);
+     } else {
+     fuckJavaGroup(j, hiveExtractImp, dbName, oldTable, nameList, dsId, insertFieldMap);
+     }
+     }
+     fuckJavaGroup(j, hiveExtractImp, dbName, oldTable, nameList, dsId, insertFieldMap);
+     return _ret;
+     **/
   }
 
-  private void fuckJavaGroup(int j, HiveExtractImp hiveExtractImp, String[] dbName, String oldTable,
+  public Set<Table> extractFieldsByTables(String datasourceId, List<Map<String, Object>> tableList)
+      throws Exception {
+    HiveCollectExtractor impl = getExtractObjByDsId(datasourceId);
+    List<TableEntity> tables = new ArrayList<>();
+    for (Map<String, Object> tableMap : tableList) {
+      String tableName = tableMap.get("physical_table").toString();
+      String databaseName = tableMap.get("physical_db").toString();
+      List<FieldEntity> fieldList = impl.getFields(databaseName, tableName);
+      TableEntity tableEntity = new TableEntity(databaseName, tableName);
+      tableEntity.setFieldEntityList(fieldList);
+      tables.add(tableEntity);
+    }
+    impl.setTableList(tables);
+    return impl.toDiffTables();
+  }
+
+  private void extractTables(HiveCollectExtractor hiveExtractImp, String dsId, String dataBase)
+      throws Exception {
+    hiveExtractImp.getAllTables(dataBase);
+  }
+
+  private void fuckJavaGroup(int j, HiveCollectExtractor hiveExtractImp, String[] dbName,
+      String oldTable,
       List<String> nameList, String dsId, Map<String, Object> insertFieldMap) throws Exception {
     Set<KeyInfo> set = hiveExtractImp
         .getKeyInfo(dbName[j - 1], nameList.toArray(new String[nameList.size()]));
@@ -472,12 +540,12 @@ public class MetaDataMgrApiService {
     Map<String, Object> responseMap = new HashMap<>();
     List<Object> tableRelation = new ArrayList<>();
     //获取数据源表信息
-    List<Map<String, Object>> TableInfoList = dsTableInfoDBMapper.selectTableInfo(mapRequest);
+    List<Map<String, Object>> TableInfoList = mdTableInfoDBMapper.selectTableInfo(mapRequest);
     StringBuilder tableIdBuilder = new StringBuilder();
     //循环获取表字段信息
     int a = 1;
     for (Map<String, Object> map : TableInfoList) {
-      List<Map<String, Object>> FieldInfolist = dsFieldInfoDBMapper.selectFieldInfo(map);
+      List<Map<String, Object>> FieldInfolist = mdFieldInfoDBMapper.selectFieldInfo(map);
       map.put("fields", FieldInfolist);
       if (a == 1) {
         tableIdBuilder.append("'").append(map.get("id")).append("'");
@@ -485,6 +553,9 @@ public class MetaDataMgrApiService {
         tableIdBuilder.append(",").append("'").append(map.get("id")).append("'");
       }
       a++;
+    }
+    if (tableIdBuilder.toString().length() == 0) {
+      tableIdBuilder.append("''");
     }
     //获取字段关联信息
     List<Map<String, String>> ReleationList = dsFieldRelDBMapper
@@ -513,7 +584,7 @@ public class MetaDataMgrApiService {
     if (map.get("relationId") == null || map.get("relationId").toString().trim().length() == 0) {
       List<Map<String, Object>> list = dsFieldRelDBMapper.selectReleationByfieldId(map);
       if (list != null && !list.isEmpty()) {
-       return -1;
+        return -1;
       }
       return dsFieldRelDBMapper.insert(map);
     } else {
@@ -673,7 +744,7 @@ public class MetaDataMgrApiService {
       String id = map.get("id").toString();
       String dataSourceId = map.get("data_source_id").toString();
       String[] split = tableEnglishName.split("\\.");
-      HiveExtractImp hiveExtract = getConnectById(dataSourceId);
+      HiveCollectExtractor hiveExtract = getConnectById(dataSourceId);
       List<FieldEntity> fields = hiveExtract
           .getFields(split[0], split[1]);
       List<Map<String, Object>> list = dsMetaInfoDBMapper.selectFieldsByName(id);
@@ -724,8 +795,8 @@ public class MetaDataMgrApiService {
     }
   }
 
-  private HiveExtractImp getConnectById(String id) {
-    HiveExtractImp _extract = null;
+  private HiveCollectExtractor getConnectById(String id) {
+    HiveCollectExtractor _extract = null;
 
     //需要确定当ds信息还没入库时，抽取表的
     int ids = Integer.parseInt(id);
@@ -742,7 +813,7 @@ public class MetaDataMgrApiService {
       _meta.setMysqlUser(_info_from_db.getHiveMetaUsername());
       _meta.setMysqlPass(Util.DecodePassword(_info_from_db.getHiveMetaPswd()));
       _info.setHiveMetaInfo(_meta);
-      _extract = new HiveExtractImp(_info);
+      _extract = new HiveCollectExtractor(_info);
     }
     return _extract;
   }
@@ -821,5 +892,9 @@ public class MetaDataMgrApiService {
       row.put("unionId", entry.getValue());
       dsFieldRelDBMapper.insertJoinInfo(row);
     }
+  }
+
+  public List<Map<String, String>> getLatestTableAndFieldsByDsId(Map<String, Object> dsParam) {
+    return mdFieldInfoDBMapper.getLatestFieldInfo(dsParam);
   }
 }

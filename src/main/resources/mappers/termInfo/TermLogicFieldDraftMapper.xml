@@ -789,7 +789,7 @@
     run_sql, model_params
     )
     VALUES
-    <foreach collection="list" item="list" index="index" separator=",">
+    <foreach collection="list" item="list" index="index" separator="," >
       (
       #{list.chineseName},
       #{list.englishName},

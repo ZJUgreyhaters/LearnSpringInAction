@@ -42,7 +42,7 @@ public class AppProperties {
 
     public static String getWithDefault(String key, String defaultKey){
         String ret = "";
-        if (defaultKey != null){
+        if (defaultKey != null && !"".equals(defaultKey)){
             ret = defaultKey;
         }else {
             ret = getInstance().properties.getProperty(key);

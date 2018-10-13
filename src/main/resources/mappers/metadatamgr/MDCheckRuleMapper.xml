@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.MDCheckRuleMapper">
+
+  <!--业务规则-->
+  <select id="selectBusin" resultType="Map">
+    select
+    max(businid) businid,
+    max(checkstatus)  checkstatus,
+    max(checksystem)  checksystem,
+    max(createdate) createdate,
+    max(creator) creator,
+    max(rulefirsttype) rulefirsttype,
+    max(rulename) rulename,
+    max(rulesecondtype) rulesecondtype ,
+    max(id) id ,
+    GROUP_CONCAT( techruleid ) techruleids
+    from (
+    SELECT
+    a.businid,
+    a.checkstatus,
+    nullif (c.name,a.checksystem) checksystem ,
+    DATE_FORMAT(a.createdate,"%Y-%m-%d")  createdate,
+    a.creator,
+    a.rulefirsttype,
+    a.rulename,
+    a.rulesecondtype,
+    b.techruleid,
+    a.id
+    FROM md_tcheckbusinrule  a
+    left join md_tchecktechrule b on a.businid=b.businid
+    left join md_mount_node_info c on c.is_busin_system ='1' and a.checksystem= c.id
+    <where>
+      <if test="businfilter !=null and businfilter.toString().length()>0">
+        AND (a.businid = #{businfilter} or  a.rulename  LIKE CONCAT(CONCAT('%',#{businfilter}), '%'))
+      </if>
+      <if test="checksystem !=null and checksystem.toString().length()>0">
+        AND a.checksystem  = #{checksystem}
+      </if>
+      <if test="checkstatus !=null and checkstatus.toString().length()>0">
+        AND a.checkstatus =  #{checkstatus}
+      </if>
+      <if test="ruletypefirst !=null and ruletypefirst.toString().length()>0">
+      AND a.rulefirsttype =  #{ruletypefirst}
+     </if>
+      <if test="ruletypesecond !=null and ruletypesecond.toString().length()>0">
+        AND a.rulesecondtype =  #{ruletypesecond}
+      </if>
+    </where>
+    ) x
+    group by businid
+    ORDER BY businid desc
+  </select>
+
+  <!--技术规则-->
+  <select id="selectTech" resultType="Map">
+
+    SELECT
+    a.businid,
+    a.checkstatus,
+    a.techruleid,
+    DATE_FORMAT(a.createdate,"%Y-%m-%d")  createdate,
+    a.creator,
+    a.rulefirsttype,
+    a.rulename,
+    a.rulesqltext,
+    a.sourcedata,
+    a.sourcetable,
+    a.sourdecol,
+    a.rulesecondtype,
+    a.id
+    FROM md_tchecktechrule  a
+    <where>
+      <if test="techfilter !=null and techfilter.toString().length()>0">
+        AND (a.techruleid = #{techfilter} or  a.rulename  LIKE CONCAT(CONCAT('%',#{businfilter}), '%'))
+      </if>
+      <if test="checksystem !=null and checksystem.toString().length()>0">
+        AND a.businid in  ( select businid  from md_tcheckbusinrule where checksystem= #{checksystem} )
+      </if>
+      <if test="checkstatus !=null and checkstatus.toString().length()>0">
+        AND a.checkstatus =  #{checkstatus}
+      </if>
+      <if test="ruletypefirst !=null and ruletypefirst.toString().length()>0">
+        AND a.rulefirsttype =  #{ruletypefirst}
+      </if>
+      <if test="ruletypesecond !=null and ruletypesecond.toString().length()>0">
+        AND a.rulesecondtype =  #{ruletypesecond}
+      </if>
+    </where>
+    ORDER BY id desc
+  </select>
+
+</mapper>

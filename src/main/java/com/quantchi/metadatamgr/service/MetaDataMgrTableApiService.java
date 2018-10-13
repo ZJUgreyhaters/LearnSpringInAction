@@ -7,6 +7,7 @@ import com.quantchi.metadatamgr.data.entity.DSTableInfoDB;
 import com.quantchi.metadatamgr.data.mapper.DSFieldRelDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSMetaInfoDBMapper;
 import com.quantchi.metadatamgr.data.mapper.DSTableInfoDBMapper;
+import com.quantchi.metadatamgr.data.mapper.MDTableInfoDBMapper;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -23,6 +24,10 @@ public class MetaDataMgrTableApiService {
   DSTableInfoDBMapper mapper;
   @Autowired
   DSMetaInfoDBMapper dsMetaInfoDBMapper;
+
+  @Autowired
+  MDTableInfoDBMapper mdTableInfoDBMapper;
+
 
   private static final Logger logger = LoggerFactory.getLogger(MetaDataMgrTableApiService.class);
 
@@ -90,5 +95,42 @@ public class MetaDataMgrTableApiService {
   public List<Map<String, String>> foreignkeys(Map<String, Object> map) throws Exception {
 
     return dsFieldRelDBMapper.foreignkeys(map);
+  }
+
+  public List<Map<String, Object>> searchTable(Map<String, Object> map) {
+    List<Map<String, Object>> listResult = mdTableInfoDBMapper.searchTable(map);
+    return listResult;
+  }
+
+  public String deleteTable(Map<String, Object> map) {
+    try {
+      mdTableInfoDBMapper.deleteTable(map);
+      return JsonResult.successJson();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("delete tableInfo error");
+    }
+  }
+
+  public String updateTable(Map<String, Object> map) {
+    try {
+      if (map.get("id") != null) {
+        mdTableInfoDBMapper.updateTable(map);
+      } else {
+        mdTableInfoDBMapper.insertTable(map);
+      }
+      return JsonResult.successJson();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("update tableInfo error");
+    }
+  }
+
+  public Map<String, Object> selectFields(Map<String, Object> map) {
+    return mdTableInfoDBMapper.selectFields(map);
+  }
+
+  public Map<String, Object> foreignNums(Map<String, Object> map) {
+    return mdTableInfoDBMapper.foreignNums(map);
   }
 }

@@ -6,11 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +28,7 @@ public class HiveConnection {
       ResultSetMetaData md = rs.getMetaData();
       int columnCount = md.getColumnCount(); // 获得列数
       while (rs.next()) {
-        Map<String, Object> map = new LinkedHashMap();
+        Map<String, Object> map = new LinkedHashMap<>();
         for (int i = 1; i <= columnCount; i++) {
           String columnName;
           if (md.getColumnName(i).contains(".")) {
@@ -92,7 +89,7 @@ public class HiveConnection {
 
   public static List<Map<String, Object>> exception() {
     List<Map<String, Object>> list = new ArrayList<>();
-    Map<String, Object> mapException = new HashedMap();
+    Map<String, Object> mapException = new HashMap<>();
     mapException.put("msg", "select error");
     list.add(mapException);
     return list;

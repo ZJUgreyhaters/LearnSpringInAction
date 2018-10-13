@@ -88,6 +88,8 @@ public class StandardMainInfo {
 
   private String threeName;
 
+  private String keyword;
+
   public String getOneName() {
     return oneName;
   }
@@ -422,5 +424,13 @@ public class StandardMainInfo {
 
   public void setVersion(String version) {
     this.version = version == null ? null : version.trim();
+  }
+
+  public String getKeyword() {
+    return keyword;
+  }
+
+  public void setKeyword(String keyword) {
+    this.keyword = keyword;
   }
 }

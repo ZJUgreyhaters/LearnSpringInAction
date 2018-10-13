@@ -130,7 +130,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
 
   Map<String, Object> mapping(List<Map<String, Object>> list) {
 
-    Map<String, Object> result = new LinkedHashMap();
+    Map<String, Object> result = new LinkedHashMap<>();
     if (list != null && list.size() > 0) {
       Set<String> strings = list.get(0).keySet();
       List<String> keys = new ArrayList<>(strings);
@@ -146,7 +146,7 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
   }
 
   Map<String, Object> departmentMapping(List<Map<String, Object>> list) {
-    Map<String, Object> result = new LinkedHashMap();
+    Map<String, Object> result = new LinkedHashMap<>();
     List<Object> list1 = new ArrayList<>();
     List<Object> list2 = new ArrayList<>();
     List<Object> list3 = new ArrayList<>();
@@ -183,10 +183,10 @@ public class CustomerPortrayalServiceImpl implements CustomerPortrayalService {
     List<Map<String, Object>> list6 = new ArrayList<>();
     for(Object obj :list2){
       Double balance = 0.0;
-      Map<String, Object> map1 = new HashMap();
+      Map<String, Object> map1 = new HashMap<>();
       List<Map<String,Object>> list5 = new ArrayList<>();
       List<Map<String,Object>> list7 = new ArrayList<>();
-      Map<String, Object> map2 = new HashMap();
+      Map<String, Object> map2 = new HashMap<>();
       for (Map<String, Object> map : list) {
         if (obj.equals(map.get("city"))) {
           Double fin_slo_balance = Double.parseDouble(map.get("fin_slo_balance").toString());

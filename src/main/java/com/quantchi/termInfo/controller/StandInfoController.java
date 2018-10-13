@@ -2,14 +2,15 @@ package com.quantchi.termInfo.controller;
 
 import com.quantchi.common.JsonResult;
 import com.quantchi.termInfo.pojo.StandardMainInfo;
+import com.quantchi.termInfo.pojo.TermMainInfo;
 import com.quantchi.termInfo.service.StandInfoService;
 import com.quantchi.termInfo.service.TermFileService;
+import com.quantchi.termInfo.util.TermStandConstant;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -118,7 +119,7 @@ public class StandInfoController {
    * @apiGroup StandInfoController
    * @apiParam {Integer} [page] 页数
    * @apiParam {Integer} [page_size] 每页数据数
-   * @apiParam {String} [entityName] 指标名称关键字
+   * @apiParam {String} [keyword] 查询关键字
    * @apiParam {String} [entityId] 指标编码
    * @apiParam {String} [entityCategory] 指标分类Id
    * @apiSuccess {String} code 成功或者错误代码200成功，500错误
@@ -159,9 +160,12 @@ public class StandInfoController {
   @ResponseBody
   @RequestMapping(value = "/selectMetric", method = {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
-  public String selectMetric(@RequestBody StandardMainInfo standardMainInfo) {
+  public String selectMetric(@RequestBody TermMainInfo termMainInfo) {
 
-    return standInfoService.selectMetric(standardMainInfo);
+    //if search keyword,set value to  entityName prop
+    /*if(termMainInfo.getKeyword()!=null)
+      termMainInfo.setEntityName(termMainInfo.getKeyword());*/
+    return standInfoService.selectMetric(termMainInfo);
   }
 
   /**
@@ -178,7 +182,7 @@ public class StandInfoController {
    * @apiParam {String} [entityDomainId] 指标主题id
    * @apiParam {String} [entityCategory] 指标分类
    * @apiParam {String} [standardLevel] 指标层次
-   * @apiParam {String} [business_definition] 业务定义
+   * @apiParam {String} [businessDefinition] 业务定义
    * @apiParam {String} [according] 制定依据
    * @apiParam {String} [supervision] 监管标志
    * @apiParam {String} [udcRuleName] 编码规则
@@ -189,8 +193,7 @@ public class StandInfoController {
    * @apiParam {String} [dataType] 数据类型
    * @apiParam {String} [dataUnit] 度量单位
    * @apiParam {String} [dataLength] 数据长度
-   * @apiParam {String} [dataPrecision] 数据精度
-   * @apiParam {String} [dataPrecision] 数据精度
+   * @apiParam {Integer} [dataPrecision] 数据精度
    * @apiParam {String} [dataArea] 取值范围
    * @apiParam {String} [udcCode] 引用代码
    * @apiParam {String} [systemUsed] 落地系统
@@ -208,10 +211,14 @@ public class StandInfoController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String insertMetric(@RequestBody Map<String, Object> map) {
     try {
-      Map<String, Object> mapResult = new HashMap();
-      if (map.get("entityId") == null || map.get("entityId").toString().length() == 0) {
-        String uuid = UUID.randomUUID().toString().replace("-", "");
-        map.put("entityId", uuid);
+      Map<String, Object> mapResult = new HashMap<>();
+      //if (map.get("entityId") == null || map.get("entityId").toString().length() == 0) {
+      if (map.get("isUpdate") == null) {
+        //String uuid = UUID.randomUUID().toString().replace("-", "");
+        if(map.get("entityType") == null)
+          map.put("entityType", TermStandConstant.BAISC_TERM_TYPE);
+        String entityId = standInfoService.getTermEntityId(map.get("entityType").toString());
+        map.put("entityId", entityId);
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         map.put("effective_time", sdf.format(date));
@@ -219,9 +226,11 @@ public class StandInfoController {
         standardMainInfo.setEntityName(map.get("entityName").toString());
         List<Map<String, Object>> list = standInfoService
             .selectMetricByEntityName(standardMainInfo);
+        Map<String,Object> dominMap = termFileService.selectDominById(map);
+        map.put("entityCategory",dominMap.get("id"));
         if (list == null || list.isEmpty()) {
           termFileService.insertTargetMain(map);
-          mapResult.put("id", uuid);
+          mapResult.put("id", entityId);
         }else{
           return JsonResult.errorJson("英文名已存在！");
         }
@@ -309,5 +318,95 @@ public class StandInfoController {
 
     return standInfoService.selectPhysicalProperty(map);
   }
+  /**
+   * @api {post} /api/insertMapping 添加指标和字段的映射
+   * @apiVersion 1.0.0
+   * @apiSampleRequest http://192.168.2.61:8082/quantchiAPI/api/insertMapping
+   * @apiName insertMapping
+   * @apiGroup StandInfoController
+   * @apiParam {String} [entityId] 指标编号
+   * @apiParam {String} [fieldId] 字段entityid
+   * @apiSuccess {String} code 成功或者错误代码200成功，500错误
+   * @apiSuccess {String} msg   成功或者错误信息
+   * @apiSuccess {List} [data] 返回数据 物理信息列表
+   */
+  //添加指标和字段的映射
+  @ResponseBody
+  @RequestMapping(value = "/insertMapping", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String insertMapping(@RequestBody Map<String, Object> map) {
+    return standInfoService.insertMapping(map);
+  }
 
+  //查询指标和字段的映射
+  @ResponseBody
+  @RequestMapping(value = "/selectMapping", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String selectMapping(@RequestBody Map<String, Object> map) {
+    return standInfoService.selectMapping(map);
+  }
+
+  //删除指标和字段的映射
+  @ResponseBody
+  @RequestMapping(value = "/deleteMapping", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String deleteMapping(@RequestBody Map<String, Object> map) {
+    return standInfoService.deleteMapping(map);
+  }
+
+  //标准添加和修改
+  @ResponseBody
+  @RequestMapping(value = "/insertStandard", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String insertStandard(@RequestBody Map<String, Object> map) {
+    return standInfoService.insertStandard(map);
+  }
+
+  //标准删除
+  @ResponseBody
+  @RequestMapping(value = "/deleteStandard", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String deleteStandard(@RequestBody Map<String, Object> map) {
+    return standInfoService.deleteStandard(map);
+  }
+
+  //指标标准关联关系的添加和修改
+  @ResponseBody
+  @RequestMapping(value = "/insertStandardRelation", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String insertStandardRelation(@RequestBody Map<String, Object> map) {
+    return standInfoService.insertStandardRelation(map);
+  }
+
+  //指标标准关联关系的删除
+  @ResponseBody
+  @RequestMapping(value = "/deleteStandardRelation", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String deleteStandardRelation(@RequestBody Map<String, Object> map) {
+    return standInfoService.deleteStandardRelation(map);
+  }
+
+  //指标标准关联关系的查询
+  @ResponseBody
+  @RequestMapping(value = "/selectStandardRelation", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String selectStandardRelation(@RequestBody Map<String, Object> map) {
+    return standInfoService.selectStandardRelation(map);
+  }
+
+  //查询指标采集列表
+  @ResponseBody
+  @RequestMapping(value = "/selectOperation", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String selectOperation(@RequestBody Map<String, Object> map) {
+    return standInfoService.selectOperation(map);
+  }
+
+  //指标删除
+  @ResponseBody
+  @RequestMapping(value = "/deleteTarget", method = {
+      RequestMethod.POST}, produces = "application/json;charset=UTF-8")
+  public String deleteTarget(@RequestBody Map<String, Object> map) {
+    return standInfoService.deleteTarget(map);
+  }
 }

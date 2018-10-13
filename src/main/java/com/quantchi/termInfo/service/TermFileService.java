@@ -40,4 +40,7 @@ public interface TermFileService {
 
   void updateTargetMain(Map<String, Object> map);
 
+  void insertOperation(Map<String, Object> map);
+
+  Map<String, Object> selectDominById(Map<String, Object> map);
 }

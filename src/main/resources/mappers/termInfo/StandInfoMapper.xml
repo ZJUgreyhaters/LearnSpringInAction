@@ -148,10 +148,13 @@
     left join term_standard_relation b on a.entity_id = b.entity_id
     left JOIN standard_main_info c on c.entity_id = b.standard_id
     <where>
+      <if test="keyword !=null and keyword.toString().length()>0">
+        a.entity_name LIKE CONCAT(CONCAT('%',#{keyword}), '%')
+        or a.entity_desc LIKE CONCAT(CONCAT('%',#{keyword}), '%')
+        or a.entity_id LIKE CONCAT(CONCAT('%',#{keyword}), '%')
+      </if>
       <if test="entityName !=null and entityName.toString().length()>0">
-        a.entity_name LIKE CONCAT(CONCAT('%',#{entityName}), '%')
-        or a.entity_desc LIKE CONCAT(CONCAT('%',#{entityName}), '%')
-        or a.entity_id LIKE CONCAT(CONCAT('%',#{entityName}), '%')
+        a.entity_name = #{entityName}
       </if>
       <if test="entityId !=null and entityId.toString().length()>0">
         and a.entity_id = #{entityId}
@@ -220,4 +223,13 @@
   <select id="selectMetricByEntityName" resultType="java.util.Map">
   select * from term_main_info where entity_name = #{entityName}
   </select>
+
+  <select id="getMaxNum" resultType="java.lang.Integer" parameterType="java.lang.String">
+    select ifnull((
+    select CAST(substring(entity_id,5) as signed) as num
+    from term_main_info
+    where entity_id like concat('%', #{0}, '%') order by num desc limit 1
+    ),0) as max
+  </select>
+
 </mapper>

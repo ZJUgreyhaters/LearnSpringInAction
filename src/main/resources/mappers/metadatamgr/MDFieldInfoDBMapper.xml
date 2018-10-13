@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.MDFieldInfoDBMapper">
+
+  <select id="searchField" resultType="Map">
+    select
+    a.id AS id,
+    IFNULL(a.entity_id,"") AS entity_id,
+    IFNULL(a.physical_field_hash,"") AS physical_field_hash,
+    IFNULL(a.physical_field,"") AS physical_field,
+    IFNULL(a.physical_field_desc,"") AS physical_field_desc,
+    IFNULL(a.physical_table,"") AS physical_table,
+    IFNULL(a.physical_table_id,"") AS physical_table_id,
+    IFNULL(a.physical_db,"") AS physical_db,
+    IFNULL(a.data_type,"") AS data_type,
+    IFNULL(a.data_length,"") AS data_length,
+    IFNULL(a.data_precision,"") AS data_precision,
+    IFNULL(a.data_pattern,"") AS data_pattern,
+    IFNULL(a.data_unit,"") AS data_unit,
+    IFNULL(a.partition_flag,"") AS partition_flag,
+    IFNULL(a.udc_rule_name,"") AS udc_rule_name,
+    IFNULL(a.udc_code,"") AS udc_code,
+    IFNULL(a.max,"") AS max,
+    IFNULL(a.min,"") AS min,
+    IFNULL(a.avg,"") AS avg,
+    IFNULL(a.distribution,"") AS distribution,
+    IFNULL(a.enumeration,"") AS enumeration,
+    IFNULL(a.data_null,"") AS data_null,
+    IFNULL(a.is_code_field,"") AS is_code_field,
+    IFNULL(a.field_number,"") AS field_number,
+    IFNULL(a.is_index,"") AS is_index,
+    IFNULL(a.reference_code_list,"") AS reference_code_list,
+    IFNULL(a.metadata_type,"") AS metadata_type,
+    IFNULL(a.effect_time,"") AS effect_time,
+    IFNULL(a.context_path,"") AS context_path,
+    IFNULL(a.is_primarykey,"") AS is_primarykey,
+    IFNULL(a.is_null,"") AS is_null,
+    IFNULL(a.partition_key,"") AS partition_key,
+    IFNULL(a.remark,"") AS remark,
+    IFNULL(a.is_sensitive_field,"") AS is_sensitive_field,
+    IFNULL(a.reference_code,"") AS reference_code,
+    IFNULL(a.datasource_id,"") AS datasource_id,
+    IFNULL(d.ds_name,"") AS datasource_name
+    from md_physical_field_info a
+    left join ds_meta_info d on a.datasource_id = d.id
+    <where>
+      <if test="id !=null and id.toString().length()>0">
+        and a.id = #{id}
+      </if>
+      <if test="table_id !=null and table_id.toString().length()>0">
+        and a.physical_table_id = #{table_id}
+      </if>
+      <if test="keywords !=null and keywords.toString().length()>0">
+        and a.physical_field
+        LIKE CONCAT(CONCAT('%',#{keywords}), '%')
+      </if>
+    </where>
+  </select>
+
+  <update id="updateField">
+    UPDATE md_physical_field_info
+    <set>
+      <if test="entity_id !=null and entity_id.toString().length()>0">
+        entity_id = #{entity_id},
+      </if>
+      <if test="physical_field_hash !=null and physical_field_hash.toString().length()>0">
+        physical_field_hash = #{physical_field_hash},
+      </if>
+      <if test="physical_field !=null and physical_field.toString().length()>0">
+        physical_field = #{physical_field},
+      </if>
+      <if test="physical_field_desc !=null and physical_field_desc.toString().length()>0">
+        physical_field_desc = #{physical_field_desc},
+      </if>
+      <if test="physical_table !=null and physical_table.toString().length()>0">
+        physical_table = #{physical_table},
+      </if>
+      <if test="physical_table_id !=null and physical_table_id.toString().length()>0">
+        physical_table_id = #{physical_table_id},
+      </if>
+      <if test="physical_db !=null and physical_db.toString().length()>0">
+        physical_db = #{physical_db},
+      </if>
+      <if test="data_type !=null and data_type.toString().length()>0">
+        data_type = #{data_type},
+      </if>
+      <if test="data_length !=null and data_length.toString().length()>0">
+        data_length = #{data_length},
+      </if>
+      <if test="data_precision !=null and data_precision.toString().length()>0">
+        data_precision = #{data_precision},
+      </if>
+      <if test="data_pattern !=null and data_pattern.toString().length()>0">
+        data_pattern = #{data_pattern},
+      </if>
+      <if test="data_unit !=null and data_unit.toString().length()>0">
+        data_unit = #{data_unit},
+      </if>
+      <if test="partition_flag !=null and partition_flag.toString().length()>0">
+        partition_flag = #{partition_flag},
+      </if>
+      <if test="udc_rule_name !=null and udc_rule_name.toString().length()>0">
+        udc_rule_name = #{udc_rule_name},
+      </if>
+      <if test="udc_code !=null and udc_code.toString().length()>0">
+        udc_code = #{udc_code},
+      </if>
+      <if test="max !=null and max.toString().length()>0">
+        max = #{max},
+      </if>
+      <if test="min !=null and min.toString().length()>0">
+        min = #{min},
+      </if>
+      <if test="avg !=null and avg.toString().length()>0">
+        avg = #{avg},
+      </if>
+      <if test="distribution !=null and distribution.toString().length()>0">
+        distribution = #{distribution},
+      </if>
+      <if test="enumeration !=null and enumeration.toString().length()>0">
+        enumeration = #{enumeration},
+      </if>
+      <if test="data_null !=null and data_null.toString().length()>0">
+        data_null = #{data_null},
+      </if>
+      <if test="is_code_field !=null and is_code_field.toString().length()>0">
+        is_code_field = #{is_code_field},
+      </if>
+      <if test="field_number !=null and field_number.toString().length()>0">
+        field_number = #{field_number},
+      </if>
+      <if test="is_index !=null and is_index.toString().length()>0">
+        is_index = #{is_index},
+      </if>
+      <if test="reference_code_list !=null and reference_code_list.toString().length()>0">
+        reference_code_list = #{reference_code_list},
+      </if>
+      <if test="metadata_type !=null and metadata_type.toString().length()>0">
+        metadata_type = #{metadata_type},
+      </if>
+      <if test="effect_time !=null and effect_time.toString().length()>0">
+        effect_time = #{effect_time},
+      </if>
+      <if test="context_path !=null and context_path.toString().length()>0">
+        context_path = #{context_path},
+      </if>
+      <if test="is_primarykey !=null and is_primarykey.toString().length()>0">
+        is_primarykey = #{is_primarykey},
+      </if>
+      <if test="is_null !=null and is_null.toString().length()>0">
+        is_null = #{is_null},
+      </if>
+      <if test="partition_key !=null and partition_key.toString().length()>0">
+        partition_key = #{partition_key},
+      </if>
+      <if test="remark !=null and remark.toString().length()>0">
+        remark = #{remark},
+      </if>
+      <if test="is_sensitive_field !=null and is_sensitive_field.toString().length()>0">
+        is_sensitive_field = #{is_sensitive_field},
+      </if>
+      <if test="reference_code !=null and reference_code.toString().length()>0">
+        reference_code = #{reference_code},
+      </if>
+      <if test="datasource_id !=null and datasource_id.toString().length()>0">
+        datasource_id = #{datasource_id},
+      </if>
+    </set>
+    where
+    id = #{id}
+  </update>
+
+  <insert id="insertField">
+    insert into md_physical_field_info (entity_id,physical_field_hash,physical_field,physical_field_desc
+    ,physical_table,physical_table_id,physical_db,data_type,data_length,data_precision,data_pattern
+    ,data_unit,partition_flag,udc_rule_name,udc_code,max,min,avg,distribution,enumeration,data_null
+    ,is_code_field,field_number,is_index,reference_code_list,metadata_type,effect_time,context_path
+    ,is_primarykey,is_null,partition_key,remark,is_sensitive_field,reference_code,datasource_id)
+    VALUES
+    (#{entity_id},#{physical_field_hash},#{physical_field},#{physical_field_desc
+    },#{physical_table},#{physical_table_id},#{physical_db},#{data_type},#{data_length},#{data_precision},#{data_pattern
+    },#{data_unit},#{partition_flag},#{udc_rule_name},#{udc_code},#{max},#{min},#{avg},#{distribution},#{enumeration},#{data_null
+    },#{is_code_field},#{field_number},#{is_index},#{reference_code_list},#{metadata_type},#{effect_time},#{context_path
+    },#{is_primarykey},#{is_null},#{partition_key},#{remark},#{is_sensitive_field},#{reference_code},#{datasource_id})
+  </insert>
+
+  <delete id="deleteField">
+    DELETE FROM md_physical_field_info WHERE id=#{id}
+  </delete>
+
+  <select id="selectFieldInfo" resultType="Map">
+    select
+    id,
+    physical_field as name
+    from md_physical_field_info
+    where table_id = #{id}
+    and datasource_id =#{datasource_id}
+  </select>
+
+  <select id="selectEntityIdById" resultType="java.lang.String">
+    select f.entity_id from md_physical_field_info f where f.id = #{0}
+  </select>
+
+  <select id="selectIdByEntityId" resultType="java.lang.String">
+    select f.id from md_physical_field_info f where f.entity_id = #{0}
+  </select>
+
+  <select id="selectIdByName" resultType="java.lang.String">
+    select f.id from md_physical_field_info f
+    join md_physical_table_info t on f.physical_table_id = t.id
+    where t.datasourceId = #{0} and t.physical_db = #{1} and
+          t.physical_table = #{2} and f.physical_field = #{3}
+  </select>
+
+  <select id="selectEntityIdByName" resultType="java.lang.String">
+    select f.entity_id from md_physical_field_info f
+    join md_physical_table_info t on f.physical_table_id = t.id
+    where t.datasourceId = #{0} and t.physical_db = #{1} and
+          t.physical_table = #{2} and f.physical_field = #{3}
+  </select>
+
+  <select id="getLatestFieldInfo" resultType="Map">
+    select concat(t1.physical_db, '.', t1.physical_table) as `table`,
+    f1.physical_field as field,
+    f1.data_type
+    from md_physical_table_info t1
+    left join md_physical_field_info f1 on t1.id = f1.physical_table_id
+    <where>
+      <if test="datasourceId !=null">
+        and datasourceId = #{datasourceId}
+      </if>
+    </where>
+  </select>
+</mapper>

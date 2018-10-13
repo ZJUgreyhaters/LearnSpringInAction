@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.MDCheckTechRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.MDCheckTechRule" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="techruleid" property="techRuleId" jdbcType="VARCHAR" />
+    <result column="businid" property="businId" jdbcType="VARCHAR" />
+    <result column="checkstatus" property="checkStatus" jdbcType="VARCHAR" />
+    <result column="rulename" property="ruleName" jdbcType="VARCHAR" />
+    <result column="sourcedata" property="sourceData" jdbcType="VARCHAR" />
+    <result column="sourcetable" property="sourceTable" jdbcType="VARCHAR" />
+    <result column="sourdecol" property="sourdeCol" jdbcType="VARCHAR" />
+    <result column="rulefirsttype" property="ruleFirstType" jdbcType="VARCHAR" />
+    <result column="rulesecondtype" property="ruleSecondType" jdbcType="VARCHAR" />
+    <result column="createdate" property="createDate" jdbcType="DATE" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.quantchi.metadatamgr.data.entity.MDCheckTechRule" extends="BaseResultMap" >
+    <result column="rulesqltext" property="ruleSqlText" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, techruleid, businid, checkstatus, rulename, sourcedata, sourcetable, sourdecol, 
+    rulefirsttype, rulesecondtype, createdate, creator
+  </sql>
+  <sql id="Blob_Column_List" >
+    rulesqltext
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from md_tchecktechrule
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from md_tchecktechrule
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByBusinessId" parameterType="java.lang.String" >
+    delete from md_tchecktechrule
+    where businid = #{businId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.MDCheckTechRule" >
+    insert into md_tchecktechrule (id, techruleid, businid, 
+      checkstatus, rulename, sourcedata, 
+      sourcetable, sourdecol, rulefirsttype, 
+      rulesecondtype, createdate, creator, 
+      rulesqltext)
+    values (#{id,jdbcType=INTEGER}, #{techRuleId,jdbcType=VARCHAR}, #{businId,jdbcType=VARCHAR},
+      #{checkStatus,jdbcType=VARCHAR}, #{ruleName,jdbcType=VARCHAR}, #{sourceData,jdbcType=VARCHAR},
+      #{sourceTable,jdbcType=VARCHAR}, #{sourdeCol,jdbcType=VARCHAR}, #{ruleFirstType,jdbcType=VARCHAR},
+      #{ruleSecondType,jdbcType=VARCHAR}, #{createDate,jdbcType=DATE}, #{creator,jdbcType=VARCHAR},
+      #{ruleSqlText,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.MDCheckTechRule" >
+    insert into md_tchecktechrule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="techRuleId != null" >
+        techruleid,
+      </if>
+      <if test="businId != null" >
+        businid,
+      </if>
+      <if test="checkStatus != null" >
+        checkstatus,
+      </if>
+      <if test="ruleName != null" >
+        rulename,
+      </if>
+      <if test="sourceData != null" >
+        sourcedata,
+      </if>
+      <if test="sourceTable != null" >
+        sourcetable,
+      </if>
+      <if test="sourdeCol != null" >
+        sourdecol,
+      </if>
+      <if test="ruleFirstType != null" >
+        rulefirsttype,
+      </if>
+      <if test="ruleSecondType != null" >
+        rulesecondtype,
+      </if>
+      <if test="createDate != null" >
+        createdate,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="ruleSqlText != null" >
+        rulesqltext,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="techRuleId != null" >
+        #{techRuleId,jdbcType=VARCHAR},
+      </if>
+      <if test="businId != null" >
+        #{businId,jdbcType=VARCHAR},
+      </if>
+      <if test="checkStatus != null" >
+        #{checkStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleName != null" >
+        #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceData != null" >
+        #{sourceData,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTable != null" >
+        #{sourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="sourdeCol != null" >
+        #{sourdeCol,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleFirstType != null" >
+        #{ruleFirstType,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleSecondType != null" >
+        #{ruleSecondType,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=DATE},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleSqlText != null" >
+        #{ruleSqlText,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.metadatamgr.data.entity.MDCheckTechRule" >
+    update md_tchecktechrule
+    <set >
+      <if test="techRuleId != null" >
+        techruleid = #{techRuleId,jdbcType=VARCHAR},
+      </if>
+      <if test="businId != null" >
+        businid = #{businId,jdbcType=VARCHAR},
+      </if>
+      <if test="checkStatus != null" >
+        checkstatus = #{checkStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleName != null" >
+        rulename = #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceData != null" >
+        sourcedata = #{sourceData,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTable != null" >
+        sourcetable = #{sourceTable,jdbcType=VARCHAR},
+      </if>
+      <if test="sourdeCol != null" >
+        sourdecol = #{sourdeCol,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleFirstType != null" >
+        rulefirsttype = #{ruleFirstType,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleSecondType != null" >
+        rulesecondtype = #{ruleSecondType,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        createdate = #{createDate,jdbcType=DATE},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleSqlText != null" >
+        rulesqltext = #{ruleSqlText,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.quantchi.metadatamgr.data.entity.MDCheckTechRule" >
+    update md_tchecktechrule
+    set techruleid = #{techRuleId,jdbcType=VARCHAR},
+      businid = #{businId,jdbcType=VARCHAR},
+      checkstatus = #{checkStatus,jdbcType=VARCHAR},
+      rulename = #{ruleName,jdbcType=VARCHAR},
+      sourcedata = #{sourceData,jdbcType=VARCHAR},
+      sourcetable = #{sourceTable,jdbcType=VARCHAR},
+      sourdecol = #{sourdeCol,jdbcType=VARCHAR},
+      rulefirsttype = #{ruleFirstType,jdbcType=VARCHAR},
+      rulesecondtype = #{ruleSecondType,jdbcType=VARCHAR},
+      createdate = #{createDate,jdbcType=DATE},
+      creator = #{creator,jdbcType=VARCHAR},
+      rulesqltext = #{ruleSqlText,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.metadatamgr.data.entity.MDCheckTechRule" >
+    update md_tchecktechrule
+    set techruleid = #{techRuleId,jdbcType=VARCHAR},
+      businid = #{businId,jdbcType=VARCHAR},
+      checkstatus = #{checkStatus,jdbcType=VARCHAR},
+      rulename = #{ruleName,jdbcType=VARCHAR},
+      sourcedata = #{sourceData,jdbcType=VARCHAR},
+      sourcetable = #{sourceTable,jdbcType=VARCHAR},
+      sourdecol = #{sourdeCol,jdbcType=VARCHAR},
+      rulefirsttype = #{ruleFirstType,jdbcType=VARCHAR},
+      rulesecondtype = #{ruleSecondType,jdbcType=VARCHAR},
+      createdate = #{createDate,jdbcType=DATE},
+      creator = #{creator,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

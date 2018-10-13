@@ -3,13 +3,22 @@ package com.quantchi.termInfo.serviceImpl;
 import com.quantchi.common.JsonResult;
 import com.quantchi.common.Paging;
 import com.quantchi.termInfo.mapper.StandInfoMapper;
+import com.quantchi.termInfo.mapper.TermFileMapper;
 import com.quantchi.termInfo.pojo.StandardMainInfo;
+import com.quantchi.termInfo.pojo.TermMainInfo;
 import com.quantchi.termInfo.service.StandInfoService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import com.quantchi.termInfo.util.TermStandConstant;
+import org.apache.ibatis.jdbc.Null;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +28,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class StandInfoServiceImpl implements StandInfoService {
 
+  private static final Logger logger = LoggerFactory.getLogger(StandInfoServiceImpl.class);
+
   @Autowired
   private StandInfoMapper standInfoMapper;
+
+  @Autowired
+  private TermFileMapper termFileMapper;
 
   @Override
   public String selectListCategory(Map<String, Object> mapCategory) {
@@ -39,12 +53,12 @@ public class StandInfoServiceImpl implements StandInfoService {
       }
       for (Object levelName : levelNameList) {
         List<Map<String, Object>> levelList = new ArrayList<>();
-        Map<String, Object> level = new HashMap();
+        Map<String, Object> level = new HashMap<>();
         level.put("name", levelName);
         level.put("id", levelName);
         for (Object dominName : domainNameList) {
           List<Map<String, Object>> domainList = new ArrayList<>();
-          Map<String, Object> domain = new HashMap();
+          Map<String, Object> domain = new HashMap<>();
           StringBuilder name = new StringBuilder();
           name.append(levelName).append("_").append(dominName);
           domain.put("id", name);
@@ -62,14 +76,14 @@ public class StandInfoServiceImpl implements StandInfoService {
                 List<Map<String, Object>> childrenTwoList = new ArrayList<>();
                 for (Map<String, Object> map1 : list) {
                   if (Objects.equals(map1.get("parentId"), map.get("id").toString())) {
-                    Map<String, Object> mapChilden = new HashMap();
+                    Map<String, Object> mapChilden = new HashMap<>();
                     mapChilden.put("id", map1.get("id"));
                     mapChilden.put("name", map1.get("name"));
                     mapChilden.put("parentId", map1.get("parentId"));
                     List<Map<String, Object>> childrenList = new ArrayList<>();
                     for (Map<String, Object> map3 : list) {
                       if (Objects.equals(map3.get("parentId"), map1.get("id").toString())) {
-                        Map<String, Object> mapChilden1 = new HashMap();
+                        Map<String, Object> mapChilden1 = new HashMap<>();
                         mapChilden1.put("id", map3.get("id"));
                         mapChilden1.put("name", map3.get("name"));
                         mapChilden1.put("parentId", map3.get("parentId"));
@@ -189,37 +203,61 @@ public class StandInfoServiceImpl implements StandInfoService {
   }
 
   @Override
-  public String selectMetric(StandardMainInfo standardMainInfo) {
+  public String selectMetric(TermMainInfo termMainInfo) {
     try {
-      if (standardMainInfo.getEntityCategory() != null
-          && standardMainInfo.getEntityCategory().length() > 0) {
-        String ids = standardMainInfo.getEntityCategory();
+      //logger.info("begin to select Metric");
+      if (termMainInfo.getEntityCategory() != null
+          && termMainInfo.getEntityCategory().length() > 0) {
+        String ids = termMainInfo.getEntityCategory();
         String[] splits = ids.split("--");
         if (splits.length == 1) {
-          standardMainInfo.setOneName(splits[0]);
+          termMainInfo.setOneName(splits[0]);
         } else if (splits.length == 2) {
-          standardMainInfo.setOneName(splits[0]);
-          standardMainInfo.setTwoName(splits[1]);
+          termMainInfo.setOneName(splits[0]);
+          termMainInfo.setTwoName(splits[1]);
         } else if (splits.length == 3) {
-          standardMainInfo.setOneName(splits[0]);
-          standardMainInfo.setTwoName(splits[1]);
-          standardMainInfo.setThreeName(splits[2]);
+          termMainInfo.setOneName(splits[0]);
+          termMainInfo.setTwoName(splits[1]);
+          termMainInfo.setThreeName(splits[2]);
         }
       }
-      List<Map<String, Object>> list = standInfoMapper.selectMetric(standardMainInfo);
+
+      //logger.info("begin to  call sql select Metric");
+      List<Map<String, Object>> list = standInfoMapper.selectMetric(termMainInfo);
+      //logger.info("begin to  loop result");
+      //不用每次都去db查，一次查询，建好层级关系，然后相应的更新 entityCategory
+      //这块会导致性能很差
+      List<Map<String, Object>> list1 = standInfoMapper.selectBusiness(null);
+      Map<String, Object> entityCategoryMap = list1.stream().collect(Collectors.toMap(i->i.get("id").toString(),i->i));
+
+      //update 10.6 这块其实是对没有格式化的那些entityCategory进行补充
+      //历史遗留问题导致部分没有被格式化
+      //后期观察确定是否还需要该段逻辑
       for (Map<String, Object> map : list) {
-        List<Map<String, Object>> list1 = standInfoMapper.selectBusiness(map);
-        StringBuilder str = new StringBuilder();
-        str.append(list1.get(0).get("businessTypeId")).append("--")
-            .append(list1.get(0).get("domainId")).append("--")
-            .append(list1.get(0).get("logicTableId"));
-        map.put("entityCategory", str);
+        //如果已经格式化了就不需要再处理了
+        if(map.get("entityCategory").toString().indexOf("--") > 0)
+          continue;
+
+        if(entityCategoryMap.containsKey(map.get("entityCategory").toString())){
+          Map<String,Objects> item = (Map<String, Objects>) entityCategoryMap.get(map.get("entityCategory").toString());
+          StringBuilder str = new StringBuilder();
+          /*str.append(list1.get(0).get("businessTypeId")).append("--")
+                  .append(list1.get(0).get("domainId")).append("--")
+                  .append(list1.get(0).get("logicTableId"));*/
+          str.append(item.get("businessTypeId")).append("--")
+                  .append(item.get("domainId")).append("--")
+                  .append(item.get("logicTableId"));
+          map.put("entityCategory", str);
+        }
       }
+
+      //logger.info("begin to  paging");
       String total = list.size() + "";
-      if (standardMainInfo.getPage_size() != null && standardMainInfo.getPage() != null) {
+      if (termMainInfo.getPage_size() != null && termMainInfo.getPage() != null) {
         list = Paging
-            .pagingPlug(list, standardMainInfo.getPage_size(), standardMainInfo.getPage());
+            .pagingPlug(list, termMainInfo.getPage_size(), termMainInfo.getPage());
       }
+      //logger.info("begin to return");
       return JsonResult.successJson(total, list);
     } catch (Exception e) {
       e.printStackTrace();
@@ -307,4 +345,173 @@ public class StandInfoServiceImpl implements StandInfoService {
     return standInfoMapper.selectMetricByEntityName(standardMainInfo);
   }
 
+  @Override
+  public String selectMapping(Map<String, Object> map) {
+    try {
+      List<Map<String, Object>> list = termFileMapper.selectPhysicalFile(map);
+      String total = String.valueOf(list.size());
+      if (Paging.judgment(map)) {
+        int page = Integer.parseInt(map.get("psge").toString());
+        int pageSize = Integer.parseInt(map.get("psge_size").toString());
+        list = Paging.pagingPlug(list, pageSize, page);
+      }
+      return JsonResult.successJson(total, list);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("select error！");
+    }
+  }
+
+  @Override
+  public String insertMapping(Map<String, Object> map) {
+    try {
+      termFileMapper.insertPhysicalFile(map);
+      return JsonResult.successJson();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("insert error！");
+    }
+  }
+
+  @Override
+  public String deleteMapping(Map<String, Object> map) {
+    try {
+      String ids = map.get("id").toString();
+      ids = "'" + ids.replaceAll(",", "','") + "'";
+      map.put("id",ids);
+      termFileMapper.deleteMapping(map);
+      return JsonResult.successJson();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("delete error！");
+    }
+  }
+
+  @Override
+  public String insertStandard(Map<String, Object> map) {
+    try {
+      if (map.get("entity_id") != null && map.get("entity_id").toString().length() > 0) {
+        termFileMapper.updateStandardMain(map);
+      } else {
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        map.put("entityId", uuid);
+        termFileMapper.insertStandardMain(map);
+      }
+      return JsonResult.successJson();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("insertStandard error！");
+    }
+  }
+
+  @Override
+  public String deleteStandard(Map<String, Object> map) {
+    try {
+      String ids = map.get("id").toString();
+      ids = "'" + ids.replaceAll(",", "','") + "'";
+      map.put("id",ids);
+      termFileMapper.deleteStandard(map);
+      return JsonResult.successJson();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("deleteStandard error！");
+    }
+  }
+
+  @Override
+  public String insertStandardRelation(Map<String, Object> map) {
+    try {
+      List<Map<String, Object>> resultList = termFileMapper.selectStandard(map);
+      if (resultList == null || resultList.isEmpty()) {
+        termFileMapper.insertStandard(map);
+      } else {
+        termFileMapper.updateStandard(map);
+      }
+      return JsonResult.successJson();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("deleteStandardRelation error！");
+    }
+  }
+
+  @Override
+  public String deleteStandardRelation(Map<String, Object> map) {
+    try {
+      String ids = map.get("id").toString();
+      ids = "'" + ids.replaceAll(",", "','") + "'";
+      map.put("id",ids);
+      termFileMapper.deleteStandardRelation(map);
+      return JsonResult.successJson();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("deleteStandardRelation error！");
+    }
+  }
+
+  @Override
+  public String selectStandardRelation(Map<String, Object> map) {
+    try {
+      List<Map<String, Object>> result = termFileMapper.selectStandardRelation(map);
+      String total = String.valueOf(result.size());
+      if (Paging.judgment(map)) {
+        int page = Integer.parseInt(map.get("psge").toString());
+        int pageSize = Integer.parseInt(map.get("psge_size").toString());
+        result = Paging.pagingPlug(result, pageSize, page);
+      }
+      return JsonResult.successJson(total, result);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("selectStandardRelation error！");
+    }
+  }
+
+  @Override
+  public String selectOperation(Map<String, Object> map) {
+    try {
+      List<Map<String, Object>> result = termFileMapper.selectOperation(map);
+      String total = String.valueOf(result.size());
+      if (Paging.judgment(map)) {
+        int page = Integer.parseInt(map.get("psge").toString());
+        int pageSize = Integer.parseInt(map.get("psge_size").toString());
+        result = Paging.pagingPlug(result, pageSize, page);
+      }
+      return JsonResult.successJson(total, result);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("selectOperation error！");
+    }
+  }
+
+  public String getTermEntityId(String type){
+    String entityId = "";
+    switch (type){
+      case TermStandConstant.BAISC_TERM_TYPE:
+        entityId = TermStandConstant.BAISC_TERM_PREV;
+        break;
+      case TermStandConstant.DERIVATIVE_TERM_TYPE:
+        entityId = TermStandConstant.DERIVATIVE_TERM_PREV;
+        break;
+      default:
+        entityId = TermStandConstant.BAISC_TERM_PREV;
+        break;
+    }
+
+    Integer count = standInfoMapper.getMaxNum(entityId);
+    entityId += String.format("%06d", ++count);
+    return entityId;
+  }
+
+  @Override
+  public String deleteTarget(Map<String, Object> map) {
+    try {
+      String ids = map.get("id").toString();
+      ids = "'" + ids.replaceAll(",", "','") + "'";
+      map.put("id",ids);
+      termFileMapper.deleteTarget(map);
+      return JsonResult.successJson();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return JsonResult.errorJson("deleteStandardRelation error！");
+    }
+  }
 }

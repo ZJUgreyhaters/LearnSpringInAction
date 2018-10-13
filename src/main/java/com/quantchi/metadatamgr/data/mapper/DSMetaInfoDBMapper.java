@@ -45,4 +45,5 @@ public interface DSMetaInfoDBMapper {
 
   void updateField(@Param("fieldName") String fieldName, @Param("fieldId") String fieldId);
 
+  List<DSMetaInfoDB> selectAll(Map<String,Object> map);
 }

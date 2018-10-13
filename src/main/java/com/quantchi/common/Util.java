@@ -7,12 +7,16 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.BASE64Decoder;
+import java.util.Base64;
 
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Util {
 
@@ -55,12 +59,38 @@ public class Util {
     public static String DecodePassword(String password){
 
         try {
-            String pswdWithSalt = new String((new BASE64Decoder()).decodeBuffer(password));
+            String pswdWithSalt = new String(Base64.getDecoder().decode(password));
             String salt = AppProperties.getWithDefault("base64.salt","sha1$liangzhi@dmpxitong-secret3366");
             return pswdWithSalt.replace(salt,"");
         }catch (Exception e){
             logger.error("DecodePassword error:"+e.getMessage());
             return "";
         }
+    }
+
+    public static String dateToString(Date time){
+        SimpleDateFormat formatter;
+        formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(time);
+    }
+
+    public static Object chkEmptyStringToNull(Object obj){
+        if(obj instanceof String){
+            if("".equals(obj))
+                obj = null;
+        }
+        return obj;
+    }
+
+    public static String processTemplate(String template, Map<String, Object> params){
+        StringBuffer sb = new StringBuffer();
+        Matcher m = Pattern.compile("\\$\\{\\w+\\}").matcher(template);
+        while (m.find()) {
+            String param = m.group();
+            Object value = params.get(param.substring(2, param.length() - 1));
+            m.appendReplacement(sb, value==null ? "" : value.toString());
+        }
+        m.appendTail(sb);
+        return sb.toString();
     }
 }

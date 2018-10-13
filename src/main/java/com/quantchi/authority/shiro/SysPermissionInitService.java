@@ -101,7 +101,6 @@ public class SysPermissionInitService {
         }
 
         sysPermissionInits.put("/api/login", "DeniyAllFilter");
-        sysPermissionInits.put("/api/basicQuery", "authc, MyRoleFilter[75]");
         return this.sysPermissionInits;
     }
 

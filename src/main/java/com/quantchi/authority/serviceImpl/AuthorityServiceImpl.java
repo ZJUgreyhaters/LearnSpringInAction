@@ -172,7 +172,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 
     @Override
     public void deleRoleAuthRela(Map<String, Object> map){
-        List<Tauthrolerela> roleRelas=(List)map.get("authRoleRela");
+        List<Tauthrolerela> roleRelas=(List<Tauthrolerela>)map.get("authRoleRela");
         String roleRelaObjects = JSONObject.toJSONString(roleRelas);
         roleRelas=JSONObject.parseArray(roleRelaObjects,Tauthrolerela.class);
 
@@ -186,7 +186,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     public  void modifyRole(Map<String, Object> map){
         Map<String,Object>  modifyRole = (Map<String,Object>) map.get("role");
 
-        List<Tauthrolerela> addRela = (List)map.get("addauthRoleRela");
+        List<Tauthrolerela> addRela = (List<Tauthrolerela>)map.get("addauthRoleRela");
         authRoleMapper.updateRole(modifyRole);
         Integer roldId = (Integer)modifyRole.get("l_roleid");
         authorityMapper.deleRoleRelaByRoleId( roldId );

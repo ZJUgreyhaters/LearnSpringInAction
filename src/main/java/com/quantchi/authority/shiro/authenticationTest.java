@@ -7,6 +7,8 @@ import com.quantchi.authority.service.AuthorityService;
 import com.quantchi.authority.serviceImpl.AuthorityServiceImpl;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
@@ -18,7 +20,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @ClassName: authenticationTest
@@ -32,16 +36,6 @@ public class authenticationTest {
     private static final Logger logger = LoggerFactory.getLogger(authenticationTest.class);
     @Autowired
     private AuthorityRoleMapper authorityRoleMapper;
-
-    @Test
-    public void testJson(){
-        String s = "This is a  test";
-        int index = s.indexOf("is") + "is".length();
-        String ss = s.substring(index, index+1);
-        ss.replace("is", "***");
-        String xxx = s.substring(s.indexOf("test")+"test".length());
-        ss = s;
-    }
 
     @Test
     public void testLogin(){

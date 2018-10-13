@@ -25,6 +25,98 @@ public class DSMetaInfoDB {
 
     private String table_num;
 
+    private String mountNodeId;
+
+    private String dsEnglishName;
+
+    private String effectiveTime;
+
+    private String metadataType;
+
+    private String contextPath;
+
+    private String creationDate;
+
+    private String operationSystem;
+
+    private String databaseVersion;
+
+    private String databaseInstance;
+
+    private String databaseDesc;
+
+    public String getDsEnglishName() {
+        return dsEnglishName;
+    }
+
+    public void setDsEnglishName(String dsEnglishName) {
+        this.dsEnglishName = dsEnglishName;
+    }
+
+    public String getEffectiveTime() {
+        return effectiveTime;
+    }
+
+    public void setEffectiveTime(String effectiveTime) {
+        this.effectiveTime = effectiveTime;
+    }
+
+    public String getMetadataType() {
+        return metadataType;
+    }
+
+    public void setMetadataType(String metadataType) {
+        this.metadataType = metadataType;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
+    }
+
+    public String getDatabaseVersion() {
+        return databaseVersion;
+    }
+
+    public void setDatabaseVersion(String databaseVersion) {
+        this.databaseVersion = databaseVersion;
+    }
+
+    public String getDatabaseInstance() {
+        return databaseInstance;
+    }
+
+    public void setDatabaseInstance(String databaseInstance) {
+        this.databaseInstance = databaseInstance;
+    }
+
+    public String getDatabaseDesc() {
+        return databaseDesc;
+    }
+
+    public void setDatabaseDesc(String databaseDesc) {
+        this.databaseDesc = databaseDesc;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -119,5 +211,13 @@ public class DSMetaInfoDB {
 
     public void setTable_num(String table_num) {
         this.table_num = table_num;
+    }
+
+    public String getMountNodeId() {
+        return mountNodeId;
+    }
+
+    public void setMountNodeId(String mountNodeId) {
+        this.mountNodeId = mountNodeId;
     }
 }

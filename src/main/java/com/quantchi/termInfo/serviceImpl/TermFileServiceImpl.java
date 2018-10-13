@@ -2,6 +2,7 @@ package com.quantchi.termInfo.serviceImpl;
 
 import com.quantchi.termInfo.mapper.TermFileMapper;
 import com.quantchi.termInfo.service.TermFileService;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,5 +95,21 @@ public class TermFileServiceImpl implements TermFileService {
   @Override
   public void updateTargetMain(Map<String, Object> map) {
     termFileMapper.updateTargetMain(map);
+  }
+
+  @Override
+  public void insertOperation(Map<String, Object> map) {
+    termFileMapper.insertOperation(map);
+  }
+
+  @Override
+  public Map<String, Object> selectDominById(Map<String, Object> map) {
+    String entityCategory = map.get("entityCategory").toString();
+    String[] split = entityCategory.split("--");
+    Map<String, Object> dominMap = new HashMap();
+    dominMap.put("business_type_id",split[0]);
+    dominMap.put("domain_id",split[1]);
+    dominMap.put("logic_table_id",split[2]);
+    return termFileMapper.selectDominById(dominMap);
   }
 }

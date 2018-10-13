@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.MDSchemaDiffMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.MDSchemaDiff" >
+    <id column="version" property="version" jdbcType="VARCHAR" />
+    <result column="baseline" property="baseline" jdbcType="VARCHAR" />
+    <result column="submitter" property="submitter" jdbcType="VARCHAR" />
+    <result column="date" property="date" jdbcType="TIMESTAMP" />
+    <result column="additions" property="additions" jdbcType="SMALLINT" />
+    <result column="deletions" property="deletions" jdbcType="SMALLINT" />
+    <result column="changes" property="changes" jdbcType="SMALLINT" />
+    <result column="field_amount" property="fieldAmount" jdbcType="INTEGER" />
+    <result column="table_amount" property="tableAmount" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.quantchi.metadatamgr.data.entity.MDSchemaDiff" extends="BaseResultMap" >
+    <result column="desc" property="desc" jdbcType="LONGVARCHAR" />
+    <result column="diff" property="diff" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    version, baseline, submitter, date, additions, deletions, changes,field_amount,table_amount
+  </sql>
+  <sql id="Blob_Column_List" >
+    desc, diff
+  </sql>
+  <select id="selectByDatasourceDate" resultType="java.lang.Integer">
+    select count(*)
+    from md_schema_diff
+    where datasource_id = #{0} and version like concat('%', #{1}, '%')
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from md_schema_diff
+    where version = #{version,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.MDSchemaDiff" >
+    insert into md_schema_diff (datasource_id,version, baseline, submitter,
+      date, additions, deletions, 
+      changes, desc, diff,field_amount,table_amount
+      )
+    values (#{datasourceId,jdbcType=VARCHAR},#{version,jdbcType=VARCHAR}, #{baseline,jdbcType=VARCHAR}, #{submitter,jdbcType=VARCHAR},
+      #{date,jdbcType=TIMESTAMP}, #{additions,jdbcType=SMALLINT}, #{deletions,jdbcType=SMALLINT}, 
+      #{changes,jdbcType=SMALLINT}, #{desc,jdbcType=LONGVARCHAR}, #{diff,jdbcType=LONGVARCHAR},#{fieldAmount,jdbcType=INTEGER},#{tableAmount,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.MDSchemaDiff" >
+    insert into md_schema_diff
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="datasourceId != null" >
+        datasource_id,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="baseline != null" >
+        baseline,
+      </if>
+      <if test="submitter != null" >
+        submitter,
+      </if>
+      <if test="date != null" >
+        date,
+      </if>
+      <if test="additions != null" >
+        additions,
+      </if>
+      <if test="deletions != null" >
+        deletions,
+      </if>
+      <if test="changes != null" >
+        changes,
+      </if>
+      <if test="desc != null" >
+        desc,
+      </if>
+      <if test="diff != null" >
+        diff,
+      </if>
+      <if test="fieldAmount != null" >
+        field_amount,
+      </if>
+      <if test="tableAmount != null" >
+        table_amount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="datasourceId != null" >
+        #{datasourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="baseline != null" >
+        #{baseline,jdbcType=VARCHAR},
+      </if>
+      <if test="submitter != null" >
+        #{submitter,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null" >
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="additions != null" >
+        #{additions,jdbcType=SMALLINT},
+      </if>
+      <if test="deletions != null" >
+        #{deletions,jdbcType=SMALLINT},
+      </if>
+      <if test="changes != null" >
+        #{changes,jdbcType=SMALLINT},
+      </if>
+      <if test="desc != null" >
+        #{desc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="diff != null" >
+        #{diff,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="fieldAmount != null" >
+        #{fieldAmount,jdbcType=INTEGER},
+      </if>
+      <if test="tableAmount != null" >
+        #{tableAmount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.metadatamgr.data.entity.MDSchemaDiff" >
+    update md_schema_diff
+    <set >
+      <if test="baseline != null" >
+        baseline = #{baseline,jdbcType=VARCHAR},
+      </if>
+      <if test="submitter != null" >
+        submitter = #{submitter,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null" >
+        date = #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="additions != null" >
+        additions = #{additions,jdbcType=SMALLINT},
+      </if>
+      <if test="deletions != null" >
+        deletions = #{deletions,jdbcType=SMALLINT},
+      </if>
+      <if test="changes != null" >
+        changes = #{changes,jdbcType=SMALLINT},
+      </if>
+      <if test="desc != null" >
+        desc = #{desc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="diff != null" >
+        diff = #{diff,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where version = #{version,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.quantchi.metadatamgr.data.entity.MDSchemaDiff" >
+    update md_schema_diff
+    set baseline = #{baseline,jdbcType=VARCHAR},
+      submitter = #{submitter,jdbcType=VARCHAR},
+      date = #{date,jdbcType=TIMESTAMP},
+      additions = #{additions,jdbcType=SMALLINT},
+      deletions = #{deletions,jdbcType=SMALLINT},
+      changes = #{changes,jdbcType=SMALLINT},
+      desc = #{desc,jdbcType=LONGVARCHAR},
+      diff = #{diff,jdbcType=LONGVARCHAR}
+    where version = #{version,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.metadatamgr.data.entity.MDSchemaDiff" >
+    update md_schema_diff
+    set baseline = #{baseline,jdbcType=VARCHAR},
+      submitter = #{submitter,jdbcType=VARCHAR},
+      date = #{date,jdbcType=TIMESTAMP},
+      additions = #{additions,jdbcType=SMALLINT},
+      deletions = #{deletions,jdbcType=SMALLINT},
+      changes = #{changes,jdbcType=SMALLINT}
+    where version = #{version,jdbcType=VARCHAR}
+  </update>
+</mapper>

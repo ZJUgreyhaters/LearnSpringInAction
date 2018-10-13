@@ -1105,83 +1105,6 @@
   },
   {
     "type": "post",
-    "url": "/api/getTableColumn",
-    "title": "获取库表字段信息",
-    "version": "1.0.0",
-    "sampleRequest": [
-      {
-        "url": "http://192.168.2.61:8082/quantchiAPI/api/getTableColumn"
-      }
-    ],
-    "name": "modifyAuth",
-    "group": "AuthorityDetailController",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "code",
-            "description": "<p>成功或者错误代码200成功，500错误</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "msg",
-            "description": "<p>成功或者错误信息</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "List",
-            "optional": true,
-            "field": "data",
-            "description": "<p>返回数据 指标信息列表</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "data.database",
-            "description": "<p>数据库</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "List",
-            "optional": true,
-            "field": "data.tables",
-            "description": "<p>表</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "tables.tableName",
-            "description": "<p>表名</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "List",
-            "optional": true,
-            "field": "tables.columns",
-            "description": "<p>字段名称</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": true,
-            "field": "data.total",
-            "description": "<p>返回总条数</p>"
-          }
-        ]
-      }
-    },
-    "filename": "../../java/com/quantchi/authority/controller/AuthorityDetailController.java",
-    "groupTitle": "AuthorityDetailController"
-  },
-  {
-    "type": "post",
     "url": "/api/getUserByUserName",
     "title": "根据姓名查员工",
     "version": "1.0.0",
@@ -2299,6 +2222,462 @@
     "groupTitle": "IntelQueryController"
   },
   {
+    "type": "post",
+    "url": "/api/job",
+    "title": "添加任务接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/job"
+      }
+    ],
+    "name": "add_job",
+    "group": "JobController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jobName",
+            "description": "<p>任务名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "parentTreeId",
+            "description": "<p>悬挂节点id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "datasourceId",
+            "description": "<p>数据源id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "frequency",
+            "description": "<p>频率：0为一次性，1为每天，2为每周，3位每月</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int[]",
+            "optional": false,
+            "field": "whichDay",
+            "description": "<p>频率为周和月时，数组中保存一周中或一个月中哪几天触发</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "LocalTime",
+            "optional": false,
+            "field": "time",
+            "description": "<p>记录每天触发的具体时间</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "LocalDate",
+            "optional": false,
+            "field": "startDate",
+            "description": "<p>记录开始日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "LocalDate",
+            "optional": false,
+            "field": "endDate",
+            "description": "<p>记录结束日期</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/quartz/controller/JobController.java",
+    "groupTitle": "JobController"
+  },
+  {
+    "type": "post",
+    "url": "/api/deleteJob",
+    "title": "删除任务接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/deleteJob"
+      }
+    ],
+    "name": "deleteJob",
+    "group": "JobController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object[]",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.id",
+            "description": "<p>任务列表</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.jobName",
+            "description": "<p>任务列表</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/quartz/controller/JobController.java",
+    "groupTitle": "JobController"
+  },
+  {
+    "type": "post",
+    "url": "/api/job/exchangeState",
+    "title": "切换状态接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/job/exchangeState"
+      }
+    ],
+    "name": "exchangeState",
+    "group": "JobController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object[]",
+            "optional": false,
+            "field": "job",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "job.id",
+            "description": "<p>任务ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "job.status",
+            "description": "<p>任务状态</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/quartz/controller/JobController.java",
+    "groupTitle": "JobController"
+  },
+  {
+    "type": "POST",
+    "url": "/api/execJob",
+    "title": "立即执行任务接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/execJob"
+      }
+    ],
+    "name": "execJob",
+    "group": "JobController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "List",
+            "optional": true,
+            "field": "job",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "job.id",
+            "description": "<p>任务ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "job.jobName",
+            "description": "<p>任务ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "job.state",
+            "description": "<p>任务状态</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/quartz/controller/JobController.java",
+    "groupTitle": "JobController"
+  },
+  {
+    "type": "get",
+    "url": "/api/job",
+    "title": "获取任务信息列表",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/job"
+      }
+    ],
+    "name": "getJob",
+    "group": "JobController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "keyword",
+            "description": "<p>任务关键字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "status",
+            "description": "<p>任务状态  0 未激活 1 激活</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "datasourceId",
+            "description": "<p>数据源</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "page",
+            "description": "<p>分页页码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "page_size",
+            "description": "<p>分页大小</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>任务信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/quartz/controller/JobController.java",
+    "groupTitle": "JobController"
+  },
+  {
+    "type": "post",
+    "url": "/api/job/updateJob",
+    "title": "更新任务接口",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/job/updateJob"
+      }
+    ],
+    "name": "updateJob",
+    "group": "JobController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "List",
+            "optional": true,
+            "field": "job",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "job.id",
+            "description": "<p>任务ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "job.jobName",
+            "description": "<p>任务名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "job.parentTreeId",
+            "description": "<p>悬挂节点id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "job.datasourceId",
+            "description": "<p>数据源id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "job.datasourceName",
+            "description": "<p>数据源名称</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/quartz/controller/JobController.java",
+    "groupTitle": "JobController"
+  },
+  {
     "type": "get",
     "url": "/api/lineage",
     "title": "血缘关系查询接口",
@@ -2314,7 +2693,7 @@
       }
     ],
     "name": "lineage",
-    "group": "LineAgeController",
+    "group": "LineageController",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -2426,7 +2805,1241 @@
       }
     },
     "filename": "../../java/com/quantchi/lineage/controller/LineageController.java",
-    "groupTitle": "LineAgeController"
+    "groupTitle": "LineageController"
+  },
+  {
+    "type": "get",
+    "url": "/api/physicalLineage/downstream",
+    "title": "查询downstream",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "name": "physical_Lineage_downstream",
+    "group": "LineageController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "fieldName",
+            "description": "<p>字段名(db.table.field)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "datasourceId",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "level",
+            "description": "<p>要查看几层的呢</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回血缘数据列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.nodes",
+            "description": "<p>返回血缘数据列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.nodes.phsicalFieldId",
+            "description": "<p>字段id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.nodes.phsicalFieldName",
+            "description": "<p>物理字段名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.nodes.phsicalFieldDesc",
+            "description": "<p>物理字段中文名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.nodes.isOpen",
+            "description": "<p>是否可点击</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.edges",
+            "description": "<p>边信息列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.edges.source",
+            "description": "<p>边源节点id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.edges.target",
+            "description": "<p>边目标节点id</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/lineage/controller/LineageController.java",
+    "groupTitle": "LineageController"
+  },
+  {
+    "type": "get",
+    "url": "/api/physicalLineage/upstream",
+    "title": "查询upstream",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "version": "1.0.0",
+    "name": "physical_Lineage_upstream",
+    "group": "LineageController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "fieldName",
+            "description": "<p>字段名(db.table.field)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "datasourceId",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "level",
+            "description": "<p>要查看几层的呢</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": true,
+            "field": "data",
+            "description": "<p>与上面相同</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/lineage/controller/LineageController.java",
+    "groupTitle": "LineageController"
+  },
+  {
+    "type": "post",
+    "url": "/api/login",
+    "title": "用户登录",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/login"
+      }
+    ],
+    "name": "login",
+    "group": "LoginController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "username",
+            "description": "<p>用户名</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "password",
+            "description": "<p>密码</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>登录成功或者错误信息</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/authority/controller/LoginController.java",
+    "groupTitle": "LoginController"
+  },
+  {
+    "type": "post",
+    "url": "/api/schemaDiff/deleteJob",
+    "title": "删除元数据比对任务",
+    "version": "1.0.0",
+    "name": "deleteJob",
+    "group": "MetaDataDsDiffController______",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "List",
+            "optional": false,
+            "field": "jobId",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data",
+            "description": "<blockquote> <p>=1 成功</p> </blockquote>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataDsDiffController.java",
+    "groupTitle": "MetaDataDsDiffController______"
+  },
+  {
+    "type": "get",
+    "url": "/api/schemaDiff/getAllJob",
+    "title": "获取查询元数据比对任务",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/schemaDiff/getAllJob"
+      }
+    ],
+    "name": "getAllJob",
+    "group": "MetaDataDsDiffController______",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "keyword",
+            "description": "<p>任务关键字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "status",
+            "description": "<p>任务状态</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "page",
+            "description": "<p>分页页码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "pageSize",
+            "description": "<p>分页大小</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.jobName",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.source",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.target",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.status",
+            "description": "<p>0是未完成，1是已完成</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataDsDiffController.java",
+    "groupTitle": "MetaDataDsDiffController______"
+  },
+  {
+    "type": "post",
+    "url": "/api/schemaDiff/getAllVersion",
+    "title": "获取所有的版本",
+    "version": "1.0.0",
+    "name": "getAllSchemaVersion",
+    "group": "MetaDataDsDiffController______",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "page",
+            "description": "<p>分页页码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "pageSize",
+            "description": "<p>分页大小</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "tag",
+            "description": "<p>用户定的版本号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "datasourceId",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": true,
+            "field": "baseline",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "submitter",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dateMin",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "dateMax",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.additions",
+            "description": "<p>增加</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.baseline",
+            "description": "<p>基线版本</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": true,
+            "field": "data.date",
+            "description": "<p>日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.desc",
+            "description": "<p>版本描述</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.submitter",
+            "description": "<p>定版人员</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.changes",
+            "description": "<p>修改</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.deletions",
+            "description": "<p>删除</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.tag",
+            "description": "<p>用户写的版本编号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.version",
+            "description": "<p>版本号</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataDsDiffController.java",
+    "groupTitle": "MetaDataDsDiffController______"
+  },
+  {
+    "type": "get",
+    "url": "/api/schemaDiff/insertDiffJob",
+    "title": "插入对比Job",
+    "version": "1.0.0",
+    "name": "insertDiffJob",
+    "group": "MetaDataDsDiffController______",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "jobName",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "sourceId",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "targetId",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data",
+            "description": "<p>生成的ID</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataDsDiffController.java",
+    "groupTitle": "MetaDataDsDiffController______"
+  },
+  {
+    "type": "get",
+    "url": "/api/schemaDiffByJob/",
+    "title": "不同数据源比对详情",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/schemaDiffByJob"
+      }
+    ],
+    "name": "schemaDiff_detail",
+    "group": "MetaDataDsDiffController______",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "jobId",
+            "description": "<p>任务id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "page",
+            "description": "<p>分页页码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "pageSize",
+            "description": "<p>分页大小</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "keyword",
+            "description": "<p>筛选字段</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "operation",
+            "description": "<p>筛选operation (ADD, DEL, MOD)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": true,
+            "field": "data",
+            "description": "<p>和&quot;同一个数据源比对详情API&quot;相同</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataDsDiffController.java",
+    "groupTitle": "MetaDataDsDiffController______"
+  },
+  {
+    "type": "post",
+    "url": "/api/schemaDiff",
+    "title": "同一个数据源比对详情",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/schemaDiff"
+      }
+    ],
+    "name": "schemaDiff_version",
+    "group": "MetaDataDsDiffController______",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "datasourceId",
+            "description": "<p>数据源id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sourceVersion",
+            "description": "<p>源版本</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "targetVersion",
+            "description": "<p>目标版本</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "keyword",
+            "description": "<p>筛选字段</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "operation",
+            "description": "<p>筛选operation (ADD, DEL, MOD)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.sourceTableAmount",
+            "description": "<p>source中表的总计数量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.targetTableAmount",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.sourceFieldAmount",
+            "description": "<p>source中字段的总计数量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.targetFieldAmount",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.tableAdditionsAmount",
+            "description": "<p>添加表数</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.tableDeletionsAmount",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.tableChangesAmount",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.fieldAdditionsAmount",
+            "description": "<p>添加字段数</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.fieldDeletionsAmount",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data.fieldChangesAmount",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data.modifications",
+            "description": "<p>具体修改的字段</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.modifications.fieldName",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.modifications.operation",
+            "description": "<p>ADD or DEL or MOD (添加，删除，修改)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.modifications.desc",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataDsDiffController.java",
+    "groupTitle": "MetaDataDsDiffController______"
+  },
+  {
+    "type": "post",
+    "url": "/api/updateVerInfo",
+    "title": "元数据版本更新",
+    "description": "<p>某个版本定版</p>",
+    "version": "1.0.0",
+    "name": "updateVerInfo",
+    "group": "MetaDataDsDiffController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "version",
+            "description": "<p>版本编号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "datasourceId",
+            "description": "<p>元数据id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "tag",
+            "description": "<p>用户写的版本编号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "isBaseline",
+            "description": "<p>是否是基线</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "submitter",
+            "description": "<p>定版人</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "description",
+            "description": "<p>版本描述</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "int",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataDsDiffController.java",
+    "groupTitle": "MetaDataDsDiffController"
+  },
+  {
+    "type": "get",
+    "url": "/api/extractLog",
+    "title": "获取元数据抽取任务日志",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/extractLog/"
+      }
+    ],
+    "name": "extractLog",
+    "group": "MetaDataDsExtractController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "logId",
+            "description": "<p>日志唯一标识</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "page",
+            "description": "<p>分页页码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "page_size",
+            "description": "<p>分页大小</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "log",
+            "description": "<p>返回日志内容</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/quartz/controller/JobExtractHisController.java",
+    "groupTitle": "MetaDataDsExtractController"
+  },
+  {
+    "type": "get",
+    "url": "/api/extractorJob",
+    "title": "获取查询元数据抽取任务列表",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/extractorJob/"
+      }
+    ],
+    "name": "extractorJob",
+    "group": "MetaDataDsExtractController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "keyword",
+            "description": "<p>任务关键字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "status",
+            "description": "<p>任务状态</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "extractType",
+            "description": "<p>采集方式</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "page",
+            "description": "<p>分页页码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "page_size",
+            "description": "<p>分页大小</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/quartz/controller/JobExtractHisController.java",
+    "groupTitle": "MetaDataDsExtractController"
+  },
+  {
+    "type": "post",
+    "url": "/api/extractorJob/del",
+    "title": "删除元数据抽取任务历史",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/extractorJob/del"
+      }
+    ],
+    "name": "extractorJob_del",
+    "group": "MetaDataDsExtractController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "list",
+            "optional": false,
+            "field": "jobHisIdList",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jobHisIdList.jobHisId",
+            "description": "<p>抽取日志历史id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/quartz/controller/JobExtractHisController.java",
+    "groupTitle": "MetaDataDsExtractController"
+  },
+  {
+    "type": "post",
+    "url": "/api/extractorJob",
+    "title": "停止抽取任务",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/extractorJob/"
+      }
+    ],
+    "name": "extractorJob_stop",
+    "group": "MetaDataDsExtractController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "list",
+            "optional": false,
+            "field": "jobIds",
+            "description": "<p>任务标识列表</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/quartz/controller/JobExtractHisController.java",
+    "groupTitle": "MetaDataDsExtractController"
   },
   {
     "type": "POST",
@@ -2721,6 +4334,505 @@
     "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataMgrApiController.java",
     "groupTitle": "MetaDataMgrApiController",
     "name": "PostApiMetadataUpdatefield"
+  },
+  {
+    "type": "post",
+    "url": "/api/metadata/check/searchBusin",
+    "title": "获取业务规则",
+    "version": "1.0.0",
+    "name": "searchBusin",
+    "group": "MetaDataMgrCheckApiController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": false,
+            "field": "page",
+            "description": "<p>版本编号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": false,
+            "field": "page_size",
+            "description": "<p>元数据id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "businfilter",
+            "description": "<p>过滤条件 id 或者规则名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "checksystem",
+            "description": "<p>业务系统</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "checkstatus",
+            "description": "<p>状态 0 未审核 1 审核通过 2 打回</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "ruletypefilter",
+            "description": "<p>规则类过滤</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "{\"page\":1,\"page_size\":100,\"businfilter\":\"测试\",\"checksystem\":\"UF20\",\"checkstatus\":\"0\",\"ruletypefilter\":\"1_2\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "total",
+            "description": "<p>总条数</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.creator",
+            "description": "<p>创建者</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.rulesecondtype",
+            "description": "<p>规则小类</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.rulefirsttype",
+            "description": "<p>规则大类</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.checksystem",
+            "description": "<p>业务系统</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.checkstatus",
+            "description": "<p>审核状态</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.createdate",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.rulename",
+            "description": "<p>规则名字</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "list",
+            "optional": true,
+            "field": "data.techruleids",
+            "description": "<p>技术规则id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.businid",
+            "description": "<p>业务规则id</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataMgrCheckApiController.java",
+    "groupTitle": "MetaDataMgrCheckApiController"
+  },
+  {
+    "type": "post",
+    "url": "/api/metadata/check/searchTech",
+    "title": "获取技术规则",
+    "version": "1.0.0",
+    "name": "searchTech",
+    "group": "MetaDataMgrCheckApiController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": false,
+            "field": "page",
+            "description": "<p>版本编号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Int",
+            "optional": false,
+            "field": "page_size",
+            "description": "<p>元数据id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "techfilter",
+            "description": "<p>过滤条件 id 或者规则名字</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "checksystem",
+            "description": "<p>业务系统</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "checkstatus",
+            "description": "<p>状态 0 未审核 1 审核通过 2 打回</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "ruletypefilter",
+            "description": "<p>规则类过滤</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-example:",
+          "content": "{\"page\":1,\"page_size\":100,\"techfilter\":\"测试\",\"checksystem\":\"UF20\",\"checkstatus\":\"0\",\"ruletypefilter\":\"1_2\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "total",
+            "description": "<p>总条数</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.sourcetable",
+            "description": "<p>数据表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.techruleid",
+            "description": "<p>技术规则id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.creator",
+            "description": "<p>创建者</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.sourcedata",
+            "description": "<p>业务数据库</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.sourdecol",
+            "description": "<p>数据字段</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.rulefirsttype",
+            "description": "<p>规则大类</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.checkstatus",
+            "description": "<p>审核状态</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "list",
+            "optional": true,
+            "field": "data.createdate",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.rulesqltext",
+            "description": "<p>检验sql语句</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.rulename",
+            "description": "<p>规则名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.rulesecondtype",
+            "description": "<p>规则小类</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": true,
+            "field": "data.businid",
+            "description": "<p>业务规则id</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataMgrCheckApiController.java",
+    "groupTitle": "MetaDataMgrCheckApiController"
+  },
+  {
+    "type": "get",
+    "url": "/api/getBusinSystemList",
+    "title": "获取业务系统列表",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/getBusinSystemList"
+      }
+    ],
+    "name": "getBusinSystemList",
+    "group": "MetaDataTreeMenuController",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataTreeMenuController.java",
+    "groupTitle": "MetaDataTreeMenuController"
+  },
+  {
+    "type": "get",
+    "url": "/api/getRuleClassTree",
+    "title": "获取规则类树",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/getRuleClassTree"
+      }
+    ],
+    "name": "getRuleClassTree",
+    "group": "MetaDataTreeMenuController",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataTreeMenuController.java",
+    "groupTitle": "MetaDataTreeMenuController"
+  },
+  {
+    "type": "get",
+    "url": "/api/metadataTree",
+    "title": "获取元数据树形列表",
+    "description": "<p>不带数据源,则返回数据源上层,带数据源参数，则返回表列表，带表参数，则返回对应的字段</p>",
+    "version": "1.0.0",
+    "sampleRequest": [
+      {
+        "url": "http://192.168.2.61:8082/quantchiAPI/api/metadataTree/"
+      }
+    ],
+    "name": "metadataTree_menu",
+    "group": "MetaDataTreeMenuController",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "datasourceId",
+            "description": "<p>数据源id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "tableId",
+            "description": "<p>表id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "keyword",
+            "description": "<p>搜索关键字</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>成功或者错误代码200成功，500错误</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>成功或者错误信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "List",
+            "optional": true,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      }
+    },
+    "filename": "../../java/com/quantchi/metadatamgr/controller/MetaDataTreeMenuController.java",
+    "groupTitle": "MetaDataTreeMenuController"
   },
   {
     "type": "post",

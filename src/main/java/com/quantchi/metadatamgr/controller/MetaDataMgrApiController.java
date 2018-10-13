@@ -32,18 +32,10 @@ public class MetaDataMgrApiController {
   @RequestMapping(value = "/datasource/list", method = {RequestMethod.POST})
   public
   @ResponseBody
-  Map<String, Object> list(@RequestBody String bodyString) {
+  Map<String, Object> list(@RequestBody Map<String,Object> map) {
     try {
 
-      JSONObject json = JSONObject.parseObject(bodyString);
-      String dsName = "";
-      if (json.get("data_source_name") != null) {
-        dsName = json.get("data_source_name").toString();
-      }
-      //int start = Integer.parseInt(json.get("page").toString());
-      //int pagesize = Integer.parseInt(json.get("page_size").toString());
-      Map<String, Object> _ret = metaDataMgrApiService
-          .getDSMetaInfo(dsName, json.getString("page"), json.getString("page_size"));
+      Map<String, Object> _ret = metaDataMgrApiService.getDSMetaInfo(map);
       return Util
           .genRet(200, _ret.get("data"), "ok", Integer.parseInt(_ret.get("total").toString()));
     } catch (Exception e) {

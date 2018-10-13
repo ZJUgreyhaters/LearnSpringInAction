@@ -60,9 +60,9 @@
     <!--编号表专用-->
     <bean id="dataSource2" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="com.mysql.jdbc.Driver" />
-        <property name="jdbcUrl" value="${datasource.url}" />
-        <property name="user" value="${datasource.username}" />
-        <property name="password" value="${datasource.password}" />
+        <property name="jdbcUrl" value="${datasource.slave.url}" />
+        <property name="user" value="${datasource.slave.username}" />
+        <property name="password" value="${datasource.slave.password}" />
         <property name="initialPoolSize" value="1" />
         <property name="minPoolSize" value="0" />
         <property name="maxPoolSize" value="1000" />

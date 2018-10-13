@@ -14,6 +14,17 @@
     <result column="hive_meta_username" property="hiveMetaUsername" jdbcType="VARCHAR"/>
     <result column="hive_meta_pswd" property="hiveMetaPswd" jdbcType="VARCHAR"/>
     <result column="create_user_id" property="createUserId" jdbcType="VARCHAR"/>
+    <result column="ds_english_name" property="dsEnglishName" jdbcType="VARCHAR"/>
+    <result column="effective_time" property="effectiveTime" jdbcType="VARCHAR"/>
+    <result column="metadata_type" property="metadataType" jdbcType="VARCHAR"/>
+    <result column="context_path" property="contextPath" jdbcType="VARCHAR"/>
+    <result column="creation_date" property="creationDate" jdbcType="VARCHAR"/>
+    <result column="operation_system" property="operationSystem" jdbcType="VARCHAR"/>
+    <result column="database_version" property="databaseVersion" jdbcType="VARCHAR"/>
+    <result column="database_instance" property="databaseInstance" jdbcType="VARCHAR"/>
+    <result column="database_desc" property="databaseDesc" jdbcType="VARCHAR"/>
+    <result column="table_num" property="table_num" jdbcType="VARCHAR"/>
+    <result column="mount_node_id" property="mountNodeId" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -77,12 +88,12 @@
   </sql>
   <sql id="Base_Column_List">
     id, ds_name, ds_type, host, port, username, password, hive_meta_mysql_url, hive_meta_username, 
-    hive_meta_pswd, create_user_id
+    hive_meta_pswd, create_user_id,mount_node_id
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="map">
     select a.*,IFNULL(b.table_num,0) as table_num from ds_meta_info a LEFT JOIN (select
-    count(*)table_num,datasource_id from ds_table_info GROUP
-    BY datasource_id) b on a.id=b.datasource_id
+    count(*)table_num,datasourceId from md_physical_table_info GROUP
+    BY datasourceId) b on a.id=b.datasourceId
     <if test="_parameter != null">
       <include refid="Example_Where_Clause"/>
     </if>
@@ -96,8 +107,8 @@
   </select>
   <select id="selectAllByExample" resultMap="BaseResultMap" parameterType="map">
     select a.*,IFNULL(b.table_num,0) as table_num from ds_meta_info a LEFT JOIN (select
-    count(*)table_num,datasource_id from ds_table_info GROUP
-    BY datasource_id) b on a.id=b.datasource_id
+    count(*)table_num,datasourceId from md_physical_table_info GROUP
+    BY datasourceId) b on a.id=b.datasourceId
     <if test="_parameter != null">
       <include refid="Example_Where_Clause"/>
     </if>
@@ -296,6 +307,9 @@
       <if test="createUserId != null">
         create_user_id = #{createUserId,jdbcType=VARCHAR},
       </if>
+      <if test="mountNodeId != null">
+        mount_node_id = #{mountNodeId,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -335,4 +349,23 @@
   <delete id="deleteField">
     update ds_field_info set state = 1 where id = #{fieldId}
   </delete>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select a.*,
+    IFNULL(b.table_num,0) as table_num
+    from ds_meta_info a LEFT JOIN
+    (select count(*)table_num,datasourceId from md_physical_table_info GROUP
+    BY datasourceId) b on a.id=b.datasourceId
+    <where>
+      <if test="data_source_id != null and data_source_id.toString().length()>0">
+        and id = #{data_source_id}
+      </if>
+      <if test="dsType != null and dsType.toString().length()>0">
+        and ds_type = #{dsType}
+      </if>
+      <if test="keyword != null and keyword.toString().length()>0">
+        and ds_name LIKE CONCAT(CONCAT('%',#{keyword}), '%')
+      </if>
+    </where>
+  </select>
 </mapper>

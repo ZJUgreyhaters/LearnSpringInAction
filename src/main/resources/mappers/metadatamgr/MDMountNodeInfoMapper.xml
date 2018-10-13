@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.MDMountNodeInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.MDMountNodeInfo" >
+  <result column="id" property="id" jdbcType="VARCHAR" />
+  <result column="entity_id" property="entityId" jdbcType="VARCHAR" />
+  <result column="parent_Id" property="parentId" jdbcType="VARCHAR" />
+  <result column="name" property="name" jdbcType="VARCHAR" />
+  <result column="description" property="description" jdbcType="VARCHAR" />
+  <result column="type" property="type" jdbcType="VARCHAR" />
+ </resultMap>
+  <resultMap id="Map" type="java.util.Map" >
+  <result column="id" property="id" jdbcType="VARCHAR" />
+  <result column="parent_Id" property="parentId" jdbcType="VARCHAR" />
+  <result column="name" property="name" jdbcType="VARCHAR" />
+  <result column="description" property="description" jdbcType="VARCHAR" />
+ </resultMap>
+  <resultMap id="RuleResultMap" type="com.quantchi.metadatamgr.data.entity.MdRuletypeNodeInfo" >
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="parent_Id" property="parentId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="getMountNodeInfo" resultMap="BaseResultMap" >
+    select id,`name`,description,parent_id,type from (
+    SELECT id,`name`,description,parent_id,'system' as type FROM md_mount_node_info
+    UNION ALL
+    SELECT id,ds_name as `name`,ds_name as description, mount_node_id as parent_id,'datasource' as type FROM ds_meta_info ) t where t.parent_id is not NULL  order by parent_id,id
+  </select>
+  <select id="searchMountNodeInfo" resultMap="BaseResultMap" >
+    select  id,`name`,description,parent_id,type,entity_id from (
+    SELECT id,physical_field as `name`, physical_field_desc as description,physical_table_id as parent_id,'field' as type,entity_id FROM md_physical_field_info
+    UNION ALL
+    SELECT id,physical_table as `name`, table_desc as description, datasourceId as parent_id,'table' as type,"" as entity_id FROM md_physical_table_info
+    UNION ALL
+    select id,ds_name as `name`, ds_name as description , mount_node_id as parent_id,'datasource' as type ,"" as entity_id from ds_meta_info ) t
+    where `name` like  CONCAT(CONCAT('%',#{keyword}), '%')  and parent_id is not NULL order by parent_id,id
+  </select>
+    <select id="searchMountNodeInfoByParentId" resultMap="BaseResultMap" >
+        select  id,`name`,description,parent_id,type,entity_id from (
+        SELECT id,physical_field as `name`, physical_field_desc as description,physical_table_id as parent_id,'field' as type,entity_id FROM md_physical_field_info
+        UNION ALL
+        SELECT id,physical_table as `name`, table_desc as description, datasourceId as parent_id,'table' as type,"" as entity_id FROM md_physical_table_info
+        UNION ALL
+        select id,ds_name as `name`, ds_name as description , mount_node_id as parent_id,'datasource' as type,"" as entity_id  from ds_meta_info ) t
+        <where>
+            <if test="list.size() > 0" >
+                id in
+                <foreach item="parentId" collection="list" open="(" separator="," close=")">
+                    #{parentId}
+                </foreach>
+            </if>
+            <if test="list.size() == 0" >
+                id in ( -1 )
+            </if>
+        </where>
+        order by parent_id,id
+    </select>
+
+
+  <select id = "getTableMountNodeInfo" resultMap="BaseResultMap" >
+    SELECT id,physical_table as `name`, table_desc as description, datasourceId as parent_id,'table' as type FROM md_physical_table_info
+    where datasourceId = #{datasourceId}
+  </select>
+  <select id = "getFieldsMountNodeInfo" resultMap="BaseResultMap" >
+    SELECT id,physical_field as `name`, physical_field_desc as description,physical_table_id as parent_id,'field' as type, entity_id FROM md_physical_field_info
+    where physical_table_id = #{tableId}
+  </select>
+  <select id = "getBusinSystemList" resultMap="Map" >
+    SELECT  id,name,description
+    from md_mount_node_info  x
+    where is_busin_system='1'
+  </select>
+  <select id = "getRuleTypeNodeInfo" resultMap="RuleResultMap" >
+    SELECT  id,name,description,parent_id
+    from md_ruletype_node_info  x
+  </select>
+
+</mapper>

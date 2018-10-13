@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.quartz.mapper.MDExtractorJobHisMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.quartz.entity.MDExtractorJobHis" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="jobId" property="jobid" jdbcType="INTEGER" />
+    <result column="jobName" property="jobname" jdbcType="VARCHAR" />
+    <result column="extractorType" property="extractortype" jdbcType="VARCHAR" />
+    <result column="startTime" property="starttime" jdbcType="VARCHAR" />
+    <result column="finishTime" property="finishtime" jdbcType="VARCHAR" />
+    <result column="logId" property="logId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, jobId, jobName, extractorType, startTime, finishTime, logId,status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from md_extractor_job_his
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="java.util.HashMap"  >
+    select *
+    from md_extractor_job_his
+    <where>
+      <if test="keyword != null" >
+        and jobName like CONCAT(CONCAT('%',#{keyword}), '%')
+      </if>
+      <if test="extractortype != null" >
+        and extractorType = #{extractortype,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        and status = #{status,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by id desc
+    <if test="page != null" >
+      limit #{page},#{page_size}
+    </if>
+
+  </select>
+  <select id="getJobHisCount" resultType="java.lang.Integer" parameterType="java.util.HashMap"  >
+    select count(*) as total
+    from md_extractor_job_his
+    <where>
+      <if test="keyword != null" >
+        and jobName like CONCAT(CONCAT('%',#{keyword}), '%')
+      </if>
+      <if test="extractortype != null" >
+        and extractorType = #{extractortype,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        and status = #{status,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from md_extractor_job_his
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByKeys" parameterType="java.util.List" >
+    delete from md_extractor_job_his
+    where id in
+    <foreach collection="list" item="jobHisId" index="index" open="(" close=")" separator=",">
+      #{jobHisId}
+    </foreach>
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id"  parameterType="com.quantchi.quartz.entity.MDExtractorJobHis" >
+    insert into md_extractor_job_his (id, jobId, jobName, 
+      extractorType, startTime, finishTime, logId,status)
+    values (#{id,jdbcType=INTEGER}, #{jobid,jdbcType=INTEGER}, #{jobname,jdbcType=VARCHAR}, 
+      #{extractortype,jdbcType=VARCHAR}, #{starttime,jdbcType=VARCHAR}, #{finishtime,jdbcType=VARCHAR},
+      #{logId,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.quantchi.quartz.entity.MDExtractorJobHis" >
+    insert into md_extractor_job_his
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="jobid != null" >
+        jobId,
+      </if>
+      <if test="jobname != null" >
+        jobName,
+      </if>
+      <if test="extractortype != null" >
+        extractorType,
+      </if>
+      <if test="starttime != null" >
+        startTime,
+      </if>
+      <if test="finishtime != null" >
+        finishTime,
+      </if>
+      <if test="logId != null" >
+        logId,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="jobid != null" >
+        #{jobid,jdbcType=INTEGER},
+      </if>
+      <if test="jobname != null" >
+        #{jobname,jdbcType=VARCHAR},
+      </if>
+      <if test="extractortype != null" >
+        #{extractortype,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null" >
+        #{starttime,jdbcType=VARCHAR},
+      </if>
+      <if test="finishtime != null" >
+        #{finishtime,jdbcType=VARCHAR},
+      </if>
+      <if test="logId != null" >
+        #{logId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.quartz.entity.MDExtractorJobHis" >
+    update md_extractor_job_his
+    <set >
+      <if test="jobid != null" >
+        jobId = #{jobid,jdbcType=INTEGER},
+      </if>
+      <if test="jobname != null" >
+        jobName = #{jobname,jdbcType=VARCHAR},
+      </if>
+      <if test="extractortype != null" >
+        extractorType = #{extractortype,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null" >
+        startTime = #{starttime,jdbcType=VARCHAR},
+      </if>
+      <if test="finishtime != null" >
+        finishTime = #{finishtime,jdbcType=VARCHAR},
+      </if>
+      <if test="logId != null" >
+        logId = #{logId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.quartz.entity.MDExtractorJobHis" >
+    update md_extractor_job_his
+    set jobId = #{jobid,jdbcType=INTEGER},
+      jobName = #{jobname,jdbcType=VARCHAR},
+      extractorType = #{extractortype,jdbcType=VARCHAR},
+      startTime = #{starttime,jdbcType=VARCHAR},
+      finishTime = #{finishtime,jdbcType=VARCHAR},
+      logId = #{logId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

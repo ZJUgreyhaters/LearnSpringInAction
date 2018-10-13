@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.quartz.mapper.MDExtractorJobManualMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.quartz.entity.MDExtractorJobManual" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="jobName" property="jobName" jdbcType="VARCHAR" />
+    <result column="parentTreeId" property="parentTreeId" jdbcType="VARCHAR" />
+    <result column="quartzId" property="quartzId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="fileTpl" property="fileTpl" jdbcType="VARCHAR" />
+    <result column="strategy" property="strategy" jdbcType="VARCHAR" />
+    <result column="filepath" property="filepath" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, jobName, parentTreeId, quartzId, status, fileTpl, strategy,filepath,type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from md_extractor_job_manual
+    where id = #{id,jdbcType=INTEGER} order by id desc
+  </select>
+  <select id="selectCountJob" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select
+    count(*) as total
+    from md_extractor_job_manual
+    <where>
+      <if test="keyword != null" >
+        and jobName like CONCAT(CONCAT('%',#{keyword}), '%')
+      </if>
+      <if test="fileTpl != null and fileTpl.size() > 0" >
+        and fileTpl in
+        <foreach item="tpl" collection="fileTpl" open="(" separator="," close=")">
+          #{tpl}
+        </foreach>
+      </if>
+    </where>
+  </select>
+  <select id="selectBySelective" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    select a.id, a.jobName,c.`name` as mountNodeName,a.fileTpl, a.strategy
+    from md_extractor_job_manual a
+    left join (select x.id,x.name,x.description,x.parent_id from md_mount_node_info x UNION select y.id,y.ds_name,y.ds_name,y.mount_node_id from ds_meta_info y)
+    c on a.parentTreeId = c.id
+    <where>
+      <if test="keyword != null" >
+        and a.jobName like CONCAT(CONCAT('%',#{keyword}), '%')
+      </if>
+      <if test="fileTpl != null and fileTpl.size() > 0" >
+        and a.fileTpl in
+        <foreach item="tpl" collection="fileTpl" open="(" separator="," close=")">
+          #{tpl}
+        </foreach>
+      </if>
+    </where>
+    order by id desc
+    <if test="page != null" >
+      limit #{page},#{page_size}
+    </if>
+
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from md_extractor_job_manual
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByKeys" parameterType="java.util.List" >
+    delete from md_extractor_job_manual
+    where id in
+    <foreach collection="jobIds" item="jobId" index="index" open="(" close=")" separator=",">
+      #{jobId}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="com.quantchi.quartz.entity.MDExtractorJobManual" >
+    insert into md_extractor_job_manual (id, jobName,
+    parentTreeId, quartzId, status,
+    fileTpl,strategy,filepath,type)
+    values (#{id,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR},
+      #{parentTreeId,jdbcType=VARCHAR}, #{quartzId,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+      #{fileTpl,jdbcType=VARCHAR},#{strategy,jdbcType=VARCHAR},#{filepath,jdbcType=VARCHAR},#{type,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.quartz.entity.MDExtractorJobManual" >
+    update md_extractor_job_manual
+    <set >
+      <if test="jobName != null" >
+        jobName = #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentTreeId != null" >
+        parentTreeId = #{parentTreeId,jdbcType=VARCHAR},
+      </if>
+      <if test="quartzId != null" >
+        quartzId = #{quartzid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="fileTpl != null" >
+        fileTpl = #{fileTpl,jdbcType=VARCHAR},
+      </if>
+      <if test="strategy != null">
+        strategy = #{strategy,jdbcType=VARCHAR},
+      </if>
+      <if test="filepath != null" >
+        filepath = #{filepath,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="executeUptSql" parameterType="java.util.HashMap">
+    ${sql}
+  </update>
+</mapper>

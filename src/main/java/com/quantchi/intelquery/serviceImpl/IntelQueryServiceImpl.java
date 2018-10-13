@@ -21,7 +21,7 @@ import com.quantchi.intelquery.tokenize.search.Replacement;
 import com.quantchi.intelquery.utils.ComplexTable;
 import com.quantchi.intelquery.utils.ComplexTable.LeafHeader;
 import com.quantchi.intelquery.utils.QueryUtils;
-import com.quantchi.intelquery.utils.SerializationUtils;
+import com.quantchi.tianshu.common.SerializationUtils;
 import com.quantchi.termInfo.mapper.StandInfoMapper;
 import com.quantchi.tianshu.common.JdbcPool;
 import com.quantchi.transport.service.ExecSqlApiService;
@@ -107,7 +107,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
       resultList = Paging.pagingPlug(resultList, Integer.parseInt(map.get("page_size").toString()),
           Integer.parseInt(map.get("page").toString()));
     }
-    Map<String, Object> resultMap = new HashMap();
+    Map<String, Object> resultMap = new HashMap<>();
     resultMap.put("resultList", resultList);
     resultMap.put("total", total);
     return resultMap;
@@ -234,6 +234,7 @@ public class IntelQueryServiceImpl implements IntelQueryService {
           reIndex = false;
           colKey = ColName + "_" + colMap.entrySet().size();
         } else {
+          //arrayList = (ArrayList<Object>) colMap.get(colKey);
           arrayList = (ArrayList<Object>) colMap.get(colKey);
           if (arrayList == null) {
             arrayList = new ArrayList<>();

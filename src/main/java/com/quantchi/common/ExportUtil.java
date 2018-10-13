@@ -8,16 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.quantchi.intelquery.utils.ComplexTable;
 import com.quantchi.intelquery.utils.ComplexTable.*;
-import jxl.Workbook;
-import jxl.format.Alignment;
-import jxl.format.Border;
-import jxl.format.BorderLineStyle;
-import jxl.format.VerticalAlignment;
-import jxl.write.Label;
-import jxl.write.WritableCellFormat;
-import jxl.write.WritableFont;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +29,31 @@ public class ExportUtil {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ExportUtil.class);
 
+  private static void addCell(Sheet sheet, int columnIndex, int rowIndex, String text, CellStyle style) {
+    Row row = sheet.getRow(rowIndex);
+    if (row == null) {
+      row = sheet.createRow(rowIndex);
+    }
+    Cell cell = row.getCell(columnIndex);
+    if (cell == null) {
+      cell = row.createCell(columnIndex);
+    }
+    cell.setCellStyle(style);
+    cell.setCellValue(text);
+  }
+
+  private static void mergeCells(Sheet sheet, int firstCol, int firstRow, int lastCol, int lastRow) {
+    // POI库要求合并操作必须要有2个或以上cell: Merged region must contain 2 or more cells
+    if (lastCol > firstCol || lastRow > firstRow) {
+      sheet.addMergedRegion(new CellRangeAddress(
+              firstRow, //first row (0-based)
+              lastRow, //last row  (0-based)
+              firstCol, //first column (0-based)
+              lastCol  //last column  (0-based)
+      ));
+    }
+  }
+
   /**
    * 导出关联方查询的excel
    */
@@ -44,40 +64,51 @@ public class ExportUtil {
       OutputStream os = response.getOutputStream();
       response.reset();// 清空输出流
       response.setHeader("Content-disposition",
-          "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1") + ".xls");
+          "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1") + ".xlsx");
       response.setContentType("application/msexcel");
 
-      WritableWorkbook workbook = Workbook.createWorkbook(os);
-      WritableSheet sheet = workbook.createSheet("Sheet1", 0);
-      jxl.SheetSettings sheetset = sheet.getSettings();
-      sheetset.setProtected(false);
-      //WritableFont BoldFont = new WritableFont(WritableFont.ARIAL, 10,WritableFont.BOLD);
-      WritableFont NormalFont = new WritableFont(WritableFont.ARIAL, 10);
+      Workbook workbook = new XSSFWorkbook();
+      Sheet sheet = workbook.createSheet("Sheet1");
+      workbook.setSheetOrder("Sheet1", 0);
 
-      WritableCellFormat wcf_center = new WritableCellFormat(NormalFont);
-      wcf_center.setBorder(Border.ALL, BorderLineStyle.THIN);
-      wcf_center.setVerticalAlignment(VerticalAlignment.CENTRE);
-      wcf_center.setAlignment(Alignment.CENTRE);
-      wcf_center.setWrap(false);
+      Font font = workbook.createFont();
+      font.setFontHeightInPoints((short)10);
+      font.setFontName("ARIAL");
+      // font.setBold(true);
 
-      WritableCellFormat wcf_left = new WritableCellFormat(NormalFont);
-      wcf_left.setBorder(Border.ALL, BorderLineStyle.THIN);
-      wcf_left.setVerticalAlignment(VerticalAlignment.CENTRE);
-      wcf_left.setAlignment(Alignment.LEFT);
-      wcf_left.setWrap(false);
+      CellStyle styleCenter = workbook.createCellStyle();
+      styleCenter.setFont(font);
+      styleCenter.setBorderTop(BorderStyle.THIN);
+      styleCenter.setBorderBottom(BorderStyle.THIN);
+      styleCenter.setBorderLeft(BorderStyle.THIN);
+      styleCenter.setBorderRight(BorderStyle.THIN);
+      styleCenter.setAlignment(HorizontalAlignment.CENTER);
+      styleCenter.setVerticalAlignment(VerticalAlignment.CENTER);
+      styleCenter.setWrapText(false);
 
-      sheet.setColumnView(0, 20);
-      sheet.setColumnView(1, 20);
-      sheet.setColumnView(2, 30);
-      sheet.setColumnView(3, 20);
-      sheet.setColumnView(4, 20);
-      sheet.setColumnView(5, 20);
-      sheet.setColumnView(6, 20);
+      CellStyle styleLeft = workbook.createCellStyle();
+      styleLeft.setFont(font);
+      styleLeft.setBorderTop(BorderStyle.THIN);
+      styleLeft.setBorderBottom(BorderStyle.THIN);
+      styleLeft.setBorderLeft(BorderStyle.THIN);
+      styleLeft.setBorderRight(BorderStyle.THIN);
+      styleLeft.setAlignment(HorizontalAlignment.LEFT);
+      styleLeft.setVerticalAlignment(VerticalAlignment.CENTER);
+      styleLeft.setWrapText(false);
 
-      sheet.addCell(new Label(0, 0, title, wcf_center));
-      sheet.mergeCells(0, 0, 6, 0);
+      // The column width is in units of 1/256th of a character width
+      sheet.setColumnWidth(0, 20 * 256);
+      sheet.setColumnWidth(1, 20 * 256);
+      sheet.setColumnWidth(2, 20 * 256);
+      sheet.setColumnWidth(3, 20 * 256);
+      sheet.setColumnWidth(4, 20 * 256);
+      sheet.setColumnWidth(5, 20 * 256);
+      sheet.setColumnWidth(6, 20 * 256);
+
+      addCell(sheet, 0, 0, title, styleCenter);
+      mergeCells(sheet,0, 0, 6, 0);
       for (int i = 0; i < titleArray.length; i++) {
-        sheet.addCell(new Label(i, 1, titleArray[i], wcf_center));
+        addCell(sheet, i, 1, titleArray[i], styleCenter);
       }
       Set<String> mapKeys = new LinkedHashSet<>();
       for (int i = 0; i < listContent.size(); i++) {
@@ -87,11 +118,11 @@ public class ExportUtil {
         for (int j = 0; j < splits.length; j++) {
           String value = splits[j];
           String valueName = map.get(value).toString();
-          sheet.addCell(new Label(j, 2 + i, valueName, wcf_center));
+          addCell(sheet, j, 2 + i, valueName, styleCenter);
         }
       }
 
-      workbook.write();
+      workbook.write(os);
       workbook.close();
     } catch (Exception e) {
       e.printStackTrace();
@@ -111,8 +142,8 @@ public class ExportUtil {
     int headerBottomRow = 0;
     Map<PrimeBlock, PrimeBlockInfo> primeBlockInfos = new HashMap<>();
 
-    WritableSheet sheet;
-    WritableCellFormat wcf_center;
+    Sheet sheet;
+    CellStyle styleCenter;
     LeafHeader primeHeader;
 
     // 递归输出普通列
@@ -140,7 +171,7 @@ public class ExportUtil {
               headerBottomRow = curRow;
             }
             for (String leafColName : leafHeader.getTitles()) {
-              sheet.addCell(new Label(rightmostCol++, curRow, leafColName, wcf_center));
+              addCell(sheet, rightmostCol++, curRow, leafColName, styleCenter);
             }
 
             // 再生成表数据
@@ -159,8 +190,8 @@ public class ExportUtil {
           throw new Exception(msg);
         }
 
-        sheet.addCell(new Label(curCol, curRow, colName, wcf_center));
-        sheet.mergeCells(curCol, curRow, rightmostCol - 1, curRow);
+        addCell(sheet, curCol, curRow, colName, styleCenter);
+        mergeCells(sheet, curCol, curRow, rightmostCol - 1, curRow);
 
         curCol = rightmostCol;
       }
@@ -186,7 +217,7 @@ public class ExportUtil {
         for (NormBlock normBlock : primeBlockInfos.get(primeBlock).normBlocks) {
           int rightmostCol = curCol;
           for (String colValue : normBlock.getRowData()) {
-            sheet.addCell(new Label(rightmostCol++, curRow, colValue, wcf_center));
+            addCell(sheet, rightmostCol++, curRow, colValue, styleCenter);
           }
           ++curRow;
         }
@@ -207,20 +238,26 @@ public class ExportUtil {
       } else {
         fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
       }
-      response.setHeader("Content-disposition", "attachment; filename=" + fileName + ".xls");
+      response.setHeader("Content-disposition", "attachment; filename=" + fileName + ".xlsx");
       response.setContentType("application/msexcel");
 
-      WritableWorkbook workbook = Workbook.createWorkbook(os);
-      sheet = workbook.createSheet("Sheet1", 0);
-      jxl.SheetSettings sheetset = sheet.getSettings();
-      sheetset.setProtected(false);
-      WritableFont NormalFont = new WritableFont(WritableFont.ARIAL, 10);
+      Workbook workbook = new XSSFWorkbook();
+      sheet = workbook.createSheet("Sheet1");
+      workbook.setSheetOrder("Sheet1", 0);
 
-      wcf_center = new WritableCellFormat(NormalFont);
-      wcf_center.setBorder(Border.ALL, BorderLineStyle.THIN);
-      wcf_center.setVerticalAlignment(VerticalAlignment.CENTRE);
-      wcf_center.setAlignment(Alignment.CENTRE);
-      wcf_center.setWrap(false);
+      Font font = workbook.createFont();
+      font.setFontHeightInPoints((short)10);
+      font.setFontName("ARIAL");
+
+      styleCenter = workbook.createCellStyle();
+      styleCenter.setFont(font);
+      styleCenter.setBorderTop(BorderStyle.THIN);
+      styleCenter.setBorderBottom(BorderStyle.THIN);
+      styleCenter.setBorderLeft(BorderStyle.THIN);
+      styleCenter.setBorderRight(BorderStyle.THIN);
+      styleCenter.setAlignment(HorizontalAlignment.CENTER);
+      styleCenter.setVerticalAlignment(VerticalAlignment.CENTER);
+      styleCenter.setWrapText(false);
 
       primeHeader = complexTable.getPrimeHeader();
       for (PrimeBlock primeBlock : (List<PrimeBlock>) primeHeader.getData()) {
@@ -245,8 +282,8 @@ public class ExportUtil {
       curCol = 0;
       curRow = 0;
       for (String colName : primeHeader.getTitles()) {
-        sheet.addCell(new Label(curCol, curRow, colName, wcf_center));
-        sheet.mergeCells(curCol, curRow, curCol, headerBottomRow);
+        addCell(sheet, curCol, curRow, colName, styleCenter);
+        mergeCells(sheet, curCol, curRow, curCol, headerBottomRow);
         ++curCol;
       }
       curRow = headerBottomRow + 1;
@@ -254,16 +291,16 @@ public class ExportUtil {
         curCol = 0;
         int bottowRow = primeBlockInfos.get(primeBlock).primeBlockBottomRow;
         for (String colValue : primeBlock.getRowData()) {
-          sheet.addCell(new Label(curCol, curRow, colValue, wcf_center));
+          addCell(sheet, curCol, curRow, colValue, styleCenter);
           if (bottowRow > curRow) {
-            sheet.mergeCells(curCol, curRow, curCol, bottowRow);
+            mergeCells(sheet, curCol, curRow, curCol, bottowRow);
           }
           ++curCol;
         }
         curRow = bottowRow + 1;
       }
 
-      workbook.write();
+      workbook.write(os);
       workbook.close();
     }
   }

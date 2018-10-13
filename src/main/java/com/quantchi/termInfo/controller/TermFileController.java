@@ -59,8 +59,12 @@ public class TermFileController {
       RequestMethod.POST}, produces = "application/json;charset=UTF-8")
   public String importExcel(
       @RequestParam(value = "file", required = false) MultipartFile file, String typeOne,
-      String typeTwo
+      String typeTwo,String documentTemplate,String strategy,String taskName
   ) {
+    Map<String,Object> mapOperation = new HashMap<>();
+    mapOperation.put("documentTemplate",documentTemplate);
+    mapOperation.put("strategy",strategy);
+    mapOperation.put("taskName",taskName);
     List<String[]> result;
     try {
       result = ExcelUtil.readExcel(file);
@@ -111,12 +115,13 @@ public class TermFileController {
             map1.put(list.get(j), values[j]);
           }
           List<Map<String, Object>> resultList = termFileService.selectStandard(map1);
-          if (resultList.isEmpty() || resultList == null) {
+          if (resultList == null || resultList.isEmpty()) {
             termFileService.insertStandard(map1);
           } else {
             termFileService.updateStandard(map1);
           }
         }
+        termFileService.insertOperation(mapOperation);
         return JsonResult.successJson("上传成功！");
       } else if ("target".equals(typeOne) && "mapping".equals(typeTwo)) {
         for (int i = 1; i < result.size(); i++) {
@@ -142,7 +147,7 @@ public class TermFileController {
 
           List<Map<String, Object>> list1 = termFileService.selectTargetMain(map1);
 
-          if (list1 != null && list.size() > 0){
+          if (list1 != null && list.size() > 0) {
             //force update physical_field_desc
             Map<String, Object> updateMap = new HashMap<>(3);
             updateMap.put("fieldId", map1.get("fieldId"));
@@ -162,7 +167,7 @@ public class TermFileController {
               //e.printStackTrace();
             } catch (Exception e) {
               logger.info("entity_id:" + list1.get(0).get("entity_id").toString());
-              logger.info("sql:" + list1.get(0).get("technique_rule").toString(),e);
+              logger.info("sql:" + list1.get(0).get("technique_rule").toString(), e);
               //e.printStackTrace();
             }
           }
@@ -170,8 +175,8 @@ public class TermFileController {
 
         //add reIndex
         SearchEng engObj = SearchEng.instanceOf("", SEARCHTYPE);
-        ((SolrEng)engObj).metricsImport();
-
+        ((SolrEng) engObj).metricsImport();
+        termFileService.insertOperation(mapOperation);
         return JsonResult.successJson("上传成功！");
       } else if ("standard".equals(typeOne) && "common".equals(typeTwo)) {
         for (int i = 1; i < result.size(); i++) {
@@ -199,6 +204,7 @@ public class TermFileController {
             termFileService.updateStandardMain(map1);
           }
         }
+        termFileService.insertOperation(mapOperation);
         return JsonResult.successJson("上传成功！");
       } else if ("target".equals(typeOne) && "common".equals(typeTwo)) {
         for (int i = 1; i < result.size(); i++) {
@@ -233,6 +239,7 @@ public class TermFileController {
             }
           }*/
         }
+        termFileService.insertOperation(mapOperation);
         return JsonResult.successJson("上传成功！");
       } else {
         return JsonResult.errorJson("上传失败！");

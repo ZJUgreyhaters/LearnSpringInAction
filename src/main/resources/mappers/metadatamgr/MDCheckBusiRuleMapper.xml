@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.MDCheckBusiRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.metadatamgr.data.entity.MDCheckBusiRule" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="businid" property="businId" jdbcType="VARCHAR" />
+    <result column="checksystem" property="checkSystem" jdbcType="VARCHAR" />
+    <result column="checkstatus" property="checkStatus" jdbcType="VARCHAR" />
+    <result column="rulename" property="ruleName" jdbcType="VARCHAR" />
+    <result column="rulefirsttype" property="ruleFirstType" jdbcType="VARCHAR" />
+    <result column="rulesecondtype" property="ruleSecondType" jdbcType="VARCHAR" />
+    <result column="createdate" property="createDate" jdbcType="DATE" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, businid, checksystem, checkstatus, rulename, rulefirsttype, rulesecondtype, createdate, 
+    creator
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from md_tcheckbusinrule
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from md_tcheckbusinrule
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.quantchi.metadatamgr.data.entity.MDCheckBusiRule" >
+    insert into md_tcheckbusinrule (id, businid, checksystem, 
+      checkstatus, rulename, rulefirsttype, 
+      rulesecondtype, createdate, creator
+      )
+    values (#{id,jdbcType=INTEGER}, #{businId,jdbcType=VARCHAR}, #{checkSystem,jdbcType=VARCHAR},
+      #{checkStatus,jdbcType=VARCHAR}, #{ruleName,jdbcType=VARCHAR}, #{ruleFirstType,jdbcType=VARCHAR},
+      #{ruleSecondType,jdbcType=VARCHAR}, #{createDate,jdbcType=DATE}, #{creator,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.quantchi.metadatamgr.data.entity.MDCheckBusiRule" >
+    insert into md_tcheckbusinrule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="businId != null" >
+        businid,
+      </if>
+      <if test="checkSystem != null" >
+        checksystem,
+      </if>
+      <if test="checkStatus != null" >
+        checkstatus,
+      </if>
+      <if test="ruleName != null" >
+        rulename,
+      </if>
+      <if test="ruleFirstType != null" >
+        rulefirsttype,
+      </if>
+      <if test="ruleSecondType != null" >
+        rulesecondtype,
+      </if>
+      <if test="createDate != null" >
+        createdate,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="businId != null" >
+        #{businId,jdbcType=VARCHAR},
+      </if>
+      <if test="checkSystem != null" >
+        #{checkSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="checkStatus != null" >
+        #{checkStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleName != null" >
+        #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleFirstType != null" >
+        #{ruleFirstType,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleSecondType != null" >
+        #{ruleSecondType,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=DATE},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.metadatamgr.data.entity.MDCheckBusiRule" >
+    update md_tcheckbusinrule
+    <set >
+      <if test="businId != null" >
+        businid = #{businId,jdbcType=VARCHAR},
+      </if>
+      <if test="checkSystem != null" >
+        checksystem = #{checkSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="checkStatus != null" >
+        checkstatus = #{checkStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleName != null" >
+        rulename = #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleFirstType != null" >
+        rulefirsttype = #{ruleFirstType,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleSecondType != null" >
+        rulesecondtype = #{ruleSecondType,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        createdate = #{createDate,jdbcType=DATE},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.metadatamgr.data.entity.MDCheckBusiRule" >
+    update md_tcheckbusinrule
+    set businid = #{businId,jdbcType=VARCHAR},
+      checksystem = #{checkSystem,jdbcType=VARCHAR},
+      checkstatus = #{checkStatus,jdbcType=VARCHAR},
+      rulename = #{ruleName,jdbcType=VARCHAR},
+      rulefirsttype = #{ruleFirstType,jdbcType=VARCHAR},
+      rulesecondtype = #{ruleSecondType,jdbcType=VARCHAR},
+      createdate = #{createDate,jdbcType=DATE},
+      creator = #{creator,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

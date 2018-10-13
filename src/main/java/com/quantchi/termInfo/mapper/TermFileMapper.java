@@ -22,8 +22,10 @@ public interface TermFileMapper {
 
   void updatePhysicalFile(Map<String, Object> map);
 
-  List<Map<String, Object>> selectPhysicalFile(Map<String, Object> map);
+  void deleteMapping(Map<String, Object> map);
 
+  List<Map<String, Object>> selectPhysicalFile(Map<String, Object> map);
+  //
   Map<String, Object> selectDomainByName(Map<String, Object> map);
 
   Map<String, Object> selectStandardCategory(Map<String, Object> map);
@@ -34,9 +36,23 @@ public interface TermFileMapper {
 
   void updateStandardMain(Map<String, Object> map);
 
+  void deleteStandard(Map<String, Object> map);
+
   List<Map<String, Object>> selectTargetMain(Map<String, Object> map);
 
   void insertTargetMain(Map<String, Object> map);
 
   void updateTargetMain(Map<String, Object> map);
+
+  void deleteStandardRelation(Map<String, Object> map);
+
+  List<Map<String, Object>> selectStandardRelation(Map<String, Object> map);
+
+  void insertOperation(Map<String, Object> map);
+
+  List<Map<String, Object>> selectOperation(Map<String, Object> map);
+
+  void deleteTarget(Map<String, Object> map);
+  //
+  Map<String, Object> selectDominById(Map<String, Object> map);
 }

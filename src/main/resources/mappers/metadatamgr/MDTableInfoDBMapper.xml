@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.metadatamgr.data.mapper.MDTableInfoDBMapper">
+
+  <!--新加内容-->
+  <select id="searchTable" resultType="Map">
+    SELECT
+    a.id,
+    a.physical_table_hash,
+    IFNULL(a.physical_table,"") AS physical_table ,
+    IFNULL(a.physical_db,"") AS physical_db,
+    IFNULL(a.datasourceId,"") AS datasourceId,
+    IFNULL(a.table_type,"") AS table_type ,
+    IFNULL(a.table_name,"") AS table_name,
+    IFNULL(a.table_desc,"") AS table_desc,
+    IFNULL(a.last_modified_time,"") AS last_modified_time ,
+    IFNULL(a.primary_key,"") AS primary_key,
+    IFNULL(a.foreign_key,"") AS foreign_key,
+    IFNULL(a.partition_flag,"") AS partition_flag,
+    IFNULL(a.time_field,"") AS time_field ,
+    IFNULL(a.effective_time,"") AS effective_time,
+    IFNULL(a.metadata_type,"") AS metadata_type,
+    IFNULL(a.context_path,"") AS context_path ,
+    IFNULL(a.create_time,"") AS create_time,
+    IFNULL(a.is_key_table,"") AS is_key_table,
+    IFNULL(a.life_cycle_specification,"") AS life_cycle_specification,
+    IFNULL(a.ddl,"") AS ddl ,
+    IFNULL(a.partition_numbers,"") AS partition_numbers,
+    IFNULL(a.description,"") AS description,
+    IFNULL(a.table_size,"") AS table_size,
+    IFNULL(d.ds_name,"") AS datasource_name
+    FROM md_physical_table_info a
+    left join ds_meta_info d on a.datasourceId = d.id
+    <where>
+      <if test="datasourceId !=null and datasourceId.toString().length()>0">AND datasourceId
+        = #{datasourceId}
+      </if>
+      <if test="table_id !=null and table_id.toString().length()>0">AND a.id
+        = #{table_id}
+      </if>
+      <if test="tableEnglishName !=null and tableEnglishName.toString().length()>0">AND
+        physical_table
+        LIKE CONCAT(CONCAT('%',#{tableEnglishName}), '%')
+      </if>
+    </where>
+    ORDER BY physical_table ASC
+  </select>
+
+  <delete id="deleteTable">
+     DELETE  from  md_physical_table_info where id = #{id}
+  </delete>
+
+  <update id="updateTable">
+    UPDATE md_physical_table_info
+    <set>
+      <if test="physical_table_hash !=null and physical_table_hash.toString().length()>0">
+        physical_table_hash = #{physical_table_hash},
+      </if>
+      <if test="physical_table !=null and physical_table.toString().length()>0">
+        physical_table = #{physical_table},
+      </if>
+      <if test="physical_db !=null and physical_db.toString().length()>0">
+        physical_db = #{physical_db},
+      </if>
+      <if test="datasourceId !=null and datasourceId.toString().length()>0">
+        datasourceId = #{datasourceId},
+      </if>
+      <if test="table_type !=null and table_type.toString().length()>0">
+        table_type = #{table_type},
+      </if>
+      <if test="table_name !=null and table_name.toString().length()>0">
+        table_name = #{table_name},
+      </if>
+      <if test="table_desc !=null and table_desc.toString().length()>0">
+        table_desc = #{table_desc},
+      </if>
+      <if test="last_modified_time !=null and last_modified_time.toString().length()>0">
+        last_modified_time = #{last_modified_time},
+      </if>
+      <if test="primary_key !=null and primary_key.toString().length()>0">
+        primary_key = #{primary_key},
+      </if>
+      <if test="foreign_key !=null and foreign_key.toString().length()>0">
+        foreign_key = #{foreign_key},
+      </if>
+      <if test="partition_flag !=null and partition_flag.toString().length()>0">
+        partition_flag = #{partition_flag},
+      </if>
+      <if test="time_field !=null and time_field.toString().length()>0">
+        time_field = #{time_field},
+      </if>
+      <if test="effective_time !=null and effective_time.toString().length()>0">
+        effective_time = #{effective_time},
+      </if>
+      <if test="metadata_type !=null and metadata_type.toString().length()>0">
+        metadata_type = #{metadata_type},
+      </if>
+      <if test="context_path !=null and context_path.toString().length()>0">
+        context_path = #{context_path},
+      </if>
+      <if test="create_time !=null and create_time.toString().length()>0">
+        create_time = #{create_time},
+      </if>
+      <if test="is_key_table !=null and is_key_table.toString().length()>0">
+        is_key_table = #{is_key_table},
+      </if>
+      <if test="life_cycle_specification !=null and life_cycle_specification.toString().length()>0">
+        life_cycle_specification = #{life_cycle_specification},
+      </if>
+      <if test="ddl !=null and ddl.toString().length()>0">
+        ddl = #{ddl},
+      </if>
+      <if test="partition_numbers !=null and partition_numbers.toString().length()>0">
+        partition_numbers = #{partition_numbers},
+      </if>
+      <if test="description !=null and description.toString().length()>0">
+        description = #{description},
+      </if>
+      <if test="table_size !=null and table_size.toString().length()>0">
+        table_size = #{table_size},
+      </if>
+    </set>
+    WHERE id = #{id}
+  </update>
+
+  <insert id="insertTable" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO md_physical_table_info(physical_table_hash,physical_table,physical_db
+      ,datasourceId,table_type,table_name,table_desc,last_modified_time,primary_key,foreign_key,partition_flag
+      ,time_field,effective_time,metadata_type,context_path,create_time,is_key_table,life_cycle_specification
+      ,ddl,partition_numbers,description,table_size)
+      VALUES
+      (#{physical_table_hash},#{physical_table},#{physical_db},#{datasourceId},#{table_type}
+      ,#{table_name},#{table_desc},#{last_modified_time},#{primary_key},#{foreign_key},#{partition_flag}
+      ,#{time_field},#{effective_time},#{metadata_type},#{context_path},SYSDATE(),#{is_key_table},#{life_cycle_specification}
+      ,#{ddl},#{partition_numbers},#{description},#{table_size})
+    </insert>
+
+  <select id="selectTableInfo" resultType="Map">
+  select
+  id,
+  physical_table AS name,
+  datasourceId
+  from md_physical_table_info
+  <where>
+    <if test="datasourceId !=null and datasourceId.toString().length()>0">AND datasourceId
+      = #{datasourceId}
+    </if>
+    <if test="physical_table !=null and physical_table.toString().length()>0">
+       and physical_table = #{physical_table}
+    </if>
+    <if test="physical_db !=null and physical_db.toString().length()>0">
+      and physical_db = #{physical_db}
+    </if>
+  </where>
+
+
+  </select>
+
+  <select id="selectFields" resultType="Map">
+    SELECT COUNT(*) nums,physical_table_id FROM md_physical_field_info
+     where physical_table_id = #{id}
+     GROUP BY physical_table_id
+  </select>
+
+  <select id="foreignNums" resultType="Map">
+    SELECT COUNT(*) foreignNums,table_id,isprimary
+    FROM md_field_releation WHERE isprimary = '0' and table_id = #{id} OR foreign_table_id = #{id}
+    GROUP BY table_id
+  </select>
+</mapper>

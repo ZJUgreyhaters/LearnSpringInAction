@@ -151,7 +151,7 @@ public class TermInfoServiceImpl implements TermInfoService {
             .pagingPlug(ResultList, termInfoPojo.getPage_size(), termInfoPojo.getPage());
       }
 
-      Map<String, Object> result = new HashedMap();
+      Map<String, Object> result = new HashMap<>();
       result.put("entitys", ResultList);
       return JsonResult.successJson(list.size()+"",result);
     } catch (Exception e) {

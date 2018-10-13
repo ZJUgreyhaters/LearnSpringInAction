@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.quantchi.quartz.mapper.MDExtractorJobMapper" >
+  <resultMap id="BaseResultMap" type="com.quantchi.quartz.entity.MDExtractorJob" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="jobName" property="jobName" jdbcType="VARCHAR" />
+    <result column="parentTreeId" property="parentTreeId" jdbcType="VARCHAR" />
+    <result column="datasourceId" property="datasourceId" jdbcType="VARCHAR" />
+    <result column="quartzId" property="quartzId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="cronExpr" property="cronexpr" jdbcType="VARCHAR" />
+    <result column="datasourceName" property="datasourceName" jdbcType="VARCHAR" />
+    <result column="frequency" property="frequency" jdbcType="VARCHAR" />
+    <result column="whichDay" property="whichDay" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="VARCHAR" />
+    <result column="startDate" property="startDate" jdbcType="VARCHAR" />
+    <result column="endDate" property="endDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, jobName, parentTreeId, datasourceId, quartzId, status, cronExpr, datasourceName,frequency,whichDay,time,startDate,endDate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from md_extractor_job
+    where id = #{id,jdbcType=INTEGER} order by id desc
+  </select>
+  <select id="selectCountJob" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select
+    count(*) as total
+    from md_extractor_job
+    <where>
+      <if test="keyword != null" >
+        and jobName like CONCAT(CONCAT('%',#{keyword}), '%')
+      </if>
+      <if test="datasourceid != null" >
+        and datasourceId = #{datasourceid,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        and status = #{status,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <select id="selectBySelective" resultType="java.util.HashMap" parameterType="java.util.HashMap"  >
+    select a.id, a.jobName, a.parentTreeId,c.`name` as mountNodeName, a.datasourceId,b.ds_name as datasourceName, a.quartzId, a.status, a.cronExpr,a.frequency,a.whichDay,a.time,a.startDate,a.endDate
+    from md_extractor_job a
+    left join ds_meta_info b on a.datasourceId = b.id
+    left join (select x.id,x.name,x.description,x.parent_id from md_mount_node_info x UNION select y.id,y.ds_name,y.ds_name,y.mount_node_id from ds_meta_info y)
+    c on a.parentTreeId = c.id
+    <where>
+      <if test="keyword != null" >
+        and a.jobName like CONCAT(CONCAT('%',#{keyword}), '%')
+      </if>
+      <if test="datasourceid != null" >
+        and a.datasourceId = #{datasourceid,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        and a.status = #{status,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by id desc
+    <if test="page != null" >
+      limit #{page},#{page_size}
+    </if>
+
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from md_extractor_job
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByKeys" parameterType="java.util.List" >
+    delete from md_extractor_job
+    where id in
+    <foreach collection="jobIds" item="jobId" index="index" open="(" close=")" separator=",">
+      #{jobId}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="com.quantchi.quartz.entity.MDExtractorJob" >
+    insert into md_extractor_job (id, jobName, parentTreeId, 
+      datasourceId, quartzId, status, 
+      cronExpr,frequency,whichDay,time,startDate,endDate)
+    values (#{id,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR}, #{parentTreeId,jdbcType=VARCHAR},
+      #{datasourceId,jdbcType=VARCHAR}, #{quartzId,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+      #{cronexpr,jdbcType=VARCHAR},#{frequency,jdbcType=VARCHAR},#{whichDay,jdbcType=VARCHAR},#{time,jdbcType=VARCHAR},#{startDate,jdbcType=VARCHAR},#{endDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.quantchi.quartz.entity.MDExtractorJob" >
+    insert into md_extractor_job
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="jobname != null" >
+        jobName,
+      </if>
+      <if test="parenttreeid != null" >
+        parentTreeId,
+      </if>
+      <if test="datasourceid != null" >
+        datasourceId,
+      </if>
+      <if test="quartzid != null" >
+        quartzId,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="cronexpr != null" >
+        cronExpr,
+      </if>
+      <if test="frequency != null" >
+        frequency,
+      </if>
+      <if test="whichDay != null" >
+        whichDay,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="startDate != null" >
+        startDate,
+      </if>
+      <if test="endDate != null" >
+        endDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="jobname != null" >
+        #{jobname,jdbcType=VARCHAR},
+      </if>
+      <if test="parenttreeid != null" >
+        #{parenttreeid,jdbcType=VARCHAR},
+      </if>
+      <if test="datasourceid != null" >
+        #{datasourceid,jdbcType=VARCHAR},
+      </if>
+      <if test="quartzid != null" >
+        #{quartzid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="cronexpr != null" >
+        #{cronexpr,jdbcType=VARCHAR},
+      </if>
+      <if test="frequency != null" >
+        #{frequency,jdbcType=VARCHAR},
+      </if>
+      <if test="whichDay != null" >
+        #{whichDay,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null" >
+        #{startDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null" >
+        #{endDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.quantchi.quartz.entity.MDExtractorJob" >
+    update md_extractor_job
+    <set >
+      <if test="jobName != null" >
+        jobName = #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentTreeId != null" >
+        parentTreeId = #{parentTreeId,jdbcType=VARCHAR},
+      </if>
+      <if test="datasourceId != null" >
+        datasourceId = #{datasourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="quartzId != null" >
+        quartzId = #{quartzid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="cronexpr != null" >
+        cronExpr = #{cronexpr,jdbcType=VARCHAR},
+      </if>
+      <if test="datasourceName != null">
+        datasourceName = #{datasourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="frequency != null" >
+        frequency = #{frequency,jdbcType=VARCHAR},
+      </if>
+      <if test="whichDay != null" >
+        whichDay = #{whichDay,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null" >
+        startDate = #{startDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null" >
+        endDate = #{endDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.quantchi.quartz.entity.MDExtractorJob" >
+    update md_extractor_job
+    set jobName = #{jobname,jdbcType=VARCHAR},
+      parentTreeId = #{parenttreeid,jdbcType=VARCHAR},
+      datasourceId = #{datasourceid,jdbcType=VARCHAR},
+      quartzId = #{quartzid,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      cronExpr = #{cronexpr,jdbcType=VARCHAR},
+      frequency = #{frequency,jdbcType=VARCHAR},
+      whichDay = #{whichDay,jdbcType=VARCHAR},
+      time = #{time,jdbcType=VARCHAR},
+      startDate = #{startDate,jdbcType=VARCHAR},
+      endDate = #{endDate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
